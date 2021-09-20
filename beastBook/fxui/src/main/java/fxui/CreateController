@@ -1,0 +1,35 @@
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+
+public class CreateController {
+
+    @FXML
+    private TableView<?> workout_table;
+
+    @FXML
+    private Button back_button;
+
+    @FXML
+    private TextField exercise_input;
+
+    @FXML
+    private TextField rep_input;
+
+    @FXML
+    private TextField weight_input;
+
+    @FXML
+    private TextField set_input;
+
+    @FXML
+    private TextField rest_input;
+
+    @FXML
+    private TextField title_input;
+
+    @FXML
+    private Button save_button;
+
+}

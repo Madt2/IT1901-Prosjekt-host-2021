@@ -1,0 +1,16 @@
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+
+public class PleaseProvideControllerClassName {
+
+    @FXML
+    private Button create_button;
+
+    @FXML
+    private Button workouts_button;
+
+    @FXML
+    private Button history_button;
+
+}
+
