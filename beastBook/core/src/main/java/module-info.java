@@ -1,3 +1,3 @@
-module calc.core {
+module beastBook.core {
     exports core;
 }

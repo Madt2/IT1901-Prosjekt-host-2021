@@ -1,7 +1,7 @@
-module calc.ui {
-    requires calc.core;
+module beastBook.fxui {
+    requires beastBook.core;
     requires javafx.controls;
     requires javafx.fxml;
 
-    opens ui to javafx.graphics, javafx.fxml;
+    opens fxui to javafx.graphics, javafx.fxml;
 }
