@@ -1,4 +1,4 @@
-package beastBook.core.src.test.java.core;
+package core;
 
 public class HandleUserTest {
 }
