@@ -4,7 +4,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
-public class PleaseProvideControllerClassName {
+public class WorkoutController {
 
     @FXML
     private TableView<?> workout_table;

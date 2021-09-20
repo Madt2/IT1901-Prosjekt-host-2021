@@ -2,7 +2,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 
-public class PleaseProvideControllerClassName {
+public class WorkoutOverviewController {
 
     @FXML
     private Button back_button;
