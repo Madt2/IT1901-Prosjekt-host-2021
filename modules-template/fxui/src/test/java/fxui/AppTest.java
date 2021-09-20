@@ -1,4 +1,4 @@
-package ui;
+package fxui;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;

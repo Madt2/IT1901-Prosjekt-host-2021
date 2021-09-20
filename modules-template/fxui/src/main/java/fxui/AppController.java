@@ -1,4 +1,4 @@
-package ui;
+package fxui;
 
 import core.Calc;
 
