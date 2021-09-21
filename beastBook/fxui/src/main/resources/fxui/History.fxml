@@ -9,7 +9,7 @@
 <?import javafx.scene.text.Text?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxui.HistoryController">
    <children>
       <MenuBar>
         <menus>
@@ -32,6 +32,6 @@
       </MenuBar>
       <Button fx:id="back_button" layoutX="24.0" layoutY="48.0" mnemonicParsing="false" text="&lt;- Back" />
       <ListView fx:id="history_overview" layoutX="210.0" layoutY="100.0" prefHeight="200.0" prefWidth="200.0" />
-      <Text layoutX="289.0" layoutY="78.0" strokeType="OUTSIDE" strokeWidth="0.0" text="History:" wrappingWidth="42.13671875" />
+      <Text layoutX="289.0" layoutY="78.0" strokeType="OUTSIDE" strokeWidth="0.0" onAction="#loadHome" text="History:" wrappingWidth="42.13671875" />
    </children>
 </AnchorPane>

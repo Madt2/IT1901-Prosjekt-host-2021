@@ -6,8 +6,7 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.AnchorPane?>
 
-
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxui.HomeScreenController">
    <children>
       <MenuBar>
         <menus>
@@ -28,8 +27,8 @@
           </Menu>
         </menus>
       </MenuBar>
-      <Button fx:id="create_button" layoutX="250.0" layoutY="98.0" mnemonicParsing="false" text="Create Workout" />
-      <Button fx:id="workouts_button" layoutX="250.0" layoutY="143.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="100.0" text="My Workouts" />
-      <Button fx:id="history_button" layoutX="250.0" layoutY="187.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="100.0" text="History" />
+      <Button fx:id="create_button" layoutX="250.0" layoutY="98.0" mnemonicParsing="false" onAction="#loadCreate" text="Create Workout" />
+      <Button fx:id="workouts_button" layoutX="250.0" layoutY="143.0" mnemonicParsing="false" onAction="#loadWorkouts" prefHeight="26.0" prefWidth="100.0" text="My Workouts" />
+      <Button fx:id="history_button" layoutX="250.0" layoutY="187.0" mnemonicParsing="false" onAction="#loadHistory" prefHeight="26.0" prefWidth="100.0" text="History" />
    </children>
 </AnchorPane>

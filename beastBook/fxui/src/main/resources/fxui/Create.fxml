@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Text?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxui.CreateController">
    <children>
       <MenuBar>
         <menus>
@@ -41,7 +41,7 @@
             <TableColumn prefWidth="90.0" text="Rest Time:" />
         </columns>
       </TableView>
-      <Button fx:id="back_button" layoutX="14.0" layoutY="52.0" mnemonicParsing="false" text="&lt;- Back" />
+      <Button fx:id="back_button" layoutX="14.0" layoutY="52.0" mnemonicParsing="false" onAction="#loadHome" text="&lt;- Back" />
       <TextField fx:id="exercise_input" layoutX="150.0" layoutY="326.0" />
       <Text layoutX="82.0" layoutY="343.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Exercise:" />
       <TextField fx:id="rep_input" layoutX="150.0" layoutY="352.0" />
