@@ -2,10 +2,14 @@ package fxui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.event.ActionEvent;
 import java.io.IOException;
+import java.util.List;
+
 import core.Workout;
 import core.Exercise;
 import javafx.scene.layout.AnchorPane;
@@ -20,13 +24,17 @@ import javafx.beans.property.SimpleStringProperty;
 
 
 
+
+
 public class CreateController {
 
+  
     @FXML
     private AnchorPane rootPane;
 
     @FXML
     private TableView<Exercise> workout_table;
+
 
     @FXML
     public TableColumn<Exercise, String> exerciseName;
@@ -43,26 +51,28 @@ public class CreateController {
     @FXML
     public TableColumn<Exercise, String> restTime;
 
+
+
     @FXML
     private Button back_button;
 
     @FXML
-    private TextField exercise_input;
+    private TextField exerciseNameInput;
 
     @FXML
-    private TextField rep_input;
+    private TextField repsInput;
 
     @FXML
-    private TextField weight_input;
+    private TextField weigthInput;
 
     @FXML
-    private TextField set_input;
+    private TextField setsInput;
 
     @FXML
-    private TextField rest_input;
+    private TextField restInput;
 
     @FXML
-    private TextField title_input;
+    private TextField titleInput;
 
     @FXML
     private Button createWorkout;
@@ -74,6 +84,9 @@ public class CreateController {
 
     private Exercise exercise;
 
+    // Test boolean until user is implemented. If true, use "fake" data 
+    private boolean fakeUser = true;
+
     @FXML
     void loadHome(ActionEvent event) throws IOException{
         AnchorPane pane =  FXMLLoader.load(getClass().getResource("HomeScreen.fxml"));
@@ -84,28 +97,49 @@ public class CreateController {
         if(workout.getExercises().isEmpty()){
             // TODO If a user has a workout registered, loop through a JSON-file and add a Exercise object
         }
-       // workout_table.setItems(exerciseList);
+    
+        if(fakeUser){
+   
+           exerciseName.setCellValueFactory(new PropertyValueFactory<Exercise, String>("exerciseName"));
+           repGoal.setCellValueFactory(new PropertyValueFactory<Exercise, String>("repGoal"));
+           weight.setCellValueFactory(new PropertyValueFactory<Exercise, String>("weight"));
+           sets.setCellValueFactory(new PropertyValueFactory<Exercise, String>("sets"));
+           restTime.setCellValueFactory(new PropertyValueFactory<Exercise, String>("restTime"));
+            
+            workout_table.getItems().setAll(parseExerciseList());
+         
+        }
     }
+
+    private List<Exercise> parseExerciseList(){
+        Exercise e1 = new Exercise("Benkpress", 12, 70, 3, 90);
+        Exercise e2 = new Exercise("Knebøy", 12, 120, 3, 60);
+
+        workout.addExercise(e1);
+        workout.addExercise(e2);
+
+        return workout.getExercises();
+    }
+
 
 
     @FXML
     void addExercise() {
         
-        workout.setName(title_input.getText());
-
-        exercise = new Exercise(exercise_input.getText(), 
-                                        Integer.valueOf(rep_input.getText()),
-                                         Double.valueOf(weight_input.getText()), 
-                                         Integer.valueOf(set_input.getText()), 
-                                         Integer.valueOf(rest_input.getText()));
-                       
+        workout.setName(titleInput.getText());
+        
+        exercise = new Exercise(exerciseNameInput.getText(), 
+                                        Integer.valueOf(repsInput.getText()),
+                                         Double.valueOf(weigthInput.getText()), 
+                                         Integer.valueOf(setsInput.getText()), 
+                                         Integer.valueOf(restInput.getText()));
+                   
         
         exerciseName.setCellValueFactory(c -> new SimpleStringProperty(new String(exercise.getExerciseName())));
         repGoal.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getRepGoal()))));
-        weight.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getWeight()))));
+        weight.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getWeight() + " kg"))));
         sets.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getSets()))));
         restTime.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getRestTime()))));
-        
 
         workout.addExercise(exercise);
         workout_table.getItems().add(exercise);
@@ -116,7 +150,12 @@ public class CreateController {
 
     @FXML
     void createWorkout() {
-        System.out.println("Test createWorkout-button!!");
+        if(titleInput == null || titleInput.equals("")){
+            System.out.println("Input title is empty");
+        }
+        else{
+            System.out.println("You tried to save the workout " + workout.getName() + " but it failed. Try again later");
+        }
     }
 
 }
