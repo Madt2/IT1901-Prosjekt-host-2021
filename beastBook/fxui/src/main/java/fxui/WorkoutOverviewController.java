@@ -7,11 +7,15 @@ import javafx.event.ActionEvent;
 import java.io.IOException;
 import javafx.scene.layout.AnchorPane;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.control.MenuItem;
 
 public class WorkoutOverviewController {
 
     @FXML
     private AnchorPane rootPane;
+
+    @FXML
+    private MenuItem logout_button;
 
     @FXML
     private Button back_button;
@@ -25,5 +29,10 @@ public class WorkoutOverviewController {
         rootPane.getChildren().setAll(pane);
     }
 
+    @FXML
+    void loadLogin(ActionEvent event) throws IOException{
+        AnchorPane pane =  FXMLLoader.load(getClass().getResource("Login.fxml"));
+        rootPane.getChildren().setAll(pane);
+    }
 
 }
