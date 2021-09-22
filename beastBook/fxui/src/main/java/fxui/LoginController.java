@@ -5,13 +5,14 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 
-import java.awt.event.ActionEvent;
-import java.io.IOException;
 import javafx.event.ActionEvent;
+import java.io.IOException;
+import java.lang.IllegalArgumentException;
 import javafx.fxml.FXMLLoader;
+import core.User;
 
 public class LoginController {
-    private core.User user;
+    private User user;
 
     @FXML
     private AnchorPane rootPane;
@@ -29,7 +30,7 @@ public class LoginController {
     private Button login_button;
 
     @FXML
-    void loadHome(ActionEvent event) throws IOException{
+    void loadHome(ActionEvent event) throws IOException {
         AnchorPane pane =  FXMLLoader.load(getClass().getResource("HomeScreen.fxml"));
         rootPane.getChildren().setAll(pane);
     }
@@ -38,8 +39,25 @@ public class LoginController {
     void registerUser(ActionEvent event) throws IllegalArgumentException {
         String userName = username_input.getText();
         String password = password_input.getText();
-        user.User(userName, password);
+        this.user = new User(userName, password);
+        saveUser(user); //Skal lagre bruker som en JSON-fil
     }
+
+    @FXML
+    void loginUser(ActionEvent event) throws IllegalArgumentException {
+        String userName = username_input.getText();
+        String password = password_input.getText();
+        for (String u:userBase) {
+            if (u.equals(userName)) {
+                user = getUser(u); //Skal hente bruker objekt fra JSON-fil
+                break;
+            }
+        }
+        if (user.getUserName() != userName) {
+            throw new IllegalArgumentException("No such user found!");
+        } 
+    }
+
     /* public static void main(String[] args) {
         LoginController controller = new LoginController();
         controller.username_input.setText("Tor");
