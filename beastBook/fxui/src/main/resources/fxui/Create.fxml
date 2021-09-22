@@ -10,8 +10,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxui.CreateController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxui.CreateController">
    <children>
       <MenuBar>
         <menus>
@@ -34,11 +33,11 @@
       </MenuBar>
       <TableView fx:id="workout_table" layoutX="72.0" layoutY="85.0" prefHeight="60.0" prefWidth="456.0">
         <columns>
-          <TableColumn prefWidth="90.0" text="Exercise:" />
-          <TableColumn prefWidth="90.0" text="Rep Goal:" />
-            <TableColumn prefWidth="90.0" text="Weight Lifted:" />
-            <TableColumn prefWidth="90.0" text="Set x:" />
-            <TableColumn prefWidth="90.0" text="Rest Time:" />
+          <TableColumn fx:id="exerciseName" prefWidth="90.0" text="Exercise:" />
+          <TableColumn fx:id="repGoal" prefWidth="90.0" text="Rep Goal:" />
+            <TableColumn fx:id="weight" prefWidth="90.0" text="Weight Lifted:" />
+            <TableColumn fx:id="sets" prefWidth="90.0" text="Set x:" />
+            <TableColumn fx:id="restTime" prefWidth="90.0" text="Rest Time:" />
         </columns>
       </TableView>
       <Button fx:id="back_button" layoutX="14.0" layoutY="52.0" mnemonicParsing="false" onAction="#loadHome" text="&lt;- Back" />
@@ -54,6 +53,7 @@
       <Text layoutX="77.0" layoutY="447.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rest Time:" />
       <Text layoutX="287.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title:" />
       <TextField fx:id="title_input" layoutX="225.0" layoutY="52.0" />
-      <Button fx:id="save_button" layoutX="259.0" layoutY="460.0" mnemonicParsing="false" text="Save" />
+      <Button fx:id="createButton" layoutX="249.0" layoutY="460.0" mnemonicParsing="false" onAction="#createWorkout" text="Create workout" />
+      <Button fx:id="addButton" layoutX="134.0" layoutY="460.0" mnemonicParsing="false" onAction="#addExercise" text="Add exercise" />
    </children>
 </AnchorPane>
