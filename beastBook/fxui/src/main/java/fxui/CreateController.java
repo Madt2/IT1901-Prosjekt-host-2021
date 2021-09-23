@@ -84,16 +84,6 @@ public class CreateController {
 
     private Exercise exercise;
 
-
-/*
-    <Button fx:id="back_button" layoutX="14.0" layoutY="52.0" mnemonicParsing="false" onAction="#loadHome" text="&lt;- Back" /> Add this back later
-    @FXML
-    void loadHome(ActionEvent event) throws IOException{
-        AnchorPane pane =  FXMLLoader.load(getClass().getResource("HomeScreen.fxml"));
-        rootPane.getChildren().setAll(pane);
-    }
-*/
-
     public void initialize() {
         menuBar.setVisible(false);
     }
