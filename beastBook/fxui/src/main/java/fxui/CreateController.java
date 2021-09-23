@@ -1,5 +1,6 @@
 package fxui;
 
+import core.ReadWrite;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
@@ -7,6 +8,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.event.ActionEvent;
+
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -69,6 +72,9 @@ public class CreateController {
     private Button createButton;
 
     @FXML
+    private Button loadButton;
+
+    @FXML
     private Button addExercise;
 
     private Workout workout = new Workout();
@@ -84,13 +90,12 @@ public class CreateController {
         rootPane.getChildren().setAll(pane);
     }
 
-    public void initialize(){
+
+    public void setTable() {
         if(workout.getExercises().isEmpty()){
             // TODO If a user has a workout registered, loop through a JSON-file and add a Exercise object
+            throw new IllegalArgumentException("No exercises saved!");
         }
-    
-        if(fakeUser){
-   
            exerciseName.setCellValueFactory(new PropertyValueFactory<Exercise, String>("exerciseName"));
            repGoal.setCellValueFactory(new PropertyValueFactory<Exercise, String>("repGoal"));
            weight.setCellValueFactory(new PropertyValueFactory<Exercise, String>("weight"));
@@ -98,8 +103,6 @@ public class CreateController {
            restTime.setCellValueFactory(new PropertyValueFactory<Exercise, String>("restTime"));
             
             workout_table.getItems().setAll(workout.getExercises());
-         
-        }
     }
 
 /*    private List<Exercise> parseExerciseList(){
@@ -141,10 +144,23 @@ public class CreateController {
      //   System.out.println(workout.getExercises());
     }
 
+    @FXML
+    void loadWorkout(ActionEvent event) throws FileNotFoundException {
+        if (titleInput.getText() == null) {
+            throw new IllegalArgumentException("Missing Title!");
+        }
+        String filename = titleInput.getText();
+        try {
+            workout.loadWorkout(filename);
+            setTable();
+        } catch (Exception e) {
+            System.err.println(e);
+        }
 
+    }
 
     @FXML
-    void createWorkout() {
+    void createWorkout(ActionEvent event) {
         if(titleInput.getText() == null || titleInput.getText().equals("")){
             System.err.println("Input title is empty, please enter name to workout");
         }

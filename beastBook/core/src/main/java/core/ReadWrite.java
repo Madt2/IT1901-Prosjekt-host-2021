@@ -14,7 +14,6 @@ public class ReadWrite {
             String exerciseData = exercises.get(i).toString() + "\n";
             data = data + exerciseData;
         }
-        System.out.println(data);
         PrintWriter writer = new PrintWriter(workoutName);
         writer.println(data);
         writer.flush();
