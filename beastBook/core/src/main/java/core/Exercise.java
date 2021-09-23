@@ -20,31 +20,38 @@ public class Exercise {
         this.restTime = restTime;
     }
 
+    private void validateExerciseName(String name) {
+        if (name.length() <= 0) {
+            throw new IllegalArgumentException("Exercise name can not be blank!");
+        }
+    }
+
     private void validateRepGoal(int repGoal) {
         if (repGoal <= 0) {
-            throw new IllegalArgumentException("RepGoal cant be 0 or less than 0.");
+            throw new IllegalArgumentException("RepGoal can not be 0 or less than 0.");
         }
     }
 
     private void validateWeight(double weight) {
         if (weight <= 0) {
-            throw new IllegalArgumentException("Weight cant be 0 or less than 0.");
+            throw new IllegalArgumentException("Weight can not be 0 or less than 0.");
         }
     }
 
     private void validateSets(int sets) {
         if (sets <= 0) {
-            throw new IllegalArgumentException("Sets cant be 0 or less than 0.");
+            throw new IllegalArgumentException("Sets can not be 0 or less than 0.");
         }
     }
 
     private void validateRestTime(int restTime) {
         if (restTime <= 0) {
-            throw new IllegalArgumentException("RestTime cant be 0 or less than 0.");
+            throw new IllegalArgumentException("RestTime can not be 0 or less than 0.");
         }
     }
 
     public void setExerciseName(String exerciseName){
+        validateExerciseName(exerciseName);
         this.exerciseName = exerciseName;
     }
 
