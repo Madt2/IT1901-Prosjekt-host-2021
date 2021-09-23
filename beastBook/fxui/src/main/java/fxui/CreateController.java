@@ -146,15 +146,19 @@ public class CreateController {
 
     @FXML
     void loadWorkout(ActionEvent event) throws FileNotFoundException {
-        if (titleInput.getText() == null) {
-            throw new IllegalArgumentException("Missing Title!");
+        if (titleInput.getText().equals("") || titleInput.getText() == null) {
+            exceptionFeedback.setText("Missing Title!");
+            return;
         }
         String filename = titleInput.getText();
         try {
+            workout = new Workout();
             workout.loadWorkout(filename);
             setTable();
+            exceptionFeedback.setText("");
         } catch (Exception e) {
             System.err.println(e);
+            exceptionFeedback.setText("Workout not found!");
         }
 
     }
@@ -163,12 +167,15 @@ public class CreateController {
     void createWorkout(ActionEvent event) {
         if(titleInput.getText() == null || titleInput.getText().equals("")){
             System.err.println("Input title is empty, please enter name to workout");
+            exceptionFeedback.setText("Missing Title!");
         }
         else {
             try {
                 workout.saveWorkout();
+                exceptionFeedback.setText("");
             } catch (Exception e) {
                 System.err.println(e);
+                exceptionFeedback.setText("Save Workout failed!");
             }
         }
     }
