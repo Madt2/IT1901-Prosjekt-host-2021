@@ -21,20 +21,13 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
-
-
-
-
-
 public class CreateController {
 
-  
     @FXML
     private AnchorPane rootPane;
 
     @FXML
     private TableView<Exercise> workout_table;
-
 
     @FXML
     public TableColumn<Exercise, String> exerciseName;
@@ -83,7 +76,7 @@ public class CreateController {
     private Exercise exercise;
 
     // Test boolean until user is implemented. If true, use "fake" data 
-    private boolean fakeUser = true;
+    private boolean fakeUser = false;
 
     @FXML
     void loadHome(ActionEvent event) throws IOException{
@@ -104,26 +97,24 @@ public class CreateController {
            sets.setCellValueFactory(new PropertyValueFactory<Exercise, String>("sets"));
            restTime.setCellValueFactory(new PropertyValueFactory<Exercise, String>("restTime"));
             
-            workout_table.getItems().setAll(parseExerciseList());
+            workout_table.getItems().setAll(workout.getExercises());
          
         }
     }
 
-    private List<Exercise> parseExerciseList(){
+/*    private List<Exercise> parseExerciseList(){
 
         // TODO Loop through a file to read from, and make exercise object with the info from 
         // each line. 
 
-        Exercise e1 = new Exercise("Benkpress", 12, 70, 3, 90);
-        Exercise e2 = new Exercise("Knebøy", 12, 120, 3, 60);
+        Exercise e1 = new Exercise("Bench Press", 12, 70, 3, 90);
+        Exercise e2 = new Exercise("Squat", 12, 120, 3, 60);
 
         workout.addExercise(e1);
         workout.addExercise(e2);
 
-        System.out.println(workout.toString());
-
         return workout.getExercises();
-    }
+    }*/
 
     @FXML
     void addExercise() {
@@ -147,7 +138,7 @@ public class CreateController {
 
         workout.addExercise(exercise);
         workout_table.getItems().add(exercise);
-        System.out.println(workout.getExercises());       
+     //   System.out.println(workout.getExercises());
     }
 
 

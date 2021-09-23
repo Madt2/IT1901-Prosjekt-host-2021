@@ -1,5 +1,11 @@
 package core;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.util.List;
+import java.util.Scanner;
+
 public class ReadWrite {
 
     public void saveWorkout(String workoutName, List<Exercise> exercises) throws FileNotFoundException { //Saves a workout object to a .txt file with the name of the workout as the filename
