@@ -27,6 +27,7 @@ The following is an illustration of our final product
 Release 1 does not contain all these attributes. It contains ...
 - HomeScreen
 - CreateWorkoutScreen
+
 In this MVP it is possible to create a workout by adding one exercise at a time. There are some minimal requirements to a exercise and a workout. If you dont meet these requirements, you will get feedback. Eg. if you type in a wrong format (eg. String instead of int in working weight), an Exception will be thrown. For the user, only a red text with feedback will appear on the screen until you have typed a exercise in the correct format. 
 The idea behind this MVP is that your workouts will be saved. Eg. if you have created a workout and then close the app, you should be able to open the app the next day and see that your workout is still there.
 
