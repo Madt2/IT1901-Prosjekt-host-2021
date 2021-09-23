@@ -2,10 +2,7 @@ package fxui;
 
 import core.ReadWrite;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.event.ActionEvent;
 
@@ -17,7 +14,6 @@ import core.Workout;
 import core.Exercise;
 import javafx.scene.layout.AnchorPane;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.TableColumn;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import javafx.beans.property.SimpleDoubleProperty;
@@ -28,6 +24,9 @@ public class CreateController {
 
     @FXML
     private AnchorPane rootPane;
+
+    @FXML
+    private MenuBar menuBar;
 
     @FXML
     private TableView<Exercise> workout_table;
@@ -47,8 +46,8 @@ public class CreateController {
     @FXML
     public TableColumn<Exercise, String> restTime;
 
-    @FXML
-    private Button back_button;
+/*    @FXML
+    private Button back_button;*/
 
     @FXML
     private TextField exerciseNameInput;
@@ -83,11 +82,18 @@ public class CreateController {
 
     // Test boolean until user is implemented. If true, use "fake" data 
     private boolean fakeUser = false;
-
+/*
+    <Button fx:id="back_button" layoutX="14.0" layoutY="52.0" mnemonicParsing="false" onAction="#loadHome" text="&lt;- Back" /> Add this back later
     @FXML
     void loadHome(ActionEvent event) throws IOException{
         AnchorPane pane =  FXMLLoader.load(getClass().getResource("HomeScreen.fxml"));
         rootPane.getChildren().setAll(pane);
+    }
+*/
+
+
+    public void initialize() {
+        menuBar.setVisible(false);
     }
 
 
