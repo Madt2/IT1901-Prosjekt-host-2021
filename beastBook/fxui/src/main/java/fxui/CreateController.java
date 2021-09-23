@@ -13,6 +13,7 @@ import java.util.List;
 import core.Workout;
 import core.Exercise;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import javafx.fxml.FXMLLoader;
 import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
@@ -30,6 +31,9 @@ public class CreateController {
 
     @FXML
     private TableView<Exercise> workout_table;
+
+    @FXML
+    private Text exceptionFeedback;
 
     @FXML
     public TableColumn<Exercise, String> exerciseName;
@@ -80,8 +84,7 @@ public class CreateController {
 
     private Exercise exercise;
 
-    // Test boolean until user is implemented. If true, use "fake" data 
-    private boolean fakeUser = false;
+
 /*
     <Button fx:id="back_button" layoutX="14.0" layoutY="52.0" mnemonicParsing="false" onAction="#loadHome" text="&lt;- Back" /> Add this back later
     @FXML
@@ -90,7 +93,6 @@ public class CreateController {
         rootPane.getChildren().setAll(pane);
     }
 */
-
 
     public void initialize() {
         menuBar.setVisible(false);
@@ -111,43 +113,35 @@ public class CreateController {
             workout_table.getItems().setAll(workout.getExercises());
     }
 
-/*    private List<Exercise> parseExerciseList(){
-
-        // TODO Loop through a file to read from, and make exercise object with the info from 
-        // each line. 
-
-        Exercise e1 = new Exercise("Bench Press", 12, 70, 3, 90);
-        Exercise e2 = new Exercise("Squat", 12, 120, 3, 60);
-
-        workout.addExercise(e1);
-        workout.addExercise(e2);
-
-        return workout.getExercises();
-    }*/
-
     @FXML
     void addExercise() {
         
         createButton.setDisable(false);
 
         workout.setName(titleInput.getText());
-        
-        exercise = new Exercise(exerciseNameInput.getText(), 
-                                        Integer.valueOf(repsInput.getText()),
-                                         Double.valueOf(weigthInput.getText()), 
-                                         Integer.valueOf(setsInput.getText()), 
-                                         Integer.valueOf(restInput.getText()));
-                   
-        
-        exerciseName.setCellValueFactory(c -> new SimpleStringProperty(new String(exercise.getExerciseName())));
-        repGoal.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getRepGoal()))));
-        weight.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getWeight()))));
-        sets.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getSets()))));
-        restTime.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getRestTime()))));
+        try{
+            exercise = new Exercise(exerciseNameInput.getText(), 
+            Integer.valueOf(repsInput.getText()),
+             Double.valueOf(weigthInput.getText()), 
+             Integer.valueOf(setsInput.getText()), 
+             Integer.valueOf(restInput.getText()));
 
-        workout.addExercise(exercise);
-        workout_table.getItems().add(exercise);
-     //   System.out.println(workout.getExercises());
+            exerciseName.setCellValueFactory(c -> new SimpleStringProperty(new String(exercise.getExerciseName())));
+            repGoal.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getRepGoal()))));
+            weight.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getWeight()))));
+            sets.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getSets()))));
+            restTime.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getRestTime()))));
+
+            workout.addExercise(exercise);
+            workout_table.getItems().add(exercise);   
+            exceptionFeedback.setText("");
+
+        }
+
+        //TODO Make more spesific feedback 
+        catch (Exception e) {
+            exceptionFeedback.setText("Could not add exercise. Wrong input format");
+        }
     }
 
     @FXML

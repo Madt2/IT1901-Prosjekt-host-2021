@@ -16,7 +16,7 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem mnemonicParsing="false" text="Close" />
+              <MenuItem fx:id="logout_button" mnemonicParsing="false" onAction="#loadLogin" text="Log Out" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">
@@ -56,5 +56,6 @@
       <Button fx:id="createButton" disable="true" layoutX="249.0" layoutY="460.0" mnemonicParsing="false" onAction="#createWorkout" text="Create workout" />
       <Button fx:id="addButton" layoutX="134.0" layoutY="460.0" mnemonicParsing="false" onAction="#addExercise" text="Add exercise" />
       <Button fx:id="loadButton" layoutX="438.0" layoutY="460.0" mnemonicParsing="false" onAction="#loadWorkout" text="Load Workout" />
+      <Text fx:id="exceptionFeedback" fill="RED" layoutX="400.0" layoutY="356.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="142.0" />
    </children>
 </AnchorPane>

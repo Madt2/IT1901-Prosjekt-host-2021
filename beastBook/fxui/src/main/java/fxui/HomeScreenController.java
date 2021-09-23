@@ -6,11 +6,15 @@ import javafx.scene.layout.AnchorPane;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import java.io.IOException;
+import javafx.scene.control.MenuItem;
 
 public class HomeScreenController {
 
     @FXML
     private AnchorPane rootPane;
+
+    @FXML
+    private MenuItem logout_button;
 
     @FXML
     private Button create_button;
@@ -38,6 +42,13 @@ public class HomeScreenController {
         AnchorPane pane =  FXMLLoader.load(getClass().getResource("WorkoutOverview.fxml"));
         rootPane.getChildren().setAll(pane);
     }
+
+    @FXML
+    void loadLogin(ActionEvent event) throws IOException{
+        AnchorPane pane =  FXMLLoader.load(getClass().getResource("Login.fxml"));
+        rootPane.getChildren().setAll(pane);
+    }
+
 
 }
 

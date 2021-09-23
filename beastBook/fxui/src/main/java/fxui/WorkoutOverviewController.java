@@ -26,6 +26,9 @@ public class WorkoutOverviewController {
     private AnchorPane rootPane;
 
     @FXML
+    private MenuItem logout_button;
+
+    @FXML
     private Button back_button;
 
     @FXML
