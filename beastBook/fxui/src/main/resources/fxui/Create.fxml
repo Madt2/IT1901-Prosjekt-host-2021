@@ -55,5 +55,6 @@
       <TextField fx:id="titleInput" layoutX="225.0" layoutY="52.0" />
       <Button fx:id="createButton" disable="true" layoutX="249.0" layoutY="460.0" mnemonicParsing="false" onAction="#createWorkout" text="Create workout" />
       <Button fx:id="addButton" layoutX="134.0" layoutY="460.0" mnemonicParsing="false" onAction="#addExercise" text="Add exercise" />
+      <Text fx:id="exceptionFeedback" fill="RED" layoutX="400.0" layoutY="356.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="142.0" />
    </children>
 </AnchorPane>

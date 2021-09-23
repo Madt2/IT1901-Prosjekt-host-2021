@@ -13,6 +13,7 @@ import java.util.List;
 import core.Workout;
 import core.Exercise;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.TableColumn;
 import javafx.collections.ObservableList;
@@ -35,6 +36,8 @@ public class CreateController {
     @FXML
     private TableView<Exercise> workout_table;
 
+    @FXML
+    private Text exceptionFeedback;
 
     @FXML
     public TableColumn<Exercise, String> exerciseName;
@@ -92,28 +95,34 @@ public class CreateController {
     }
 
     public void initialize(){
-        if(workout.getExercises().isEmpty()){
-            // TODO If a user has a workout registered, loop through a JSON-file and add a Exercise object
-        }
-    
+  //      if(workout.getExercises().isEmpty()){
+  //          // TODO If a user has a workout registered, loop through a JSON-file and add a Exercise object
+  //      }
+
+        loadWorkout(); 
+        
+    }
+
+    public void loadWorkout(){
         if(fakeUser){
    
-           exerciseName.setCellValueFactory(new PropertyValueFactory<Exercise, String>("exerciseName"));
-           repGoal.setCellValueFactory(new PropertyValueFactory<Exercise, String>("repGoal"));
-           weight.setCellValueFactory(new PropertyValueFactory<Exercise, String>("weight"));
-           sets.setCellValueFactory(new PropertyValueFactory<Exercise, String>("sets"));
-           restTime.setCellValueFactory(new PropertyValueFactory<Exercise, String>("restTime"));
-            
-            workout_table.getItems().setAll(parseExerciseList());
-         
-        }
+            exerciseName.setCellValueFactory(new PropertyValueFactory<Exercise, String>("exerciseName"));
+            repGoal.setCellValueFactory(new PropertyValueFactory<Exercise, String>("repGoal"));
+            weight.setCellValueFactory(new PropertyValueFactory<Exercise, String>("weight"));
+            sets.setCellValueFactory(new PropertyValueFactory<Exercise, String>("sets"));
+            restTime.setCellValueFactory(new PropertyValueFactory<Exercise, String>("restTime"));
+             
+             workout_table.getItems().setAll(parseExerciseList());
+          
+         }
     }
+
 
     private List<Exercise> parseExerciseList(){
 
         // TODO Loop through a file to read from, and make exercise object with the info from 
         // each line. 
-
+        
         Exercise e1 = new Exercise("Benkpress", 12, 70, 3, 90);
         Exercise e2 = new Exercise("Knebøy", 12, 120, 3, 60);
 
@@ -131,23 +140,30 @@ public class CreateController {
         createButton.setDisable(false);
 
         workout.setName(titleInput.getText());
-        
-        exercise = new Exercise(exerciseNameInput.getText(), 
-                                        Integer.valueOf(repsInput.getText()),
-                                         Double.valueOf(weigthInput.getText()), 
-                                         Integer.valueOf(setsInput.getText()), 
-                                         Integer.valueOf(restInput.getText()));
-                   
-        
-        exerciseName.setCellValueFactory(c -> new SimpleStringProperty(new String(exercise.getExerciseName())));
-        repGoal.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getRepGoal()))));
-        weight.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getWeight()))));
-        sets.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getSets()))));
-        restTime.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getRestTime()))));
+        try{
+            exercise = new Exercise(exerciseNameInput.getText(), 
+            Integer.valueOf(repsInput.getText()),
+             Double.valueOf(weigthInput.getText()), 
+             Integer.valueOf(setsInput.getText()), 
+             Integer.valueOf(restInput.getText()));
 
-        workout.addExercise(exercise);
-        workout_table.getItems().add(exercise);
-        System.out.println(workout.getExercises());       
+            exerciseName.setCellValueFactory(c -> new SimpleStringProperty(new String(exercise.getExerciseName())));
+            repGoal.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getRepGoal()))));
+            weight.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getWeight()))));
+            sets.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getSets()))));
+            restTime.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getRestTime()))));
+
+            workout.addExercise(exercise);
+            workout_table.getItems().add(exercise);
+            System.out.println(workout.getExercises());    
+            exceptionFeedback.setText("");
+
+        }
+
+        //TODO Make more spesific feedback 
+        catch (Exception e) {
+            exceptionFeedback.setText("Could not add exercise. Wrong input format");
+        }
     }
 
 
