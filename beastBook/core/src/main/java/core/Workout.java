@@ -1,6 +1,7 @@
 package core;
 
 
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 public class Workout {
     private String name;
     private List<Exercise> exercises = new ArrayList<>();
+    private ReadWrite reader;
 
 
     //TODO Dårlig inkapsling her, bør fikses.
