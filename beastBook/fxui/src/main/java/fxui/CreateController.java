@@ -155,11 +155,14 @@ public class CreateController {
     @FXML
     void createWorkout() {
         if(titleInput.getText() == null || titleInput.getText().equals("")){
-            System.out.println("Input title is empty, please enter name to workout");
+            System.err.println("Input title is empty, please enter name to workout");
         }
-        else{
-            System.out.println(titleInput.getText());
-
+        else {
+            try {
+                workout.saveWorkout();
+            } catch (Exception e) {
+                System.err.println(e);
+            }
         }
     }
 
