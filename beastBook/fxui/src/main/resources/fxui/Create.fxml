@@ -12,11 +12,11 @@
 
 <AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxui.CreateController">
    <children>
-      <MenuBar>
+      <MenuBar fx:id="menuBar">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem fx:id="logout_button" mnemonicParsing="false" onAction="#loadLogin" text="Log Out" />
+              <MenuItem fx:id="logout_button" mnemonicParsing="false" text="Log Out" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">
@@ -40,7 +40,7 @@
             <TableColumn fx:id="restTime" prefWidth="90.0" text="Rest Time:" />
         </columns>
       </TableView>
-      <Button fx:id="back_button" layoutX="14.0" layoutY="52.0" mnemonicParsing="false" onAction="#loadHome" text="&lt;- Back" />
+
       <TextField fx:id="exerciseNameInput" layoutX="150.0" layoutY="326.0" />
       <Text layoutX="82.0" layoutY="343.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Exercise:" />
       <TextField fx:id="repsInput" layoutX="150.0" layoutY="352.0" />
@@ -55,6 +55,7 @@
       <TextField fx:id="titleInput" layoutX="225.0" layoutY="52.0" />
       <Button fx:id="createButton" disable="true" layoutX="249.0" layoutY="460.0" mnemonicParsing="false" onAction="#createWorkout" text="Create workout" />
       <Button fx:id="addButton" layoutX="134.0" layoutY="460.0" mnemonicParsing="false" onAction="#addExercise" text="Add exercise" />
+      <Button fx:id="loadButton" layoutX="438.0" layoutY="460.0" mnemonicParsing="false" onAction="#loadWorkout" text="Load Workout" />
       <Text fx:id="exceptionFeedback" fill="RED" layoutX="400.0" layoutY="356.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="142.0" />
    </children>
 </AnchorPane>

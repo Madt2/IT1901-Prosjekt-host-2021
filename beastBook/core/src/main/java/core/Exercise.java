@@ -90,6 +90,6 @@ public class Exercise {
  
     @Override
     public String toString() {
-        return exerciseName + " " + repGoal + " " + weight + " " + sets + " " + restTime;
+        return exerciseName + "," + repGoal + "," + weight + "," + sets + "," + restTime;
     }
 }
