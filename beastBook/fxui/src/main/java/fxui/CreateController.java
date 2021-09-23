@@ -103,6 +103,16 @@ public class CreateController {
             workout_table.getItems().setAll(workout.getExercises());
     }
 
+    // Only for test reasons. 
+    public Exercise getTable(int index){
+        return workout_table.getItems().get(index);
+    }
+
+    // Only for test reasons.
+    public Workout getWorkout(){
+        return workout;
+    }
+
     @FXML
     void addExercise() {
         
