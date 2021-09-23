@@ -51,8 +51,6 @@ public class CreateController {
     @FXML
     public TableColumn<Exercise, String> restTime;
 
-
-
     @FXML
     private Button back_button;
 
@@ -75,7 +73,7 @@ public class CreateController {
     private TextField titleInput;
 
     @FXML
-    private Button createWorkout;
+    private Button createButton;
 
     @FXML
     private Button addExercise;
@@ -112,20 +110,26 @@ public class CreateController {
     }
 
     private List<Exercise> parseExerciseList(){
+
+        // TODO Loop through a file to read from, and make exercise object with the info from 
+        // each line. 
+
         Exercise e1 = new Exercise("Benkpress", 12, 70, 3, 90);
         Exercise e2 = new Exercise("Knebøy", 12, 120, 3, 60);
 
         workout.addExercise(e1);
         workout.addExercise(e2);
 
+        System.out.println(workout.toString());
+
         return workout.getExercises();
     }
-
-
 
     @FXML
     void addExercise() {
         
+        createButton.setDisable(false);
+
         workout.setName(titleInput.getText());
         
         exercise = new Exercise(exerciseNameInput.getText(), 
@@ -137,7 +141,7 @@ public class CreateController {
         
         exerciseName.setCellValueFactory(c -> new SimpleStringProperty(new String(exercise.getExerciseName())));
         repGoal.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getRepGoal()))));
-        weight.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getWeight() + " kg"))));
+        weight.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getWeight()))));
         sets.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getSets()))));
         restTime.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getRestTime()))));
 
@@ -150,11 +154,12 @@ public class CreateController {
 
     @FXML
     void createWorkout() {
-        if(titleInput == null || titleInput.equals("")){
-            System.out.println("Input title is empty");
+        if(titleInput.getText() == null || titleInput.getText().equals("")){
+            System.out.println("Input title is empty, please enter name to workout");
         }
         else{
-            System.out.println("You tried to save the workout " + workout.getName() + " but it failed. Try again later");
+            System.out.println(titleInput.getText());
+
         }
     }
 

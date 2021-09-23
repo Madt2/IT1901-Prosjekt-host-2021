@@ -19,8 +19,6 @@ public class Workout {
         
     }
 
-    
-
     public void setName(String name) {
         this.name = name;
     }
@@ -37,7 +35,10 @@ public class Workout {
         return new ArrayList<>(exercises);
     }
 
-
+    @Override
+    public String toString() {
+        return getName() + ": " + getExercises();
+    }
  
 }
 
