@@ -9,12 +9,14 @@ import java.util.Scanner;
 public class ReadWrite {
 
     /**
+     * Saves a workout object to a .txt file with the name of the workout as the filename
+     * Separates exercises with a \n for easier viewing
      *
-     * @param workoutName
-     * @param exercises
-     * @throws FileNotFoundException
+     * @param workoutName Name of the workout to be saved
+     * @param exercises List of the exercises referenced to the workout to be saved
+     * @throws FileNotFoundException If file is not found and a new file can not be created, method will throw FileNotFoundException
      */
-    public void saveWorkout(String workoutName, List<Exercise> exercises) throws FileNotFoundException { //Saves a workout object to a .txt file with the name of the workout as the filename
+    public void saveWorkout(String workoutName, List<Exercise> exercises) throws FileNotFoundException {
         String data = "";
         for (int i = 0; i < exercises.size(); i++) {
             String exerciseData = exercises.get(i).toString() + "\n";
@@ -27,10 +29,12 @@ public class ReadWrite {
     }
 
     /**
+     * Loads a workout from a file with the given filename
+     * Adds separators for easier use of data in class that fetches data.
      *
-     * @param filename
-     * @return
-     * @throws FileNotFoundException
+     * @param filename The name of the file that is to be read
+     * @return Returns a string where the name of the workout is first, seperated from exercises with ": ". The exercises are seperated by ";"
+     * @throws FileNotFoundException If file is not found, method will throw FileNotFoundException
      */
     public String loadWorkout(String filename) throws FileNotFoundException {
         Scanner scanner = new Scanner(new File(filename));
