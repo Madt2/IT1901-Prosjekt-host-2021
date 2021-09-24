@@ -63,8 +63,10 @@ public class WorkoutTest {
         catch (FileNotFoundException e) {System.err.println(e);}
         Assertions.assertEquals(2, testWorkout.getExercises().size());
 
+
+
         //Cleanup:
-        File file = new File("TestWorkout");
+        File file = new File("testWorkout");
         file.delete();
 
         //tests if load throws exception if it loads a workout file that does not exist.
