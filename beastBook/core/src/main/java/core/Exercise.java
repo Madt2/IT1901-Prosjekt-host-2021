@@ -9,12 +9,13 @@ public class Exercise {
     private int restTime;
 
     /**
+     * Creates an Exercise using given input
      *
-     * @param exerciseName
-     * @param repGoal
-     * @param weight
-     * @param sets
-     * @param restTime
+     * @param exerciseName Name of the exercise
+     * @param repGoal Number of repetitions to be performed
+     * @param weight Weight to be used for the exercise
+     * @param sets Number of sets to be performed
+     * @param restTime How much rest between sets
      */
     public Exercise(String exerciseName, int repGoal, double weight, int sets, int restTime){
         this.exerciseName = exerciseName;
@@ -29,8 +30,9 @@ public class Exercise {
     }
 
     /**
+     * Checks if name is valid, valid is not blank
      *
-     * @param name
+     * @param name Name of the exercise
      */
     private void validateExerciseName(String name) {
         if (name.length() <= 0) {
@@ -39,8 +41,9 @@ public class Exercise {
     }
 
     /**
+     * Checks if repGoal is valid, valid is more than 0
      *
-     * @param repGoal
+     * @param repGoal Number of repetitions to be performed
      */
     private void validateRepGoal(int repGoal) {
         if (repGoal <= 0) {
@@ -49,8 +52,9 @@ public class Exercise {
     }
 
     /**
+     * Checks if weight is valid, valid is more than 0
      *
-     * @param weight
+     * @param weight Weight to be used for the exercise
      */
     private void validateWeight(double weight) {
         if (weight <= 0) {
@@ -59,8 +63,9 @@ public class Exercise {
     }
 
     /**
+     * Checks if sets is valid, valid is more than 0
      *
-     * @param sets
+     * @param sets Number of sets to be performed
      */
     private void validateSets(int sets) {
         if (sets <= 0) {
@@ -69,8 +74,9 @@ public class Exercise {
     }
 
     /**
+     * Checks if restTime is valid, valid is more than 0
      *
-     * @param restTime
+     * @param restTime How much rest between sets
      */
     private void validateRestTime(int restTime) {
         if (restTime <= 0) {
@@ -78,94 +84,55 @@ public class Exercise {
         }
     }
 
-    /**
-     *
-     * @param exerciseName
-     */
     public void setExerciseName(String exerciseName){
         validateExerciseName(exerciseName);
         this.exerciseName = exerciseName;
     }
 
-    /**
-     *
-     * @return
-     */
     public String getExerciseName(){
         return this.exerciseName;
     }
 
-    /**
-     *
-     * @param repGoal
-     */
     public void setRepGoal(int repGoal){
         validateRepGoal(repGoal);
         this.repGoal = repGoal;
     }
 
-    /**
-     *
-     * @return
-     */
     public int getRepGoal(){
         return this.repGoal;
     }
 
-    /**
-     *
-     * @param weight
-     */
     public void setWeight(double weight){
         validateWeight(weight);
         this.weight = weight;
     }
 
-    /**
-     *
-     * @return
-     */
     public double getWeight(){
         return this.weight;
     }
 
-    /**
-     *
-     * @param sets
-     */
     public void setSets(int sets){
         validateSets(sets);
         this.sets = sets;
     }
 
-    /**
-     *
-     * @return
-     */
     public int getSets(){
         return this.sets;
     }
 
-    /**
-     *
-     * @param restTime
-     */
     public void setRestTime(int restTime) {
         validateRestTime(restTime);
         this.restTime = restTime;
     }
 
-    /**
-     *
-     * @return
-     */
     public int getRestTime() {
         return restTime;
     }
 
     /**
+     * Method to view exercise in a simple way
      *
-     * @return
+     * @return returns a string in given format with fields separated by ","
      */
     @Override
     public String toString() {

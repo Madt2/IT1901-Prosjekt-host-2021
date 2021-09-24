@@ -158,12 +158,14 @@ public class CreateController {
     }
 
     /**
+     * Loads a workout using title input in GUI
+     * If no title input is given, an error message is displayed in GUI
+     * If no file found with given title, an error message is displayed in GUI
      *
-     * @param event
-     * @throws FileNotFoundException
+     * @param event When Load Workout button is clicked in GUI, loadWorkout() is fired
      */
     @FXML
-    void loadWorkout(ActionEvent event) throws FileNotFoundException {
+    void loadWorkout(ActionEvent event) {
         if (titleInput.getText().equals("") || titleInput.getText() == null) {
             exceptionFeedback.setText("Missing Title!");
             return;
@@ -182,8 +184,11 @@ public class CreateController {
     }
 
     /**
+     * Creates a workout and saves it as a file with input given in GUI
+     * If no title input is given, an error message is displayed in GUI
+     * If an error occurs in saveWorkout, an error message is displayed in GUI
      *
-     * @param event
+     * @param event When Create Workout button is clicked in GUI, createWorkout() is fired
      */
     @FXML
     void createWorkout(ActionEvent event) {
