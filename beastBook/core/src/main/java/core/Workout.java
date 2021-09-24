@@ -80,17 +80,19 @@ public class Workout {
         String data = readWrite.loadWorkout(filename);
         String[] dataLine = data.split(": ");
         setName(dataLine[0]);
-        String[] exerciseData = dataLine[1].split(";");
-        for (int i = 0; i<exerciseData.length; i++) {
-            String[] temp = exerciseData[i].split(",");
-            String name = temp[0];
-            int repGoal = Integer.parseInt(temp[1]);
-            double weight = Double.parseDouble(temp[2]);
-            int sets = Integer.parseInt(temp[3]);
-            int restTime = Integer.parseInt(temp[4]);
+        if (dataLine.length > 1) {
+            String[] exerciseData = dataLine[1].split(";");
+            for (int i = 0; i<exerciseData.length; i++) {
+                String[] temp = exerciseData[i].split(",");
+                String name = temp[0];
+                int repGoal = Integer.parseInt(temp[1]);
+                double weight = Double.parseDouble(temp[2]);
+                int sets = Integer.parseInt(temp[3]);
+                int restTime = Integer.parseInt(temp[4]);
 
-            Exercise exercise = new Exercise(name, repGoal, weight, sets, restTime);
-            addExercise(exercise);
+                Exercise exercise = new Exercise(name, repGoal, weight, sets, restTime);
+                addExercise(exercise);
+            }
         }
     }
 
