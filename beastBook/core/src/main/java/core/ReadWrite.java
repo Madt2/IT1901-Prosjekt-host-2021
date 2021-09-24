@@ -8,6 +8,12 @@ import java.util.Scanner;
 
 public class ReadWrite {
 
+    String userDir = System.getProperty("user.dir") + "/sampleData";
+
+    public ReadWrite () {
+        new File(userDir).mkdirs();
+    }
+
     /**
      * Saves a workout object to a .txt file with the name of the workout as the filename
      * Separates exercises with a \n for easier viewing
@@ -22,7 +28,7 @@ public class ReadWrite {
             String exerciseData = exercises.get(i).toString() + "\n";
             data = data + exerciseData;
         }
-        PrintWriter writer = new PrintWriter(workoutName);
+        PrintWriter writer = new PrintWriter(userDir + "/" + workoutName);
         writer.println(data);
         writer.flush();
         writer.close();
@@ -37,7 +43,7 @@ public class ReadWrite {
      * @throws FileNotFoundException If file is not found, method will throw FileNotFoundException
      */
     public String loadWorkout(String filename) throws FileNotFoundException {
-        Scanner scanner = new Scanner(new File(filename));
+        Scanner scanner = new Scanner(new File(userDir + "/" + filename));
 
         String data = filename + ": ";
         while(scanner.hasNextLine()) {
