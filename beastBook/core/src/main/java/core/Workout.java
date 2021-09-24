@@ -9,75 +9,75 @@ import java.util.ArrayList;
 public class Workout {
     private String name;
     private List<Exercise> exercises = new ArrayList<>();
-    private ReadWrite reader;
+    private ReadWrite readWrite;
 
 
     /**
-     *
-     * @param name
+     * Contructor for workout with name parameter.
+     * @param name name of the workout.
      */
     public Workout(String name) {
         setName(name);
     }
 
     /**
-     *
+     * Contructor for workout with no set name.
      */
     public Workout() {}
 
     /**
-     *
-     * @param name
+     * Method for setting name of workout.
+     * @param name name of workout.
      */
     public void setName(String name) {
         this.name = name;
     }
 
     /**
-     *
-     * @return
+     * Workout name getter.
+     * @return workout name.
      */
     public String getName() {
         return name;
     }
 
     /**
-     *
-     * @param exercise
+     * Adds an exorcise to workout.
+     * @param exercise exercise object to add to workout.
      */
     public void addExercise(Exercise exercise){
         exercises.add(exercise);
     }
 
     /**
-     *
-     * @return
+     * Getter for exercises.
+     * @return returns the list of exercises in workout.
      */
     public List<Exercise> getExercises() {
         return new ArrayList<>(exercises);
     }
 
     /**
-     *
-     * @throws FileNotFoundException
+     * Method for saving workout to file, name of file is the same as name of workout. Delegates to readWrite.
+     * @throws FileNotFoundException If file is not found and a new file can not be created, method will throw FileNotFoundException.
      */
     public void saveWorkout() throws FileNotFoundException {
-        if (reader == null) {
-            reader = new ReadWrite();
+        if (readWrite == null) {
+            readWrite = new ReadWrite();
         }
-        reader.saveWorkout(getName(), getExercises());
+        readWrite.saveWorkout(getName(), getExercises());
     }
 
     /**
-     *
-     * @param filename
-     * @throws FileNotFoundException
+     * Method for loading workout from file. Receives data from readWrite, splits name from exercises-data, sets name of workout, split exercises-data to list of exercise data, initialize each exercise from exercise datalist.
+     * @param filename name of workout to load (name of file is the same as name of workout).
+     * @throws FileNotFoundException If file is not found, method will throw FileNotFoundException.
      */
     public void loadWorkout(String filename) throws FileNotFoundException {
-        if (reader == null) {
-            reader = new ReadWrite();
+        if (readWrite == null) {
+            readWrite = new ReadWrite();
         }
-        String data = reader.loadWorkout(filename);
+        String data = readWrite.loadWorkout(filename);
         String[] dataLine = data.split(": ");
         setName(dataLine[0]);
         String[] exerciseData = dataLine[1].split(";");
@@ -94,7 +94,10 @@ public class Workout {
         }
     }
 
-
+    /**
+     * toString for workout. Returns object in more readable format.
+     * @return (name of workout): [list of exercises]
+     */
     @Override
     public String toString() {
         return getName() + ": " + getExercises();
