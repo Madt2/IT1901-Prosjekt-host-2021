@@ -11,28 +11,56 @@ public class Workout {
     private List<Exercise> exercises = new ArrayList<>();
     private ReadWrite reader;
 
+
+    /**
+     *
+     * @param name
+     */
     public Workout(String name) {
         setName(name);
     }
 
+    /**
+     *
+     */
     public Workout() {}
 
+    /**
+     *
+     * @param name
+     */
     public void setName(String name) {
         this.name = name;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getName() {
         return name;
     }
 
+    /**
+     *
+     * @param exercise
+     */
     public void addExercise(Exercise exercise){
         exercises.add(exercise);
     }
 
+    /**
+     *
+     * @return
+     */
     public List<Exercise> getExercises() {
         return new ArrayList<>(exercises);
     }
 
+    /**
+     *
+     * @throws FileNotFoundException
+     */
     public void saveWorkout() throws FileNotFoundException {
         if (reader == null) {
             reader = new ReadWrite();
@@ -40,6 +68,11 @@ public class Workout {
         reader.saveWorkout(getName(), getExercises());
     }
 
+    /**
+     *
+     * @param filename
+     * @throws FileNotFoundException
+     */
     public void loadWorkout(String filename) throws FileNotFoundException {
         if (reader == null) {
             reader = new ReadWrite();
@@ -60,6 +93,7 @@ public class Workout {
             addExercise(exercise);
         }
     }
+
 
     @Override
     public String toString() {

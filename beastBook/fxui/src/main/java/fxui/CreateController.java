@@ -89,6 +89,9 @@ public class CreateController {
     }
 
 
+    /**
+     *
+     */
     public void setTable() {
         if(workout.getExercises().isEmpty()){
             // TODO If a user has a workout registered, loop through a JSON-file and add a Exercise object
@@ -103,16 +106,26 @@ public class CreateController {
             workout_table.getItems().setAll(workout.getExercises());
     }
 
-    // Only for test reasons. 
+    /**
+     *
+     * @param index
+     * @return
+     */
     public Exercise getTable(int index){
         return workout_table.getItems().get(index);
     }
 
-    // Only for test reasons.
+    /**
+     *
+     * @return
+     */
     public Workout getWorkout(){
         return workout;
     }
 
+    /**
+     *
+     */
     @FXML
     void addExercise() {
         
@@ -138,12 +151,17 @@ public class CreateController {
 
         }
 
-        //TODO Make more spesific feedback 
+        //TODO (release 2.0) Make more spesific feedback
         catch (Exception e) {
             exceptionFeedback.setText("Could not add exercise. Wrong input format");
         }
     }
 
+    /**
+     *
+     * @param event
+     * @throws FileNotFoundException
+     */
     @FXML
     void loadWorkout(ActionEvent event) throws FileNotFoundException {
         if (titleInput.getText().equals("") || titleInput.getText() == null) {
@@ -163,6 +181,10 @@ public class CreateController {
 
     }
 
+    /**
+     *
+     * @param event
+     */
     @FXML
     void createWorkout(ActionEvent event) {
         if(titleInput.getText() == null || titleInput.getText().equals("")){

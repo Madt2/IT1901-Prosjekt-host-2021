@@ -8,6 +8,12 @@ import java.util.Scanner;
 
 public class ReadWrite {
 
+    /**
+     *
+     * @param workoutName
+     * @param exercises
+     * @throws FileNotFoundException
+     */
     public void saveWorkout(String workoutName, List<Exercise> exercises) throws FileNotFoundException { //Saves a workout object to a .txt file with the name of the workout as the filename
         String data = "";
         for (int i = 0; i < exercises.size(); i++) {
@@ -20,6 +26,12 @@ public class ReadWrite {
         writer.close();
     }
 
+    /**
+     *
+     * @param filename
+     * @return
+     * @throws FileNotFoundException
+     */
     public String loadWorkout(String filename) throws FileNotFoundException {
         Scanner scanner = new Scanner(new File(filename));
 
