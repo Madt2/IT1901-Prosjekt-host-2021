@@ -3,5 +3,5 @@ module beastBook.fxui {
     requires javafx.controls;
     requires javafx.fxml;
 
-    opens beastBook.fxui to javafx.graphics, javafx.fxml;
+    opens fxui to javafx.graphics, javafx.fxml;
 }
