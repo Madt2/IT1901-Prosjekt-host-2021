@@ -11,15 +11,11 @@ public class Workout {
     private List<Exercise> exercises = new ArrayList<>();
     private ReadWrite reader;
 
-
-    //TODO Dårlig inkapsling her, bør fikses.
     public Workout(String name) {
-        this.name = name;
+        setName(name);
     }
 
-    public Workout() {
-        
-    }
+    public Workout() {}
 
     public void setName(String name) {
         this.name = name;
@@ -35,11 +31,6 @@ public class Workout {
 
     public List<Exercise> getExercises() {
         return new ArrayList<>(exercises);
-    }
-
-    @Override
-    public String toString() {
-        return getName() + ": " + getExercises();
     }
 
     public void saveWorkout() throws FileNotFoundException {
@@ -70,29 +61,10 @@ public class Workout {
         }
     }
 
-    public static void main(String[] args) {
-        Workout workout = new Workout("Test");
-  /*      String[] exerciseName = {"Bench Press", "Chest fly", "Bicep Curl"};
-
-            for (int i = 0; i<exerciseName.length; i++) {
-            Exercise exercise = new Exercise(exerciseName[i], 30, 50.0, 3, 90);
-            workout.addExercise(exercise);
-        }*/
-
-
-   /*     try {
-            workout.saveWorkout();
-        } catch (Exception e) {
-            System.err.println(e);
-        }*/
-        try {
-            workout.loadWorkout("Test");
-        } catch (Exception e) {
-            System.err.println(e);
-        }
-        System.out.println(workout.toString());
-
+    @Override
+    public String toString() {
+        return getName() + ": " + getExercises();
     }
- 
+
 }
 
