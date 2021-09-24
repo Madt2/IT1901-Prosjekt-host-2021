@@ -54,11 +54,12 @@ public class WorkoutTest {
         Assertions.assertEquals(1, testWorkout.getExercises().size());
 
         //Save another exercise in testWorkout, then tests save and load.
+
         testWorkout.addExercise(exercise2);
         try {testWorkout.saveWorkout();}
         catch (FileNotFoundException e) {System.err.println(e);}
         testWorkout = new Workout("testWorkout");
-        try {testWorkout.loadWorkout("TestWorkout");}
+        try {testWorkout.loadWorkout("testWorkout");}
         catch (FileNotFoundException e) {System.err.println(e);}
         Assertions.assertEquals(2, testWorkout.getExercises().size());
 
