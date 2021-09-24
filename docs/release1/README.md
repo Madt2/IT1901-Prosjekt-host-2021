@@ -10,7 +10,7 @@ If you don’t meet the requirements for adding an exercise and/or a workout, yo
 The idea behind this MVP is that your workouts will be saved so that you can load them later. When opening your saved workouts, you need to type in the corresponding name of the workout and click “Load Workout”. Your saved workout will then load.
 Release 1 does not contain all these attributes. It contains only Create.fxml, which is displayed below:
 
-<img src="Create.png"></img>
+<img src="createWorkout.png"></img>
 
 In this MVP it is possible to create a workout by adding one exercise at a time. This is done by clicking “Add exercise”. When you have added all your exercises, click “Create workout”. This will create a txt file with the given workout name in a generated folder ("gr2132/beastBook/core/sampleData")
 
