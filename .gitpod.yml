@@ -3,6 +3,7 @@ image:
 
 tasks:
   - init: sdk use java 16.0.1.hs-adpt
+    prebuild: cd beastBook; mvn compile
     command: cd beastBook; mvn compile
 
 ports:
