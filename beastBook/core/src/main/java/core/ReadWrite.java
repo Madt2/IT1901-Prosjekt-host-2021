@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class ReadWrite {
 
-    String userDir = System.getProperty("user.dir") + "/sampleData";
+    String userDir = System.getProperty("user.dir") + "/sampleData"; //Why is this outside the constructor? Also maybe switch to user.home
 
     public ReadWrite () {
         new File(userDir).mkdirs();
