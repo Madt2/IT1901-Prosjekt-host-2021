@@ -2,7 +2,7 @@ package core;
 
 public class Exercise {
 
-    private String exerciseName;
+    private final String exerciseName;
     private int repGoal;
     private double weight;
     private int sets; 
@@ -17,16 +17,13 @@ public class Exercise {
      * @param sets Number of sets to be performed
      * @param restTime How much rest between sets
      */
-    public Exercise(String exerciseName, int repGoal, double weight, int sets, int restTime){
+    public Exercise(String exerciseName, int repGoal, double weight, int sets, int restTime) {
+        validateExerciseName(exerciseName);
         this.exerciseName = exerciseName;
-        validateRepGoal(repGoal);
-        this.repGoal = repGoal;
-        validateWeight(weight);
-        this.weight = weight;
-        validateSets(sets);
-        this.sets = sets;
-        validateRestTime(restTime);
-        this.restTime = restTime;
+        setRepGoal(repGoal);
+        setWeight(weight);
+        setSets(sets);
+        setRestTime(restTime);
     }
 
     /**
@@ -82,11 +79,6 @@ public class Exercise {
         if (restTime <= 0) {
             throw new IllegalArgumentException("RestTime can not be 0 or less than 0.");
         }
-    }
-
-    public void setExerciseName(String exerciseName){
-        validateExerciseName(exerciseName);
-        this.exerciseName = exerciseName;
     }
 
     public String getExerciseName(){

@@ -79,6 +79,8 @@ public class CreateController {
 
     private Exercise exercise;
 
+    //Need to add back the back-button
+
     public void initialize() {
         menuBar.setVisible(false);
     }
@@ -139,23 +141,28 @@ public class CreateController {
              Integer.valueOf(setsInput.getText()), 
              Integer.valueOf(restInput.getText()));
 
+            workout.addExercise(exercise);
+
             exerciseName.setCellValueFactory(c -> new SimpleStringProperty(new String(exercise.getExerciseName())));
             repGoal.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getRepGoal()))));
             weight.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getWeight()))));
             sets.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getSets()))));
             restTime.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getRestTime()))));
 
-            workout.addExercise(exercise);
             workout_table.getItems().add(exercise);   
             exceptionFeedback.setText("");
-
         }
-
-        //TODO (release 2.0) Make more spesific feedback
-        catch (Exception e) {
-            exceptionFeedback.setText("Could not add exercise. Wrong input format");
-        }
+   
+    catch(NumberFormatException i){
+        exceptionFeedback.setText("Value can not be in string format, must be number");
     }
+
+    catch (Exception e) {
+        exceptionFeedback.setText(e.getMessage());
+        }
+        
+    }
+    
 
     /**
      * Loads a workout using title input in GUI
