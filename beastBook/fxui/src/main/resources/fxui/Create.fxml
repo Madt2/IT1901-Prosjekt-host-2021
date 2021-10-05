@@ -12,11 +12,12 @@
 
 <AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxui.CreateController">
    <children>
+   <Button fx:id="back_button" layoutX="14.0" layoutY="38.0" mnemonicParsing="false" onAction="#loadHome" text="&lt;- Back" />
       <MenuBar fx:id="menuBar">
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
-              <MenuItem fx:id="logout_button" mnemonicParsing="false" text="Log Out" />
+              <MenuItem fx:id="logout_button" mnemonicParsing="false" onAction="#loadLogin" text="Log Out" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">

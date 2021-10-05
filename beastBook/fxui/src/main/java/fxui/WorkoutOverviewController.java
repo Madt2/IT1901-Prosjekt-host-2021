@@ -10,6 +10,8 @@ import javafx.scene.layout.AnchorPane;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.cell.PropertyValueFactory;
+
+import java.util.ArrayList;
 import java.util.List;
 import core.Exercise;
 
@@ -31,10 +33,14 @@ public class WorkoutOverviewController {
     @FXML
     public TableColumn<Workout, String> workoutName;
 
+    private List<Workout> allWorkouts = new ArrayList<>();
+
+
+
 
     public void initialize(){
        
-        workoutName.setCellValueFactory(new PropertyValueFactory<Workout, String>("workoutName"));
+        
        
             
        // workout_overview.getItems().setAll(parseWorkoutList(workout));
@@ -55,10 +61,30 @@ public class WorkoutOverviewController {
         //return workout.getExercises();
     } 
 
+    public void setTable() {
+        
+        Workout chest = new Workout("chest");
+        Workout biceps = new Workout("biceps");
+        allWorkouts.add(chest);
+        allWorkouts.add(biceps);
+
+
+        
+        workoutName.setCellValueFactory(new PropertyValueFactory<Workout, String>("workoutName"));
+
+        workout_overview.getItems().setAll(allWorkouts.getExercises());
+    }
+
 
     @FXML
     void loadHome(ActionEvent event) throws IOException{
         AnchorPane pane =  FXMLLoader.load(getClass().getResource("HomeScreen.fxml"));
+        rootPane.getChildren().setAll(pane);
+    }
+
+    @FXML
+    void loadLogin(ActionEvent event) throws IOException{
+        AnchorPane pane =  FXMLLoader.load(getClass().getResource("Login.fxml"));
         rootPane.getChildren().setAll(pane);
     }
 }

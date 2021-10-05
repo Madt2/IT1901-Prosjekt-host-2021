@@ -1,14 +1,11 @@
 package fxui;
 
-import core.ReadWrite;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.event.ActionEvent;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
 
 import core.Workout;
 import core.Exercise;
@@ -45,8 +42,8 @@ public class CreateController {
     @FXML
     public TableColumn<Exercise, String> restTime;
 
-/*    @FXML
-    private Button back_button;*/
+    @FXML
+    private Button back_button;
 
     @FXML
     private TextField exerciseNameInput;
@@ -80,10 +77,6 @@ public class CreateController {
     private Exercise exercise;
 
     //Need to add back the back-button
-
-    public void initialize() {
-        menuBar.setVisible(false);
-    }
 
 
     /**
@@ -212,6 +205,18 @@ public class CreateController {
                 exceptionFeedback.setText("Save Workout failed!");
             }
         }
+    }
+
+    @FXML
+    void loadHome(ActionEvent event) throws IOException{
+        AnchorPane pane =  FXMLLoader.load(getClass().getResource("HomeScreen.fxml"));
+        rootPane.getChildren().setAll(pane);
+    }
+
+    @FXML
+    void loadLogin(ActionEvent event) throws IOException{
+        AnchorPane pane =  FXMLLoader.load(getClass().getResource("Login.fxml"));
+        rootPane.getChildren().setAll(pane);
     }
 
 }
