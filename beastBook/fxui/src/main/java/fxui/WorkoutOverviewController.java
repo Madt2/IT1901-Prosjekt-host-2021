@@ -2,6 +2,9 @@ package fxui;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import java.io.IOException;
 
@@ -10,6 +13,7 @@ import javafx.scene.layout.AnchorPane;
 
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,13 +38,13 @@ public class WorkoutOverviewController {
     public TableColumn<Workout, String> workoutName;
 
     private List<Workout> allWorkouts = new ArrayList<>();
-
+    
 
 
 
     public void initialize(){
        
-        
+        setTable();
        
             
        // workout_overview.getItems().setAll(parseWorkoutList(workout));
@@ -60,20 +64,46 @@ public class WorkoutOverviewController {
 
         //return workout.getExercises();
     } 
+    
 
     public void setTable() {
         
         Workout chest = new Workout("chest");
         Workout biceps = new Workout("biceps");
+        Exercise benkpress = new Exercise("Benkpress", 25, 70, 15, 60);
+        Exercise kneboy = new Exercise("Knebøy", 25, 70, 15, 60);
+        chest.addExercise(benkpress);
+        biceps.addExercise(kneboy);
         allWorkouts.add(chest);
         allWorkouts.add(biceps);
 
+        workoutName.setCellValueFactory(new PropertyValueFactory<Workout, String>("name"));
+        workout_overview.getItems().setAll(allWorkouts);
 
+        // Source: https://stackoverflow.com/questions/30191264/javafx-tableview-how-to-get-the-row-i-clicked
+        workout_overview.setRowFactory(tableView -> {
+            TableRow<Workout> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (! row.isEmpty() && event.getButton()==MouseButton.PRIMARY 
+                     && event.getClickCount() == 1) {
         
-        workoutName.setCellValueFactory(new PropertyValueFactory<Workout, String>("workoutName"));
+                    Workout clickedRow = row.getItem();
+                    printRow(clickedRow);
+                }
+            });
+            return row ;
+        });
 
-        workout_overview.getItems().setAll(allWorkouts.getExercises());
     }
+    // Used for test reasons for now. printRow will be changed with a function which takes the user to a overview
+    // over the clicked workout.
+    
+    private void printRow(Workout item) {
+        System.out.println(item.getName() + item.getExercises());
+    }
+
+
+
 
 
     @FXML
