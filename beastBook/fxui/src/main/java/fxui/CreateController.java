@@ -152,12 +152,17 @@ public class CreateController {
             workout_table.getItems().add(exercise);   
             exceptionFeedback.setText("");
         }
-
-        //TODO (release 2.0) Make more spesific feedback
-        catch (Exception e) {
-            exceptionFeedback.setText("Could not add exercise. Wrong input format");
-        }
+   
+    catch(NumberFormatException i){
+        exceptionFeedback.setText("Value can not be in string format, must be number");
     }
+
+    catch (Exception e) {
+        exceptionFeedback.setText(e.getMessage());
+        }
+        
+    }
+    
 
     /**
      * Loads a workout using title input in GUI
