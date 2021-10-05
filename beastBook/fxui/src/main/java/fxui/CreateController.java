@@ -141,16 +141,16 @@ public class CreateController {
              Integer.valueOf(setsInput.getText()), 
              Integer.valueOf(restInput.getText()));
 
+            workout.addExercise(exercise);
+
             exerciseName.setCellValueFactory(c -> new SimpleStringProperty(new String(exercise.getExerciseName())));
             repGoal.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getRepGoal()))));
             weight.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getWeight()))));
             sets.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getSets()))));
             restTime.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getRestTime()))));
 
-            workout.addExercise(exercise);
             workout_table.getItems().add(exercise);   
             exceptionFeedback.setText("");
-
         }
 
         //TODO (release 2.0) Make more spesific feedback

@@ -2,7 +2,7 @@ package core;
 
 public class Exercise {
 
-    private String exerciseName; //Can this be a final? Or even all of these and rather create new Exercise if something is to be changed
+    private final String exerciseName;
     private int repGoal;
     private double weight;
     private int sets; 
@@ -18,15 +18,12 @@ public class Exercise {
      * @param restTime How much rest between sets
      */
     public Exercise(String exerciseName, int repGoal, double weight, int sets, int restTime) {
-        this.exerciseName = exerciseName; //Why not just use the setters instead of validate everytime?
-        validateRepGoal(repGoal);
-        this.repGoal = repGoal;
-        validateWeight(weight);
-        this.weight = weight;
-        validateSets(sets);
-        this.sets = sets;
-        validateRestTime(restTime);
-        this.restTime = restTime;
+        validateExerciseName(exerciseName);
+        this.exerciseName = exerciseName;
+        setRepGoal(repGoal);
+        setWeight(weight);
+        setSets(sets);
+        setRestTime(restTime);
     }
 
     /**
@@ -82,11 +79,6 @@ public class Exercise {
         if (restTime <= 0) {
             throw new IllegalArgumentException("RestTime can not be 0 or less than 0.");
         }
-    }
-
-    public void setExerciseName(String exerciseName){
-        validateExerciseName(exerciseName);
-        this.exerciseName = exerciseName;
     }
 
     public String getExerciseName(){

@@ -36,7 +36,7 @@
           <TableColumn fx:id="exerciseName" prefWidth="90.0" text="Exercise:" />
           <TableColumn fx:id="repGoal" prefWidth="90.0" text="Rep Goal:" />
             <TableColumn fx:id="weight" prefWidth="90.0" text="Weight Lifted:" />
-            <TableColumn fx:id="sets" prefWidth="90.0" text="Set x:" />
+            <TableColumn fx:id="sets" prefWidth="90.0" text="Nr. of Sets:" />
             <TableColumn fx:id="restTime" prefWidth="90.0" text="Rest Time:" />
         </columns>
       </TableView>

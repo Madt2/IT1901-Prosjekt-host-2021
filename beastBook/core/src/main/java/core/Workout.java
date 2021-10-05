@@ -7,13 +7,9 @@ import java.util.ArrayList;
 
 
 public class Workout {
-    private String name; //Can be final? If new name is used file won't be found. 
+    private String name;
     private List<Exercise> exercises = new ArrayList<>();
     private ReadWrite readWrite;
-
-
-
-    //Are these javadocs needed??
     
     /**
      * Contructor for workout with name parameter.
