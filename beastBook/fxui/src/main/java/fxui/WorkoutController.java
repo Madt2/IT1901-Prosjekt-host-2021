@@ -66,6 +66,7 @@ public class WorkoutController {
         // STATIC: (fyfy)
         setWorkout(WorkoutOverviewController.clickedWorkout);
         setTable();
+        title.setText(workout.getName());
     }
 
     public void setWorkout(Workout workout){
@@ -78,7 +79,7 @@ public class WorkoutController {
 
     public void setTable() {
         
-
+        
         workout_table.setEditable(true);
         
         exerciseName.setCellValueFactory(new PropertyValueFactory<Exercise, String>("exerciseName"));
@@ -91,7 +92,8 @@ public class WorkoutController {
             }
         });
 
-
+       // repGoal.setCellValueFactory(new PropertyValueFactory<Exercise, String>("repGoal"));
+       // repGoal.setCellFactory(TextFieldTableCell.forTableColumn());
         repGoal.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("repGoal"));
         repGoal.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
        
@@ -99,12 +101,26 @@ public class WorkoutController {
         weight.setCellValueFactory(new PropertyValueFactory<Exercise, String>("weight"));
 
         sets.setCellValueFactory(new PropertyValueFactory<Exercise, String>("sets"));
-
-        //TableColumn setColumn5 = new TableColumn<Exercise, String>("TestColumn");
+        
+        for (Exercise el : workout.getExercises()) {
+            for (int i = 0; i < el.getSets(); i++) {
+                TableColumn<Exercise, String> setColumn = new TableColumn<Exercise, String>("Set " + (i+1) + ":");
+                setColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Exercise,String>>(){
+                    @Override
+                    public void handle(CellEditEvent<Exercise, String> event){
+                        //Exercise exercise = event.getRowValue();
+                        //exercise.setExerciseName(event.getNewValue());
+                        
+                    }
+                });
+                
+                workout_table.getColumns().add(setColumn);
+            }
+        }
 
         restTime.setCellValueFactory(new PropertyValueFactory<Exercise, String>("restTime"));
       
-        
+       
         workout_table.getItems().setAll(workout.getExercises());
     }
 

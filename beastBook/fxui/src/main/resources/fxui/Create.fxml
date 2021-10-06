@@ -4,7 +4,6 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -32,15 +31,7 @@
           </Menu>
         </menus>
       </MenuBar>
-      <TableView fx:id="workout_table" layoutX="72.0" layoutY="85.0" minHeight="200.0" minWidth="450.0" prefHeight="60.0" prefWidth="456.0">
-        <columns>
-          <TableColumn fx:id="exerciseName" prefWidth="90.0" text="Exercise:" />
-          <TableColumn fx:id="repGoal" prefWidth="90.0" text="Rep Goal:" />
-            <TableColumn fx:id="weight" prefWidth="90.0" text="Weight Lifted:" />
-            <TableColumn fx:id="sets" prefWidth="90.0" text="Nr. of Sets:" />
-            <TableColumn fx:id="restTime" prefWidth="90.0" text="Rest Time:" />
-        </columns>
-      </TableView>
+      <TableView fx:id="workout_table" layoutX="72.0" layoutY="85.0" minHeight="200.0" minWidth="402.0" prefHeight="200.0" prefWidth="402.0" />
 
       <TextField fx:id="exerciseNameInput" layoutX="150.0" layoutY="326.0" />
       <Text layoutX="82.0" layoutY="343.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Exercise:" />

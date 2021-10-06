@@ -4,6 +4,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.event.ActionEvent;
 import java.io.IOException;
 
@@ -27,21 +28,6 @@ public class CreateController {
 
     @FXML
     private Text exceptionFeedback;
-
-    @FXML
-    public TableColumn<Exercise, String> exerciseName;
-
-    @FXML
-    public TableColumn<Exercise, Integer> repGoal;
-
-    @FXML
-    public TableColumn<Exercise, String> weight;
-
-    @FXML
-    public TableColumn<Exercise, String> sets;
-
-    @FXML
-    public TableColumn<Exercise, String> restTime;
 
     @FXML
     private Button back_button;
@@ -74,26 +60,61 @@ public class CreateController {
     private Button addExercise;
 
     private Workout workout = new Workout();
-
     private Exercise exercise;
+    private TableColumn<Exercise, String> exerciseNameColumn;
+    private TableColumn<Exercise, Integer> repGoalColumn;
+    private TableColumn<Exercise, Float> weightColum;
+    private TableColumn<Exercise, Integer> setsColumn;
+    private TableColumn<Exercise, Integer> restTimeColumn;
 
-    //Need to add back the back-button
-
+    public void initialize(){
+        setTable();
+    } 
 
     /**
-     *
-     * Sets the workout table collumns. If a workout has exercises added already (typical if loaded from file), the workout 
-     * table add these exercises to the collumns/rows. 
+     * 
+     * Sets the workout table columns. Clears the columns first, to avoid duplicate columns.
+     * After the columns are created, they are added to the table view. 
      */
     public void setTable() {
+        workout_table.getColumns().clear();
         
-        exerciseName.setCellValueFactory(new PropertyValueFactory<Exercise, String>("exerciseName"));
-        repGoal.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("repGoal"));
-        weight.setCellValueFactory(new PropertyValueFactory<Exercise, String>("weight"));
-        sets.setCellValueFactory(new PropertyValueFactory<Exercise, String>("sets"));
-        restTime.setCellValueFactory(new PropertyValueFactory<Exercise, String>("restTime"));
+        exerciseNameColumn = new TableColumn<Exercise, String>("Exercise name");
+        exerciseNameColumn.setCellValueFactory(new PropertyValueFactory<Exercise, String>("exerciseName"));
         
+        repGoalColumn = new TableColumn<Exercise, Integer>("Rep goal");
+        repGoalColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("repGoal"));
+
+        weightColum = new TableColumn<Exercise, Float>("Weight");
+        weightColum.setCellValueFactory(new PropertyValueFactory<Exercise, Float>("weight"));
+
+        setsColumn = new TableColumn<Exercise, Integer>("Nr of sets");
+        setsColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("sets"));
+
+        restTimeColumn = new TableColumn<Exercise, Integer>("Rest time");
+        restTimeColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("restTime"));
+       
+        workout_table.getColumns().add(exerciseNameColumn);
+        workout_table.getColumns().add(repGoalColumn);
+        workout_table.getColumns().add(weightColum);
+        workout_table.getColumns().add(setsColumn);
+        workout_table.getColumns().add(restTimeColumn);
+        setColumnsSize();
+
         workout_table.getItems().setAll(workout.getExercises());
+    }
+
+    /**
+     * 
+     * Resizes the width of the columns
+     *  
+     */
+    private void setColumnsSize(){
+        exerciseNameColumn.setPrefWidth(100);        
+        repGoalColumn.setPrefWidth(75);
+        weightColum.setPrefWidth(75);
+        setsColumn.setPrefWidth(75);
+        restTimeColumn.setPrefWidth(75);
     }
 
     /**
@@ -124,26 +145,17 @@ public class CreateController {
      */
     @FXML
     void addExercise() {
-        
         createButton.setDisable(false);
-
         workout.setName(titleInput.getText());
+
         try{
             exercise = new Exercise(exerciseNameInput.getText(), 
             Integer.valueOf(repsInput.getText()),
-             Double.valueOf(weigthInput.getText()), 
-             Integer.valueOf(setsInput.getText()), 
-             Integer.valueOf(restInput.getText()));
-
+            Double.valueOf(weigthInput.getText()), 
+            Integer.valueOf(setsInput.getText()), 
+            Integer.valueOf(restInput.getText()));
+            
             workout.addExercise(exercise);
-
-            exerciseName.setCellValueFactory(c -> new SimpleStringProperty(new String(exercise.getExerciseName())));
-            repGoal.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("repGoal"));
-            //repGoal.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getRepGoal()))));
-            weight.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getWeight()))));
-            sets.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getSets()))));
-            restTime.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getRestTime()))));
-
             workout_table.getItems().add(exercise);   
             exceptionFeedback.setText("");
         }
@@ -158,7 +170,6 @@ public class CreateController {
         
     }
     
-
     /**
      * Loads a workout using title input in GUI
      * If no title input is given, an error message is displayed in GUI
@@ -168,6 +179,7 @@ public class CreateController {
      */
     @FXML
     void loadWorkout(ActionEvent event) {
+        
         if (titleInput.getText().equals("") || titleInput.getText() == null) {
             exceptionFeedback.setText("Missing Title!");
             return;
@@ -194,6 +206,8 @@ public class CreateController {
      */
     @FXML
     void createWorkout(ActionEvent event) {
+        workout.setName(titleInput.getText());
+
         if(titleInput.getText() == null || titleInput.getText().equals("")){
             System.err.println("Input title is empty, please enter name to workout");
             exceptionFeedback.setText("Missing Title!");

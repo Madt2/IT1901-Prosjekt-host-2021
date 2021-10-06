@@ -19,13 +19,9 @@ import javafx.scene.input.MouseEvent;
 
 import java.util.ArrayList;
 import java.util.List;
-
-
-
 import core.Exercise;
 
 public class WorkoutOverviewController {
-
 
     @FXML
     private AnchorPane rootPane;
@@ -39,48 +35,28 @@ public class WorkoutOverviewController {
     @FXML
     private TableView<Workout> workout_overview;
 
-    @FXML
     private TableColumn<Workout, String> workoutName;
-
     private List<Workout> allWorkouts = new ArrayList<>();
-
     public static Workout clickedWorkout = new Workout();  
-
     private Workout workout = new Workout();
 
     public void initialize(){
-       
         setTable();
     } 
-   
-
-    public Workout getWorkout(){
-        return this.workout;
-    }
     
-
     public void setTable() {
-
+        workout_overview.getColumns().clear();
         // TODO Get data from JSON-file to load in here. At the moment, we only use "Fake data"
         // to get some data in the GUI.
-        Workout MyWorkout = new Workout("My workout");
 
-        Exercise benkpress = new Exercise("Benkpress", 25, 70, 3, 50);
-        Exercise kneboy = new Exercise("Knebøy", 35, 200, 5, 60);
-        Exercise skulderpress = new Exercise("Skulderpress", 30, 20, 3, 70);
-        Exercise bicepsCurl = new Exercise("Biceps curl", 10, 30, 3, 20);
-        Exercise flyes = new Exercise("Flyes", 50, 20, 5, 120);
+        // "FAKE DATA"
+        setFakeData();
 
-        MyWorkout.addExercise(benkpress);
-        MyWorkout.addExercise(kneboy);
-        MyWorkout.addExercise(skulderpress);
-        MyWorkout.addExercise(bicepsCurl);
-        MyWorkout.addExercise(flyes);
-
-        allWorkouts.add(MyWorkout);
-
+        workoutName = new TableColumn<Workout, String>("Workout name:");
         workoutName.setCellValueFactory(new PropertyValueFactory<Workout, String>("name"));
+        workout_overview.getColumns().add(workoutName);
         workout_overview.getItems().setAll(allWorkouts);
+        setColumnsSize();
 
         // Source: https://stackoverflow.com/questions/30191264/javafx-tableview-how-to-get-the-row-i-clicked
         workout_overview.setRowFactory(tableView -> {
@@ -105,12 +81,39 @@ public class WorkoutOverviewController {
 
     }
 
+    private void setFakeData(){
+        Workout MyWorkout = new Workout("My workout");
+        Workout MyWorkout2 = new Workout("My workout 2 Empty");
+
+        Exercise benkpress = new Exercise("Benkpress", 25, 70, 3, 50);
+        Exercise kneboy = new Exercise("Knebøy", 35, 200, 5, 60);
+        Exercise skulderpress = new Exercise("Skulderpress", 30, 20, 3, 70);
+        Exercise bicepsCurl = new Exercise("Biceps curl", 10, 30, 3, 20);
+        Exercise flyes = new Exercise("Flyes", 50, 20, 5, 120);
+
+        MyWorkout.addExercise(benkpress);
+        MyWorkout.addExercise(kneboy);
+        MyWorkout.addExercise(skulderpress);
+        MyWorkout.addExercise(bicepsCurl);
+        MyWorkout.addExercise(flyes);
+
+        allWorkouts.add(MyWorkout);
+        allWorkouts.add(MyWorkout2);
+    }
+
     public void setWorkout(Workout workout){
         this.workout = workout;
     }
-  
+
+    public Workout getWorkout(){
+        return this.workout;
+    }
+
+    private void setColumnsSize(){
+        workoutName.setPrefWidth(150);    
+    }
+
     private void loadClickedWorkout(Workout workout, MouseEvent event) {
-        
         try {
             clickedWorkout = workout;
             loadWorkout(event, workout);

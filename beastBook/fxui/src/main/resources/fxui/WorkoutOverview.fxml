@@ -4,7 +4,6 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
@@ -36,10 +35,6 @@
          <font>
             <Font size="36.0" />
          </font></Text>
-      <TableView fx:id="workout_overview" layoutX="209.0" layoutY="100.0" prefHeight="200.0" prefWidth="200.0">
-        <columns>
-          <TableColumn fx:id="workoutName" prefWidth="199.0" text="Name" />
-        </columns>
-      </TableView>
+      <TableView fx:id="workout_overview" layoutX="209.0" layoutY="100.0" minWidth="152.0" prefHeight="200.0" prefWidth="152.0" />
    </children>
 </AnchorPane>
