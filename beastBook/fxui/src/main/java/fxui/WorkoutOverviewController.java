@@ -1,6 +1,7 @@
 package fxui;
 
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -10,7 +11,7 @@ import java.io.IOException;
 
 import core.Workout;
 import javafx.scene.layout.AnchorPane;
-
+import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
@@ -43,47 +44,41 @@ public class WorkoutOverviewController {
 
     private List<Workout> allWorkouts = new ArrayList<>();
 
-    private WorkoutController wc = new WorkoutController();
-    
+    public static Workout clickedWorkout = new Workout();  
 
-
+    private Workout workout = new Workout();
 
     public void initialize(){
        
         setTable();
-       
-            
-       // workout_overview.getItems().setAll(parseWorkoutList(workout));
-         
-   
-    
-   // private List<Exercise> parseWorkoutList(Workout workout){
-
-       
-        //Exercise e1 = new Exercise("Benkpress", 12, 70, 3, 90);
-        //Exercise e2 = new Exercise("Knebøy", 12, 120, 3, 60);
-
-       // workout.addExercise(e1);
-       // workout.addExercise(e2);
-
-        //System.out.println(workout.toString());
-
-        //return workout.getExercises();
     } 
+   
+
+    public Workout getWorkout(){
+        return this.workout;
+    }
     
 
     public void setTable() {
 
-        Workout chest = new Workout("chest");
-        Workout biceps = new Workout("biceps");
-        Exercise benkpress = new Exercise("Benkpress", 25, 70, 15, 60);
-        Exercise kneboy = new Exercise("Knebøy", 25, 70, 15, 60);
-        chest.addExercise(benkpress);
-        biceps.addExercise(kneboy);
-        allWorkouts.add(chest);
-        allWorkouts.add(biceps);
+        // TODO Get data from JSON-file to load in here. At the moment, we only use "Fake data"
+        // to get some data in the GUI.
+        Workout MyWorkout = new Workout("My workout");
 
-       
+        Exercise benkpress = new Exercise("Benkpress", 25, 70, 3, 50);
+        Exercise kneboy = new Exercise("Knebøy", 35, 200, 5, 60);
+        Exercise skulderpress = new Exercise("Skulderpress", 30, 20, 3, 70);
+        Exercise bicepsCurl = new Exercise("Biceps curl", 10, 30, 3, 20);
+        Exercise flyes = new Exercise("Flyes", 50, 20, 5, 120);
+
+        MyWorkout.addExercise(benkpress);
+        MyWorkout.addExercise(kneboy);
+        MyWorkout.addExercise(skulderpress);
+        MyWorkout.addExercise(bicepsCurl);
+        MyWorkout.addExercise(flyes);
+
+        allWorkouts.add(MyWorkout);
+
         workoutName.setCellValueFactory(new PropertyValueFactory<Workout, String>("name"));
         workout_overview.getItems().setAll(allWorkouts);
 
@@ -93,8 +88,15 @@ public class WorkoutOverviewController {
             row.setOnMouseClicked(event -> {
                 if (! row.isEmpty() && event.getButton()==MouseButton.PRIMARY 
                      && event.getClickCount() == 1) {
-        
                     Workout clickedRow = row.getItem();
+                    
+                    // NON-STATIC
+                    setWorkout(clickedRow);
+
+                    //TODO
+                    // Find a way that we do not have to use static variable
+                    clickedWorkout = clickedRow;
+
                     loadClickedWorkout(clickedRow, event);
                 }
             });
@@ -102,13 +104,15 @@ public class WorkoutOverviewController {
         });
 
     }
-    // Used for test reasons for now. printRow will be changed with a function which takes the user to a overview
-    // over the clicked workout.
-    
+
+    public void setWorkout(Workout workout){
+        this.workout = workout;
+    }
+  
     private void loadClickedWorkout(Workout workout, MouseEvent event) {
         
         try {
-            System.out.println(workout.getName() + workout.getExercises());
+            clickedWorkout = workout;
             loadWorkout(event, workout);
         } catch (IOException e) {
             e.printStackTrace();
@@ -129,9 +133,23 @@ public class WorkoutOverviewController {
 
     @FXML
     void loadWorkout(MouseEvent event, Workout workout) throws IOException{
+
         AnchorPane pane =  FXMLLoader.load(getClass().getResource("Workout.fxml"));
+        rootPane.getChildren().setAll(pane);
+
+        // TODO Try to get "our own controller" to be loaded in the new pane
+
+       /* FXMLLoader loader = new FXMLLoader();
+
+        WorkoutController wc = new WorkoutController();
+        wc.setWorkout(workout);
+        System.out.println(wc.getWorkout());
+
+        loader.setController(wc);
+        loader.setLocation(getClass().getResource("Workout.fxml"));
+        AnchorPane pane =  FXMLLoader.load(loader.getLocation());
         rootPane.getChildren().setAll(pane); 
-        
-        wc.setTable(workout);       
+        */
+
     }
 }

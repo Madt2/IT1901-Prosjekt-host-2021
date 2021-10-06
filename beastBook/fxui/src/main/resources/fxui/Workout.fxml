@@ -32,7 +32,7 @@
             </Menu>
          </menus>
       </MenuBar>
-      <TableView fx:id="workout_table" layoutX="72.0" layoutY="85.0" prefHeight="60.0" prefWidth="456.0">
+      <TableView fx:id="workout_table" layoutX="72.0" layoutY="85.0" minHeight="200.0" minWidth="450.0" prefHeight="60.0" prefWidth="456.0">
          <columns>
             <TableColumn fx:id="exerciseName" prefWidth="90.0" text="Exercise:" />
             <TableColumn fx:id="repGoal" prefWidth="90.0" text="Rep Goal:" />

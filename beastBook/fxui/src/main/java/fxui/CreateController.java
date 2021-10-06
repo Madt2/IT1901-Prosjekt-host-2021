@@ -11,6 +11,7 @@ import core.Workout;
 import core.Exercise;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class CreateController {
@@ -28,19 +29,19 @@ public class CreateController {
     private Text exceptionFeedback;
 
     @FXML
-    private TableColumn<Exercise, String> exerciseName;
+    public TableColumn<Exercise, String> exerciseName;
 
     @FXML
-    private TableColumn<Exercise, String> repGoal;
+    public TableColumn<Exercise, Integer> repGoal;
 
     @FXML
-    private TableColumn<Exercise, String> weight;
+    public TableColumn<Exercise, String> weight;
 
     @FXML
-    private TableColumn<Exercise, String> sets;
+    public TableColumn<Exercise, String> sets;
 
     @FXML
-    private TableColumn<Exercise, String> restTime;
+    public TableColumn<Exercise, String> restTime;
 
     @FXML
     private Button back_button;
@@ -87,7 +88,7 @@ public class CreateController {
     public void setTable() {
         
         exerciseName.setCellValueFactory(new PropertyValueFactory<Exercise, String>("exerciseName"));
-        repGoal.setCellValueFactory(new PropertyValueFactory<Exercise, String>("repGoal"));
+        repGoal.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("repGoal"));
         weight.setCellValueFactory(new PropertyValueFactory<Exercise, String>("weight"));
         sets.setCellValueFactory(new PropertyValueFactory<Exercise, String>("sets"));
         restTime.setCellValueFactory(new PropertyValueFactory<Exercise, String>("restTime"));
@@ -137,7 +138,8 @@ public class CreateController {
             workout.addExercise(exercise);
 
             exerciseName.setCellValueFactory(c -> new SimpleStringProperty(new String(exercise.getExerciseName())));
-            repGoal.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getRepGoal()))));
+            repGoal.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("repGoal"));
+            //repGoal.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getRepGoal()))));
             weight.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getWeight()))));
             sets.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getSets()))));
             restTime.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getRestTime()))));
