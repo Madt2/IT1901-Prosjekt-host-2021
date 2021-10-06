@@ -14,9 +14,13 @@ import javafx.scene.layout.AnchorPane;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 
 import java.util.ArrayList;
 import java.util.List;
+
+
+
 import core.Exercise;
 
 public class WorkoutOverviewController {
@@ -35,9 +39,11 @@ public class WorkoutOverviewController {
     private TableView<Workout> workout_overview;
 
     @FXML
-    public TableColumn<Workout, String> workoutName;
+    private TableColumn<Workout, String> workoutName;
 
     private List<Workout> allWorkouts = new ArrayList<>();
+
+    private WorkoutController wc = new WorkoutController();
     
 
 
@@ -67,7 +73,7 @@ public class WorkoutOverviewController {
     
 
     public void setTable() {
-        
+
         Workout chest = new Workout("chest");
         Workout biceps = new Workout("biceps");
         Exercise benkpress = new Exercise("Benkpress", 25, 70, 15, 60);
@@ -77,6 +83,7 @@ public class WorkoutOverviewController {
         allWorkouts.add(chest);
         allWorkouts.add(biceps);
 
+       
         workoutName.setCellValueFactory(new PropertyValueFactory<Workout, String>("name"));
         workout_overview.getItems().setAll(allWorkouts);
 
@@ -88,7 +95,7 @@ public class WorkoutOverviewController {
                      && event.getClickCount() == 1) {
         
                     Workout clickedRow = row.getItem();
-                    printRow(clickedRow);
+                    loadClickedWorkout(clickedRow, event);
                 }
             });
             return row ;
@@ -98,13 +105,15 @@ public class WorkoutOverviewController {
     // Used for test reasons for now. printRow will be changed with a function which takes the user to a overview
     // over the clicked workout.
     
-    private void printRow(Workout item) {
-        System.out.println(item.getName() + item.getExercises());
+    private void loadClickedWorkout(Workout workout, MouseEvent event) {
+        
+        try {
+            System.out.println(workout.getName() + workout.getExercises());
+            loadWorkout(event, workout);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
-
-
-
-
 
     @FXML
     void loadHome(ActionEvent event) throws IOException{
@@ -116,5 +125,13 @@ public class WorkoutOverviewController {
     void loadLogin(ActionEvent event) throws IOException{
         AnchorPane pane =  FXMLLoader.load(getClass().getResource("Login.fxml"));
         rootPane.getChildren().setAll(pane);
+    }
+
+    @FXML
+    void loadWorkout(MouseEvent event, Workout workout) throws IOException{
+        AnchorPane pane =  FXMLLoader.load(getClass().getResource("Workout.fxml"));
+        rootPane.getChildren().setAll(pane); 
+        
+        wc.setTable(workout);       
     }
 }

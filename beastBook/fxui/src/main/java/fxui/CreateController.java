@@ -28,19 +28,19 @@ public class CreateController {
     private Text exceptionFeedback;
 
     @FXML
-    public TableColumn<Exercise, String> exerciseName;
+    private TableColumn<Exercise, String> exerciseName;
 
     @FXML
-    public TableColumn<Exercise, String> repGoal;
+    private TableColumn<Exercise, String> repGoal;
 
     @FXML
-    public TableColumn<Exercise, String> weight;
+    private TableColumn<Exercise, String> weight;
 
     @FXML
-    public TableColumn<Exercise, String> sets;
+    private TableColumn<Exercise, String> sets;
 
     @FXML
-    public TableColumn<Exercise, String> restTime;
+    private TableColumn<Exercise, String> restTime;
 
     @FXML
     private Button back_button;
