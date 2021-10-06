@@ -27,14 +27,7 @@ public class WorkoutTest {
         testWorkout = null;
     }
 
-    @Test
-    void constructorTest() {
-        Workout workout = new Workout("testConstructor1");
-        Assertions.assertEquals(workout.getName(), "testConstructor1");
-        workout = new Workout();
-        workout.setName("testConstructor2");
-        Assertions.assertEquals("testConstructor2", workout.getName());
-    }
+
 
     @Test
     void addWorkoutTest() {
