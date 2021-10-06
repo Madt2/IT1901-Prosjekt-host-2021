@@ -142,6 +142,7 @@ public class CreateController {
              Integer.valueOf(restInput.getText()));
 
             workout.addExercise(exercise);
+            emptyInputFields();
 
             exerciseName.setCellValueFactory(c -> new SimpleStringProperty(new String(exercise.getExerciseName())));
             repGoal.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getRepGoal()))));
@@ -162,6 +163,19 @@ public class CreateController {
         }
         
     }
+
+    /**
+     *
+     * Empties all the input fields. Should be called when a exercise is successfully added to the workout
+     */
+    private void emptyInputFields(){
+        exerciseNameInput.setText("");
+        repsInput.setText("");
+        weigthInput.setText("");
+        setsInput.setText("");
+        restInput.setText("");
+    }
+    
     
 
     /**
