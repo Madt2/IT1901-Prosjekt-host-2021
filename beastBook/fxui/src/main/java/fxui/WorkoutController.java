@@ -101,7 +101,7 @@ public class WorkoutController {
         weight.setCellValueFactory(new PropertyValueFactory<Exercise, String>("weight"));
 
         sets.setCellValueFactory(new PropertyValueFactory<Exercise, String>("sets"));
-        
+        /*
         for (Exercise el : workout.getExercises()) {
             for (int i = 0; i < el.getSets(); i++) {
                 TableColumn<Exercise, String> setColumn = new TableColumn<Exercise, String>("Set " + (i+1) + ":");
@@ -117,7 +117,7 @@ public class WorkoutController {
                 workout_table.getColumns().add(setColumn);
             }
         }
-
+        */
         restTime.setCellValueFactory(new PropertyValueFactory<Exercise, String>("restTime"));
       
        
