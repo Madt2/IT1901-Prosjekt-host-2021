@@ -8,22 +8,38 @@ public class User {
     private static final int MIN_CHAR_USERNAME = 3;
     private static final int MIN_CHAR_PASSWORD = 3;
 
-    private final String username;
-    private final String password;
+    private String username;
+    private String password;
     private List<Workout> workouts = new ArrayList<Workout>();
     //private List<String> myHistory = new ArrayList<String>(); for later release
 
     public User(String username, String password) {
-        if (username.length() < MIN_CHAR_USERNAME)
-            throw new IllegalArgumentException("Too short username.");
-        if (username.length() < MIN_CHAR_PASSWORD)
-            throw new IllegalArgumentException("Too short password.");
-        this.username = username;
-        this.password = password;
+        setUserName(username);
+        setPassword(password);
+    }
+
+    public User() {
+
+    }
+
+    public void setUserName(String username) {
+        if (username.length() < MIN_CHAR_USERNAME) {
+            this.username = username;
+        }
+        else
+            throw new IllegalArgumentException("Username to short");
     }
 
     public String getUserName() {
         return username;
+    }
+
+    public void setPassword(String password) {
+        if (password.length() < MIN_CHAR_PASSWORD) {
+            this.password = password;
+        }
+        else
+            throw new IllegalArgumentException("Username to short");
     }
 
     public String getPassword() {
