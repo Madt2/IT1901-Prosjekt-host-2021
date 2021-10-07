@@ -33,21 +33,6 @@ public class WorkoutController {
     @FXML
     private MenuItem logout_button;
 
-  /*  @FXML
-    private TableColumn<Exercise, String> exerciseName;
-
-    @FXML
-    private TableColumn<Exercise, Integer> repGoal;
-
-    @FXML
-    private TableColumn<Exercise, String> weight;
-
-    @FXML
-    private TableColumn<Exercise, String> sets;
-
-    @FXML
-    private TableColumn<Exercise, String> restTime;
-    */
     @FXML
     private TableView<Exercise> workout_table;
 
@@ -60,14 +45,17 @@ public class WorkoutController {
     @FXML
     private TextField date_input;
 
+    @FXML
+    private Text exceptionFeedback;
+
     private TableColumn<Exercise, String> exerciseNameColumn;
     private TableColumn<Exercise, Integer> repGoalColumn;
     private TableColumn<Exercise, Double> weightColumn;
     private TableColumn<Exercise, Integer> setsColumn;
     private TableColumn<Exercise, Integer> restTimeColumn;
+    private TableColumn<Exercise, String> setColumnX;
 
     private Workout workout = new Workout();
-
 
     //@FXML
     public void initialize(){
@@ -86,9 +74,7 @@ public class WorkoutController {
     }
 
     public void setTable() {
-        
         workout_table.setEditable(true);
-        System.out.println(workout.getExercises());
         
         exerciseNameColumn = new TableColumn<Exercise, String>("Workout name:");
         exerciseNameColumn.setCellValueFactory(new PropertyValueFactory<Exercise, String>("exerciseName"));
@@ -102,6 +88,9 @@ public class WorkoutController {
         setsColumn = new TableColumn<Exercise, Integer>("Nr of sets:");
         setsColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("sets"));
 
+        setColumnX = new TableColumn<Exercise, String>("Rep pr set:");
+        setColumnX.setCellValueFactory(new PropertyValueFactory<Exercise, String>("repPrSet"));
+        
         restTimeColumn = new TableColumn<Exercise, Integer>("Rest time:");
         restTimeColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("restTime"));
 
@@ -111,85 +100,132 @@ public class WorkoutController {
         workout_table.getColumns().add(setsColumn);
         workout_table.getColumns().add(restTimeColumn);
 
+        editTable();
+        setColumnsSize();
+    }
+
+    // TODO NumberFormatException is not catched. Must find a solution 
+
+    private void editTable(){
+
         exerciseNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         exerciseNameColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Exercise,String>>(){
+
             @Override
             public void handle(CellEditEvent<Exercise, String> event){
-                Exercise exercise = event.getRowValue();
-                exercise.setExerciseName(event.getNewValue());
+                try{
+                    Exercise exercise = event.getRowValue();
+                    exercise.setExerciseName(event.getNewValue());
+                    emptyExceptionFeedback();
+                }
+
+                catch(NumberFormatException i){
+                    exceptionFeedback.setText("Value can not be in string format, must be number");
+                }
+
+                catch (Exception e) {
+                    exceptionFeedback.setText(e.getMessage() + " . Value was not changed.");
+                }
             }
         });
 
         repGoalColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         repGoalColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Exercise,Integer>>(){
+
             @Override
             public void handle(CellEditEvent<Exercise, Integer> event){
-                Exercise exercise = event.getRowValue();
-                exercise.setRepGoal(event.getNewValue());
+                try{
+                    Exercise exercise = event.getRowValue();
+                    exercise.setRepGoal(event.getNewValue());
+                    emptyExceptionFeedback();
+                }
+
+                catch(NumberFormatException i){
+                    exceptionFeedback.setText("Value can not be in string format, must be number");
+                }
+
+                catch (Exception e) {
+                    exceptionFeedback.setText(e.getMessage() + " Value was not changed.");
+                }
+                
             }
         });
-        
+       
         weightColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
         weightColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Exercise,Double>>(){
             @Override
             public void handle(CellEditEvent<Exercise, Double> event){
-                Exercise exercise = event.getRowValue();
-                exercise.setWeight(event.getNewValue());
+                try{
+                    Exercise exercise = event.getRowValue();
+                    exercise.setWeight(event.getNewValue());
+                    emptyExceptionFeedback();
+                }
+
+                catch(NumberFormatException i){
+                    exceptionFeedback.setText("Value can not be in string format, must be number");
+                }
+
+                catch (Exception e) {
+                    exceptionFeedback.setText(e.getMessage() + " Value was not changed.");
+                }
             }
         });
-        
-        /*
+         
         setsColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         setsColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Exercise,Integer>>(){
             @Override
             public void handle(CellEditEvent<Exercise, Integer> event){
-                Exercise exercise = event.getRowValue();
-                exercise.setSets(event.getNewValue());
+                try{
+                    Exercise exercise = event.getRowValue();
+                    exercise.setSets(event.getNewValue());
+                    emptyExceptionFeedback();
+                }
+
+                catch(NumberFormatException i){
+                    exceptionFeedback.setText("Value can not be in string format, must be number");
+                }
+
+                catch (Exception e) {
+                    exceptionFeedback.setText(e.getMessage() + " Value was not changed.");
+                }
             }
         });
-        */
+   
         restTimeColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         restTimeColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Exercise,Integer>>(){
             @Override
             public void handle(CellEditEvent<Exercise, Integer> event){
-                Exercise exercise = event.getRowValue();
-                exercise.setRestTime(event.getNewValue());
+                try{
+                    Exercise exercise = event.getRowValue();
+                    exercise.setRestTime(event.getNewValue());
+                    emptyExceptionFeedback();
+                }
+
+                catch(NumberFormatException i){
+                    exceptionFeedback.setText("Value can not be in string format, must be number");
+                }
+
+                catch (Exception e) {
+                    exceptionFeedback.setText(e.getMessage() + " Value was not changed.");
+
+                }
             }
         });
-
-        /*
-        for (Exercise el : workout.getExercises()) {
-            for (int i = 0; i < el.getSets(); i++) {
-                TableColumn<Exercise, String> setColumn = new TableColumn<Exercise, String>("Set " + (i+1) + ":");
-                setColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Exercise,String>>(){
-                    @Override
-                    public void handle(CellEditEvent<Exercise, String> event){
-                        //Exercise exercise = event.getRowValue();
-                        //exercise.setExerciseName(event.getNewValue());
-                        
-                    }
-                });
-                
-                workout_table.getColumns().add(setColumn);
-            }
-        }
-        */
        
         workout_table.getItems().setAll(workout.getExercises());
-        
     }
 
-    private int getMaxSetColumns(){
-        int currentMax = 0;
-
-        for (Exercise e : workout.getExercises()) {
-            if(e.getSets() > currentMax){
-                currentMax = e.getSets();
-            }
-        }
-        return currentMax;
+    private void emptyExceptionFeedback(){
+        this.exceptionFeedback.setText("");
     }
 
+    private void setColumnsSize(){
+        exerciseNameColumn.setPrefWidth(100);        
+        repGoalColumn.setPrefWidth(75);
+        weightColumn.setPrefWidth(75);
+        setsColumn.setPrefWidth(75);
+        restTimeColumn.setPrefWidth(75);
+    }
 
     @FXML
     void loadLogin(ActionEvent event) throws IOException{

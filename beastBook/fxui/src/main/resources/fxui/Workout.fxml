@@ -31,7 +31,7 @@
             </Menu>
          </menus>
       </MenuBar>
-      <TableView fx:id="workout_table" layoutX="72.0" layoutY="85.0" minHeight="200.0" minWidth="450.0" prefHeight="60.0" prefWidth="456.0" />
+      <TableView fx:id="workout_table" layoutX="72.0" layoutY="85.0" minHeight="200.0" minWidth="402.0" prefHeight="60.0" prefWidth="402.0" />
       <Button fx:id="back_button" layoutX="14.0" layoutY="52.0" mnemonicParsing="false" onAction="#loadOverview" text="&lt;- Back" />
       <Text fx:id="title" layoutX="288.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title">
          <font>
@@ -40,5 +40,9 @@
       </Text>
       <TextField fx:id="date_input" layoutX="86.0" layoutY="49.0" />
       <Text layoutX="86.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date:" />
+      <Text fx:id="exceptionFeedback" fill="#f80000" layoutX="76.0" layoutY="317.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="402.0">
+         <font>
+            <Font size="15.0" />
+         </font></Text>
    </children>
 </AnchorPane>

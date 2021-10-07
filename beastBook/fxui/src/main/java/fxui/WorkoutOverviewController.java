@@ -85,11 +85,11 @@ public class WorkoutOverviewController {
         Workout MyWorkout = new Workout("My workout");
         Workout MyWorkout2 = new Workout("My workout 2 Empty");
 
-        Exercise benkpress = new Exercise("Benkpress", 25, 70, 3, 50);
-        Exercise kneboy = new Exercise("Knebøy", 35, 200, 5, 60);
-        Exercise skulderpress = new Exercise("Skulderpress", 30, 20, 3, 70);
+        Exercise benkpress = new Exercise("Benkpress", 12, 70, 3, 50);
+        Exercise kneboy = new Exercise("Knebøy", 8, 200, 5, 60);
+        Exercise skulderpress = new Exercise("Skulderpress", 12, 20, 3, 70);
         Exercise bicepsCurl = new Exercise("Biceps curl", 10, 30, 3, 20);
-        Exercise flyes = new Exercise("Flyes", 50, 20, 5, 120);
+        Exercise flyes = new Exercise("Flyes", 8, 20, 5, 120);
 
         MyWorkout.addExercise(benkpress);
         MyWorkout.addExercise(kneboy);

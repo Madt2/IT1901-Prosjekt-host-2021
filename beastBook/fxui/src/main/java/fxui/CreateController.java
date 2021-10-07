@@ -63,7 +63,7 @@ public class CreateController {
     private Exercise exercise;
     private TableColumn<Exercise, String> exerciseNameColumn;
     private TableColumn<Exercise, Integer> repGoalColumn;
-    private TableColumn<Exercise, Double> weightColum;
+    private TableColumn<Exercise, Double> weightColumn;
     private TableColumn<Exercise, Integer> setsColumn;
     private TableColumn<Exercise, Integer> restTimeColumn;
 
@@ -85,8 +85,8 @@ public class CreateController {
         repGoalColumn = new TableColumn<Exercise, Integer>("Rep goal");
         repGoalColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("repGoal"));
 
-        weightColum = new TableColumn<Exercise, Double>("Weight");
-        weightColum.setCellValueFactory(new PropertyValueFactory<Exercise, Double>("weight"));
+        weightColumn = new TableColumn<Exercise, Double>("Weight");
+        weightColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Double>("weight"));
 
         setsColumn = new TableColumn<Exercise, Integer>("Nr of sets");
         setsColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("sets"));
@@ -96,11 +96,10 @@ public class CreateController {
        
         workout_table.getColumns().add(exerciseNameColumn);
         workout_table.getColumns().add(repGoalColumn);
-        workout_table.getColumns().add(weightColum);
+        workout_table.getColumns().add(weightColumn);
         workout_table.getColumns().add(setsColumn);
         workout_table.getColumns().add(restTimeColumn);
         setColumnsSize();
-
         workout_table.getItems().setAll(workout.getExercises());
     }
 
@@ -112,7 +111,7 @@ public class CreateController {
     private void setColumnsSize(){
         exerciseNameColumn.setPrefWidth(100);        
         repGoalColumn.setPrefWidth(75);
-        weightColum.setPrefWidth(75);
+        weightColumn.setPrefWidth(75);
         setsColumn.setPrefWidth(75);
         restTimeColumn.setPrefWidth(75);
     }
@@ -145,7 +144,7 @@ public class CreateController {
      */
     @FXML
     void addExercise() {
-        createButton.setDisable(false);
+        
         workout.setName(titleInput.getText());
 
         try{
@@ -158,6 +157,7 @@ public class CreateController {
             workout.addExercise(exercise);
             workout_table.getItems().add(exercise);   
             exceptionFeedback.setText("");
+            createButton.setDisable(false);
         }
    
     catch(NumberFormatException i){
@@ -215,7 +215,7 @@ public class CreateController {
         else {
             try {
                 workout.saveWorkout();
-                exceptionFeedback.setText("");
+                exceptionFeedback.setText("Workout saved!");
             } catch (Exception e) {
                 System.err.println(e);
                 exceptionFeedback.setText("Save Workout failed!");
