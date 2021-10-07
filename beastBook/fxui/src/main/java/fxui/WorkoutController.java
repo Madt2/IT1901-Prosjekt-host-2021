@@ -53,7 +53,6 @@ public class WorkoutController {
     private TableColumn<Exercise, Double> weightColumn;
     private TableColumn<Exercise, Integer> setsColumn;
     private TableColumn<Exercise, Integer> restTimeColumn;
-    private TableColumn<Exercise, String> setColumnX;
 
     private Workout workout = new Workout();
 
@@ -87,9 +86,6 @@ public class WorkoutController {
 
         setsColumn = new TableColumn<Exercise, Integer>("Nr of sets:");
         setsColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("sets"));
-
-        setColumnX = new TableColumn<Exercise, String>("Rep pr set:");
-        setColumnX.setCellValueFactory(new PropertyValueFactory<Exercise, String>("repPrSet"));
         
         restTimeColumn = new TableColumn<Exercise, Integer>("Rest time:");
         restTimeColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("restTime"));
