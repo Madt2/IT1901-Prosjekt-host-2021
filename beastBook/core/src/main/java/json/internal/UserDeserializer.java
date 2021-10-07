@@ -7,14 +7,18 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.BooleanNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
 import core.User;
+import core.Workout;
+
 import java.io.IOException;
-import java.time.LocalDateTime;
 
 public class UserDeserializer extends JsonDeserializer<User> {
+
+    /*
+     * format: { username: "...", password: "...", workouts: "[...,...]" }
+     */
 
     @Override
     public User deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException, JsonProcessingException {
@@ -33,9 +37,14 @@ public class UserDeserializer extends JsonDeserializer<User> {
             if (passwordNode instanceof TextNode) {
                 user.setPassword(passwordNode.asText());
             }
-            JsonNode workoutListNode = objectNode.get("workouts");
-            if (workoutListNode instanceof ArrayNode) {
-
+            JsonNode workoutsNode = objectNode.get("workouts");
+            if (workoutsNode instanceof ArrayNode) {
+                for (JsonNode elementNode : ((ArrayNode) workoutsNode)) {
+                    Workout workout = WorkoutDeserializer.deserialize(elementNode);
+                    if (workout != null) {
+                        user.addWorkout(workout);
+                    }
+                }
             }
             return user;
         }

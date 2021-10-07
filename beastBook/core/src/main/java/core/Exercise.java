@@ -29,6 +29,8 @@ public class Exercise {
         this.restTime = restTime;
     }
 
+    public Exercise() {}
+
     /**
      * Checks if name is valid, valid is not blank
      *
