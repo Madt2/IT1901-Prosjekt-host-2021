@@ -35,7 +35,7 @@ public class WorkoutOverviewController {
     @FXML
     private TableView<Workout> workout_overview;
 
-    private TableColumn<Workout, String> workoutName;
+    private TableColumn<Workout, String> workoutNameColumn;
     private List<Workout> allWorkouts = new ArrayList<>();
     public static Workout clickedWorkout = new Workout();  
     private Workout workout = new Workout();
@@ -52,9 +52,9 @@ public class WorkoutOverviewController {
         // "FAKE DATA"
         setFakeData();
 
-        workoutName = new TableColumn<Workout, String>("Workout name:");
-        workoutName.setCellValueFactory(new PropertyValueFactory<Workout, String>("name"));
-        workout_overview.getColumns().add(workoutName);
+        workoutNameColumn = new TableColumn<Workout, String>("Workout name:");
+        workoutNameColumn.setCellValueFactory(new PropertyValueFactory<Workout, String>("name"));
+        workout_overview.getColumns().add(workoutNameColumn);
         workout_overview.getItems().setAll(allWorkouts);
         setColumnsSize();
 
@@ -110,7 +110,7 @@ public class WorkoutOverviewController {
     }
 
     private void setColumnsSize(){
-        workoutName.setPrefWidth(150);    
+        workoutNameColumn.setPrefWidth(150);    
     }
 
     private void loadClickedWorkout(Workout workout, MouseEvent event) {

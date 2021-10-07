@@ -63,7 +63,7 @@ public class CreateController {
     private Exercise exercise;
     private TableColumn<Exercise, String> exerciseNameColumn;
     private TableColumn<Exercise, Integer> repGoalColumn;
-    private TableColumn<Exercise, Float> weightColum;
+    private TableColumn<Exercise, Double> weightColum;
     private TableColumn<Exercise, Integer> setsColumn;
     private TableColumn<Exercise, Integer> restTimeColumn;
 
@@ -85,8 +85,8 @@ public class CreateController {
         repGoalColumn = new TableColumn<Exercise, Integer>("Rep goal");
         repGoalColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("repGoal"));
 
-        weightColum = new TableColumn<Exercise, Float>("Weight");
-        weightColum.setCellValueFactory(new PropertyValueFactory<Exercise, Float>("weight"));
+        weightColum = new TableColumn<Exercise, Double>("Weight");
+        weightColum.setCellValueFactory(new PropertyValueFactory<Exercise, Double>("weight"));
 
         setsColumn = new TableColumn<Exercise, Integer>("Nr of sets");
         setsColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("sets"));
