@@ -7,9 +7,12 @@ import javafx.scene.layout.AnchorPane;
 
 import javafx.event.ActionEvent;
 import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.lang.IllegalArgumentException;
 import javafx.fxml.FXMLLoader;
 import core.User;
+import json.BeastBookPersistence;
 
 public class LoginController {
     private User user;
@@ -60,12 +63,25 @@ public class LoginController {
     }
 
     private void saveUser(User user) {
-
+        BeastBookPersistence persistence = new BeastBookPersistence();
+        try {
+            persistence.setSaveFilePath(user.getUserName());
+            persistence.saveUser(user);
+        } catch (IOException e) {
+            System.err.println("ERROR");
+        }
     }
 
 
-    private User getUser(String user) {
-        return null;
+    private User getUser(String userName) {
+        BeastBookPersistence persistence = new BeastBookPersistence();
+        try {
+            persistence.setSaveFilePath(userName);
+            User user = persistence.loadUser();
+        } catch (IOException e) {
+            System.err.println("ERROR");
+        }
+       return user;
     }
 
     /* public static void main(String[] args) {
