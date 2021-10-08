@@ -236,6 +236,14 @@ public class WorkoutController {
         workout_table.getItems().setAll(workout.getExercises());
     }
 
+    public TableView<Exercise> getWorkoutTable(){
+        return workout_table;
+    }
+
+    public Exercise getTable(int row){
+        return workout_table.getItems().get(row);
+    }
+
     private void emptyExceptionFeedback(){
         this.exceptionFeedback.setText("");
     }
