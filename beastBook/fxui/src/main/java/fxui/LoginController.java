@@ -43,11 +43,12 @@ public class LoginController {
         saveUser(user); //Skal lagre bruker som en JSON-fil
     }
 
+
     @FXML
     void loginUser(ActionEvent event) throws IllegalArgumentException {
         String userName = username_input.getText();
         String password = password_input.getText();
-        for (String u:userBase) {
+/*        for (String u:userBase) {
             if (u.equals(userName)) {
                 user = getUser(u); //Skal hente bruker objekt fra JSON-fil
                 break;
@@ -55,7 +56,16 @@ public class LoginController {
         }
         if (user.getUserName() != userName) {
             throw new IllegalArgumentException("No such user found!");
-        } 
+        } */
+    }
+
+    private void saveUser(User user) {
+
+    }
+
+
+    private User getUser(String user) {
+        return null;
     }
 
     /* public static void main(String[] args) {

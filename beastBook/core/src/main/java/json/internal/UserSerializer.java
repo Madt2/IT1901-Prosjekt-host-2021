@@ -16,6 +16,17 @@ public class UserSerializer extends JsonSerializer<User>{
     * format: { username: "...", password: "...", workouts: "[...,...]" }
     */
 
+    private final boolean deep;
+
+    public UserSerializer(boolean deep) {
+        this.deep = deep;
+    }
+
+
+    public UserSerializer() {
+        this(true);
+    }
+
     @Override
     public void serialize(User user, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeStartObject();

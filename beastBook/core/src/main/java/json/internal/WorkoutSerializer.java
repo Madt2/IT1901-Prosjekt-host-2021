@@ -19,7 +19,7 @@ public class WorkoutSerializer extends JsonSerializer<Workout> {
     public void serialize(Workout workout, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeStartObject();
         if (workout.getName() != null) {
-            jsonGenerator.writeStringField("username", workout.getName());
+            jsonGenerator.writeStringField("name", workout.getName());
         }
         if (workout instanceof Workout) {
             jsonGenerator.writeArrayFieldStart("exercises");
