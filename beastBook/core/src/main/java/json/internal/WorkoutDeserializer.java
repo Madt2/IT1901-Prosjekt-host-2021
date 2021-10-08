@@ -38,8 +38,7 @@ public class WorkoutDeserializer extends JsonDeserializer<Workout> {
             }
             JsonNode exercisesNode = objectNode.get("exercises");
             if (exercisesNode instanceof ArrayNode) {
-
-                for (JsonNode elementNode : ((ArrayNode) exercisesNode)) {
+                for (JsonNode elementNode : exercisesNode) {
                     Exercise exercise = d.deserialize(elementNode);
                     if (exercise != null) {
                         workout.addExercise(exercise);

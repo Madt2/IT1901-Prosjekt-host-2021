@@ -6,6 +6,7 @@ import core.User;
 import core.Workout;
 import core.Exercise;
 import json.internal.BeastBookModule;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
@@ -19,27 +20,33 @@ public class BeastBookModuleTest {
 
     private static ObjectMapper mapper;
 
+    @BeforeAll
+    public static void setUp() {
+        mapper = new ObjectMapper();
+        mapper.registerModule(new BeastBookModule());
+    }
+
     private final static String UserWithOneWorkout = """
             {
-                "userName": "Test"
-                "password": "password"
+                "username": "Test",
+                "password": "password",
                 "workouts": [
                     {
-                    "name": "Legday"
+                    "name": "Legday",
                     "exercises": [
                            {
                             "exerciseName": "Squat",
-                            "repGoal": 25
-                            "weight": 100
-                            "sets": 5
-                            "restTime": 90
+                            "repGoal": "25",
+                            "weight": "100.0",
+                            "sets": "5",
+                            "restTime": "90"
                             },
                             {
-                            "exerciseName": "Leg Press",
-                            "repGoal": 30
-                            "weight": 250
-                            "sets": 3
-                            "restTime": 60
+                            "exerciseName": "LegPress",
+                            "repGoal": "30",
+                            "weight": "250.0",
+                            "sets": "3",
+                            "restTime": "60"
                            }
                         ]
                     }
@@ -47,15 +54,17 @@ public class BeastBookModuleTest {
             }
             """;
 
-    @BeforeAll
-    public static void setUp() {
-        mapper = new ObjectMapper();
-        mapper.registerModule(new BeastBookModule());
-    }
+
 
     static void checkWorkout(Workout workout, String name, List<Exercise> exercises) {
         assertEquals(name, workout.getName());
-        assertEquals(exercises, workout.getExercises());
+        for (int i = 0; i < workout.getExercises().size(); i++) {
+            assertEquals(exercises.get(i).getExerciseName(), workout.getExercises().get(i).getExerciseName());
+            assertEquals(exercises.get(i).getRepGoal(), workout.getExercises().get(i).getRepGoal());
+            assertEquals(exercises.get(i).getWeight(), workout.getExercises().get(i).getWeight());
+            assertEquals(exercises.get(i).getSets(), workout.getExercises().get(i).getSets());
+            assertEquals(exercises.get(i).getRestTime(), workout.getExercises().get(i).getRestTime());
+        }
     }
 
     static void checkExercise(Exercise exercise, String exerciseName, int repGoal, double weight, int sets, int restTime) {
@@ -71,12 +80,12 @@ public class BeastBookModuleTest {
         User user = new User("Test", "password");
         Workout workout = new Workout("Legday");
         Exercise squat = new Exercise("Squat", 25, 100, 5, 90);
-        Exercise legPress = new Exercise("Leg Press", 30, 250, 3, 60);
+        Exercise legPress = new Exercise("LegPress", 30, 250, 3, 60);
         workout.addExercise(squat);
         workout.addExercise(legPress);
         user.addWorkout(workout);
         try {
-            assertEquals(UserWithOneWorkout.replaceAll("\\s+", ""), mapper.writeValueAsString(user));
+            Assertions.assertEquals(UserWithOneWorkout.replaceAll("\\s+", ""),mapper.writeValueAsString(user));
         } catch (JsonProcessingException e) {
             fail();
         }
@@ -92,14 +101,14 @@ public class BeastBookModuleTest {
 
             List<Exercise> testList = new ArrayList<>();
             Exercise squat = new Exercise("Squat", 25, 100, 5, 90);
-            Exercise legPress = new Exercise("Leg Press", 30, 250, 3, 60);
+            Exercise legPress = new Exercise("LegPress", 30, 250, 3, 60);
             testList.add(squat);
             testList.add(legPress);
 
             checkWorkout(user.getWorkouts().get(0), "Legday", testList);
 
             checkExercise(user.getWorkouts().get(0).getExercises().get(0), "Squat", 25, 100, 5, 90);
-            checkExercise(user.getWorkouts().get(0).getExercises().get(1), "Leg Press", 30, 250, 3, 60);
+            checkExercise(user.getWorkouts().get(0).getExercises().get(1), "LegPress", 30, 250, 3, 60);
         } catch (JsonProcessingException e) {
             fail();
         }
@@ -111,7 +120,7 @@ public class BeastBookModuleTest {
         User user = new User("Test", "password");
         Workout workout = new Workout("Legday");
         Exercise squat = new Exercise("Squat", 25, 100, 5, 90);
-        Exercise legPress = new Exercise("Leg Press", 30, 250, 3, 60);
+        Exercise legPress = new Exercise("LegPress", 30, 250, 3, 60);
         workout.addExercise(squat);
         workout.addExercise(legPress);
         user.addWorkout(workout);
@@ -128,7 +137,7 @@ public class BeastBookModuleTest {
             checkWorkout(user2.getWorkouts().get(0), "Legday", testList);
 
             checkExercise(user2.getWorkouts().get(0).getExercises().get(0), "Squat", 25, 100, 5, 90);
-            checkExercise(user2.getWorkouts().get(0).getExercises().get(1), "Leg Press", 30, 250, 3, 60);
+            checkExercise(user2.getWorkouts().get(0).getExercises().get(1), "LegPress", 30, 250, 3, 60);
 
         } catch (JsonProcessingException e) {
             fail();

@@ -23,11 +23,11 @@ public class User {
     }
 
     public void setUserName(String username) {
-        if (username.length() < MIN_CHAR_USERNAME) {
+        if (username.length() > MIN_CHAR_USERNAME) {
             this.username = username;
         }
         else
-            throw new IllegalArgumentException("Username to short");
+            throw new IllegalArgumentException("Username must be more than 2 characters");
     }
 
     public String getUserName() {
@@ -35,11 +35,11 @@ public class User {
     }
 
     public void setPassword(String password) {
-        if (password.length() < MIN_CHAR_PASSWORD) {
+        if (password.length() > MIN_CHAR_PASSWORD) {
             this.password = password;
         }
         else
-            throw new IllegalArgumentException("Username to short");
+            throw new IllegalArgumentException("Password must be more than 2 characters");
     }
 
     public String getPassword() {

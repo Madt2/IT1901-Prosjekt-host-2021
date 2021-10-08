@@ -11,6 +11,9 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 public class PersistenceTest {
 
     private BeastBookPersistence beastBookPersistence = new BeastBookPersistence();
@@ -18,7 +21,7 @@ public class PersistenceTest {
     @Test
     public void testSerializersAndDeserializers() {
 
-        User uSerialize = new User("utest", "utest");
+        User user = new User("utest", "utest");
         Workout w = new Workout("wtest");
         Exercise e1 = new Exercise("etest1", 1, 1, 1, 1);
         Exercise e2 = new Exercise("etest2", 2, 2, 2, 2);
@@ -27,63 +30,28 @@ public class PersistenceTest {
         w.addExercise(e1);
         w.addExercise(e2);
         w.addExercise(e3);
-        uSerialize.addWorkout(w);
+        user.addWorkout(w);
 
         try{
             StringWriter writer = new StringWriter();
-            beastBookPersistence.writeUser(uSerialize, writer);
+            beastBookPersistence.writeUser(user, writer);
 
             String json = writer.toString();
-            String testJson = """
-            {
-                "userName": "utest"
-                "password": "utest"
-                "workouts": [
-                    {
-                    "name": "wtest"
-                    "exercises": [
-                           {
-                            "exerciseName": "etest1",
-                            "repGoal": 1
-                            "weight": 1
-                            "sets": 1
-                            "restTime": 1
-                            },
-                            {
-                            "exerciseName": "etest2",
-                            "repGoal": 2
-                            "weight": 2
-                            "sets": 2
-                            "restTime": 2
-                           }
-                           {
-                            "exerciseName": "etest3",
-                            "repGoal": 3
-                            "weight": 3
-                            "sets": 3
-                            "restTime": 3
-                           }
-                        ]
-                    }
-                ]
-            }
-            """;
-            Assertions.assertTrue(json.equals(testJson));
 
-            User uDeserialize = beastBookPersistence.readUser(new StringReader(json));
-            Assertions.assertEquals(uDeserialize.getUserName(), uSerialize.getUserName());
-            Assertions.assertEquals(uDeserialize.getPassword(), uSerialize.getPassword());
-            for (int i = 0; i < uSerialize.getWorkouts().size(); i++) {
-                Workout uSerializeWI = uSerialize.getWorkouts().get(i);
-                Workout uDeserializeWI = uDeserialize.getWorkouts().get(i);
-                Assertions.assertEquals(uDeserializeWI, uSerializeWI);
-                for (int j = 0; j < uSerializeWI.getExercises().size(); j++) {
-                    Exercise uSerializeEJ = uSerializeWI.getExercises().get(j);
-                    Exercise uDeserializeEJ = uDeserializeWI.getExercises().get(j);
-                    Assertions.assertEquals(uDeserializeEJ, uSerializeEJ);
-                }
-            }
 
+            User user2 = beastBookPersistence.readUser(new StringReader(json));
+            Assertions.assertEquals(user.getUserName(), user2.getUserName());
+            Assertions.assertEquals(user.getPassword(), user2.getPassword());
+            assertTrue(user2.getWorkouts().size()==1);
+
+            Workout w2 = user2.getWorkouts().get(0);
+            for (int i = 0; i < w2.getExercises().size(); i++) {
+                assertEquals(w.getExercises().get(i).getExerciseName(), w2.getExercises().get(i).getExerciseName());
+                assertEquals(w.getExercises().get(i).getRepGoal(), w2.getExercises().get(i).getRepGoal());
+                assertEquals(w.getExercises().get(i).getWeight(), w2.getExercises().get(i).getWeight());
+                assertEquals(w.getExercises().get(i).getSets(), w2.getExercises().get(i).getSets());
+                assertEquals(w.getExercises().get(i).getRestTime(), w2.getExercises().get(i).getRestTime());
+            }
         } catch (IOException e) {
             Assertions.fail();
         }

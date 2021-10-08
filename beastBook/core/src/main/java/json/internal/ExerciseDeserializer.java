@@ -31,20 +31,20 @@ public class ExerciseDeserializer extends JsonDeserializer<Exercise> {
                 exercise.setExerciseName(nameNode.asText());
             }
             JsonNode repGoalNode = objectNode.get("repGoal");
-            if (repGoalNode instanceof IntNode) {
+            if (repGoalNode instanceof TextNode) {
                 exercise.setRepGoal(repGoalNode.asInt());
             }
             JsonNode weightNode = objectNode.get("weight");
-            if (weightNode instanceof DoubleNode) {
+            if (weightNode instanceof TextNode) {
                 exercise.setWeight(weightNode.asDouble());
             }
             JsonNode setsNode = objectNode.get("sets");
-            if (setsNode instanceof IntNode) {
+            if (setsNode instanceof TextNode) {
                 exercise.setSets(setsNode.asInt());
             }
             JsonNode restTimeNode = objectNode.get("restTime");
-            if (restTimeNode instanceof IntNode) {
-                exercise.setRestTime(setsNode.asInt());
+            if (restTimeNode instanceof TextNode) {
+                exercise.setRestTime(restTimeNode.asInt());
             }
             return exercise;
         }
