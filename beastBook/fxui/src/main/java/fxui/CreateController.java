@@ -133,6 +133,10 @@ public class CreateController {
         return workout;
     }
 
+    public TableView<Exercise> getWorkoutTable(){
+        return workout_table;
+    }
+
     /**
      *
      *  Runs when the "Add exercise" button is clicked. If all the input fields are in the correct format, a  Exercise object is made with the
