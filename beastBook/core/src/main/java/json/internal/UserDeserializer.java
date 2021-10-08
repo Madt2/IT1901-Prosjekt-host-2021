@@ -20,6 +20,8 @@ public class UserDeserializer extends JsonDeserializer<User> {
      * format: { username: "...", password: "...", workouts: "[...,...]" }
      */
 
+    private WorkoutDeserializer d = new WorkoutDeserializer();
+
     @Override
     public User deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         TreeNode treeNode = parser.getCodec().readTree(parser);
@@ -40,7 +42,7 @@ public class UserDeserializer extends JsonDeserializer<User> {
             JsonNode workoutsNode = objectNode.get("workouts");
             if (workoutsNode instanceof ArrayNode) {
                 for (JsonNode elementNode : ((ArrayNode) workoutsNode)) {
-                    Workout workout = WorkoutDeserializer.deserialize(elementNode);
+                    Workout workout = d.deserialize(elementNode);
                     if (workout != null) {
                         user.addWorkout(workout);
                     }

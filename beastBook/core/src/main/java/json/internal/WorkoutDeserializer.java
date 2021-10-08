@@ -21,6 +21,8 @@ public class WorkoutDeserializer extends JsonDeserializer<Workout> {
      * format: { name: "...", exercises: "[...,...]"}
      */
 
+    private ExerciseDeserializer d = new ExerciseDeserializer();
+
     @Override
     public Workout deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         TreeNode treeNode = parser.getCodec().readTree(parser);
@@ -36,8 +38,9 @@ public class WorkoutDeserializer extends JsonDeserializer<Workout> {
             }
             JsonNode exercisesNode = objectNode.get("exercises");
             if (exercisesNode instanceof ArrayNode) {
+
                 for (JsonNode elementNode : ((ArrayNode) exercisesNode)) {
-                    Exercise exercise = ExerciseDeserializer.deserialize(elementNode);
+                    Exercise exercise = d.deserialize(elementNode);
                     if (exercise != null) {
                         workout.addExercise(exercise);
                     }

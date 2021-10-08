@@ -18,7 +18,7 @@ public class ExerciseDeserializer extends JsonDeserializer<Exercise> {
      */
 
     @Override
-    public Exercise deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+    public Exercise deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
         TreeNode treeNode = parser.getCodec().readTree(parser);
         return deserialize((JsonNode) treeNode);
     }
