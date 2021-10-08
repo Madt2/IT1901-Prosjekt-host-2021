@@ -33,7 +33,7 @@ public class CreateControllerTest extends ApplicationTest{
     }   
 
     @Test
-    void testTableView() {
+    void testSetupTableView() {
         Platform.runLater(new Runnable() {
             @Override
             public void run(){

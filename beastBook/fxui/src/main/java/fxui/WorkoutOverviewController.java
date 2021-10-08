@@ -46,18 +46,19 @@ public class WorkoutOverviewController {
     
     public void setTable() {
         workout_overview.getColumns().clear();
-        // TODO Get data from JSON-file to load in here. At the moment, we only use "Fake data"
-        // to get some data in the GUI.
+        // TODO Get data from JSON-file to load in here. At the moment, we only use "Fake data" to get some data in the GUI.
 
         // "FAKE DATA"
-        setFakeData();
-
+        //setFakeData();
         workoutNameColumn = new TableColumn<Workout, String>("Workout name:");
         workoutNameColumn.setCellValueFactory(new PropertyValueFactory<Workout, String>("name"));
         workout_overview.getColumns().add(workoutNameColumn);
         workout_overview.getItems().setAll(allWorkouts);
         setColumnsSize();
+        getClickedRow();
+    }
 
+    private TableRow<Workout> getClickedRow(){
         // Source: https://stackoverflow.com/questions/30191264/javafx-tableview-how-to-get-the-row-i-clicked
         workout_overview.setRowFactory(tableView -> {
             TableRow<Workout> row = new TableRow<>();
@@ -72,14 +73,15 @@ public class WorkoutOverviewController {
                     //TODO
                     // Find a way that we do not have to use static variable
                     clickedWorkout = clickedRow;
-
+                    
                     loadClickedWorkout(clickedRow, event);
                 }
             });
-            return row ;
+            return row;
         });
-
+        return null;
     }
+
 
     private void setFakeData(){
         Workout MyWorkout = new Workout("My workout");
@@ -107,6 +109,10 @@ public class WorkoutOverviewController {
 
     public Workout getWorkout(){
         return this.workout;
+    }
+
+    public void addToAllWorkouts(Workout workout){
+        allWorkouts.add(workout);
     }
 
     // for testing
