@@ -40,10 +40,10 @@ public class CreateControllerTest extends ApplicationTest{
         controller.setTable();
         
         // Workout name, row 0
-/*        Assertions.assertEquals("Benkpress", controller.getTable(0).getExerciseName());
+        Assertions.assertEquals("Benkpress", controller.getTable(0).getExerciseName());
         controller.getTable(0).setExerciseName("Squat");
         Assertions.assertNotEquals("Benkpress", controller.getTable(0).getExerciseName());
-        Assertions.assertEquals("Squat", controller.getTable(0).getExerciseName());*/
+        Assertions.assertEquals("Squat", controller.getTable(0).getExerciseName());
         
         // Rep goal, row 0
         Assertions.assertEquals(25, controller.getTable(0).getRepGoal());

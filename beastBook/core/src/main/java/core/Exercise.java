@@ -5,7 +5,8 @@ public class Exercise {
     private String exerciseName;
     private int repGoal;
     private double weight;
-    private int sets; 
+    private int sets;
+    private int repsPerSet;
     private int restTime;
 
     /**
@@ -18,8 +19,7 @@ public class Exercise {
      * @param restTime How much rest between sets
      */
     public Exercise(String exerciseName, int repGoal, double weight, int sets, int restTime) {
-        validateExerciseName(exerciseName);
-        this.exerciseName = exerciseName;
+        setExerciseName(exerciseName);
         setRepGoal(repGoal);
         setWeight(weight);
         setSets(sets);
@@ -70,6 +70,12 @@ public class Exercise {
         }
     }
 
+    private void validateRepsPerSet(int repsPerSet) {
+        if (repsPerSet <= 0) {
+            throw new IllegalArgumentException("RepsPerSet can not be 0 or less than 0.");
+        }
+    }
+
     /**
      * Checks if restTime is valid, valid is more than 0
      *
@@ -81,6 +87,7 @@ public class Exercise {
         }
     }
     public void setExerciseName(String exerciseName){
+        validateExerciseName(exerciseName);
         this.exerciseName = exerciseName;
     }
 
@@ -113,6 +120,15 @@ public class Exercise {
 
     public int getSets(){
         return this.sets;
+    }
+
+    public int getRepsPerSet() {
+        return repsPerSet;
+    }
+
+    public void setRepsPerSet(int repsPerSet) {
+        validateRepsPerSet(repsPerSet);
+        this.repsPerSet = repsPerSet;
     }
 
     public void setRestTime(int restTime) {

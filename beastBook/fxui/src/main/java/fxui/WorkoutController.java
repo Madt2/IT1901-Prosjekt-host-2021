@@ -52,6 +52,7 @@ public class WorkoutController {
     private TableColumn<Exercise, Integer> repGoalColumn;
     private TableColumn<Exercise, Double> weightColumn;
     private TableColumn<Exercise, Integer> setsColumn;
+    private TableColumn<Exercise, Integer> repsPerSetColumn;
     private TableColumn<Exercise, Integer> restTimeColumn;
 
     private Workout workout = new Workout();
@@ -86,6 +87,9 @@ public class WorkoutController {
 
         setsColumn = new TableColumn<Exercise, Integer>("Nr of sets:");
         setsColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("sets"));
+
+        repsPerSetColumn = new TableColumn<Exercise, Integer>("Reps per set:");
+        repsPerSetColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("repsPerSet"));
         
         restTimeColumn = new TableColumn<Exercise, Integer>("Rest time:");
         restTimeColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("restTime"));
@@ -94,6 +98,7 @@ public class WorkoutController {
         workout_table.getColumns().add(repGoalColumn);
         workout_table.getColumns().add(weightColumn);
         workout_table.getColumns().add(setsColumn);
+        workout_table.getColumns().add(repsPerSetColumn);
         workout_table.getColumns().add(restTimeColumn);
 
         editTable();
@@ -106,7 +111,7 @@ public class WorkoutController {
 
         exerciseNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         exerciseNameColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Exercise,String>>(){
-
+        
             @Override
             public void handle(CellEditEvent<Exercise, String> event){
                 try{
@@ -186,6 +191,26 @@ public class WorkoutController {
                 }
             }
         });
+
+        repsPerSetColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        repsPerSetColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Exercise,Integer>>(){
+            @Override
+            public void handle(CellEditEvent<Exercise, Integer> event){
+                try{
+                    Exercise exercise = event.getRowValue();
+                    exercise.setRepsPerSet(event.getNewValue());
+                    emptyExceptionFeedback();
+                }
+
+                catch(NumberFormatException i){
+                    exceptionFeedback.setText("Value can not be in string format, must be number");
+                }
+
+                catch (Exception e) {
+                    exceptionFeedback.setText(e.getMessage() + " Value was not changed.");
+                }
+            }
+        });
    
         restTimeColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         restTimeColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Exercise,Integer>>(){
@@ -220,6 +245,7 @@ public class WorkoutController {
         repGoalColumn.setPrefWidth(75);
         weightColumn.setPrefWidth(75);
         setsColumn.setPrefWidth(75);
+        repsPerSetColumn.setPrefWidth(75);
         restTimeColumn.setPrefWidth(75);
     }
 
