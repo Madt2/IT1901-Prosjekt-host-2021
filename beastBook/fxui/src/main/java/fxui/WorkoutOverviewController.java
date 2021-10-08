@@ -61,4 +61,10 @@ public class WorkoutOverviewController {
         AnchorPane pane =  FXMLLoader.load(getClass().getResource("HomeScreen.fxml"));
         rootPane.getChildren().setAll(pane);
     }
+
+    @FXML
+    void loadLogin(ActionEvent event) throws IOException{
+        AnchorPane pane =  FXMLLoader.load(getClass().getResource("Login.fxml"));
+        rootPane.getChildren().setAll(pane);
+    }
 }

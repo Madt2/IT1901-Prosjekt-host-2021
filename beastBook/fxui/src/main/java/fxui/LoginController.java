@@ -10,12 +10,15 @@ import java.io.IOException;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.lang.IllegalArgumentException;
+import java.util.Objects;
+
 import javafx.fxml.FXMLLoader;
 import core.User;
+import javafx.scene.text.Text;
 import json.BeastBookPersistence;
 
 public class LoginController {
-    private User user;
+    private User user = new User();
 
     @FXML
     private AnchorPane rootPane;
@@ -27,13 +30,16 @@ public class LoginController {
     private TextField password_input;
 
     @FXML
+    private Text login_error;
+
+    @FXML
     private Button register_button;
 
     @FXML
     private Button login_button;
 
     @FXML
-    void loadHome(ActionEvent event) throws IOException {
+    void loadHome() throws IOException {
         AnchorPane pane =  FXMLLoader.load(getClass().getResource("HomeScreen.fxml"));
         rootPane.getChildren().setAll(pane);
     }
@@ -48,18 +54,27 @@ public class LoginController {
 
 
     @FXML
-    void loginUser(ActionEvent event) throws IllegalArgumentException {
+    void loginUser(ActionEvent event) throws IllegalArgumentException, IOException {
         String userName = username_input.getText();
         String password = password_input.getText();
-/*        for (String u:userBase) {
-            if (u.equals(userName)) {
-                user = getUser(u); //Skal hente bruker objekt fra JSON-fil
-                break;
+        if (userName != "") {
+            User login = getUser(userName);
+            if (Objects.isNull(login)) {
+                login_error.setText("No user found");
+            } else {
+                if (password != "") {
+                    if(!login.getPassword().equals(password))
+                        login_error.setText("Wrong Password");
+                    else {
+                        user = login;
+                        loadHome();
+                    }
+                } else
+                    login_error.setText("No Password given!");
             }
+        } else {
+            login_error.setText("No username given");
         }
-        if (user.getUserName() != userName) {
-            throw new IllegalArgumentException("No such user found!");
-        } */
     }
 
     private void saveUser(User user) {
@@ -68,7 +83,7 @@ public class LoginController {
             persistence.setSaveFilePath(user.getUserName());
             persistence.saveUser(user);
         } catch (IOException e) {
-            System.err.println("ERROR");
+            login_error.setText("User was not saved");
         }
     }
 
@@ -78,10 +93,10 @@ public class LoginController {
         try {
             persistence.setSaveFilePath(userName);
             User user = persistence.loadUser();
+            return user;
         } catch (IOException e) {
-            System.err.println("ERROR");
         }
-       return user;
+       return null;
     }
 
     /* public static void main(String[] args) {
