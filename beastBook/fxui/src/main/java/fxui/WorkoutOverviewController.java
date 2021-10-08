@@ -109,6 +109,16 @@ public class WorkoutOverviewController {
         return this.workout;
     }
 
+    // for testing
+    public List<Workout> getAllWorkouts() {
+        return new ArrayList<>(allWorkouts);
+    }
+
+    // for testing
+    public Workout getTable(int row){
+        return workout_overview.getItems().get(row);
+    }
+
     private void setColumnsSize(){
         workoutNameColumn.setPrefWidth(150);    
     }
