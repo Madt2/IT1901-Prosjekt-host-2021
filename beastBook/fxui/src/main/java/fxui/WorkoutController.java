@@ -108,7 +108,7 @@ public class WorkoutController {
     // TODO NumberFormatException is not catched. Must find a solution 
 
     private void editTable(){
-
+        
         exerciseNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         exerciseNameColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Exercise,String>>(){
         
@@ -235,7 +235,7 @@ public class WorkoutController {
        
         workout_table.getItems().setAll(workout.getExercises());
     }
-
+    
     public TableView<Exercise> getWorkoutTable(){
         return workout_table;
     }

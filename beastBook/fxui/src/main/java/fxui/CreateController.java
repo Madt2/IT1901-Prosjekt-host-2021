@@ -24,7 +24,7 @@ public class CreateController {
     private MenuBar menuBar;
 
     @FXML
-    private TableView<Exercise> workout_table;
+    private TableView<Exercise> workout_table = new TableView<Exercise>();
 
     @FXML
     private Text exceptionFeedback;
@@ -77,8 +77,9 @@ public class CreateController {
      * After the columns are created, they are added to the table view. 
      */
     public void setTable() {
+       
         workout_table.getColumns().clear();
-        
+         
         exerciseNameColumn = new TableColumn<Exercise, String>("Exercise name");
         exerciseNameColumn.setCellValueFactory(new PropertyValueFactory<Exercise, String>("exerciseName"));
         
@@ -132,6 +133,10 @@ public class CreateController {
     public Workout getWorkout(){
         return workout;
     }
+    /*
+    public void setWorkout(Workout workout){
+        this.workout = workout;
+    }*/
 
     public TableView<Exercise> getWorkoutTable(){
         return workout_table;
@@ -149,7 +154,7 @@ public class CreateController {
     @FXML
     void addExercise() {
         
-        workout.setName(titleInput.getText());
+        this.workout.setName(titleInput.getText());
 
         try{
             exercise = new Exercise(exerciseNameInput.getText(), 
@@ -158,10 +163,11 @@ public class CreateController {
             Integer.valueOf(setsInput.getText()), 
             Integer.valueOf(restInput.getText()));
             
-            workout.addExercise(exercise);
+            this.workout.addExercise(exercise);
             workout_table.getItems().add(exercise);   
             exceptionFeedback.setText("");
             createButton.setDisable(false);
+            emptyInputFields();
         }
    
     catch(NumberFormatException i){
@@ -173,6 +179,23 @@ public class CreateController {
         }
         
     }
+
+      /**
+     *
+     * Empties all the input fields. Should be called when a exercise is successfully added to the workout
+     */
+    private void emptyInputFields(){
+        exerciseNameInput.setText("");
+        repsInput.setText("");
+        weigthInput.setText("");
+        setsInput.setText("");
+        restInput.setText("");
+    }
+
+    public Text getExceptionFeedback(){
+        return exceptionFeedback;
+    }
+
     
     /**
      * Loads a workout using title input in GUI
