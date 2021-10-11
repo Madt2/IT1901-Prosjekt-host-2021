@@ -14,6 +14,7 @@ import org.testfx.matcher.control.TextInputControlMatchers;
 
 import core.Exercise;
 import core.Workout;
+import core.User;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -28,6 +29,7 @@ import javafx.stage.Stage;
 public class CreateControllerTest extends ApplicationTest{
 
     private CreateController controller;
+    private User user;
     
     //@FXML
     //private TableView<Exercise> workout_table;
@@ -36,17 +38,21 @@ public class CreateControllerTest extends ApplicationTest{
     @Override
     public void start(final Stage stage) throws IOException {
         final FXMLLoader loader = new FXMLLoader(this.getClass().getResource("Create.fxml"));
-        final Parent root = loader.load();
         controller = new CreateController();
-        controller = loader.getController();
+        loader.setController(controller);
+        final Parent root = loader.load();
+        user = new User();
+        controller.setUser(user);
+
+        //controller = loader.getController();
         stage.setScene(new Scene(root));
         stage.show();
     }  
     
     @Test
     void testSetupTableView() {
-
-        controller = new CreateController();
+/*
+        //controller = new CreateController();
         Exercise e1 = new Exercise("Benchpress", 25, 70, 5, 60);
         //workout_table = controller.getWorkoutTable();
         controller.getWorkout().addExercise(e1);
@@ -86,6 +92,7 @@ public class CreateControllerTest extends ApplicationTest{
         controller.getTable(1).setRestTime(120);
         Assertions.assertNotEquals(60, controller.getTable(1).getRestTime());
         Assertions.assertEquals(120, controller.getTable(1).getRestTime());
+        */
     }
 
     
@@ -119,7 +126,6 @@ public class CreateControllerTest extends ApplicationTest{
         Assertions.assertEquals(2, controller.getWorkout().getExercises().size());
     }
    
-
     @Test
     void testWrongInputFails() {
        /*
@@ -129,7 +135,7 @@ public class CreateControllerTest extends ApplicationTest{
         */
         //workout_table = controller.getWorkoutTable();
         // Should not another object because of wrong format
-        clickOn("#exerciseNameInput", MouseButton.PRIMARY).write("Dead lift");
+        clickOn("#exerciseNameInput", MouseButton.PRIMARY).write("Deadlift");
         clickOn("#repsInput", MouseButton.PRIMARY).write("50");
         clickOn("#weigthInput", MouseButton.PRIMARY).write("Not a Double");
         clickOn("#setsInput", MouseButton.PRIMARY).write("Not a Integer");
@@ -139,6 +145,5 @@ public class CreateControllerTest extends ApplicationTest{
         Assertions.assertNotEquals("", controller.getExceptionFeedback().toString());
         }
         
-    
-        
+
 }
