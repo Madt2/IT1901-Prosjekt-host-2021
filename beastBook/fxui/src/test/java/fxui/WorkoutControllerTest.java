@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;
 import core.Exercise;
 import core.Workout;
+import core.User;
 import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -21,6 +22,7 @@ import javafx.stage.Stage;
 public class WorkoutControllerTest extends ApplicationTest{
     
     private WorkoutController wc;
+    private User user;
 
     @FXML
     private TableView<Exercise> workout_table;
@@ -33,9 +35,12 @@ public class WorkoutControllerTest extends ApplicationTest{
 
     @Override
     public void start(final Stage stage) throws IOException {
+        wc = new WorkoutController();
         final FXMLLoader loader = new FXMLLoader(this.getClass().getResource("Workout.fxml"));
+        loader.setController(wc);
         final Parent root = loader.load();
-        wc = loader.getController();
+        user = new User("Mats", "Brage");
+        wc.setUser(user);
         stage.setScene(new Scene(root));
         stage.show();
     }
