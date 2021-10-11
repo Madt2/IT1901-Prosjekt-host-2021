@@ -219,7 +219,6 @@ public class CreateController {
             setTable();
             exceptionFeedback.setText("");
         } catch (Exception e) {
-            System.err.println(e);
             exceptionFeedback.setText("Workout not found!");
         }
 
@@ -237,8 +236,8 @@ public class CreateController {
         workout.setName(titleInput.getText());
 
         if(titleInput.getText() == null || titleInput.getText().equals("")){
-            System.err.println("Input title is empty, please enter name to workout");
-            exceptionFeedback.setText("Missing Title!");
+            //System.err.println("Input title is empty, please enter name to workout");
+            exceptionFeedback.setText("Input title is empty, please enter name to workout");
         }
         else {
             try {
