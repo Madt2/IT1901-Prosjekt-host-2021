@@ -21,8 +21,9 @@ public class LoginControllerTest extends ApplicationTest {
     @Override
     public void start(final Stage stage) throws Exception {
         final FXMLLoader loader = new FXMLLoader(getClass().getResource("Login.fxml"));
+        lc = new LoginController();
+        loader.setController(lc);
         final Parent root = loader.load();
-        this.lc = loader.getController();
         stage.setScene(new Scene(root));
         stage.show();
     }
