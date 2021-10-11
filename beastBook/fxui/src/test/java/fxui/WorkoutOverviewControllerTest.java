@@ -35,11 +35,12 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
     public void start(final Stage stage) throws IOException {
         final FXMLLoader loader = new FXMLLoader(this.getClass().getResource("WorkoutOverview.fxml"));
         final Parent root = loader.load();
+        woc = new WorkoutOverviewController();
         woc = loader.getController();
         stage.setScene(new Scene(root));
         stage.show();
     }
-
+    /*
     @BeforeEach
     void setup(){
         e1 = new Exercise("Deadlifts", 8, 100, 3, 180);
@@ -49,27 +50,49 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
         w1.addExercise(e1);
         woc.addToAllWorkouts(w1);
         woc.addToAllWorkouts(w2);
-    }
-
-    // TODO Find a method which dont use Platform.runLater ..
+    }*/
+    
     @Test
     void testSetupTableView() {
-        Platform.runLater(new Runnable(){
-            @Override
-            public void run(){
-                woc.setTable();
+        woc = new WorkoutOverviewController();
+        w1 = new Workout("Back");
+        w2 = new Workout("Push");
+        e1 = new Exercise("Deadlifts", 8, 100, 3, 180);
+        
+        w1.addExercise(e1);
+        woc.addToAllWorkouts(w1);
+        woc.addToAllWorkouts(w2);
+        woc.setTable();
 
-                Assertions.assertEquals("Back", woc.getTable(0).getName());
-                woc.getTable(0).setName("Biceps");
-                Assertions.assertNotEquals("Back", woc.getTable(0).getName());
-                Assertions.assertEquals("Biceps", woc.getTable(0).getName());
-                Assertions.assertEquals("Push", woc.getTable(1).getName());
+        Assertions.assertEquals("Back", woc.getTable(0).getName());
+        woc.getTable(0).setName("Biceps");
+        Assertions.assertNotEquals("Back", woc.getTable(0).getName());
+        Assertions.assertEquals("Biceps", woc.getTable(0).getName());
+        Assertions.assertEquals("Push", woc.getTable(1).getName());
 
-                Workout w3 = new Workout("Core");
-                woc.addToAllWorkouts(w3);
-                woc.setTable();
-                Assertions.assertEquals("Core", woc.getTable(2).getName());
-            }
-        });
+        Workout w3 = new Workout("Core");
+
+        woc.addToAllWorkouts(w3);
+        woc.setTable();
+        Assertions.assertEquals("Core", woc.getTable(2).getName());
+    }
+    
+    @Test
+    void testClickedWorkoutIsCorrect(){
+        /*Platform.setImplicitExit(false);
+        WorkoutOverviewController newController = new WorkoutOverviewController();
+        newController = woc;*/
+    
+        Workout w1 = new Workout("Workout 1");
+        Workout w2 = new Workout("Workout 2");
+        Workout w3 = new Workout("Workout 3");
+        
+        woc.addToAllWorkouts(w1);
+        woc.addToAllWorkouts(w2);
+
+        workout_overview = woc.getWorkoutOverview();
+        woc.setTable();
+    
+        //clickOn("#workout_overview").write("HEI!");
     }
 }

@@ -33,7 +33,7 @@ public class WorkoutOverviewController {
     private Button back_button;
 
     @FXML
-    private TableView<Workout> workout_overview;
+    private TableView<Workout> workout_overview = new TableView<Workout>();
 
     private TableColumn<Workout, String> workoutNameColumn;
     private List<Workout> allWorkouts = new ArrayList<>();
@@ -123,6 +123,10 @@ public class WorkoutOverviewController {
     // for testing
     public Workout getTable(int row){
         return workout_overview.getItems().get(row);
+    }
+
+    public TableView<Workout> getWorkoutOverview(){
+        return workout_overview;
     }
 
     private void setColumnsSize(){
