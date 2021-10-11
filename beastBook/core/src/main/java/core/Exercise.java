@@ -26,6 +26,8 @@ public class Exercise {
         setRestTime(restTime);
     }
 
+    public Exercise() {}
+
     /**
      * Checks if name is valid, valid is not blank
      *
