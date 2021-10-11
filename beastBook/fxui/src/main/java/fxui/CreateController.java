@@ -179,8 +179,7 @@ public class CreateController {
         }
         
     }
-
-      /**
+    /**
      *
      * Empties all the input fields. Should be called when a exercise is successfully added to the workout
      */
