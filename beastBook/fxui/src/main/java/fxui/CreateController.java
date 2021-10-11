@@ -1,5 +1,6 @@
 package fxui;
 
+import core.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
@@ -14,6 +15,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
+import json.BeastBookPersistence;
 
 public class CreateController {
 
@@ -66,6 +68,7 @@ public class CreateController {
     private TableColumn<Exercise, Double> weightColumn;
     private TableColumn<Exercise, Integer> setsColumn;
     private TableColumn<Exercise, Integer> restTimeColumn;
+    private User user;
 
     public void initialize(){
         setTable();
@@ -210,10 +213,9 @@ public class CreateController {
             exceptionFeedback.setText("Missing Title!");
             return;
         }
-        String filename = titleInput.getText();
+
         try {
-            workout = new Workout();
-            workout.loadWorkout(filename);
+            workout = user.getWorkout(titleInput.getText());
             setTable();
             exceptionFeedback.setText("");
         } catch (Exception e) {
@@ -240,7 +242,12 @@ public class CreateController {
         }
         else {
             try {
-                workout.saveWorkout();
+                user.addWorkout(workout);
+
+                BeastBookPersistence persistence = new BeastBookPersistence();
+                persistence.setSaveFilePath(user.getUserName());
+                persistence.saveUser(user);
+
                 exceptionFeedback.setText("Workout saved!");
             } catch (Exception e) {
                 System.err.println(e);
@@ -251,14 +258,27 @@ public class CreateController {
 
     @FXML
     void loadHome(ActionEvent event) throws IOException{
-        AnchorPane pane =  FXMLLoader.load(getClass().getResource("HomeScreen.fxml"));
+        HomeScreenController homeScreenController = new HomeScreenController();
+        FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("HomeScreen.fxml"));
+        fxmlLoader.setController(homeScreenController);
+        homeScreenController.setUser(user);
+
+        AnchorPane pane =  fxmlLoader.load();
         rootPane.getChildren().setAll(pane);
     }
 
     @FXML
     void loadLogin(ActionEvent event) throws IOException{
-        AnchorPane pane =  FXMLLoader.load(getClass().getResource("Login.fxml"));
+        LoginController loginController = new LoginController();
+        FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("Login.fxml"));
+        fxmlLoader.setController(loginController);
+
+        AnchorPane pane =  fxmlLoader.load();
         rootPane.getChildren().setAll(pane);
+    }
+
+    void setUser(User user) {
+        this.user = user;
     }
 
 }

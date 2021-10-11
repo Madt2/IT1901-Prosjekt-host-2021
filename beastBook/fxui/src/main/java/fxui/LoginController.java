@@ -40,7 +40,12 @@ public class LoginController {
 
     @FXML
     void loadHome() throws IOException {
-        AnchorPane pane =  FXMLLoader.load(getClass().getResource("HomeScreen.fxml"));
+        HomeScreenController homeScreenController = new HomeScreenController();
+        FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("HomeScreen.fxml"));
+        fxmlLoader.setController(homeScreenController);
+        homeScreenController.setUser(user);
+
+        AnchorPane pane =  fxmlLoader.load();
         rootPane.getChildren().setAll(pane);
     }
 

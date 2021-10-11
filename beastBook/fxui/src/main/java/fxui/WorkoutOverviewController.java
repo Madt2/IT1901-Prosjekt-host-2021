@@ -1,5 +1,6 @@
 package fxui;
 
+import core.User;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -39,15 +40,16 @@ public class WorkoutOverviewController {
     private List<Workout> allWorkouts = new ArrayList<>();
     public static Workout clickedWorkout = new Workout();  
     private Workout workout = new Workout();
+    private User user;
 
     public void initialize(){
         setTable();
     } 
     
     public void setTable() {
+        setWorkouts();
         workout_overview.getColumns().clear();
         // TODO Get data from JSON-file to load in here. At the moment, we only use "Fake data" to get some data in the GUI.
-
         // "FAKE DATA"
         //setFakeData();
         workoutNameColumn = new TableColumn<Workout, String>("Workout name:");
@@ -66,15 +68,13 @@ public class WorkoutOverviewController {
                 if (! row.isEmpty() && event.getButton()==MouseButton.PRIMARY 
                      && event.getClickCount() == 1) {
                     Workout clickedRow = row.getItem();
-                    
-                    // NON-STATIC
-                    setWorkout(clickedRow);
 
-                    //TODO
-                    // Find a way that we do not have to use static variable
-                    clickedWorkout = clickedRow;
-                    
-                    loadClickedWorkout(clickedRow, event);
+                    setWorkout(clickedRow);
+                    try {
+                        loadWorkout();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
             });
             return row;
@@ -133,46 +133,58 @@ public class WorkoutOverviewController {
         workoutNameColumn.setPrefWidth(150);    
     }
 
-    private void loadClickedWorkout(Workout workout, MouseEvent event) {
+/*    private void loadClickedWorkout(Workout workout, MouseEvent event) {
         try {
             clickedWorkout = workout;
             loadWorkout(event, workout);
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     @FXML
     void loadHome(ActionEvent event) throws IOException{
-        AnchorPane pane =  FXMLLoader.load(getClass().getResource("HomeScreen.fxml"));
+        HomeScreenController homeScreenController = new HomeScreenController();
+        FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("HomeScreen.fxml"));
+        fxmlLoader.setController(homeScreenController);
+        homeScreenController.setUser(user);
+
+        AnchorPane pane =  fxmlLoader.load();
         rootPane.getChildren().setAll(pane);
     }
 
     @FXML
     void loadLogin(ActionEvent event) throws IOException{
-        AnchorPane pane =  FXMLLoader.load(getClass().getResource("Login.fxml"));
+        LoginController loginController = new LoginController();
+        FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("Login.fxml"));
+        fxmlLoader.setController(loginController);
+
+        AnchorPane pane =  fxmlLoader.load();
         rootPane.getChildren().setAll(pane);
     }
 
     @FXML
-    void loadWorkout(MouseEvent event, Workout workout) throws IOException{
+    void loadWorkout() throws IOException{
+        try {
+            WorkoutController workoutController = new WorkoutController();
+            FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("Workout.fxml"));
+            fxmlLoader.setController(workoutController);
+            workoutController.setUser(user);
+            workoutController.setWorkout(this.getWorkout());
 
-        AnchorPane pane =  FXMLLoader.load(getClass().getResource("Workout.fxml"));
-        rootPane.getChildren().setAll(pane);
+            AnchorPane pane =  fxmlLoader.load();
+            rootPane.getChildren().setAll(pane);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
-        // TODO Try to get "our own controller" to be loaded in the new pane
+    }
+    
+    void setUser(User user){
+        this.user = user;
+    }
 
-       /* FXMLLoader loader = new FXMLLoader();
-
-        WorkoutController wc = new WorkoutController();
-        wc.setWorkout(workout);
-        System.out.println(wc.getWorkout());
-
-        loader.setController(wc);
-        loader.setLocation(getClass().getResource("Workout.fxml"));
-        AnchorPane pane =  FXMLLoader.load(loader.getLocation());
-        rootPane.getChildren().setAll(pane); 
-        */
-
+    void setWorkouts() {
+        this.allWorkouts = user.getWorkouts();
     }
 }

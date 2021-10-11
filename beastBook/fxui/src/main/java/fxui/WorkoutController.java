@@ -1,5 +1,6 @@
 package fxui;
 
+import core.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
@@ -24,6 +25,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TableColumn;
+import json.BeastBookPersistence;
 
 public class WorkoutController {
 
@@ -48,6 +50,8 @@ public class WorkoutController {
     @FXML
     private Text exceptionFeedback;
 
+    private User user;
+
     private TableColumn<Exercise, String> exerciseNameColumn;
     private TableColumn<Exercise, Integer> repGoalColumn;
     private TableColumn<Exercise, Double> weightColumn;
@@ -60,7 +64,7 @@ public class WorkoutController {
     //@FXML
     public void initialize(){
         // STATIC: (fyfy)
-        setWorkout(WorkoutOverviewController.clickedWorkout);
+        //setWorkout(WorkoutOverviewController.clickedWorkout);
         setTable();
         title.setText(workout.getName());
     }
@@ -115,8 +119,12 @@ public class WorkoutController {
             @Override
             public void handle(CellEditEvent<Exercise, String> event){
                 try{
+
                     Exercise exercise = event.getRowValue();
                     exercise.setExerciseName(event.getNewValue());
+
+                    saveUserState();
+
                     emptyExceptionFeedback();
                 }
 
@@ -138,6 +146,9 @@ public class WorkoutController {
                 try{
                     Exercise exercise = event.getRowValue();
                     exercise.setRepGoal(event.getNewValue());
+
+                    saveUserState();
+
                     emptyExceptionFeedback();
                 }
 
@@ -159,6 +170,9 @@ public class WorkoutController {
                 try{
                     Exercise exercise = event.getRowValue();
                     exercise.setWeight(event.getNewValue());
+
+                    saveUserState();
+
                     emptyExceptionFeedback();
                 }
 
@@ -179,6 +193,9 @@ public class WorkoutController {
                 try{
                     Exercise exercise = event.getRowValue();
                     exercise.setSets(event.getNewValue());
+
+                    saveUserState();
+
                     emptyExceptionFeedback();
                 }
 
@@ -199,6 +216,9 @@ public class WorkoutController {
                 try{
                     Exercise exercise = event.getRowValue();
                     exercise.setRepsPerSet(event.getNewValue());
+
+                    saveUserState();
+
                     emptyExceptionFeedback();
                 }
 
@@ -219,6 +239,9 @@ public class WorkoutController {
                 try{
                     Exercise exercise = event.getRowValue();
                     exercise.setRestTime(event.getNewValue());
+
+                    saveUserState();
+
                     emptyExceptionFeedback();
                 }
 
@@ -259,14 +282,32 @@ public class WorkoutController {
 
     @FXML
     void loadLogin(ActionEvent event) throws IOException{
-        AnchorPane pane =  FXMLLoader.load(getClass().getResource("Login.fxml"));
+        LoginController loginController = new LoginController();
+        FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("Login.fxml"));
+        fxmlLoader.setController(loginController);
+
+        AnchorPane pane =  fxmlLoader.load();
         rootPane.getChildren().setAll(pane);
     }
 
     @FXML
     void loadOverview(ActionEvent event) throws IOException{
-        AnchorPane pane =  FXMLLoader.load(getClass().getResource("WorkoutOverview.fxml"));
+        WorkoutOverviewController workoutOverviewController = new WorkoutOverviewController();
+        FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("WorkoutOverview.fxml"));
+        fxmlLoader.setController(workoutOverviewController);
+        workoutOverviewController.setUser(user);
+
+        AnchorPane pane =  fxmlLoader.load();
         rootPane.getChildren().setAll(pane);
     }
 
+    void setUser(User user){
+        this.user = user;
+    }
+
+    private void saveUserState() throws IOException {
+        BeastBookPersistence persistence = new BeastBookPersistence();
+        persistence.setSaveFilePath(user.getUserName());
+        persistence.saveUser(user);
+    }
 }
