@@ -4,14 +4,13 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/16" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxui.WorkoutController">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fxui.WorkoutController">
    <children>
       <MenuBar>
          <menus>
@@ -32,16 +31,8 @@
             </Menu>
          </menus>
       </MenuBar>
-      <TableView fx:id="workout_table" layoutX="72.0" layoutY="85.0" prefHeight="60.0" prefWidth="456.0">
-         <columns>
-            <TableColumn prefWidth="90.0" text="Exercise:" />
-            <TableColumn prefWidth="90.0" text="Rep Goal:" />
-            <TableColumn prefWidth="90.0" text="Weight Lifted:" />
-            <TableColumn prefWidth="90.0" text="Set x:" />
-            <TableColumn prefWidth="90.0" text="Rest Time:" />
-         </columns>
-      </TableView>
-      <Button fx:id="back_button" layoutX="14.0" layoutY="52.0" mnemonicParsing="false" text="&lt;- Back" />
+      <TableView fx:id="workout_table" layoutX="72.0" layoutY="85.0" minHeight="200.0" minWidth="477.0" prefHeight="60.0" prefWidth="477.0" />
+      <Button fx:id="back_button" layoutX="14.0" layoutY="52.0" mnemonicParsing="false" onAction="#loadOverview" text="&lt;- Back" />
       <Text fx:id="title" layoutX="288.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title">
          <font>
             <Font size="18.0" />
@@ -49,5 +40,9 @@
       </Text>
       <TextField fx:id="date_input" layoutX="86.0" layoutY="49.0" />
       <Text layoutX="86.0" layoutY="46.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date:" />
+      <Text fx:id="exceptionFeedback" fill="#f80000" layoutX="76.0" layoutY="317.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="402.0">
+         <font>
+            <Font size="15.0" />
+         </font></Text>
    </children>
 </AnchorPane>

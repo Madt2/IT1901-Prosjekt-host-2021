@@ -5,7 +5,8 @@ public class Exercise {
     private String exerciseName;
     private int repGoal;
     private double weight;
-    private int sets; 
+    private int sets;
+    private int repsPerSet;
     private int restTime;
 
     /**
@@ -17,16 +18,12 @@ public class Exercise {
      * @param sets Number of sets to be performed
      * @param restTime How much rest between sets
      */
-    public Exercise(String exerciseName, int repGoal, double weight, int sets, int restTime){
-        this.exerciseName = exerciseName;
-        validateRepGoal(repGoal);
-        this.repGoal = repGoal;
-        validateWeight(weight);
-        this.weight = weight;
-        validateSets(sets);
-        this.sets = sets;
-        validateRestTime(restTime);
-        this.restTime = restTime;
+    public Exercise(String exerciseName, int repGoal, double weight, int sets, int restTime) {
+        setExerciseName(exerciseName);
+        setRepGoal(repGoal);
+        setWeight(weight);
+        setSets(sets);
+        setRestTime(restTime);
     }
 
     public Exercise() {}
@@ -75,6 +72,12 @@ public class Exercise {
         }
     }
 
+    private void validateRepsPerSet(int repsPerSet) {
+        if (repsPerSet <= 0) {
+            throw new IllegalArgumentException("RepsPerSet can not be 0 or less than 0.");
+        }
+    }
+
     /**
      * Checks if restTime is valid, valid is more than 0
      *
@@ -85,7 +88,6 @@ public class Exercise {
             throw new IllegalArgumentException("RestTime can not be 0 or less than 0.");
         }
     }
-
     public void setExerciseName(String exerciseName){
         validateExerciseName(exerciseName);
         this.exerciseName = exerciseName;
@@ -120,6 +122,15 @@ public class Exercise {
 
     public int getSets(){
         return this.sets;
+    }
+
+    public int getRepsPerSet() {
+        return repsPerSet;
+    }
+
+    public void setRepsPerSet(int repsPerSet) {
+        validateRepsPerSet(repsPerSet);
+        this.repsPerSet = repsPerSet;
     }
 
     public void setRestTime(int restTime) {

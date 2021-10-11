@@ -10,8 +10,7 @@ public class Workout {
     private String name;
     private List<Exercise> exercises = new ArrayList<>();
     private ReadWrite readWrite;
-
-
+    
     /**
      * Contructor for workout with name parameter.
      * @param name name of the workout.

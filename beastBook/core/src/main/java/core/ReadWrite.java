@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class ReadWrite {
 
-    String userDir = System.getProperty("user.dir") + "/sampleData";
+    private String userDir = System.getProperty("user.dir") + "/sampleData";
 
     public ReadWrite () {
         new File(userDir).mkdirs();
