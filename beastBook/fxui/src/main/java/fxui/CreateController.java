@@ -1,19 +1,18 @@
 package fxui;
 
-import core.ReadWrite;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.event.ActionEvent;
-
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.List;
 
 import core.Workout;
 import core.Exercise;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.beans.property.SimpleStringProperty;
 
 public class CreateController {
@@ -25,28 +24,13 @@ public class CreateController {
     private MenuBar menuBar;
 
     @FXML
-    private TableView<Exercise> workout_table;
+    private TableView<Exercise> workout_table = new TableView<Exercise>();
 
     @FXML
     private Text exceptionFeedback;
 
     @FXML
-    public TableColumn<Exercise, String> exerciseName;
-
-    @FXML
-    public TableColumn<Exercise, String> repGoal;
-
-    @FXML
-    public TableColumn<Exercise, String> weight;
-
-    @FXML
-    public TableColumn<Exercise, String> sets;
-
-    @FXML
-    public TableColumn<Exercise, String> restTime;
-
-/*    @FXML
-    private Button back_button;*/
+    private Button back_button;
 
     @FXML
     private TextField exerciseNameInput;
@@ -76,30 +60,61 @@ public class CreateController {
     private Button addExercise;
 
     private Workout workout = new Workout();
-
     private Exercise exercise;
+    private TableColumn<Exercise, String> exerciseNameColumn;
+    private TableColumn<Exercise, Integer> repGoalColumn;
+    private TableColumn<Exercise, Double> weightColumn;
+    private TableColumn<Exercise, Integer> setsColumn;
+    private TableColumn<Exercise, Integer> restTimeColumn;
 
-    //Need to add back the back-button
-
-    public void initialize() {
-        menuBar.setVisible(false);
-    }
-
+    public void initialize(){
+        setTable();
+    } 
 
     /**
-     *
-     * Sets the workout table collumns. If a workout has exercises added already (typical if loaded from file), the workout 
-     * table add these exercises to the collumns/rows. 
+     * 
+     * Sets the workout table columns. Clears the columns first, to avoid duplicate columns.
+     * After the columns are created, they are added to the table view. 
      */
     public void setTable() {
+       
+        workout_table.getColumns().clear();
+         
+        exerciseNameColumn = new TableColumn<Exercise, String>("Exercise name");
+        exerciseNameColumn.setCellValueFactory(new PropertyValueFactory<Exercise, String>("exerciseName"));
         
-        exerciseName.setCellValueFactory(new PropertyValueFactory<Exercise, String>("exerciseName"));
-        repGoal.setCellValueFactory(new PropertyValueFactory<Exercise, String>("repGoal"));
-        weight.setCellValueFactory(new PropertyValueFactory<Exercise, String>("weight"));
-        sets.setCellValueFactory(new PropertyValueFactory<Exercise, String>("sets"));
-        restTime.setCellValueFactory(new PropertyValueFactory<Exercise, String>("restTime"));
-        
+        repGoalColumn = new TableColumn<Exercise, Integer>("Rep goal");
+        repGoalColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("repGoal"));
+
+        weightColumn = new TableColumn<Exercise, Double>("Weight");
+        weightColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Double>("weight"));
+
+        setsColumn = new TableColumn<Exercise, Integer>("Nr of sets");
+        setsColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("sets"));
+
+        restTimeColumn = new TableColumn<Exercise, Integer>("Rest time");
+        restTimeColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("restTime"));
+       
+        workout_table.getColumns().add(exerciseNameColumn);
+        workout_table.getColumns().add(repGoalColumn);
+        workout_table.getColumns().add(weightColumn);
+        workout_table.getColumns().add(setsColumn);
+        workout_table.getColumns().add(restTimeColumn);
+        setColumnsSize();
         workout_table.getItems().setAll(workout.getExercises());
+    }
+
+    /**
+     * 
+     * Resizes the width of the columns
+     *  
+     */
+    private void setColumnsSize(){
+        exerciseNameColumn.setPrefWidth(100);        
+        repGoalColumn.setPrefWidth(75);
+        weightColumn.setPrefWidth(75);
+        setsColumn.setPrefWidth(75);
+        restTimeColumn.setPrefWidth(75);
     }
 
     /**
@@ -118,6 +133,14 @@ public class CreateController {
     public Workout getWorkout(){
         return workout;
     }
+    /*
+    public void setWorkout(Workout workout){
+        this.workout = workout;
+    }*/
+
+    public TableView<Exercise> getWorkoutTable(){
+        return workout_table;
+    }
 
     /**
      *
@@ -131,27 +154,20 @@ public class CreateController {
     @FXML
     void addExercise() {
         
-        createButton.setDisable(false);
+        this.workout.setName(titleInput.getText());
 
-        workout.setName(titleInput.getText());
         try{
             exercise = new Exercise(exerciseNameInput.getText(), 
             Integer.valueOf(repsInput.getText()),
-             Double.valueOf(weigthInput.getText()), 
-             Integer.valueOf(setsInput.getText()), 
-             Integer.valueOf(restInput.getText()));
-
-            workout.addExercise(exercise);
-            emptyInputFields();
-
-            exerciseName.setCellValueFactory(c -> new SimpleStringProperty(new String(exercise.getExerciseName())));
-            repGoal.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getRepGoal()))));
-            weight.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getWeight()))));
-            sets.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getSets()))));
-            restTime.setCellValueFactory(c -> new SimpleStringProperty(new String(String.valueOf(exercise.getRestTime()))));
-
+            Double.valueOf(weigthInput.getText()), 
+            Integer.valueOf(setsInput.getText()), 
+            Integer.valueOf(restInput.getText()));
+            
+            this.workout.addExercise(exercise);
             workout_table.getItems().add(exercise);   
             exceptionFeedback.setText("");
+            createButton.setDisable(false);
+            emptyInputFields();
         }
    
     catch(NumberFormatException i){
@@ -163,7 +179,6 @@ public class CreateController {
         }
         
     }
-
     /**
      *
      * Empties all the input fields. Should be called when a exercise is successfully added to the workout
@@ -175,9 +190,12 @@ public class CreateController {
         setsInput.setText("");
         restInput.setText("");
     }
-    
-    
 
+    public Text getExceptionFeedback(){
+        return exceptionFeedback;
+    }
+
+    
     /**
      * Loads a workout using title input in GUI
      * If no title input is given, an error message is displayed in GUI
@@ -187,6 +205,7 @@ public class CreateController {
      */
     @FXML
     void loadWorkout(ActionEvent event) {
+        
         if (titleInput.getText().equals("") || titleInput.getText() == null) {
             exceptionFeedback.setText("Missing Title!");
             return;
@@ -213,6 +232,8 @@ public class CreateController {
      */
     @FXML
     void createWorkout(ActionEvent event) {
+        workout.setName(titleInput.getText());
+
         if(titleInput.getText() == null || titleInput.getText().equals("")){
             System.err.println("Input title is empty, please enter name to workout");
             exceptionFeedback.setText("Missing Title!");
@@ -220,12 +241,24 @@ public class CreateController {
         else {
             try {
                 workout.saveWorkout();
-                exceptionFeedback.setText("");
+                exceptionFeedback.setText("Workout saved!");
             } catch (Exception e) {
                 System.err.println(e);
                 exceptionFeedback.setText("Save Workout failed!");
             }
         }
+    }
+
+    @FXML
+    void loadHome(ActionEvent event) throws IOException{
+        AnchorPane pane =  FXMLLoader.load(getClass().getResource("HomeScreen.fxml"));
+        rootPane.getChildren().setAll(pane);
+    }
+
+    @FXML
+    void loadLogin(ActionEvent event) throws IOException{
+        AnchorPane pane =  FXMLLoader.load(getClass().getResource("Login.fxml"));
+        rootPane.getChildren().setAll(pane);
     }
 
 }
