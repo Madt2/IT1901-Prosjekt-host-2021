@@ -11,9 +11,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.text.Text;
 import javafx.util.converter.DoubleStringConverter;
-import javafx.util.converter.FloatStringConverter;
 import javafx.util.converter.IntegerStringConverter;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 
@@ -24,7 +22,6 @@ import core.Workout;
 import javafx.scene.layout.AnchorPane;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TableColumn;
 import json.BeastBookPersistence;
 
 public class WorkoutController {
@@ -61,10 +58,8 @@ public class WorkoutController {
 
     private Workout workout = new Workout();
 
-    //@FXML
+    @FXML
     public void initialize(){
-        // STATIC: (fyfy)
-        //setWorkout(WorkoutOverviewController.clickedWorkout);
         setTable();
         title.setText(workout.getName());
     }

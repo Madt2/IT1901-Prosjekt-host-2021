@@ -1,34 +1,23 @@
 package fxui;
 
-import static org.junit.jupiter.api.Assertions.*;
 
 import java.io.IOException;
 
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testfx.api.FxAssert;
 import org.testfx.framework.junit5.ApplicationTest;
-import org.testfx.matcher.base.NodeMatchers;
-import org.testfx.matcher.control.LabeledMatchers;
-import org.testfx.matcher.control.TableViewMatchers;
 import org.testfx.matcher.control.TextMatchers;
-
 import core.Exercise;
 import core.Workout;
 import core.User;
-import javafx.application.Platform;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TableView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
-import json.BeastBookPersistence;
 
 public class WorkoutControllerTest extends ApplicationTest{
     
@@ -56,15 +45,29 @@ public class WorkoutControllerTest extends ApplicationTest{
         Node node = lookup("#exerciseName").nth(1).query();
         doubleClickOn(node, MouseButton.PRIMARY).write("Biceps curl");
         press(KeyCode.ENTER).release(KeyCode.ENTER);
-        //saveUserState();
-        
-        //FxAssert.verifyThat("#exerciseName", LabeledMatchers.hasText("Hei"));
+        //FxAssert.verifyThat("#exerciseName", TableViewMatchers.hasTableCell("Biceps curl"));
+        Assertions.assertNotEquals("Benchpress", user.getWorkout("Pull workout").getExercises().get(0).getExerciseName());
         Assertions.assertEquals("Biceps curl", user.getWorkout("Pull workout").getExercises().get(0).getExerciseName());
-
-    
     }
 
-    
+    @Test
+    void testExceptionFeedback() throws IOException{
+        wc.getWorkoutTable().getColumns().get(1).setId("repGoal");
+        Node node = lookup("#repGoal").nth(1).query();
+        doubleClickOn(node, MouseButton.PRIMARY).write("-50");
+        press(KeyCode.ENTER).release(KeyCode.ENTER);
+      
+        Assertions.assertNotEquals(-50, user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());
+        Assertions.assertEquals(20, user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());
+        FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("RepGoal can not be 0 or less than 0. Value was not changed."));
+
+        doubleClickOn(node, MouseButton.PRIMARY).write("50");
+        press(KeyCode.ENTER).release(KeyCode.ENTER);
+
+        Assertions.assertNotEquals(-20, user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());
+        Assertions.assertEquals(50, user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());      
+        FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText(""));
+    }
 
     private void addWorkoutsToUser(){
         Workout workout1 = new Workout("Pull workout");
@@ -76,11 +79,13 @@ public class WorkoutControllerTest extends ApplicationTest{
 
         wc.setWorkout(workout1);
     }
-    
+
+    /*
     private void saveUserState() throws IOException {
         BeastBookPersistence persistence = new BeastBookPersistence();
         persistence.setSaveFilePath(user.getUserName());
         persistence.saveUser(user);
     }
+    */
 
 }

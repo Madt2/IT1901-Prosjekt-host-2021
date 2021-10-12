@@ -5,16 +5,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.event.ActionEvent;
 import java.io.IOException;
-
 import core.Workout;
 import core.Exercise;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
 import json.BeastBookPersistence;
 
 public class CreateController {
