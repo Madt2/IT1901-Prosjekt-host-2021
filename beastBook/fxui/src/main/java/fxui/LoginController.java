@@ -7,8 +7,6 @@ import javafx.scene.layout.AnchorPane;
 
 import javafx.event.ActionEvent;
 import java.io.IOException;
-import java.io.StringReader;
-import java.io.StringWriter;
 import java.lang.IllegalArgumentException;
 import java.util.Objects;
 
@@ -38,6 +36,10 @@ public class LoginController {
     @FXML
     private Button login_button;
 
+    /**
+     * Loads home in gui.
+     * @throws IOException
+     */
     @FXML
     void loadHome() throws IOException {
         HomeScreenController homeScreenController = new HomeScreenController();
@@ -49,6 +51,11 @@ public class LoginController {
         rootPane.getChildren().setAll(pane);
     }
 
+    /**
+     * Registers user, saves user to file. Retrieves username and password input from gui.
+     * @param event
+     * @throws IllegalArgumentException
+     */
     @FXML
     void registerUser(ActionEvent event) throws IllegalArgumentException {
         String userName = username_input.getText();
@@ -65,7 +72,12 @@ public class LoginController {
 
     }
 
-
+    /**
+     * Login for user. Validation for user-input for existing user and correct password. Also validates for empty input.
+     * @param event
+     * @throws IllegalArgumentException
+     * @throws IOException
+     */
     @FXML
     void loginUser(ActionEvent event) throws IllegalArgumentException, IOException {
         String userName = username_input.getText();
@@ -91,9 +103,10 @@ public class LoginController {
         }
     }
 
-
-
-
+    /**
+     * Help method for registerUser. Uses persistence to save.
+      * @param user user to save.
+     */
     private void saveUser(User user) {
         BeastBookPersistence persistence = new BeastBookPersistence();
         try {
@@ -104,7 +117,11 @@ public class LoginController {
         }
     }
 
-
+    /**
+     * Help method for loadUser. Uses persistence to load user.
+     * @param userName username for user to get.
+     * @return
+     */
     private User getUser(String userName) {
         BeastBookPersistence persistence = new BeastBookPersistence();
         try {
