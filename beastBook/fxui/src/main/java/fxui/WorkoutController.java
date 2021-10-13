@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -13,10 +12,7 @@ import javafx.scene.text.Text;
 import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-
 import java.io.IOException;
-
 import core.Exercise;
 import core.Workout;
 import javafx.scene.layout.AnchorPane;
