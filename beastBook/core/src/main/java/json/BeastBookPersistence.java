@@ -3,7 +3,6 @@ package json;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import core.User;
 import json.internal.BeastBookModule;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;

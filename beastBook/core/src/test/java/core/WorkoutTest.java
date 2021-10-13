@@ -2,9 +2,6 @@ package core;
 
 import org.junit.jupiter.api.*;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-
 public class WorkoutTest {
 
     private Workout testWorkout;
