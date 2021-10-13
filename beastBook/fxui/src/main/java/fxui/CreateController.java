@@ -14,7 +14,7 @@ import javafx.scene.text.Text;
 import json.BeastBookPersistence;
 
 public class CreateController {
-
+    
     @FXML
     private AnchorPane rootPane;
 
@@ -117,8 +117,9 @@ public class CreateController {
     }
 
     /**
-     *
-     * @param row the row you want to have access to / get an Exercise object from. int row 0 is the first row,  int row 1 is the second row and so on. Mainly used for test reasons
+     * Return the exercise on the specified row. Mainly used for test reasons.
+     * @param row the row you want to have access to / get an Exercise object from. int row 0 is the first row,  int row 1 is the second row and so on. 
+     * 
      * @return the Exercise object on the the requested row 
      */
     public Exercise getTable(int row){
@@ -132,30 +133,30 @@ public class CreateController {
     public Workout getWorkout(){
         return workout;
     }
-    /*
-    public void setWorkout(Workout workout){
-        this.workout = workout;
-    }*/
-
+    
+    /**
+     *
+     * @return the the workout table
+     */
     public TableView<Exercise> getWorkoutTable(){
         return workout_table;
     }
 
     /**
      *
-     *  Runs when the "Add exercise" button is clicked. If all the input fields are in the correct format, a  Exercise object is made with the
-     *  input fields data. The exercise object is then added to the workout object and its list over exercises. The workout table is then
-     *  "reloaded" with the new exercise added to the list.
+     *  Runs when the "Add exercise" button is clicked. If all the input fields are in the correct format, a Exercise object is made with the
+     *  input fields data. The exercise object is then added to the workout object and its list over exercises, this is then connected to the signed in user. 
+     *  The workout table is then "reloaded" with the new exercise added to the list.
      *  
      *  If the input fields are not in the correct format, the method catches the Exepction. A text with red color appears on the screen with 
      *  a message to the user saying that the exercise could not be added (because of wrong inputs). The text disappears when a exercise is added successfully. 
      */
+
     @FXML
     void addExercise() {
-        
         this.workout.setName(titleInput.getText());
 
-        try{
+        try {
             exercise = new Exercise(exerciseNameInput.getText(), 
             Integer.parseInt(repsInput.getText()),
             Double.parseDouble(weigthInput.getText()),
@@ -167,16 +168,11 @@ public class CreateController {
             exceptionFeedback.setText("");
             createButton.setDisable(false);
             emptyInputFields();
-        }
-   
-    catch(NumberFormatException i){
-        exceptionFeedback.setText("Value can not be in string format, must be number");
-    }
-
-    catch (Exception e) {
-        exceptionFeedback.setText(e.getMessage());
-        }
-        
+        } catch (NumberFormatException i){
+            exceptionFeedback.setText("Value can not be in string format, must be number"); 
+        } catch (Exception e) {
+            exceptionFeedback.setText(e.getMessage());
+        }   
     }
     /**
      *
@@ -190,11 +186,6 @@ public class CreateController {
         restInput.setText("");
     }
 
-    public Text getExceptionFeedback(){
-        return exceptionFeedback;
-    }
-
-    
     /**
      * Loads a workout using title input in GUI
      * If no title input is given, an error message is displayed in GUI
@@ -209,7 +200,6 @@ public class CreateController {
             exceptionFeedback.setText("Missing Title!");
             return;
         }
-
         try {
             workout = user.getWorkout(titleInput.getText());
             setTable();
@@ -217,7 +207,6 @@ public class CreateController {
         } catch (Exception e) {
             exceptionFeedback.setText("Workout not found!");
         }
-
     }
 
     /**
@@ -231,18 +220,15 @@ public class CreateController {
     void createWorkout(ActionEvent event) {
         workout.setName(titleInput.getText());
 
-        if(titleInput.getText() == null || titleInput.getText().equals("")){
-            //System.err.println("Input title is empty, please enter name to workout");
+        if (titleInput.getText() == null || titleInput.getText().equals("")){
             exceptionFeedback.setText("Input title is empty, please enter name to workout");
         }
         else {
             try {
                 user.addWorkout(workout);
-
                 BeastBookPersistence persistence = new BeastBookPersistence();
                 persistence.setSaveFilePath(user.getUserName());
                 persistence.saveUser(user);
-
                 exceptionFeedback.setText("Workout saved!");
             } catch (Exception e) {
                 System.err.println(e);
@@ -257,7 +243,6 @@ public class CreateController {
         FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("HomeScreen.fxml"));
         fxmlLoader.setController(homeScreenController);
         homeScreenController.setUser(user);
-
         AnchorPane pane =  fxmlLoader.load();
         rootPane.getChildren().setAll(pane);
     }
@@ -267,7 +252,6 @@ public class CreateController {
         LoginController loginController = new LoginController();
         FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("Login.fxml"));
         fxmlLoader.setController(loginController);
-
         AnchorPane pane =  fxmlLoader.load();
         rootPane.getChildren().setAll(pane);
     }
@@ -275,5 +259,4 @@ public class CreateController {
     void setUser(User user) {
         this.user = user;
     }
-
 }
