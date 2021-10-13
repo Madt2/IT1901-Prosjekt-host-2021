@@ -52,6 +52,7 @@
                 <configuration>
                     <argLine>
                         --add-opens beastBook.core/core=ALL-UNNAMED
+                        @{jaCoCoArgLine} --add-opens beastBook.core/core=ALL-UNNAMED
                     </argLine>
                 </configuration>
 	        </plugin>
@@ -59,6 +60,9 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
+                <configuration>
+                    <propertyName>jaCoCoArgLine</propertyName>
+                </configuration>
             </plugin>
 
             <!-- Run the spotbugs code quality tool -->
