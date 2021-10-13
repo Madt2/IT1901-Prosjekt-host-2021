@@ -1,0 +1,14 @@
+@startuml Fxui Diagram
+scale 1
+beastBook -- fxui
+beastBook -- core
+
+fxui -- WorkoutOverviewController
+fxui -- WorkoutController
+fxui -- resources
+fxui -- WorkoutController
+fxui -- CreateController
+fxui -- LoginController
+fxui -- HomeScreenController
+fxui -- App
+@enduml
