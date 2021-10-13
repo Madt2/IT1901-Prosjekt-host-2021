@@ -39,7 +39,9 @@ public class UserTest {
 
     @Test
     void testRemoveWorkout() {
-
+        testUser.addWorkout(testWorkout);
+        testUser.removeWorkout(testWorkout);
+        Assertions.assertFalse(testUser.getWorkouts().contains(testWorkout));
     }
 
 }

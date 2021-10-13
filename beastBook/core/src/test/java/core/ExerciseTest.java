@@ -35,9 +35,9 @@ public class ExerciseTest {
         Assertions.assertThrows(IllegalArgumentException.class, () -> {
             exercise.setRestTime(-1);
         });
-/*        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
             exercise.setExerciseName("");
-        });*/
+        });
 
     }
 }
