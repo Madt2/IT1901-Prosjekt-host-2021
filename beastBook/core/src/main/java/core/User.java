@@ -13,6 +13,11 @@ public class User {
     private List<Workout> workouts = new ArrayList<Workout>();
     //private List<String> myHistory = new ArrayList<String>(); for later release
 
+    /**
+     * User object for application.
+     * @param username username for user.
+     * @param password password for user.
+     */
     public User(String username, String password) {
         setUserName(username);
         setPassword(password);
