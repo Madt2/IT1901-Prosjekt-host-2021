@@ -2,8 +2,10 @@ package fxui;
 
 
 
+import java.io.File;
 import java.io.IOException;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.testfx.framework.junit5.ApplicationTest;
@@ -28,6 +30,7 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
         woc = new WorkoutOverviewController();
         loader.setController(woc);
         woc.setUser(user);
+        user.setUserName("test");
         addWorkoutsToUser();
         final Parent root = loader.load();
         stage.setScene(new Scene(root));
@@ -81,5 +84,11 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
 
         user.addWorkout(workout1);
         user.addWorkout(workout2);
+    }
+
+    @AfterAll
+    static void cleanUp() {
+        File file = new File(System.getProperty("user.home") + "/correct");
+        file.delete();
     }
 }

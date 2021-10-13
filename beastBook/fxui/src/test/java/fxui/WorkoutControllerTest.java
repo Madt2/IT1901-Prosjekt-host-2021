@@ -1,8 +1,10 @@
 package fxui;
 
 
+import java.io.File;
 import java.io.IOException;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.testfx.api.FxAssert;
@@ -80,12 +82,10 @@ public class WorkoutControllerTest extends ApplicationTest{
         wc.setWorkout(workout1);
     }
 
-    /*
-    private void saveUserState() throws IOException {
-        BeastBookPersistence persistence = new BeastBookPersistence();
-        persistence.setSaveFilePath(user.getUserName());
-        persistence.saveUser(user);
+    @AfterAll
+    static void cleanUp() {
+        File file = new File(System.getProperty("user.home") + "/correct");
+        file.delete();
     }
-    */
 
 }

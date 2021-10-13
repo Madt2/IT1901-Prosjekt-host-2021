@@ -1,6 +1,9 @@
 package fxui;
 
+import java.io.File;
 import java.io.IOException;
+
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.testfx.api.FxAssert;
@@ -28,8 +31,7 @@ public class CreateControllerTest extends ApplicationTest{
         final Parent root = loader.load();
         user = new User();
         controller.setUser(user);
-
-        //controller = loader.getController();
+        user.setUserName("test");
         stage.setScene(new Scene(root));
         stage.show();
     }  
@@ -151,5 +153,11 @@ public class CreateControllerTest extends ApplicationTest{
         Assertions.assertEquals(30, controller.getTable(0).getWeight());
         Assertions.assertEquals(40, controller.getTable(0).getSets());
         Assertions.assertEquals(50, controller.getTable(0).getRestTime());
+    }
+
+    @AfterAll
+    static void cleanUp() {
+        File file = new File(System.getProperty("user.home") + "/correct");
+        file.delete();
     }
 }
