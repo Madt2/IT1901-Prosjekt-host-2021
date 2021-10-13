@@ -23,7 +23,7 @@ public class User {
     }
 
     public void setUserName(String username) {
-        if (username.length() > MIN_CHAR_USERNAME) {
+        if (username.length() >= MIN_CHAR_USERNAME) {
             this.username = username;
         }
         else
@@ -35,7 +35,7 @@ public class User {
     }
 
     public void setPassword(String password) {
-        if (password.length() > MIN_CHAR_PASSWORD) {
+        if (password.length() >= MIN_CHAR_PASSWORD) {
             this.password = password;
         }
         else

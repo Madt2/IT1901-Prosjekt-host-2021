@@ -44,7 +44,7 @@ public class LoginControllerTest extends ApplicationTest {
     void testLoginWithUsernameInput() {
         clickOn("#username_input").write("test");
         clickOn("#login_button");
-        FxAssert.verifyThat("#login_error", TextMatchers.hasText("No user found"));
+        FxAssert.verifyThat("#login_error", TextMatchers.hasText("No Password given!"));
     }
 
     @Test //Test without existing users
