@@ -78,7 +78,7 @@ public class WorkoutController {
     public void setTable() {
         workout_table.setEditable(true);
         
-        exerciseNameColumn = new TableColumn<Exercise, String>("Workout name:");
+        exerciseNameColumn = new TableColumn<Exercise, String>("Exercise name:");
         exerciseNameColumn.setCellValueFactory(new PropertyValueFactory<Exercise, String>("exerciseName"));
 
         repGoalColumn = new TableColumn<Exercise, Integer>("Rep goal:");
