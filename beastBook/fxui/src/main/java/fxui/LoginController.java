@@ -45,7 +45,7 @@ public class LoginController {
         fxmlLoader.setController(homeScreenController);
         homeScreenController.setUser(user);
 
-        AnchorPane pane =  fxmlLoader.load();
+        AnchorPane pane = fxmlLoader.load();
         rootPane.getChildren().setAll(pane);
     }
 
@@ -53,8 +53,16 @@ public class LoginController {
     void registerUser(ActionEvent event) throws IllegalArgumentException {
         String userName = username_input.getText();
         String password = password_input.getText();
-        this.user = new User(userName, password);
-        saveUser(user); //Skal lagre bruker som en JSON-fil
+        if (!userName.equals("") && !password.equals("")) {
+            try {
+                this.user = new User(userName, password);
+                saveUser(user); //Skal lagre bruker som en JSON-fil
+            } catch (Exception e) {
+                login_error.setText(e.getMessage());
+            }
+
+        }
+
     }
 
 
@@ -62,25 +70,29 @@ public class LoginController {
     void loginUser(ActionEvent event) throws IllegalArgumentException, IOException {
         String userName = username_input.getText();
         String password = password_input.getText();
-        if (userName != "") {
-            User login = getUser(userName);
-            if (Objects.isNull(login)) {
-                login_error.setText("No user found");
-            } else {
-                if (password != "") {
-                    if(!login.getPassword().equals(password))
+        if (!userName.equals("")) {
+            if (!password.equals("")) {
+                User login = getUser(userName);
+                if (Objects.isNull(login)) {
+                    login_error.setText("No user found");
+                } else {
+                    if (!login.getPassword().equals(password))
                         login_error.setText("Wrong Password");
                     else {
                         user = login;
                         loadHome();
                     }
-                } else
-                    login_error.setText("No Password given!");
+                }
+            } else {
+                login_error.setText("No Password given!");
             }
-        } else {
+    } else {
             login_error.setText("No username given");
         }
     }
+
+
+
 
     private void saveUser(User user) {
         BeastBookPersistence persistence = new BeastBookPersistence();
@@ -103,13 +115,5 @@ public class LoginController {
         }
        return null;
     }
-
-    /* public static void main(String[] args) {
-        LoginController controller = new LoginController();
-        controller.username_input.setText("Tor");
-        controller.password_input.setText("bruh");
-
-        controller.registerUser(ActionEvent event);
-    } */
 
 }

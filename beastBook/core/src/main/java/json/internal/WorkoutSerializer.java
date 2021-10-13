@@ -21,13 +21,11 @@ public class WorkoutSerializer extends JsonSerializer<Workout> {
         if (workout.getName() != null) {
             jsonGenerator.writeStringField("name", workout.getName());
         }
-        if (workout instanceof Workout) {
-            jsonGenerator.writeArrayFieldStart("exercises");
-            for (Exercise item : workout.getExercises()) {
-                jsonGenerator.writeObject(item);
-            }
-            jsonGenerator.writeEndArray();
+        jsonGenerator.writeArrayFieldStart("exercises");
+        for (Exercise item : workout.getExercises()) {
+            jsonGenerator.writeObject(item);
         }
+        jsonGenerator.writeEndArray();
 
         jsonGenerator.writeEndObject();
     }

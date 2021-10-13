@@ -2,15 +2,12 @@ package fxui;
 
 import core.User;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.layout.AnchorPane;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import java.io.IOException;
 import javafx.scene.control.MenuItem;
-import javafx.stage.Stage;
 
 public class HomeScreenController {
 

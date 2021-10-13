@@ -1,39 +1,27 @@
 package fxui;
 
-import static org.junit.jupiter.api.Assertions.*;
-
+import java.io.File;
 import java.io.IOException;
 
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.testfx.api.FxToolkit;
+import org.testfx.api.FxAssert;
 import org.testfx.framework.junit5.ApplicationTest;
-import org.testfx.matcher.control.TextInputControlMatchers;
-
+import org.testfx.matcher.control.TextMatchers;
 import core.Exercise;
 import core.Workout;
 import core.User;
-import javafx.application.Platform;
-import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.TableView;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
-
 
 public class CreateControllerTest extends ApplicationTest{
 
     private CreateController controller;
     private User user;
-    
-    //@FXML
-    //private TableView<Exercise> workout_table;
-   
     
     @Override
     public void start(final Stage stage) throws IOException {
@@ -43,64 +31,14 @@ public class CreateControllerTest extends ApplicationTest{
         final Parent root = loader.load();
         user = new User();
         controller.setUser(user);
-
-        //controller = loader.getController();
+        user.setUserName("test");
         stage.setScene(new Scene(root));
         stage.show();
     }  
-    
-    @Test
-    void testSetupTableView() {
-/*
-        //controller = new CreateController();
-        Exercise e1 = new Exercise("Benchpress", 25, 70, 5, 60);
-        //workout_table = controller.getWorkoutTable();
-        controller.getWorkout().addExercise(e1);
-        controller.setTable();
-                
-                // Workout name, row 0
-        Assertions.assertEquals("Benchpress", controller.getTable(0).getExerciseName());
-        controller.getTable(0).setExerciseName("Squat");
-        Assertions.assertNotEquals("Benchpress", controller.getTable(0).getExerciseName());
-        Assertions.assertEquals("Squat", controller.getTable(0).getExerciseName());
-                
-                // Rep goal, row 0
-        Assertions.assertEquals(25, controller.getTable(0).getRepGoal());
-        controller.getTable(0).setRepGoal(30);
-        Assertions.assertNotEquals(25, controller.getTable(0).getRepGoal());
-        Assertions.assertEquals(30, controller.getTable(0).getRepGoal());
-        
-                // Weight, row 0
-        Assertions.assertEquals(70, controller.getTable(0).getWeight());
-        controller.getTable(0).setWeight(100);
-        Assertions.assertNotEquals(70, controller.getTable(0).getWeight());
-        Assertions.assertEquals(100, controller.getTable(0).getWeight());
-        
-                // Time to check row 1 (second row)
-        Exercise e2 = new Exercise("Squat", 18, 100, 3, 60);
-        controller.getWorkout().addExercise(e2);
-        controller.setTable();
-                
-                // Sets, row 1
-        Assertions.assertEquals(3, controller.getTable(1).getSets());
-        controller.getTable(1).setSets(5);
-        Assertions.assertNotEquals(3, controller.getTable(1).getSets());
-        Assertions.assertEquals(5, controller.getTable(1).getSets());
-        
-                // Rest time, row 1
-        Assertions.assertEquals(60, controller.getTable(1).getRestTime());
-        controller.getTable(1).setRestTime(120);
-        Assertions.assertNotEquals(60, controller.getTable(1).getRestTime());
-        Assertions.assertEquals(120, controller.getTable(1).getRestTime());
-        */
-    }
-
-    
+      
     @Test
     
     void testInputFieldsAddsToWorkoutObject() {
-
-        //workout_table = controller.getWorkoutTable();
         
         clickOn("#titleInput", MouseButton.PRIMARY).write("My workout");
         clickOn("#exerciseNameInput", MouseButton.PRIMARY).write("Benchpress");
@@ -127,23 +65,99 @@ public class CreateControllerTest extends ApplicationTest{
     }
    
     @Test
-    void testWrongInputFails() {
-       /*
-        CreateController newController = new CreateController();
-        newController = controller;
-        workout_table = newController.getWorkoutTable();
-        */
-        //workout_table = controller.getWorkoutTable();
-        // Should not another object because of wrong format
+    void testWrongFormatInputFails() {
+
         clickOn("#exerciseNameInput", MouseButton.PRIMARY).write("Deadlift");
         clickOn("#repsInput", MouseButton.PRIMARY).write("50");
         clickOn("#weigthInput", MouseButton.PRIMARY).write("Not a Double");
-        clickOn("#setsInput", MouseButton.PRIMARY).write("Not a Integer");
+        clickOn("#setsInput", MouseButton.PRIMARY).write("3");
         clickOn("#restInput", MouseButton.PRIMARY).write("40");
         clickOn("#addButton", MouseButton.PRIMARY);
-        Assertions.assertEquals(0, controller.getWorkout().getExercises().size());
-        Assertions.assertNotEquals("", controller.getExceptionFeedback().toString());
-        }
-        
 
+        Assertions.assertEquals(0, controller.getWorkout().getExercises().size());
+        FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Value can not be in string format, must be number"));
+    }
+
+    @Test
+    void testWrongFormatWorksAfterChanged() {
+
+        clickOn("#exerciseNameInput", MouseButton.PRIMARY).write("Deadlift");
+        clickOn("#repsInput", MouseButton.PRIMARY).write("50");
+        clickOn("#weigthInput", MouseButton.PRIMARY).write("Double");
+        clickOn("#setsInput", MouseButton.PRIMARY).write("3");
+        clickOn("#restInput", MouseButton.PRIMARY).write("40");
+        clickOn("#addButton", MouseButton.PRIMARY);
+
+        Assertions.assertEquals(0, controller.getWorkout().getExercises().size());
+        FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Value can not be in string format, must be number"));
+
+        doubleClickOn("#weigthInput", MouseButton.PRIMARY).write("20");
+        clickOn("#addButton", MouseButton.PRIMARY);
+        Assertions.assertEquals(1, controller.getWorkout().getExercises().size());
+        FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText(""));
+    }
+        
+        
+    @Test
+    void testIllegalArgumentFails() {
+
+        clickOn("#exerciseNameInput", MouseButton.PRIMARY).write("Deadlift");
+        clickOn("#repsInput", MouseButton.PRIMARY).write("50");
+        clickOn("#weigthInput", MouseButton.PRIMARY).write("-20");
+        clickOn("#setsInput", MouseButton.PRIMARY).write("50");
+        clickOn("#restInput", MouseButton.PRIMARY).write("40");
+        clickOn("#addButton", MouseButton.PRIMARY);
+
+        Assertions.assertEquals(0, controller.getWorkout().getExercises().size());
+        FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Weight can not be 0 or less than 0."));
+    }
+
+    @Test
+    void canNotSaveWorkoutWithoutName(){
+
+        clickOn("#exerciseNameInput", MouseButton.PRIMARY).write("Squat");
+        clickOn("#repsInput", MouseButton.PRIMARY).write("50");
+        clickOn("#weigthInput", MouseButton.PRIMARY).write("20");
+        clickOn("#setsInput", MouseButton.PRIMARY).write("50");
+        clickOn("#restInput", MouseButton.PRIMARY).write("40");
+        clickOn("#addButton", MouseButton.PRIMARY);
+        clickOn("#createButton", MouseButton.PRIMARY);
+
+        FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Input title is empty, please enter name to workout"));
+        Assertions.assertEquals(0, user.getWorkouts().size());
+    }
+    
+    @Test
+    void workoutIsNotLoaded(){
+        Workout workout = new Workout("testWorkout");
+        workout.addExercise(new Exercise("Benchpress", 20, 20, 20, 20));
+     
+        clickOn("#titleInput", MouseButton.PRIMARY).write("testWorkout");
+        clickOn("#loadButton", MouseButton.PRIMARY);
+
+        Assertions.assertEquals(null, controller.getWorkout());
+        FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Workout not found!"));
+    }
+
+    @Test
+    void workoutIsLoaded(){
+        Workout workout = new Workout("testWorkout");
+        workout.addExercise(new Exercise("Benchpress", 20, 30, 40, 50));
+        user.addWorkout(workout);
+
+        clickOn("#titleInput", MouseButton.PRIMARY).write("testWorkout");
+        clickOn("#loadButton", MouseButton.PRIMARY);
+
+        Assertions.assertEquals("Benchpress", controller.getTable(0).getExerciseName());
+        Assertions.assertEquals(20, controller.getTable(0).getRepGoal());
+        Assertions.assertEquals(30, controller.getTable(0).getWeight());
+        Assertions.assertEquals(40, controller.getTable(0).getSets());
+        Assertions.assertEquals(50, controller.getTable(0).getRestTime());
+    }
+
+    @AfterAll
+    static void cleanUp() {
+        File file = new File(System.getProperty("user.home") + "/test");
+        file.delete();
+    }
 }

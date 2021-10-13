@@ -29,4 +29,4 @@ public class BeastBookModule extends SimpleModule{
     public BeastBookModule() {
         this(true);
     }
-}
+ }

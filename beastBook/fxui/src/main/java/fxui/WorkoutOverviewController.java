@@ -2,25 +2,18 @@ package fxui;
 
 import core.User;
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import java.io.IOException;
 
 import core.Workout;
 import javafx.scene.layout.AnchorPane;
-import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
 
 import java.util.ArrayList;
 import java.util.List;
-import core.Exercise;
 
 public class WorkoutOverviewController {
 
@@ -49,9 +42,6 @@ public class WorkoutOverviewController {
     public void setTable() {
         setWorkouts();
         workout_overview.getColumns().clear();
-        // TODO Get data from JSON-file to load in here. At the moment, we only use "Fake data" to get some data in the GUI.
-        // "FAKE DATA"
-        //setFakeData();
         workoutNameColumn = new TableColumn<Workout, String>("Workout name:");
         workoutNameColumn.setCellValueFactory(new PropertyValueFactory<Workout, String>("name"));
         workout_overview.getColumns().add(workoutNameColumn);
@@ -82,7 +72,7 @@ public class WorkoutOverviewController {
         return null;
     }
 
-
+    /*
     private void setFakeData(){
         Workout MyWorkout = new Workout("My workout");
         Workout MyWorkout2 = new Workout("My workout 2 Empty");
@@ -102,6 +92,7 @@ public class WorkoutOverviewController {
         allWorkouts.add(MyWorkout);
         allWorkouts.add(MyWorkout2);
     }
+    */
 
     public void setWorkout(Workout workout){
         this.workout = workout;

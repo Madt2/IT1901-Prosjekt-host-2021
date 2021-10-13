@@ -5,16 +5,12 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.event.ActionEvent;
 import java.io.IOException;
-
 import core.Workout;
 import core.Exercise;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
 import json.BeastBookPersistence;
 
 public class CreateController {
@@ -161,10 +157,10 @@ public class CreateController {
 
         try{
             exercise = new Exercise(exerciseNameInput.getText(), 
-            Integer.valueOf(repsInput.getText()),
-            Double.valueOf(weigthInput.getText()), 
-            Integer.valueOf(setsInput.getText()), 
-            Integer.valueOf(restInput.getText()));
+            Integer.parseInt(repsInput.getText()),
+            Double.parseDouble(weigthInput.getText()),
+            Integer.parseInt(setsInput.getText()),
+            Integer.parseInt(restInput.getText()));
             
             this.workout.addExercise(exercise);
             workout_table.getItems().add(exercise);   
@@ -219,7 +215,6 @@ public class CreateController {
             setTable();
             exceptionFeedback.setText("");
         } catch (Exception e) {
-            System.err.println(e);
             exceptionFeedback.setText("Workout not found!");
         }
 
@@ -237,8 +232,8 @@ public class CreateController {
         workout.setName(titleInput.getText());
 
         if(titleInput.getText() == null || titleInput.getText().equals("")){
-            System.err.println("Input title is empty, please enter name to workout");
-            exceptionFeedback.setText("Missing Title!");
+            //System.err.println("Input title is empty, please enter name to workout");
+            exceptionFeedback.setText("Input title is empty, please enter name to workout");
         }
         else {
             try {

@@ -36,13 +36,11 @@ public class UserSerializer extends JsonSerializer<User>{
         if (user.getPassword() != null) {
             jsonGenerator.writeStringField("password", user.getPassword());
         }
-        if (user instanceof User) {
-            jsonGenerator.writeArrayFieldStart("workouts");
-            for (Workout item : user.getWorkouts()) {
-                jsonGenerator.writeObject(item);
-            }
-            jsonGenerator.writeEndArray();
+        jsonGenerator.writeArrayFieldStart("workouts");
+        for (Workout item : user.getWorkouts()) {
+            jsonGenerator.writeObject(item);
         }
+        jsonGenerator.writeEndArray();
 
         jsonGenerator.writeEndObject();
     }
