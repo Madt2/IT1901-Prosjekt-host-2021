@@ -16,18 +16,32 @@ import java.io.IOException;
 
 public class UserDeserializer extends JsonDeserializer<User> {
 
+
     /*
-     * format: { username: "...", password: "...", workouts: "[...,...]" }
+     * format for User in json: { username: "...", password: "...", workouts: "[...,...]" }
      */
 
     private WorkoutDeserializer d = new WorkoutDeserializer();
 
+    /**
+     * Deserializes User data from json file.
+     * @param parser
+     * @param ctxt
+     * @return Deserialized user.
+     * @throws IOException
+     * @throws JsonProcessingException
+     */
     @Override
     public User deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         TreeNode treeNode = parser.getCodec().readTree(parser);
         return deserialize((JsonNode) treeNode);
     }
 
+    /**
+     * Converts info from jsonNode to User.
+     * @param jsonNode
+     * @return Deserialized user.
+     */
     User deserialize(JsonNode jsonNode) {
         if (jsonNode instanceof ObjectNode objectNode) {
             User user = new User();

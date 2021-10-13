@@ -18,14 +18,15 @@ public class User {
         setPassword(password);
     }
 
-    public User() {
+    public User() {}
 
-    }
-
+    /**
+     * Sets username to input argument. Validation for username length, has to be 3 or more characters.
+     * @param username
+     */
     public void setUserName(String username) {
-        if (username.length() >= MIN_CHAR_USERNAME) {
+        if (username.length() >= MIN_CHAR_USERNAME)
             this.username = username;
-        }
         else
             throw new IllegalArgumentException("Username must be more than 2 characters");
     }
@@ -34,10 +35,13 @@ public class User {
         return username;
     }
 
+    /**
+     * Sets password to input argument. Validation for password length, has to be 3 or more characters.
+      * @param password
+     */
     public void setPassword(String password) {
-        if (password.length() >= MIN_CHAR_PASSWORD) {
+        if (password.length() >= MIN_CHAR_PASSWORD)
             this.password = password;
-        }
         else
             throw new IllegalArgumentException("Password must be more than 2 characters");
     }
@@ -50,6 +54,10 @@ public class User {
         workouts.add(workout);
     }
 
+    /**
+     * Removes workout object from input argument.
+     * @param workout
+     */
     public void removeWorkout(Workout workout) {
         if (!workouts.contains(workout))
             throw new IllegalArgumentException("User does not have workout " + workout + " saved." );

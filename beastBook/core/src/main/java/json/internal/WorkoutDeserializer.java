@@ -18,17 +18,30 @@ import java.io.IOException;
 public class WorkoutDeserializer extends JsonDeserializer<Workout> {
 
     /*
-     * format: { name: "...", exercises: "[...,...]"}
+     * format for Workout in json: { name: "...", exercises: "[...,...]"}
      */
 
     private ExerciseDeserializer d = new ExerciseDeserializer();
 
+    /**
+     * Deserializes Workout data from json file.
+     * @param parser
+     * @param ctxt
+     * @return Deserialized workout.
+     * @throws IOException
+     * @throws JsonProcessingException
+     */
     @Override
     public Workout deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException, JsonProcessingException {
         TreeNode treeNode = parser.getCodec().readTree(parser);
         return deserialize((JsonNode) treeNode);
     }
 
+    /**
+     * Converts info from jsonNode to Workout.
+     * @param jsonNode
+     * @return Deserialized workout.
+     */
     Workout deserialize(JsonNode jsonNode) {
         if (jsonNode instanceof ObjectNode objectNode) {
             Workout workout = new Workout();

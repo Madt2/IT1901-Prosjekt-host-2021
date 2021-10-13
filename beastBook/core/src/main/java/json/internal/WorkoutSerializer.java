@@ -11,10 +11,16 @@ import java.io.IOException;
 
 public class WorkoutSerializer extends JsonSerializer<Workout> {
     /*
-     * format: { name: "...", exercises: "[...,...]"}
+     * format for Workout in json: { name: "...", exercises: "[...,...]"}
      */
 
-
+    /**
+     * Serializes workout from input argument. Serializes workout-object to json format.
+     * @param workout workout to serialize.
+     * @param jsonGenerator
+     * @param serializerProvider
+     * @throws IOException
+     */
     @Override
     public void serialize(Workout workout, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
         jsonGenerator.writeStartObject();

@@ -33,13 +33,10 @@ public class PersistenceTest {
         user.addWorkout(w);
 
         try{
-            StringWriter writer = new StringWriter();
-            beastBookPersistence.writeUser(user, writer);
+            beastBookPersistence.setSaveFilePath(user.getUserName());
+            beastBookPersistence.saveUser(user);
+            User user2 = beastBookPersistence.loadUser();
 
-            String json = writer.toString();
-
-
-            User user2 = beastBookPersistence.readUser(new StringReader(json));
             Assertions.assertEquals(user.getUserName(), user2.getUserName());
             Assertions.assertEquals(user.getPassword(), user2.getPassword());
             assertTrue(user2.getWorkouts().size()==1);

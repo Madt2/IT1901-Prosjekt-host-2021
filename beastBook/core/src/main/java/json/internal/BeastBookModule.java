@@ -8,13 +8,14 @@ import core.Exercise;
 
 public class BeastBookModule extends SimpleModule{
     /**
-     * A Jackson module for configuring JSON serialization of BeastBook instances.
+     * Configuration for JSON serialization of BeastBook instances.
      */
     @SuppressWarnings("serial")
     private static final String NAME = "BeastBookModule";
 
     /**
      * Initializes this BeastBookModule with appropriate serializers and deserializers.
+     * @param deepUserSerializer
      */
     public BeastBookModule(boolean deepUserSerializer) {
         super(NAME, Version.unknownVersion());

@@ -14,15 +14,27 @@ import java.io.IOException;
 public class ExerciseDeserializer extends JsonDeserializer<Exercise> {
 
     /*
-     * format: { exerciseName: "...", repGoal: "...", weight: "...", sets: "...", restTime: "..." }
+     * format for Exercise in json: { exerciseName: "...", repGoal: "...", weight: "...", sets: "...", restTime: "..." }
      */
 
+    /**
+     * Deserializes Exercise data from json file.
+     * @param parser
+     * @param ctxt
+     * @return Deserialized exercise.
+     * @throws IOException
+     */
     @Override
     public Exercise deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
         TreeNode treeNode = parser.getCodec().readTree(parser);
         return deserialize((JsonNode) treeNode);
     }
 
+    /**
+     * Converts info from jsonNode to Exercise.
+     * @param jsonNode jsonNode to convert.
+     * @return Deserialized exercise.
+     */
     Exercise deserialize(JsonNode jsonNode) {
         if (jsonNode instanceof ObjectNode objectNode) {
             Exercise exercise = new Exercise();
