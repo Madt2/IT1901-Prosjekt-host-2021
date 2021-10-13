@@ -1,7 +1,5 @@
 package core;
 
-
-import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -9,9 +7,7 @@ import java.util.ArrayList;
 public class Workout {
     private String name;
     private List<Exercise> exercises = new ArrayList<>();
-    private ReadWrite readWrite;
-
-
+    
     /**
      * Contructor for workout with name parameter.
      * @param name name of the workout.
@@ -55,45 +51,6 @@ public class Workout {
      */
     public List<Exercise> getExercises() {
         return new ArrayList<>(exercises);
-    }
-
-    /**
-     * Method for saving workout to file, name of file is the same as name of workout. Delegates to readWrite.
-     * @throws FileNotFoundException If file is not found and a new file can not be created, method will throw FileNotFoundException.
-     */
-    public void saveWorkout() throws FileNotFoundException {
-        if (readWrite == null) {
-            readWrite = new ReadWrite();
-        }
-        readWrite.saveWorkout(getName(), getExercises());
-    }
-
-    /**
-     * Method for loading workout from file. Receives data from readWrite, splits name from exercises-data, sets name of workout, split exercises-data to list of exercise data, initialize each exercise from exercise datalist.
-     * @param filename name of workout to load (name of file is the same as name of workout).
-     * @throws FileNotFoundException If file is not found, method will throw FileNotFoundException.
-     */
-    public void loadWorkout(String filename) throws FileNotFoundException {
-        if (readWrite == null) {
-            readWrite = new ReadWrite();
-        }
-        String data = readWrite.loadWorkout(filename);
-        String[] dataLine = data.split(": ");
-        setName(dataLine[0]);
-        if (dataLine.length > 1) {
-            String[] exerciseData = dataLine[1].split(";");
-            for (int i = 0; i<exerciseData.length; i++) {
-                String[] temp = exerciseData[i].split(",");
-                String name = temp[0];
-                int repGoal = Integer.parseInt(temp[1]);
-                double weight = Double.parseDouble(temp[2]);
-                int sets = Integer.parseInt(temp[3]);
-                int restTime = Integer.parseInt(temp[4]);
-
-                Exercise exercise = new Exercise(name, repGoal, weight, sets, restTime);
-                addExercise(exercise);
-            }
-        }
     }
 
     /**
