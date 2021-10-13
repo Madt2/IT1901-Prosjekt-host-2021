@@ -1,0 +1,31 @@
+@startuml architecture
+
+
+component core {
+    package core.core
+    package core.json
+}
+
+component fxui {
+    package fxui.fxui
+}
+
+component jackson
+component javafx {
+    component fxml
+}
+
+fxui ..> jackson
+fxui ..> javafx
+fxui ..> fxml
+
+fxui.fxui ..> core.json
+fxui.fxui ..> core.core
+
+
+
+core.core ..> core.json
+
+
+
+@enduml
