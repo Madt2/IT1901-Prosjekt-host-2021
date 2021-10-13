@@ -5,7 +5,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TableColumn.CellEditEvent;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
@@ -13,10 +12,7 @@ import javafx.scene.text.Text;
 import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
-
 import java.io.IOException;
-
 import core.Exercise;
 import core.Workout;
 import javafx.scene.layout.AnchorPane;
@@ -72,10 +68,13 @@ public class WorkoutController {
         return this.workout;
     }
 
+    /**
+     * Sets the workout table columns and adds them to the table view.
+     */
     public void setTable() {
         workout_table.setEditable(true);
         
-        exerciseNameColumn = new TableColumn<Exercise, String>("Workout name:");
+        exerciseNameColumn = new TableColumn<Exercise, String>("Exercise name:");
         exerciseNameColumn.setCellValueFactory(new PropertyValueFactory<Exercise, String>("exerciseName"));
 
         repGoalColumn = new TableColumn<Exercise, Integer>("Rep goal:");
@@ -106,17 +105,22 @@ public class WorkoutController {
 
     // TODO NumberFormatException is not catched. Must find a solution 
 
+    /**
+     * Makes the cells in workout table editable.
+     * If a cell is edited, the new value will overwrite
+     * the old value in both the GUI and the user database.
+     * If the value is in wrong format, an exeption will be thrown
+     * and a red text will appear in the GUI with feedback.
+     * Sets the exercises from the workout to the table view.
+     */
     private void editTable(){
         
         exerciseNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
         exerciseNameColumn.setOnEditCommit(event -> {
-            try{
-
+            try {
                 Exercise exercise = event.getRowValue();
                 exercise.setExerciseName(event.getNewValue());
-
                 saveUserState();
-
                 emptyExceptionFeedback();
             } catch(NumberFormatException i){
                 exceptionFeedback.setText("Value can not be in string format, must be number");
@@ -127,12 +131,10 @@ public class WorkoutController {
 
         repGoalColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         repGoalColumn.setOnEditCommit(event -> {
-            try{
+            try {
                 Exercise exercise = event.getRowValue();
                 exercise.setRepGoal(event.getNewValue());
-
                 saveUserState();
-
                 emptyExceptionFeedback();
             } catch (NumberFormatException i){
                 exceptionFeedback.setText("Value can not be in string format, must be number");
@@ -144,12 +146,10 @@ public class WorkoutController {
        
         weightColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
         weightColumn.setOnEditCommit(event -> {
-            try{
+            try {
                 Exercise exercise = event.getRowValue();
                 exercise.setWeight(event.getNewValue());
-
                 saveUserState();
-
                 emptyExceptionFeedback();
             } catch(NumberFormatException i){
                 exceptionFeedback.setText("Value can not be in string format, must be number");
@@ -160,12 +160,10 @@ public class WorkoutController {
          
         setsColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
         setsColumn.setOnEditCommit(event -> {
-            try{
+            try {
                 Exercise exercise = event.getRowValue();
                 exercise.setSets(event.getNewValue());
-
                 saveUserState();
-
                 emptyExceptionFeedback();
             } catch(NumberFormatException i) {
                 exceptionFeedback.setText("Value can not be in string format, must be number");
@@ -179,9 +177,7 @@ public class WorkoutController {
             try {
                 Exercise exercise = event.getRowValue();
                 exercise.setRepsPerSet(event.getNewValue());
-
                 saveUserState();
-
                 emptyExceptionFeedback();
             } catch (NumberFormatException i) {
                 exceptionFeedback.setText("Value can not be in string format, must be number");
@@ -195,9 +191,7 @@ public class WorkoutController {
             try {
                 Exercise exercise = event.getRowValue();
                 exercise.setRestTime(event.getNewValue());
-
                 saveUserState();
-
                 emptyExceptionFeedback();
             } catch(NumberFormatException i){
                 exceptionFeedback.setText("Value can not be in string format, must be number");
@@ -206,7 +200,6 @@ public class WorkoutController {
 
             }
         });
-       
         workout_table.getItems().setAll(workout.getExercises());
     }
     
@@ -236,7 +229,6 @@ public class WorkoutController {
         LoginController loginController = new LoginController();
         FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("Login.fxml"));
         fxmlLoader.setController(loginController);
-
         AnchorPane pane =  fxmlLoader.load();
         rootPane.getChildren().setAll(pane);
     }
@@ -247,7 +239,6 @@ public class WorkoutController {
         FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("WorkoutOverview.fxml"));
         fxmlLoader.setController(workoutOverviewController);
         workoutOverviewController.setUser(user);
-
         AnchorPane pane =  fxmlLoader.load();
         rootPane.getChildren().setAll(pane);
     }
@@ -256,6 +247,9 @@ public class WorkoutController {
         this.user = user;
     }
 
+    /**
+     * Updates the exercises/workouts for a user in file format
+     */
     private void saveUserState() throws IOException {
         BeastBookPersistence persistence = new BeastBookPersistence();
         persistence.setSaveFilePath(user.getUserName());

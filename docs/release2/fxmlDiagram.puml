@@ -1,0 +1,38 @@
+@startuml Class Diagram
+scale 1
+class Login {
+
+}
+
+class Homescreen {
+    
+}
+
+class Create {
+    
+}
+
+class WorkoutOverview {
+    
+}
+
+class Workout {
+    
+}
+
+Login -- Homescreen
+Homescreen -- Create
+Homescreen -- WorkoutOverview
+WorkoutOverview -- Workout
+/'
+Login <|-- Create
+Login <|-- WorkoutOverview
+Login <|-- Workout
+Login <|-- Homescreen
+/'
+/'
+Speaker "1" *-- "*" Topic
+Event "1" o-- "*" Speaker
+Event "1" o-- "*" Attendee
+'/
+@enduml

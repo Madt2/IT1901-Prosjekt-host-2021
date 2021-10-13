@@ -39,6 +39,10 @@ public class WorkoutOverviewController {
         setTable();
     } 
     
+    /**
+     * Creates a table view with a column for workout name and
+     * adds the users workouts to the table view
+     */
     public void setTable() {
         setWorkouts();
         workout_overview.getColumns().clear();
@@ -50,6 +54,11 @@ public class WorkoutOverviewController {
         getClickedRow();
     }
 
+    /**
+     * Registers the workout/row that you have clicked on
+     * and uses loadWorkout() to load the workout
+     * @return TableRow that is clicked on
+     */
     private TableRow<Workout> getClickedRow(){
         // Source: https://stackoverflow.com/questions/30191264/javafx-tableview-how-to-get-the-row-i-clicked
         workout_overview.setRowFactory(tableView -> {
@@ -58,7 +67,6 @@ public class WorkoutOverviewController {
                 if (! row.isEmpty() && event.getButton()==MouseButton.PRIMARY 
                      && event.getClickCount() == 1) {
                     Workout clickedRow = row.getItem();
-
                     setWorkout(clickedRow);
                     try {
                         loadWorkout();
@@ -71,28 +79,6 @@ public class WorkoutOverviewController {
         });
         return null;
     }
-
-    /*
-    private void setFakeData(){
-        Workout MyWorkout = new Workout("My workout");
-        Workout MyWorkout2 = new Workout("My workout 2 Empty");
-
-        Exercise benkpress = new Exercise("Benkpress", 12, 70, 3, 50);
-        Exercise kneboy = new Exercise("Knebøy", 8, 200, 5, 60);
-        Exercise skulderpress = new Exercise("Skulderpress", 12, 20, 3, 70);
-        Exercise bicepsCurl = new Exercise("Biceps curl", 10, 30, 3, 20);
-        Exercise flyes = new Exercise("Flyes", 8, 20, 5, 120);
-
-        MyWorkout.addExercise(benkpress);
-        MyWorkout.addExercise(kneboy);
-        MyWorkout.addExercise(skulderpress);
-        MyWorkout.addExercise(bicepsCurl);
-        MyWorkout.addExercise(flyes);
-
-        allWorkouts.add(MyWorkout);
-        allWorkouts.add(MyWorkout2);
-    }
-    */
 
     public void setWorkout(Workout workout){
         this.workout = workout;
@@ -124,22 +110,12 @@ public class WorkoutOverviewController {
         workoutNameColumn.setPrefWidth(150);    
     }
 
-/*    private void loadClickedWorkout(Workout workout, MouseEvent event) {
-        try {
-            clickedWorkout = workout;
-            loadWorkout(event, workout);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }*/
-
     @FXML
     void loadHome(ActionEvent event) throws IOException{
         HomeScreenController homeScreenController = new HomeScreenController();
         FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("HomeScreen.fxml"));
         fxmlLoader.setController(homeScreenController);
         homeScreenController.setUser(user);
-
         AnchorPane pane =  fxmlLoader.load();
         rootPane.getChildren().setAll(pane);
     }
@@ -149,7 +125,6 @@ public class WorkoutOverviewController {
         LoginController loginController = new LoginController();
         FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("Login.fxml"));
         fxmlLoader.setController(loginController);
-
         AnchorPane pane =  fxmlLoader.load();
         rootPane.getChildren().setAll(pane);
     }
@@ -162,7 +137,6 @@ public class WorkoutOverviewController {
             fxmlLoader.setController(workoutController);
             workoutController.setUser(user);
             workoutController.setWorkout(this.getWorkout());
-
             AnchorPane pane =  fxmlLoader.load();
             rootPane.getChildren().setAll(pane);
         } catch (Exception e) {
