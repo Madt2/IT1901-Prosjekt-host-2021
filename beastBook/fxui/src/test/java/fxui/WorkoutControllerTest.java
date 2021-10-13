@@ -84,7 +84,7 @@ public class WorkoutControllerTest extends ApplicationTest{
 
     @AfterAll
     static void cleanUp() {
-        File file = new File(System.getProperty("user.home") + "/correct");
+        File file = new File(System.getProperty("user.home") + "/test");
         file.delete();
     }
 
