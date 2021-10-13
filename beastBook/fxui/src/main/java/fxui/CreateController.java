@@ -157,10 +157,10 @@ public class CreateController {
 
         try{
             exercise = new Exercise(exerciseNameInput.getText(), 
-            Integer.valueOf(repsInput.getText()),
-            Double.valueOf(weigthInput.getText()), 
-            Integer.valueOf(setsInput.getText()), 
-            Integer.valueOf(restInput.getText()));
+            Integer.parseInt(repsInput.getText()),
+            Double.parseDouble(weigthInput.getText()),
+            Integer.parseInt(setsInput.getText()),
+            Integer.parseInt(restInput.getText()));
             
             this.workout.addExercise(exercise);
             workout_table.getItems().add(exercise);   

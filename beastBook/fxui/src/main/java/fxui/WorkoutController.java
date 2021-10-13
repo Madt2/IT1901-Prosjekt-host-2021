@@ -109,145 +109,101 @@ public class WorkoutController {
     private void editTable(){
         
         exerciseNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-        exerciseNameColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Exercise,String>>(){
-        
-            @Override
-            public void handle(CellEditEvent<Exercise, String> event){
-                try{
+        exerciseNameColumn.setOnEditCommit(event -> {
+            try{
 
-                    Exercise exercise = event.getRowValue();
-                    exercise.setExerciseName(event.getNewValue());
+                Exercise exercise = event.getRowValue();
+                exercise.setExerciseName(event.getNewValue());
 
-                    saveUserState();
+                saveUserState();
 
-                    emptyExceptionFeedback();
-                }
-
-                catch(NumberFormatException i){
-                    exceptionFeedback.setText("Value can not be in string format, must be number");
-                }
-
-                catch (Exception e) {
-                    exceptionFeedback.setText(e.getMessage() + " . Value was not changed.");
-                }
+                emptyExceptionFeedback();
+            } catch(NumberFormatException i){
+                exceptionFeedback.setText("Value can not be in string format, must be number");
+            } catch (Exception e) {
+                exceptionFeedback.setText(e.getMessage() + " . Value was not changed.");
             }
         });
 
         repGoalColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-        repGoalColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Exercise,Integer>>(){
+        repGoalColumn.setOnEditCommit(event -> {
+            try{
+                Exercise exercise = event.getRowValue();
+                exercise.setRepGoal(event.getNewValue());
 
-            @Override
-            public void handle(CellEditEvent<Exercise, Integer> event){
-                try{
-                    Exercise exercise = event.getRowValue();
-                    exercise.setRepGoal(event.getNewValue());
+                saveUserState();
 
-                    saveUserState();
-
-                    emptyExceptionFeedback();
-                }
-
-                catch(NumberFormatException i){
-                    exceptionFeedback.setText("Value can not be in string format, must be number");
-                }
-
-                catch (Exception e) {
-                    exceptionFeedback.setText(e.getMessage() + " Value was not changed.");
-                }
-                
+                emptyExceptionFeedback();
+            } catch (NumberFormatException i){
+                exceptionFeedback.setText("Value can not be in string format, must be number");
+            } catch (Exception e) {
+                exceptionFeedback.setText(e.getMessage() + " Value was not changed.");
             }
+            
         });
        
         weightColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
-        weightColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Exercise,Double>>(){
-            @Override
-            public void handle(CellEditEvent<Exercise, Double> event){
-                try{
-                    Exercise exercise = event.getRowValue();
-                    exercise.setWeight(event.getNewValue());
+        weightColumn.setOnEditCommit(event -> {
+            try{
+                Exercise exercise = event.getRowValue();
+                exercise.setWeight(event.getNewValue());
 
-                    saveUserState();
+                saveUserState();
 
-                    emptyExceptionFeedback();
-                }
-
-                catch(NumberFormatException i){
-                    exceptionFeedback.setText("Value can not be in string format, must be number");
-                }
-
-                catch (Exception e) {
-                    exceptionFeedback.setText(e.getMessage() + " Value was not changed.");
-                }
+                emptyExceptionFeedback();
+            } catch(NumberFormatException i){
+                exceptionFeedback.setText("Value can not be in string format, must be number");
+            } catch (Exception e) {
+                exceptionFeedback.setText(e.getMessage() + " Value was not changed.");
             }
         });
          
         setsColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-        setsColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Exercise,Integer>>(){
-            @Override
-            public void handle(CellEditEvent<Exercise, Integer> event){
-                try{
-                    Exercise exercise = event.getRowValue();
-                    exercise.setSets(event.getNewValue());
+        setsColumn.setOnEditCommit(event -> {
+            try{
+                Exercise exercise = event.getRowValue();
+                exercise.setSets(event.getNewValue());
 
-                    saveUserState();
+                saveUserState();
 
-                    emptyExceptionFeedback();
-                }
-
-                catch(NumberFormatException i){
-                    exceptionFeedback.setText("Value can not be in string format, must be number");
-                }
-
-                catch (Exception e) {
-                    exceptionFeedback.setText(e.getMessage() + " Value was not changed.");
-                }
+                emptyExceptionFeedback();
+            } catch(NumberFormatException i) {
+                exceptionFeedback.setText("Value can not be in string format, must be number");
+            } catch (Exception e) {
+                exceptionFeedback.setText(e.getMessage() + " Value was not changed.");
             }
         });
 
         repsPerSetColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-        repsPerSetColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Exercise,Integer>>(){
-            @Override
-            public void handle(CellEditEvent<Exercise, Integer> event){
-                try{
-                    Exercise exercise = event.getRowValue();
-                    exercise.setRepsPerSet(event.getNewValue());
+        repsPerSetColumn.setOnEditCommit(event -> {
+            try {
+                Exercise exercise = event.getRowValue();
+                exercise.setRepsPerSet(event.getNewValue());
 
-                    saveUserState();
+                saveUserState();
 
-                    emptyExceptionFeedback();
-                }
-
-                catch(NumberFormatException i){
-                    exceptionFeedback.setText("Value can not be in string format, must be number");
-                }
-
-                catch (Exception e) {
-                    exceptionFeedback.setText(e.getMessage() + " Value was not changed.");
-                }
+                emptyExceptionFeedback();
+            } catch (NumberFormatException i) {
+                exceptionFeedback.setText("Value can not be in string format, must be number");
+            } catch (Exception e) {
+                exceptionFeedback.setText(e.getMessage() + " Value was not changed.");
             }
         });
    
         restTimeColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
-        restTimeColumn.setOnEditCommit(new EventHandler<TableColumn.CellEditEvent<Exercise,Integer>>(){
-            @Override
-            public void handle(CellEditEvent<Exercise, Integer> event){
-                try{
-                    Exercise exercise = event.getRowValue();
-                    exercise.setRestTime(event.getNewValue());
+        restTimeColumn.setOnEditCommit(event -> {
+            try {
+                Exercise exercise = event.getRowValue();
+                exercise.setRestTime(event.getNewValue());
 
-                    saveUserState();
+                saveUserState();
 
-                    emptyExceptionFeedback();
-                }
+                emptyExceptionFeedback();
+            } catch(NumberFormatException i){
+                exceptionFeedback.setText("Value can not be in string format, must be number");
+            } catch (Exception e) {
+                exceptionFeedback.setText(e.getMessage() + " Value was not changed.");
 
-                catch(NumberFormatException i){
-                    exceptionFeedback.setText("Value can not be in string format, must be number");
-                }
-
-                catch (Exception e) {
-                    exceptionFeedback.setText(e.getMessage() + " Value was not changed.");
-
-                }
             }
         });
        
@@ -306,3 +262,4 @@ public class WorkoutController {
         persistence.saveUser(user);
     }
 }
+

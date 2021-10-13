@@ -32,37 +32,5 @@ public class WorkoutTest {
         Assertions.assertEquals(exercise1, testWorkout.getExercises().get(0));
     }
 
-    @Test
-    void saveAndLoadWorkoutTest() {
-        //Save one exercise in testWorkout, then tests save and load.
-        testWorkout.addExercise(exercise1);
-        try {testWorkout.saveWorkout();}
-        catch (FileNotFoundException e) {System.err.println(e);}
-        testWorkout = new Workout("testWorkout");
-        try {testWorkout.loadWorkout("testWorkout");}
-        catch (FileNotFoundException e) {System.err.println(e);}
-        Assertions.assertEquals(1, testWorkout.getExercises().size());
-
-        //Save another exercise in testWorkout, then tests save and load.
-
-        testWorkout.addExercise(exercise2);
-        try {testWorkout.saveWorkout();}
-        catch (FileNotFoundException e) {System.err.println(e);}
-        testWorkout = new Workout("testWorkout");
-        try {testWorkout.loadWorkout("testWorkout");}
-        catch (FileNotFoundException e) {System.err.println(e);}
-        Assertions.assertEquals(2, testWorkout.getExercises().size());
-
-
-
-        //Cleanup:
-        File file = new File("testWorkout");
-        file.delete();
-
-        //tests if load throws exception if it loads a workout file that does not exist.
-        Assertions.assertThrows(FileNotFoundException.class, () -> {
-            testWorkout.loadWorkout("doesnotexist");
-        });
-    }
 
 }
