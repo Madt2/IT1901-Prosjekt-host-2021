@@ -69,6 +69,11 @@ public class WorkoutControllerTest extends ApplicationTest{
         Assertions.assertNotEquals(-20, user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());
         Assertions.assertEquals(50, user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());      
         FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText(""));
+
+        doubleClickOn(node, MouseButton.PRIMARY).write("Five");
+        press(KeyCode.ENTER).release(KeyCode.ENTER);
+        FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Wrong input, please try again. Value was not changed."));
+        Assertions.assertEquals(50, user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());     
     }
 
     private void addWorkoutsToUser(){

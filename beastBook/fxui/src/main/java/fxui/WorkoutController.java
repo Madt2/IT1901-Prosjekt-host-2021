@@ -122,82 +122,80 @@ public class WorkoutController {
                 exercise.setExerciseName(event.getNewValue());
                 saveUserState();
                 emptyExceptionFeedback();
-            } catch(NumberFormatException i){
-                exceptionFeedback.setText("Value can not be in string format, must be number");
+            } catch(IllegalArgumentException i){
+                exceptionFeedback.setText(i.getMessage() + " Value was not changed.");
             } catch (Exception e) {
-                exceptionFeedback.setText(e.getMessage() + " . Value was not changed.");
+                exceptionFeedback.setText("Wrong input, please try again. Value was not changed.");
             }
         });
 
-        repGoalColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        repGoalColumn.setCellFactory(TextFieldTableCell.forTableColumn(new CustomIntegerStringConverter()));
         repGoalColumn.setOnEditCommit(event -> {
             try {
                 Exercise exercise = event.getRowValue();
                 exercise.setRepGoal(event.getNewValue());
                 saveUserState();
                 emptyExceptionFeedback();
-            } catch (NumberFormatException i){
-                exceptionFeedback.setText("Value can not be in string format, must be number");
+            } catch(IllegalArgumentException i){
+                exceptionFeedback.setText(i.getMessage() + " Value was not changed.");
             } catch (Exception e) {
-                exceptionFeedback.setText(e.getMessage() + " Value was not changed.");
+                exceptionFeedback.setText("Wrong input, please try again. Value was not changed.");
             }
-            
         });
        
-        weightColumn.setCellFactory(TextFieldTableCell.forTableColumn(new DoubleStringConverter()));
+        weightColumn.setCellFactory(TextFieldTableCell.forTableColumn(new CustomDoubleStringConverter()));
         weightColumn.setOnEditCommit(event -> {
             try {
                 Exercise exercise = event.getRowValue();
                 exercise.setWeight(event.getNewValue());
                 saveUserState();
                 emptyExceptionFeedback();
-            } catch(NumberFormatException i){
-                exceptionFeedback.setText("Value can not be in string format, must be number");
+            } catch(IllegalArgumentException i){
+                exceptionFeedback.setText(i.getMessage() + " Value was not changed.");
             } catch (Exception e) {
-                exceptionFeedback.setText(e.getMessage() + " Value was not changed.");
+                exceptionFeedback.setText("Wrong input, please try again. Value was not changed.");
             }
         });
          
-        setsColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        setsColumn.setCellFactory(TextFieldTableCell.forTableColumn(new CustomIntegerStringConverter()));
         setsColumn.setOnEditCommit(event -> {
             try {
                 Exercise exercise = event.getRowValue();
                 exercise.setSets(event.getNewValue());
                 saveUserState();
                 emptyExceptionFeedback();
-            } catch(NumberFormatException i) {
-                exceptionFeedback.setText("Value can not be in string format, must be number");
+            } catch(IllegalArgumentException i){
+                exceptionFeedback.setText(i.getMessage() + " Value was not changed.");
             } catch (Exception e) {
-                exceptionFeedback.setText(e.getMessage() + " Value was not changed.");
+                exceptionFeedback.setText("Wrong input, please try again. Value was not changed.");
             }
         });
 
-        repsPerSetColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        repsPerSetColumn.setCellFactory(TextFieldTableCell.forTableColumn(new CustomIntegerStringConverter()));
         repsPerSetColumn.setOnEditCommit(event -> {
             try {
                 Exercise exercise = event.getRowValue();
                 exercise.setRepsPerSet(event.getNewValue());
                 saveUserState();
                 emptyExceptionFeedback();
-            } catch (NumberFormatException i) {
-                exceptionFeedback.setText("Value can not be in string format, must be number");
+            } catch(IllegalArgumentException i){
+                exceptionFeedback.setText(i.getMessage() + " Value was not changed.");
             } catch (Exception e) {
-                exceptionFeedback.setText(e.getMessage() + " Value was not changed.");
+                exceptionFeedback.setText("Wrong input, please try again. Value was not changed.");
             }
         });
    
-        restTimeColumn.setCellFactory(TextFieldTableCell.forTableColumn(new IntegerStringConverter()));
+        restTimeColumn.setCellFactory(TextFieldTableCell.forTableColumn(new CustomIntegerStringConverter()));
         restTimeColumn.setOnEditCommit(event -> {
             try {
                 Exercise exercise = event.getRowValue();
                 exercise.setRestTime(event.getNewValue());
                 saveUserState();
                 emptyExceptionFeedback();
-            } catch(NumberFormatException i){
-                exceptionFeedback.setText("Value can not be in string format, must be number");
+            } catch(IllegalArgumentException i){
+                exceptionFeedback.setText(i.getMessage() + " Value was not changed.");
             } catch (Exception e) {
-                exceptionFeedback.setText(e.getMessage() + " Value was not changed.");
-
+                exceptionFeedback.setText("Wrong input, please try again. Value was not changed.");
             }
         });
         workout_table.getItems().setAll(workout.getExercises());
@@ -255,5 +253,61 @@ public class WorkoutController {
         persistence.setSaveFilePath(user.getUserName());
         persistence.saveUser(user);
     }
-}
 
+    // SOURCE for the following two static classes: 
+    // https://stackoverflow.com/questions/56376182/javafx-exception-handling-in-an-editable-textfieldtablecell
+    
+    /**
+     * Extended version of IntegerStringConverter. Used to catch NumberFormatException, as 
+     * the IntegerStringConverter do not handle the NumberFormatException by default.
+     * Returns null which is catched by editTable()
+     */
+    public static class CustomIntegerStringConverter extends IntegerStringConverter {
+        private final IntegerStringConverter converter = new IntegerStringConverter();
+
+        @Override
+        public String toString(Integer object) {
+            try {
+                return converter.toString(object);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+
+        @Override
+        public Integer fromString(String string) {
+            try {
+                return converter.fromString(string);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+    }
+
+    /**
+     * Extended version of DoubleStringConverter. Used to catch NumberFormatException, as 
+     * the DoubleStringConverter do not handle the NumberFormatException by default.
+     * Returns null which is catched by editTable()
+     */
+    public static class CustomDoubleStringConverter extends DoubleStringConverter {
+        private final DoubleStringConverter converter = new DoubleStringConverter();
+
+        @Override
+        public String toString(Double object) {
+            try {
+                return converter.toString(object);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+
+        @Override
+        public Double fromString(String string) {
+            try {
+                return converter.fromString(string);
+            } catch (NumberFormatException e) {
+                return null;
+            }
+        }
+    }
+}
