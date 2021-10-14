@@ -10,69 +10,68 @@ import java.io.IOException;
 import javafx.scene.control.MenuItem;
 
 public class HomeScreenController {
+  @FXML
+  private AnchorPane rootPane;
 
-    @FXML
-    private AnchorPane rootPane;
+  @FXML
+  private MenuItem logout_button;
 
-    @FXML
-    private MenuItem logout_button;
+  @FXML
+  private Button create_button;
 
-    @FXML
-    private Button create_button;
+  @FXML
+  private Button workouts_button;
 
-    @FXML
-    private Button workouts_button;
+  @FXML
+  private Button history_button;
 
-    @FXML
-    private Button history_button;
+  private User user;
 
-    private User user;
+  @FXML
+  void loadHistory(ActionEvent event) throws IOException {
+    HistoryController historyController = new HistoryController();
+    FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("History.fxml"));
+    fxmlLoader.setController(historyController);
+    historyController.setUser(user);
 
-    @FXML
-    void loadHistory(ActionEvent event) throws IOException{
-        HistoryController historyController = new HistoryController();
-        FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("History.fxml"));
-        fxmlLoader.setController(historyController);
-        historyController.setUser(user);
+    AnchorPane pane =  fxmlLoader.load();
+    rootPane.getChildren().setAll(pane);
+  }
 
-        AnchorPane pane =  fxmlLoader.load();
-        rootPane.getChildren().setAll(pane);
-    }
+  @FXML
+  void loadCreate(ActionEvent event) throws IOException {
+    CreateController createController = new CreateController();
+    FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("Create.fxml"));
+    fxmlLoader.setController(createController);
+    createController.setUser(user);
 
-    @FXML
-    void loadCreate(ActionEvent event) throws IOException{
-        CreateController createController = new CreateController();
-        FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("Create.fxml"));
-        fxmlLoader.setController(createController);
-        createController.setUser(user);
+    AnchorPane pane =  fxmlLoader.load();
+    rootPane.getChildren().setAll(pane);
+  }
 
-        AnchorPane pane =  fxmlLoader.load();
-        rootPane.getChildren().setAll(pane);
-    }
+  @FXML
+  void loadWorkouts(ActionEvent event) throws IOException {
+    WorkoutOverviewController workoutOverviewController = new WorkoutOverviewController();
+    FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("WorkoutOverview.fxml"));
+    fxmlLoader.setController(workoutOverviewController);
+    workoutOverviewController.setUser(user);
 
-    @FXML
-    void loadWorkouts(ActionEvent event) throws IOException{
-        WorkoutOverviewController workoutOverviewController = new WorkoutOverviewController();
-        FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("WorkoutOverview.fxml"));
-        fxmlLoader.setController(workoutOverviewController);
-        workoutOverviewController.setUser(user);
+    AnchorPane pane =  fxmlLoader.load();
+    rootPane.getChildren().setAll(pane);
+  }
 
-        AnchorPane pane =  fxmlLoader.load();
-        rootPane.getChildren().setAll(pane);
-    }
+  @FXML
+  void loadLogin(ActionEvent event) throws IOException {
+    LoginController loginController = new LoginController();
+    FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("Login.fxml"));
+    fxmlLoader.setController(loginController);
 
-    @FXML
-    void loadLogin(ActionEvent event) throws IOException{
-        LoginController loginController = new LoginController();
-        FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("Login.fxml"));
-        fxmlLoader.setController(loginController);
+    AnchorPane pane =  fxmlLoader.load();
+    rootPane.getChildren().setAll(pane);
+  }
 
-        AnchorPane pane =  fxmlLoader.load();
-        rootPane.getChildren().setAll(pane);
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
+  public void setUser(User user) {
+    this.user = user;
+  }
 }
 
