@@ -12,21 +12,20 @@ import java.io.IOException;
  * JavaFX App
  */
 public class App extends Application {
+  @Override
+  public void start(Stage stage) throws IOException {
+    LoginController loginController = new LoginController();
 
-    @Override
-    public void start(Stage stage) throws IOException {
-        LoginController loginController = new LoginController();
+    FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("Login.fxml"));
 
-        FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("Login.fxml"));
-
-        fxmlLoader.setController(loginController);
+    fxmlLoader.setController(loginController);
         
-        Parent parent = fxmlLoader.load();
-        stage.setScene(new Scene(parent));
-        stage.show();
-    }
+    Parent parent = fxmlLoader.load();
+    stage.setScene(new Scene(parent));
+    stage.show();
+  }
 
-    public static void main(String[] args) {
-        launch();
-    }
+  public static void main(String[] args) {
+    launch();
+  }
 }
