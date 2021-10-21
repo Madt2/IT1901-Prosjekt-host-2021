@@ -15,7 +15,7 @@ public class Exercise {
   * @param repGoal Number of repetitions to be performed
   * @param weight Weight to be used for the exercise
   * @param sets Number of sets to be performed
-  * @param restTime How much rest between sets
+  * @param restTime How much rest between sets in seconds
   */
   public Exercise(String exerciseName, int repGoal, double weight, int sets, int restTime) {
     setExerciseName(exerciseName);
@@ -36,7 +36,8 @@ public class Exercise {
   * @param name Name of the exercise
   */
   private void validateExerciseName(String name) {
-    if (name.length() <= 0) {
+    name = name.trim();
+    if ((name.length() <= 0) || (name.equals(""))){
       throw new IllegalArgumentException("Exercise name can not be blank!");
     }
   }
@@ -83,7 +84,7 @@ public class Exercise {
   /**
   * Checks if restTime is valid, valid is more than 0.
   *
-  * @param restTime How much rest between sets
+  * @param restTime How many seconds of rest between each set
   */
   private void validateRestTime(int restTime) {
     if (restTime <= 0) {

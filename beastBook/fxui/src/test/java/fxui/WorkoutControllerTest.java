@@ -50,7 +50,7 @@ public class WorkoutControllerTest extends ApplicationTest{
   }
 
   @Test
-  void testExceptionFeedback() throws IOException{
+  void testExceptionFeedback() throws IOException, InterruptedException {
     wc.getWorkoutTable().getColumns().get(1).setId("repGoal");
     Node node = lookup("#repGoal").nth(1).query();
     doubleClickOn(node, MouseButton.PRIMARY).write("-50");
@@ -67,8 +67,10 @@ public class WorkoutControllerTest extends ApplicationTest{
     Assertions.assertEquals(50, user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());      
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText(""));
 
+    Thread.sleep(1000);
     doubleClickOn(node, MouseButton.PRIMARY).write("Five");
     press(KeyCode.ENTER).release(KeyCode.ENTER);
+    Thread.sleep(1000);
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Wrong input, please try again. Value was not changed."));
     Assertions.assertEquals(50, user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());     
   }

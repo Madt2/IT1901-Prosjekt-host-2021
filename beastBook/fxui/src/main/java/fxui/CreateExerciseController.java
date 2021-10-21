@@ -88,7 +88,7 @@ public class CreateExerciseController {
     setsColumn = new TableColumn<Exercise, Integer>("Nr of sets");
     setsColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("sets"));
 
-    restTimeColumn = new TableColumn<Exercise, Integer>("Rest time");
+    restTimeColumn = new TableColumn<Exercise, Integer>("Rest time in sec");
     restTimeColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("restTime"));
        
     workout_table.getColumns().add(exerciseNameColumn);
@@ -107,8 +107,8 @@ public class CreateExerciseController {
     exerciseNameColumn.setPrefWidth(100);        
     repGoalColumn.setPrefWidth(75);
     weightColumn.setPrefWidth(75);
-    setsColumn.setPrefWidth(75);
-    restTimeColumn.setPrefWidth(75);
+    setsColumn.setPrefWidth(80);
+    restTimeColumn.setPrefWidth(110);
   }
 
   /**

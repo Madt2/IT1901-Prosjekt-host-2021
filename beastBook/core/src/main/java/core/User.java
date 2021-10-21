@@ -31,7 +31,7 @@ public class User {
     if (username.length() >= MIN_CHAR_USERNAME) {
       this.username = username;
     } else {
-      throw new IllegalArgumentException("Username must be more than 2 characters");
+      throw new IllegalArgumentException("Username must be " + MIN_CHAR_USERNAME + " or more characters");
     }
   }
 
@@ -47,7 +47,7 @@ public class User {
     if (password.length() >= MIN_CHAR_PASSWORD) {
       this.password = password;
     } else {
-      throw new IllegalArgumentException("Password must be more than 2 characters");
+      throw new IllegalArgumentException("Password must be " + MIN_CHAR_PASSWORD + " or more characters");
     }
   }
   
