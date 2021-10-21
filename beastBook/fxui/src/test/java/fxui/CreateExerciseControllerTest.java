@@ -18,14 +18,14 @@ import javafx.scene.Scene;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 
-public class CreateControllerTest extends ApplicationTest{
-  private CreateController controller;
+public class CreateExerciseControllerTest extends ApplicationTest{
+  private CreateExerciseController controller;
   private User user;
     
   @Override
   public void start(final Stage stage) throws IOException {
     final FXMLLoader loader = new FXMLLoader(this.getClass().getResource("Create.fxml"));
-    controller = new CreateController();
+    controller = new CreateExerciseController();
     loader.setController(controller);
     final Parent root = loader.load();
     user = new User();

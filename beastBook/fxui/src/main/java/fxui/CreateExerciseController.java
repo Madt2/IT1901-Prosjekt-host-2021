@@ -13,7 +13,7 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import json.BeastBookPersistence;
 
-public class CreateController {
+public class CreateExerciseController {
   @FXML
   private AnchorPane rootPane;
 
@@ -66,14 +66,14 @@ public class CreateController {
   private User user;
 
   public void initialize() {
-    setTable();
+    updateTable();
   } 
 
   /**
   * Sets the workout table columns. Clears the columns first, to avoid duplicate columns.
   * After the columns are created, they are added to the table view. 
   */
-  public void setTable() {     
+  public void updateTable() {     
     workout_table.getColumns().clear();
          
     exerciseNameColumn = new TableColumn<Exercise, String>("Exercise name");
@@ -196,7 +196,7 @@ public class CreateController {
     }
     try {
       workout = user.getWorkout(titleInput.getText());
-      setTable();
+      updateTable();
       exceptionFeedback.setText("");
     } catch (Exception e) {
       exceptionFeedback.setText("Workout not found!");

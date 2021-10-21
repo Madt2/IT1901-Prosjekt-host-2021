@@ -40,7 +40,7 @@ public class HomeScreenController {
 
   @FXML
   void loadCreate(ActionEvent event) throws IOException {
-    CreateController createController = new CreateController();
+    CreateExerciseController createController = new CreateExerciseController();
     FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("Create.fxml"));
     fxmlLoader.setController(createController);
     createController.setUser(user);
