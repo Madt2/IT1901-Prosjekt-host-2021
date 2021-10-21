@@ -15,7 +15,7 @@ import json.BeastBookPersistence;
 
 public class CreateExerciseController {
   @FXML
-  private AnchorPane rootPane; 
+  private AnchorPane rootPane;
 
   @FXML
   private MenuBar menuBar;
