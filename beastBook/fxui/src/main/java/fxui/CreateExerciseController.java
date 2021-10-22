@@ -6,7 +6,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
+
 import java.io.IOException;
+import java.lang.Integer;
+
 import core.Workout;
 import core.Exercise;
 import javafx.scene.layout.AnchorPane;
@@ -31,7 +35,7 @@ public class CreateExerciseController extends AbstractController{
   private TextField exerciseNameInput;
 
   @FXML
-  private TextField repsInput;
+  private TextField repGoalInput;
 
   @FXML
   private TextField weigthInput;
@@ -54,16 +58,51 @@ public class CreateExerciseController extends AbstractController{
   @FXML
   private Button addExercise;
 
+  @FXML
+  private Text exerciseTitle;
+
+  @FXML
+  private Text repGoalTitle;
+
+  @FXML
+  private Text weightTitle;
+
+  @FXML
+  private Text setsTitle;
+
+  @FXML
+  private Text restTimeTitle;
+
   private Workout workout = new Workout();
-  private Exercise exercise;
+  private Exercise exercise = new Exercise();
   private TableColumn<Exercise, String> exerciseNameColumn;
   private TableColumn<Exercise, Integer> repGoalColumn;
   private TableColumn<Exercise, Double> weightColumn;
   private TableColumn<Exercise, Integer> setsColumn;
   private TableColumn<Exercise, Integer> restTimeColumn;
 
+
+  private static final String WRONG_INPUT_BORDER_COLOR = "-fx-text-box-border: #B22222; -fx-focus-color: #B22222";
+  private static final String CORRECT_INPUT_BORDER_COLOR = "";  
+
+
   public void initialize() {
     updateTable();
+    exerciseNameInput.setOnKeyTyped(event -> {
+      new StringValidator(exerciseTitle, exerciseNameInput, exceptionFeedback);
+    });
+    repGoalInput.setOnKeyTyped(event -> {
+      new IntValidator(repGoalTitle, repGoalInput, exceptionFeedback);
+    });
+    weigthInput.setOnKeyTyped(event -> {
+      new DoubleValidator(weightTitle, weigthInput, exceptionFeedback);
+    });
+    setsInput.setOnKeyTyped(event -> {
+      new IntValidator(setsTitle, setsInput, exceptionFeedback);
+    });
+    restInput.setOnKeyTyped(event -> {
+      new IntValidator(restTimeTitle, restInput, exceptionFeedback);
+    });
   } 
 
   /**
@@ -115,7 +154,7 @@ public class CreateExerciseController extends AbstractController{
   * 
   * @return the Exercise object on the the requested row 
   */
-  public Exercise getTable(int row) {
+  Exercise getTable(int row) {
     return workout_table.getItems().get(row);
   }
 
@@ -123,7 +162,7 @@ public class CreateExerciseController extends AbstractController{
   *
   * @return the workout. Mainly used for test reasons
   */
-  public Workout getWorkout() {
+  Workout getWorkout() {
     return workout;
   }
     
@@ -147,35 +186,92 @@ public class CreateExerciseController extends AbstractController{
 
   @FXML
   void addExercise() {
-    this.workout.setName(titleInput.getText());
-    try {
-      exercise = new Exercise(exerciseNameInput.getText(), 
-      Integer.parseInt(repsInput.getText()),
-      Double.parseDouble(weigthInput.getText()),
-      Integer.parseInt(setsInput.getText()),
-      Integer.parseInt(restInput.getText()));
-            
-      this.workout.addExercise(exercise);
-      workout_table.getItems().add(exercise);   
-      exceptionFeedback.setText("");
-      createButton.setDisable(false);
-      emptyInputFields();
-    } catch (NumberFormatException i) {
-      exceptionFeedback.setText("Value can not be in string format, must be number"); 
-    } catch (Exception e) {
-      exceptionFeedback.setText(e.getMessage());
-    }   
+    if (exceptionFeedback.getText().equals("") && !checkForEmptyInputFields()) {
+      try {
+
+        String name = exerciseNameInput.getText(); 
+        int repGoal;
+        double weight;
+        int sets;
+        int rest;
+        try {
+          repGoal = Integer.parseInt(repGoalInput.getText());
+        } catch (NumberFormatException a) {
+          throw new IllegalArgumentException("Rep Goal must be a number!");
+        }
+        try {
+          weight = Double.parseDouble(weigthInput.getText());
+        } catch (NumberFormatException b) {
+          throw new IllegalArgumentException("Working Weight must be a number");
+        }
+        try {
+          sets = Integer.parseInt(setsInput.getText());
+        } catch (NumberFormatException c) {
+          throw new IllegalArgumentException("Sets must be a number");
+        }
+        try {
+          rest = Integer.parseInt(restInput.getText());
+        } catch (NumberFormatException d) {
+          throw new IllegalArgumentException("Rest Time must be a number");
+        }
+        exercise = new Exercise(name,repGoal,weight,sets,rest);
+        
+        this.workout.addExercise(exercise);
+        workout_table.getItems().add(exercise);
+        exercise = new Exercise();   
+        exceptionFeedback.setText("");
+        createButton.setDisable(false);
+        emptyInputFields();
+      } catch (IllegalArgumentException i) {
+        exceptionFeedback.setText(i.getMessage()); 
+      } catch (Exception e) {
+        exceptionFeedback.setText(e.getMessage());
+        //exceptionFeedback.setText("exercise catch");
+      }  
+    } else if (checkForEmptyInputFields()) {
+      exceptionFeedback.setText("Input missing in a field");
+    } else {
+      exceptionFeedback.setText("Wrong input, exercise was not created");
+    }
   }
-  
+
   /**
   * Empties all the input fields. Should be called when a exercise is successfully added to the workout
   */
   private void emptyInputFields() {
     exerciseNameInput.setText("");
-    repsInput.setText("");
+    repGoalInput.setText("");
     weigthInput.setText("");
     setsInput.setText("");
     restInput.setText("");
+  }
+
+  private boolean checkForEmptyInputFields(){
+    int counter = 0;
+    if (exerciseNameInput.getText().equals("")) {
+      exerciseNameInput.setStyle(WRONG_INPUT_BORDER_COLOR);
+      counter++;
+    }
+    if (repGoalInput.getText().equals("")) {
+      repGoalInput.setStyle(WRONG_INPUT_BORDER_COLOR);
+      counter++;
+    }
+    if (weigthInput.getText().equals("")) {
+      weigthInput.setStyle(WRONG_INPUT_BORDER_COLOR);
+      counter++;
+    }
+    if (setsInput.getText().equals("")) {
+      setsInput.setStyle(WRONG_INPUT_BORDER_COLOR);
+      counter++;
+    }
+    if (restInput.getText().equals("")) {
+      restInput.setStyle(WRONG_INPUT_BORDER_COLOR);
+      counter++;
+    }
+    if(counter > 1){
+      return true;
+    }
+    return false;
   }
 
   /**
@@ -238,5 +334,57 @@ public class CreateExerciseController extends AbstractController{
 
   void setUser(User user) {
     this.user = user;
+  }
+  public class IntValidator {
+    public IntValidator(Text title, TextField field, Text exception) {
+      String text = field.getText();
+      try {
+        int num = Integer.parseInt(text);
+        if (num <= 0) {
+          exception.setText(title.getText().replace(":", "") + " must be more than 0");
+          field.setStyle(WRONG_INPUT_BORDER_COLOR);
+        }
+        else {
+          exceptionFeedback.setText("");
+          field.setStyle(CORRECT_INPUT_BORDER_COLOR);
+        }
+      } catch (NumberFormatException e) {
+        exception.setText(title.getText().replace(":", "") + " must be a number and can not exceed " + Integer.MAX_VALUE);
+        field.setStyle(WRONG_INPUT_BORDER_COLOR);
+      }
+    }
+  }
+  public class DoubleValidator {
+    public DoubleValidator(Text title, TextField field, Text exception) {
+      String text = field.getText();
+      try {
+        double num = Double.parseDouble(text);
+        if (num <= 0) {
+          exception.setText(title.getText().replace(":", "") + " must be more than 0");
+          field.setStyle(WRONG_INPUT_BORDER_COLOR);
+        }
+        else {
+          exceptionFeedback.setText("");
+          field.setStyle(CORRECT_INPUT_BORDER_COLOR);
+        }
+      } catch (NumberFormatException e) {
+        exception.setText(title.getText().replace(":", "") + " must be a number and can not exceed " + Double.MAX_VALUE);
+        field.setStyle(WRONG_INPUT_BORDER_COLOR);
+      }
+    }
+  }
+
+  public class StringValidator {
+    public StringValidator(Text title, TextField field, Text exception) {
+      String text = field.getText();
+      text = text.trim();
+      if ((text.length() <= 0) || (text.equals(""))){
+      exception.setText(title.getText().replace(":", "") + " can not be blank");
+      field.setStyle(WRONG_INPUT_BORDER_COLOR);
+      } else {
+        exceptionFeedback.setText("");
+        field.setStyle(CORRECT_INPUT_BORDER_COLOR);
+      }
+    }
   }
 }
