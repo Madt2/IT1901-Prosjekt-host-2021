@@ -39,7 +39,7 @@ public class CreateExerciseControllerTest extends ApplicationTest{
   void testInputFieldsAddsToWorkoutObject() {        
     clickOn("#titleInput", MouseButton.PRIMARY).write("My workout");
     clickOn("#exerciseNameInput", MouseButton.PRIMARY).write("Benchpress");
-    clickOn("#repsInput", MouseButton.PRIMARY).write("30");
+    clickOn("#repGoalInput", MouseButton.PRIMARY).write("30");
     clickOn("#weigthInput", MouseButton.PRIMARY).write("80");
     clickOn("#setsInput", MouseButton.PRIMARY).write("3");
     clickOn("#restInput", MouseButton.PRIMARY).write("60");
@@ -49,7 +49,7 @@ public class CreateExerciseControllerTest extends ApplicationTest{
     Assertions.assertEquals(1, controller.getWorkout().getExercises().size()); //Adds to object
        
     clickOn("#exerciseNameInput", MouseButton.PRIMARY).write("Leg press"); // Add another object 
-    clickOn("#repsInput", MouseButton.PRIMARY).write("20");
+    clickOn("#repGoalInput", MouseButton.PRIMARY).write("20");
     clickOn("#weigthInput", MouseButton.PRIMARY).write("150");
     clickOn("#setsInput", MouseButton.PRIMARY).write("5");
     clickOn("#restInput", MouseButton.PRIMARY).write("40");
@@ -61,7 +61,7 @@ public class CreateExerciseControllerTest extends ApplicationTest{
   @Test
   void testWrongFormatInputFails() {
     clickOn("#exerciseNameInput", MouseButton.PRIMARY).write("Deadlift");
-    clickOn("#repsInput", MouseButton.PRIMARY).write("50");
+    clickOn("#repGoalInput", MouseButton.PRIMARY).write("50");
     clickOn("#weigthInput", MouseButton.PRIMARY).write("Not a Double");
     clickOn("#setsInput", MouseButton.PRIMARY).write("3");
     clickOn("#restInput", MouseButton.PRIMARY).write("40");
@@ -74,7 +74,7 @@ public class CreateExerciseControllerTest extends ApplicationTest{
   @Test
   void testWrongFormatWorksAfterChanged() {
     clickOn("#exerciseNameInput", MouseButton.PRIMARY).write("Deadlift");
-    clickOn("#repsInput", MouseButton.PRIMARY).write("50");
+    clickOn("#repGoalInput", MouseButton.PRIMARY).write("50");
     clickOn("#weigthInput", MouseButton.PRIMARY).write("Double");
     clickOn("#setsInput", MouseButton.PRIMARY).write("3");
     clickOn("#restInput", MouseButton.PRIMARY).write("40");
@@ -94,7 +94,7 @@ public class CreateExerciseControllerTest extends ApplicationTest{
   @Test
   void testIllegalArgumentFails() {
     clickOn("#exerciseNameInput", MouseButton.PRIMARY).write("Deadlift");
-    clickOn("#repsInput", MouseButton.PRIMARY).write("50");
+    clickOn("#repGoalInput", MouseButton.PRIMARY).write("50");
     clickOn("#weigthInput", MouseButton.PRIMARY).write("-20");
     clickOn("#setsInput", MouseButton.PRIMARY).write("50");
     clickOn("#restInput", MouseButton.PRIMARY).write("40");
@@ -107,7 +107,7 @@ public class CreateExerciseControllerTest extends ApplicationTest{
   @Test
   void canNotSaveWorkoutWithoutName(){
     clickOn("#exerciseNameInput", MouseButton.PRIMARY).write("Squat");
-    clickOn("#repsInput", MouseButton.PRIMARY).write("50");
+    clickOn("#repGoalInput", MouseButton.PRIMARY).write("50");
     clickOn("#weigthInput", MouseButton.PRIMARY).write("20");
     clickOn("#setsInput", MouseButton.PRIMARY).write("50");
     clickOn("#restInput", MouseButton.PRIMARY).write("40");

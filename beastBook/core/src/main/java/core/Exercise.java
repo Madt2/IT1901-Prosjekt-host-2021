@@ -38,8 +38,8 @@ public class Exercise {
   private void validateExerciseName(String name) {
     name = name.trim();
     if ((name.length() <= 0) || (name.equals(""))){
-      throw new IllegalArgumentException("Exercise name can not be blank!");
-    }
+      throw new IllegalArgumentException("Exercise can not be blank!");
+    } 
   }
 
   /**
@@ -49,7 +49,7 @@ public class Exercise {
   */
   private void validateRepGoal(int repGoal) {
     if (repGoal <= 0) {
-      throw new IllegalArgumentException("RepGoal can not be 0 or less than 0.");
+      throw new IllegalArgumentException("Rep Goal must be more than 0!");
     }
   }
 
@@ -60,7 +60,7 @@ public class Exercise {
   */
   private void validateWeight(double weight) {
     if (weight <= 0) {
-      throw new IllegalArgumentException("Weight can not be 0 or less than 0.");
+      throw new IllegalArgumentException("Working Weight must be more than 0!");
     }
   }
 
@@ -71,13 +71,13 @@ public class Exercise {
   */
   private void validateSets(int sets) {
     if (sets <= 0) {
-      throw new IllegalArgumentException("Sets can not be 0 or less than 0.");
+      throw new IllegalArgumentException("Sets must be more than 0!");
     }
   }
 
   private void validateRepsPerSet(int repsPerSet) {
     if (repsPerSet <= 0) {
-      throw new IllegalArgumentException("RepsPerSet can not be 0 or less than 0.");
+      throw new IllegalArgumentException("RepsPerSet must be more than 0!");
     }
   }
 
@@ -88,7 +88,7 @@ public class Exercise {
   */
   private void validateRestTime(int restTime) {
     if (restTime <= 0) {
-      throw new IllegalArgumentException("RestTime can not be 0 or less than 0.");
+      throw new IllegalArgumentException("Rest Time must be more than 0!");
     }
   }
   

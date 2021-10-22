@@ -116,7 +116,7 @@ public class WorkoutController {
         exercise.setExerciseName(event.getNewValue());
         saveUserState();
         emptyExceptionFeedback();
-      } catch(IllegalArgumentException i) {
+      } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage() + " Value was not changed.");
       } catch (Exception e) {
         exceptionFeedback.setText("Wrong input, please try again. Value was not changed.");
