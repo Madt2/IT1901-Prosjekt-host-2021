@@ -3,20 +3,15 @@ package fxui;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.AnchorPane;
 import javafx.event.ActionEvent;
 import java.io.IOException;
 import java.lang.IllegalArgumentException;
 import java.util.Objects;
-import javafx.fxml.FXMLLoader;
 import core.User;
 import javafx.scene.text.Text;
 import json.BeastBookPersistence;
 
 public class LoginController extends AbstractController{
-  @FXML
-  private AnchorPane rootPane;
-
   @FXML
   private TextField username_input;
 

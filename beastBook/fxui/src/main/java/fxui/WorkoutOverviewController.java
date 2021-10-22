@@ -92,13 +92,11 @@ public class WorkoutOverviewController extends AbstractController{
     allWorkouts.add(workout);
   }
 
-  // for testing
-  public List<Workout> getAllWorkouts() {
+  List<Workout> getAllWorkouts() {
     return new ArrayList<>(allWorkouts);
   }
 
-  // for testing
-  public Workout getTable(int row) {
+  Workout getTable(int row) {
     return workout_overview.getItems().get(row);
   }
 

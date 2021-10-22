@@ -6,14 +6,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.event.ActionEvent;
 import java.io.IOException;
-import javafx.scene.layout.AnchorPane;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.MenuItem;
 
 public class HistoryController extends AbstractController{
-  @FXML
-  private AnchorPane rootPane;
-
   @FXML
   private MenuItem logout_button;
 

@@ -15,15 +15,10 @@ import javafx.event.ActionEvent;
 import java.io.IOException;
 import core.Exercise;
 import core.Workout;
-import javafx.scene.layout.AnchorPane;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.MenuItem;
 import json.BeastBookPersistence;
 
 public class WorkoutController extends AbstractController{
-  @FXML
-  private AnchorPane rootPane;
-    
   @FXML
   private MenuItem logout_button;
 
@@ -194,11 +189,11 @@ public class WorkoutController extends AbstractController{
     workout_table.getItems().setAll(workout.getExercises());
   }
     
-  public TableView<Exercise> getWorkoutTable() {
+  TableView<Exercise> getWorkoutTable() {
     return workout_table;
   }
 
-  public Exercise getTable(int row) {
+  Exercise getTable(int row) {
     return workout_table.getItems().get(row);
   }
 

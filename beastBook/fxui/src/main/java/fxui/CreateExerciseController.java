@@ -2,18 +2,15 @@ package fxui;
 
 import core.User;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 
 import java.io.IOException;
 import java.lang.Integer;
 
 import core.Workout;
 import core.Exercise;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import json.BeastBookPersistence;
 
@@ -81,10 +78,8 @@ public class CreateExerciseController extends AbstractController{
   private TableColumn<Exercise, Integer> setsColumn;
   private TableColumn<Exercise, Integer> restTimeColumn;
 
-
   private static final String WRONG_INPUT_BORDER_COLOR = "-fx-text-box-border: #B22222; -fx-focus-color: #B22222";
   private static final String CORRECT_INPUT_BORDER_COLOR = "";  
-
 
   public void initialize() {
     updateTable();
@@ -170,7 +165,7 @@ public class CreateExerciseController extends AbstractController{
   *
   * @return the the workout table
   */
-  public TableView<Exercise> getWorkoutTable() {
+  TableView<Exercise> getWorkoutTable() {
     return workout_table;
   }
 
@@ -335,6 +330,7 @@ public class CreateExerciseController extends AbstractController{
   void setUser(User user) {
     this.user = user;
   }
+
   public class IntValidator {
     public IntValidator(Text title, TextField field, Text exception) {
       String text = field.getText();
