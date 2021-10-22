@@ -13,7 +13,7 @@ import core.User;
 import javafx.scene.text.Text;
 import json.BeastBookPersistence;
 
-public class LoginController {
+public class LoginController extends AbstractController{
   @FXML
   private AnchorPane rootPane;
 
@@ -32,21 +32,15 @@ public class LoginController {
   @FXML
   private Button login_button;
 
-  private User user = new User();
+  //private User registerUser = new User();
 
   /**
   * Loads home in gui.
   * @throws IOException
   */
-  @FXML
+  @Override
   void loadHome() throws IOException {
-    HomeScreenController homeScreenController = new HomeScreenController();
-    FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("HomeScreen.fxml"));
-    fxmlLoader.setController(homeScreenController);
-    homeScreenController.setUser(user);
-
-    AnchorPane pane = fxmlLoader.load();
-    rootPane.getChildren().setAll(pane);
+    super.loadHome();
   }
 
   /**
@@ -61,7 +55,7 @@ public class LoginController {
     String password = password_input.getText();
     if (!userName.equals("") && !password.equals("")) {
       try {
-        this.user = new User(userName, password);
+        user = new User(userName, password);
         saveUser(user); //Skal lagre bruker som en JSON-fil
       } catch (Exception e) {
         login_error.setText(e.getMessage());
@@ -90,7 +84,7 @@ public class LoginController {
             login_error.setText("Wrong Password");
           } else {
             user = login;
-            loadHome();
+            super.loadHome();
           }
         }
       } else {

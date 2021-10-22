@@ -20,7 +20,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.control.MenuItem;
 import json.BeastBookPersistence;
 
-public class WorkoutController {
+public class WorkoutController extends AbstractController{
   @FXML
   private AnchorPane rootPane;
     
@@ -42,7 +42,6 @@ public class WorkoutController {
   @FXML
   private Text exceptionFeedback;
 
-  private User user;
   private TableColumn<Exercise, String> exerciseNameColumn;
   private TableColumn<Exercise, Integer> repGoalColumn;
   private TableColumn<Exercise, Double> weightColumn;
@@ -216,25 +215,14 @@ public class WorkoutController {
     restTimeColumn.setPrefWidth(110);
   }
 
-  @FXML
+  @Override
   void loadLogin(ActionEvent event) throws IOException {
-    LoginController loginController = new LoginController();
-    FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("Login.fxml"));
-    fxmlLoader.setController(loginController);
-    
-    AnchorPane pane =  fxmlLoader.load();
-    rootPane.getChildren().setAll(pane);
+    super.loadLogin(event);
   }
 
-  @FXML
+  @Override
   void loadOverview(ActionEvent event) throws IOException {
-    WorkoutOverviewController workoutOverviewController = new WorkoutOverviewController();
-    FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("WorkoutOverview.fxml"));
-    fxmlLoader.setController(workoutOverviewController);
-    workoutOverviewController.setUser(user);
-  
-    AnchorPane pane =  fxmlLoader.load();
-    rootPane.getChildren().setAll(pane);
+    super.loadOverview(event);
   }
 
   void setUser(User user) {

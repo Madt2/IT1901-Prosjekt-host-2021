@@ -15,7 +15,7 @@ import javafx.scene.input.MouseButton;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WorkoutOverviewController {
+public class WorkoutOverviewController extends AbstractController{
   @FXML
   private AnchorPane rootPane;
 
@@ -32,7 +32,6 @@ public class WorkoutOverviewController {
   private List<Workout> allWorkouts = new ArrayList<>();
   public static Workout clickedWorkout = new Workout();  
   private Workout workout = new Workout();
-  private User user;
 
   public void initialize() {
     setTable();
@@ -72,6 +71,7 @@ public class WorkoutOverviewController {
                 loadWorkout();
               } catch (IOException e) {
                   e.printStackTrace();
+                  tableView.getSelectionModel();
                 }
         }
     });
@@ -110,25 +110,14 @@ public class WorkoutOverviewController {
     workoutNameColumn.setPrefWidth(150);    
   }
 
-  @FXML
-  void loadHome(ActionEvent event) throws IOException {
-    HomeScreenController homeScreenController = new HomeScreenController();
-    FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("HomeScreen.fxml"));
-    fxmlLoader.setController(homeScreenController);
-    homeScreenController.setUser(user);
-  
-    AnchorPane pane =  fxmlLoader.load();
-    rootPane.getChildren().setAll(pane);
+  @Override
+  void loadHome() throws IOException {
+    super.loadHome();
   }
 
-  @FXML
+  @Override
   void loadLogin(ActionEvent event) throws IOException {
-    LoginController loginController = new LoginController();
-    FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("Login.fxml"));
-    fxmlLoader.setController(loginController);
-  
-    AnchorPane pane =  fxmlLoader.load();
-    rootPane.getChildren().setAll(pane);
+    super.loadLogin(event);
   }
 
   @FXML
