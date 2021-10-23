@@ -1,32 +1,34 @@
 package fxui;
 
+import core.Exercise;
 import core.User;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.event.ActionEvent;
-
+import core.Workout;
 import java.io.IOException;
 import java.lang.Integer;
-
-import core.Workout;
-import core.Exercise;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import json.BeastBookPersistence;
 
-public class CreateExerciseController extends AbstractController{
+public class CreateExerciseController extends AbstractController {
 
   @FXML
   private MenuBar menuBar;
 
   @FXML
-  private TableView<Exercise> workout_table = new TableView<Exercise>();
+  private TableView<Exercise> workoutTable = new TableView<Exercise>();
 
   @FXML
   private Text exceptionFeedback;
 
   @FXML
-  private Button back_button;
+  private Button backButton;
 
   @FXML
   private TextField exerciseNameInput;
@@ -78,8 +80,8 @@ public class CreateExerciseController extends AbstractController{
   private TableColumn<Exercise, Integer> setsColumn;
   private TableColumn<Exercise, Integer> restTimeColumn;
 
-  private static final String WRONG_INPUT_BORDER_COLOR = "-fx-text-box-border: #B22222; -fx-focus-color: #B22222";
-  private static final String CORRECT_INPUT_BORDER_COLOR = "";  
+  public static final String WRONG_INPUT_BORDER_COLOR = "-fx-text-box-border: #B22222; -fx-focus-color: #B22222";
+  public static final String CORRECT_INPUT_BORDER_COLOR = "";  
 
   public void initialize() {
     updateTable();
@@ -105,7 +107,7 @@ public class CreateExerciseController extends AbstractController{
   * After the columns are created, they are added to the table view. 
   */
   public void updateTable() {     
-    workout_table.getColumns().clear();
+    workoutTable.getColumns().clear();
          
     exerciseNameColumn = new TableColumn<Exercise, String>("Exercise name");
     exerciseNameColumn.setCellValueFactory(new PropertyValueFactory<Exercise, String>("exerciseName"));
@@ -122,13 +124,13 @@ public class CreateExerciseController extends AbstractController{
     restTimeColumn = new TableColumn<Exercise, Integer>("Rest time in sec");
     restTimeColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("restTime"));
        
-    workout_table.getColumns().add(exerciseNameColumn);
-    workout_table.getColumns().add(repGoalColumn);
-    workout_table.getColumns().add(weightColumn);
-    workout_table.getColumns().add(setsColumn);
-    workout_table.getColumns().add(restTimeColumn);
+    workoutTable.getColumns().add(exerciseNameColumn);
+    workoutTable.getColumns().add(repGoalColumn);
+    workoutTable.getColumns().add(weightColumn);
+    workoutTable.getColumns().add(setsColumn);
+    workoutTable.getColumns().add(restTimeColumn);
     setColumnsSize();
-    workout_table.getItems().setAll(workout.getExercises());
+    workoutTable.getItems().setAll(workout.getExercises());
   }
 
   /**
@@ -145,12 +147,13 @@ public class CreateExerciseController extends AbstractController{
   /**
   * Return the exercise on the specified row. Mainly used for test reasons.
   *
-  * @param row the row you want to have access to / get an Exercise object from. int row 0 is the first row,  int row 1 is the second row and so on. 
+  * @param row the row you want to have access to / get an Exercise object from. 
+  * int row 0 is the first row,  int row 1 is the second row and so on. 
   * 
   * @return the Exercise object on the the requested row 
   */
   Exercise getTable(int row) {
-    return workout_table.getItems().get(row);
+    return workoutTable.getItems().get(row);
   }
 
   /**
@@ -166,7 +169,7 @@ public class CreateExerciseController extends AbstractController{
   * @return the the workout table
   */
   TableView<Exercise> getWorkoutTable() {
-    return workout_table;
+    return workoutTable;
   }
 
   /**
@@ -209,10 +212,10 @@ public class CreateExerciseController extends AbstractController{
         } catch (NumberFormatException d) {
           throw new IllegalArgumentException("Rest Time must be a number");
         }
-        exercise = new Exercise(name,repGoal,weight,sets,rest);
+        exercise = new Exercise(name, repGoal, weight, sets, rest);
         
         this.workout.addExercise(exercise);
-        workout_table.getItems().add(exercise);
+        workoutTable.getItems().add(exercise);
         exercise = new Exercise();   
         exceptionFeedback.setText("");
         createButton.setDisable(false);
@@ -241,7 +244,7 @@ public class CreateExerciseController extends AbstractController{
     restInput.setText("");
   }
 
-  private boolean checkForEmptyInputFields(){
+  private boolean checkForEmptyInputFields() {
     int counter = 0;
     if (exerciseNameInput.getText().equals("")) {
       exerciseNameInput.setStyle(WRONG_INPUT_BORDER_COLOR);
@@ -263,7 +266,7 @@ public class CreateExerciseController extends AbstractController{
       restInput.setStyle(WRONG_INPUT_BORDER_COLOR);
       counter++;
     }
-    if(counter > 1){
+    if (counter > 1) {
       return true;
     }
     return false;
@@ -316,6 +319,10 @@ public class CreateExerciseController extends AbstractController{
       }
     }
   }
+
+  TextField getWeightInput(){
+    return this.weigthInput;
+  }
   
   @Override
   void loadHome() throws IOException {
@@ -339,8 +346,7 @@ public class CreateExerciseController extends AbstractController{
         if (num <= 0) {
           exception.setText(title.getText().replace(":", "") + " must be more than 0");
           field.setStyle(WRONG_INPUT_BORDER_COLOR);
-        }
-        else {
+        } else {
           exceptionFeedback.setText("");
           field.setStyle(CORRECT_INPUT_BORDER_COLOR);
         }
@@ -358,8 +364,7 @@ public class CreateExerciseController extends AbstractController{
         if (num <= 0) {
           exception.setText(title.getText().replace(":", "") + " must be more than 0");
           field.setStyle(WRONG_INPUT_BORDER_COLOR);
-        }
-        else {
+        } else {
           exceptionFeedback.setText("");
           field.setStyle(CORRECT_INPUT_BORDER_COLOR);
         }
@@ -374,9 +379,9 @@ public class CreateExerciseController extends AbstractController{
     public StringValidator(Text title, TextField field, Text exception) {
       String text = field.getText();
       text = text.trim();
-      if ((text.length() <= 0) || (text.equals(""))){
-      exception.setText(title.getText().replace(":", "") + " can not be blank");
-      field.setStyle(WRONG_INPUT_BORDER_COLOR);
+      if ((text.length() <= 0) || (text.equals(""))) {
+        exception.setText(title.getText().replace(":", "") + " can not be blank");
+        field.setStyle(WRONG_INPUT_BORDER_COLOR);
       } else {
         exceptionFeedback.setText("");
         field.setStyle(CORRECT_INPUT_BORDER_COLOR);
