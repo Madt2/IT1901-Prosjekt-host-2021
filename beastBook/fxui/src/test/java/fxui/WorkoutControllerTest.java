@@ -58,8 +58,10 @@ public class WorkoutControllerTest extends ApplicationTest{
       
     Assertions.assertNotEquals(-50, user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());
     Assertions.assertEquals(20, user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());
-    FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("RepGoal can not be 0 or less than 0. Value was not changed."));
-
+    FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Rep Goal must be more than 0! Value was not changed!"));
+    
+    wc.getWorkoutTable().getColumns().get(1).setId("repGoal");
+    node = lookup("#repGoal").nth(1).query();
     doubleClickOn(node, MouseButton.PRIMARY).write("50");
     press(KeyCode.ENTER).release(KeyCode.ENTER);
 
@@ -67,11 +69,13 @@ public class WorkoutControllerTest extends ApplicationTest{
     Assertions.assertEquals(50, user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());      
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText(""));
 
+    wc.getWorkoutTable().getColumns().get(1).setId("repGoal");
+    node = lookup("#repGoal").nth(1).query();
     Thread.sleep(1000);
     doubleClickOn(node, MouseButton.PRIMARY).write("Five");
     press(KeyCode.ENTER).release(KeyCode.ENTER);
     Thread.sleep(1000);
-    FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Wrong input, please try again. Value was not changed."));
+    FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Rep Goal must be a number. Value was not changed!"));
     Assertions.assertEquals(50, user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());     
   }
 

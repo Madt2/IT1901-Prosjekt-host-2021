@@ -19,19 +19,19 @@ import json.BeastBookPersistence;
 
 public class WorkoutController extends AbstractController{
   @FXML
-  private MenuItem logout_button;
+  private MenuItem logOutButton;
 
   @FXML
-  private TableView<Exercise> workout_table;
+  private TableView<Exercise> workoutTable;
 
   @FXML
-  private Button back_button;
+  private Button backButton;
 
   @FXML
   private Text title;
 
   @FXML
-  private TextField date_input;
+  private TextField dateInput;
 
   @FXML
   private Text exceptionFeedback;
@@ -43,10 +43,12 @@ public class WorkoutController extends AbstractController{
   private TableColumn<Exercise, Integer> repsPerSetColumn;
   private TableColumn<Exercise, Integer> restTimeColumn;
   private Workout workout = new Workout();
+  public static final String WRONG_INPUT_BORDER_COLOR = "-fx-text-box-border: #B22222; -fx-focus-color: #B22222";
+  public static final String CORRECT_INPUT_BORDER_COLOR = "";  
 
   @FXML
   public void initialize() {
-    setTable();
+    updateTable();
     title.setText(workout.getName());
   }
 
@@ -61,8 +63,9 @@ public class WorkoutController extends AbstractController{
   /**
   * Sets the workout table columns and adds them to the table view.
   */
-  public void setTable() {
-    workout_table.setEditable(true);    
+  public void updateTable() {
+    workoutTable.getColumns().clear();
+    workoutTable.setEditable(true);    
     
     exerciseNameColumn = new TableColumn<Exercise, String>("Exercise name:");
     exerciseNameColumn.setCellValueFactory(new PropertyValueFactory<Exercise, String>("exerciseName"));
@@ -82,12 +85,12 @@ public class WorkoutController extends AbstractController{
     restTimeColumn = new TableColumn<Exercise, Integer>("Rest time in sec:");
     restTimeColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("restTime"));
 
-    workout_table.getColumns().add(exerciseNameColumn);
-    workout_table.getColumns().add(repGoalColumn);
-    workout_table.getColumns().add(weightColumn);
-    workout_table.getColumns().add(setsColumn);
-    workout_table.getColumns().add(repsPerSetColumn);
-    workout_table.getColumns().add(restTimeColumn);
+    workoutTable.getColumns().add(exerciseNameColumn);
+    workoutTable.getColumns().add(repGoalColumn);
+    workoutTable.getColumns().add(weightColumn);
+    workoutTable.getColumns().add(setsColumn);
+    workoutTable.getColumns().add(repsPerSetColumn);
+    workoutTable.getColumns().add(restTimeColumn);
 
     editTable();
     setColumnsSize();
@@ -110,9 +113,11 @@ public class WorkoutController extends AbstractController{
         saveUserState();
         emptyExceptionFeedback();
       } catch (IllegalArgumentException i) {
-        exceptionFeedback.setText(i.getMessage() + " Value was not changed.");
+        exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
+        updateTable();
       } catch (Exception e) {
-        exceptionFeedback.setText("Wrong input, please try again. Value was not changed.");
+        exceptionFeedback.setText("Wrong input, please try again. Value was not changed!");
+        updateTable();
       }
     });
 
@@ -124,9 +129,11 @@ public class WorkoutController extends AbstractController{
         saveUserState();
         emptyExceptionFeedback();
       } catch(IllegalArgumentException i) {
-        exceptionFeedback.setText(i.getMessage() + " Value was not changed.");
+        exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
+        updateTable();
       } catch (Exception e) {
-        exceptionFeedback.setText("Wrong input, please try again. Value was not changed.");
+        exceptionFeedback.setText("Rep Goal must be a number. Value was not changed!");
+        updateTable();
       }
     });
    
@@ -138,9 +145,11 @@ public class WorkoutController extends AbstractController{
         saveUserState();
         emptyExceptionFeedback();
       } catch(IllegalArgumentException i) {
-        exceptionFeedback.setText(i.getMessage() + " Value was not changed.");
+        exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
+        updateTable();
       } catch (Exception e) {
-        exceptionFeedback.setText("Wrong input, please try again. Value was not changed.");
+        exceptionFeedback.setText("Working Weight must be a number. Value was not changed!");
+        updateTable();
       }
     });
      
@@ -152,9 +161,11 @@ public class WorkoutController extends AbstractController{
         saveUserState();
         emptyExceptionFeedback();
       } catch(IllegalArgumentException i) {
-        exceptionFeedback.setText(i.getMessage() + " Value was not changed.");
+        exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
+        updateTable();
       } catch (Exception e) {
-        exceptionFeedback.setText("Wrong input, please try again. Value was not changed.");
+        exceptionFeedback.setText("Sets must be a number. Value was not changed!");
+        updateTable();
       }
     });
 
@@ -166,9 +177,11 @@ public class WorkoutController extends AbstractController{
         saveUserState();
         emptyExceptionFeedback();
       } catch(IllegalArgumentException i) {
-        exceptionFeedback.setText(i.getMessage() + " Value was not changed.");
+        exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
+        updateTable();
       } catch (Exception e) {
-        exceptionFeedback.setText("Wrong input, please try again. Value was not changed.");
+        exceptionFeedback.setText("Reps per set must be a number. Value was not changed!");
+        updateTable();
       }
     });
 
@@ -180,20 +193,22 @@ public class WorkoutController extends AbstractController{
         saveUserState();
         emptyExceptionFeedback();
       } catch(IllegalArgumentException i) {
-        exceptionFeedback.setText(i.getMessage() + " Value was not changed.");
+        exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
+        updateTable();
       } catch (Exception e) {
-        exceptionFeedback.setText("Wrong input, please try again. Value was not changed.");
+        exceptionFeedback.setText("Rest time must be a number. Value was not changed!");
+        updateTable();
         }
     });
-    workout_table.getItems().setAll(workout.getExercises());
+    workoutTable.getItems().setAll(workout.getExercises());
   }
     
   TableView<Exercise> getWorkoutTable() {
-    return workout_table;
+    return workoutTable;
   }
 
   Exercise getTable(int row) {
-    return workout_table.getItems().get(row);
+    return workoutTable.getItems().get(row);
   }
 
   private void emptyExceptionFeedback() {
@@ -288,4 +303,24 @@ public class WorkoutController extends AbstractController{
       }
     }
   }
+  /*
+  public class IntValidator {
+    public IntValidator(Text title, TextField field, Text exception) {
+      String text = field.getText();
+      try {
+        int num = Integer.parseInt(text);
+        if (num <= 0) {
+          exception.setText(title.getText().replace(":", "") + " must be more than 0");
+          field.setStyle(WRONG_INPUT_BORDER_COLOR);
+        } else {
+          exceptionFeedback.setText("");
+          field.setStyle(CORRECT_INPUT_BORDER_COLOR);
+        }
+      } catch (NumberFormatException e) {
+        exception.setText(title.getText().replace(":", "") + " must be a number and can not exceed " + Integer.MAX_VALUE);
+        field.setStyle(WRONG_INPUT_BORDER_COLOR);
+      }
+    }
+  }
+  */
 }
