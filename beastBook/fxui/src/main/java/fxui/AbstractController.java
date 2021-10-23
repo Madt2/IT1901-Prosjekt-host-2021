@@ -3,7 +3,6 @@ package fxui;
 import java.io.IOException;
 
 import core.User;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
@@ -25,7 +24,7 @@ public abstract class AbstractController {
   }
 
   @FXML
-  void loadLogin(ActionEvent event) throws IOException {
+  void loadLogin() throws IOException {
     LoginController loginController = new LoginController();
     FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("Login.fxml"));
     fxmlLoader.setController(loginController);
@@ -34,7 +33,7 @@ public abstract class AbstractController {
   }
 
   @FXML
-  void loadCreate(ActionEvent event) throws IOException {
+  void loadCreate() throws IOException {
     CreateExerciseController createController = new CreateExerciseController();
     FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("Create.fxml"));
     fxmlLoader.setController(createController);
@@ -44,7 +43,7 @@ public abstract class AbstractController {
   }
 
   @FXML
-  void loadHistory(ActionEvent event) throws IOException {
+  void loadHistory() throws IOException {
     HistoryController historyController = new HistoryController();
     FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("History.fxml"));
     fxmlLoader.setController(historyController);
@@ -54,7 +53,7 @@ public abstract class AbstractController {
   }
 
   @FXML
-  void loadWorkouts(ActionEvent event) throws IOException {
+  void loadWorkouts() throws IOException {
     WorkoutOverviewController workoutOverviewController = new WorkoutOverviewController();
     FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("WorkoutOverview.fxml"));
     fxmlLoader.setController(workoutOverviewController);
@@ -64,7 +63,7 @@ public abstract class AbstractController {
   }
 
   @FXML
-  void loadOverview(ActionEvent event) throws IOException {
+  void loadOverview() throws IOException {
     WorkoutOverviewController workoutOverviewController = new WorkoutOverviewController();
     FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("WorkoutOverview.fxml"));
     fxmlLoader.setController(workoutOverviewController);

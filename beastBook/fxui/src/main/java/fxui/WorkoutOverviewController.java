@@ -3,7 +3,6 @@ package fxui;
 import core.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.event.ActionEvent;
 import java.io.IOException;
 import core.Workout;
 import javafx.scene.layout.AnchorPane;
@@ -107,8 +106,8 @@ public class WorkoutOverviewController extends AbstractController{
   }
 
   @Override
-  void loadLogin(ActionEvent event) throws IOException {
-    super.loadLogin(event);
+  void loadLogin() throws IOException {
+    super.loadLogin();
   }
 
   @FXML

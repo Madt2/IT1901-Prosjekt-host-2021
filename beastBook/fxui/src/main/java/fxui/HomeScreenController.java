@@ -3,7 +3,6 @@ package fxui;
 import core.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.event.ActionEvent;
 import java.io.IOException;
 import javafx.scene.control.MenuItem;
 
@@ -21,23 +20,23 @@ public class HomeScreenController extends AbstractController{
   private Button history_button;
 
   @Override
-  void loadHistory(ActionEvent event) throws IOException {
-    super.loadHistory(event);
+  void loadHistory() throws IOException {
+    super.loadHistory();
   }
 
   @Override
-  void loadCreate(ActionEvent event) throws IOException {
-    super.loadCreate(event);
+  void loadCreate() throws IOException {
+    super.loadCreate();
   }
 
   @Override
-  void loadWorkouts(ActionEvent event) throws IOException {
-    super.loadWorkouts(event);
+  void loadWorkouts() throws IOException {
+    super.loadWorkouts();
   }
 
   @Override
-  void loadLogin(ActionEvent event) throws IOException {
-    super.loadLogin(event);
+  void loadLogin() throws IOException {
+    super.loadLogin();
   }
 
   public void setUser(User user) {

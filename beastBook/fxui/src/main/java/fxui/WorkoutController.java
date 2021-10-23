@@ -11,7 +11,6 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.text.Text;
 import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
-import javafx.event.ActionEvent;
 import java.io.IOException;
 import core.Exercise;
 import core.Workout;
@@ -211,13 +210,13 @@ public class WorkoutController extends AbstractController{
   }
 
   @Override
-  void loadLogin(ActionEvent event) throws IOException {
-    super.loadLogin(event);
+  void loadLogin() throws IOException {
+    super.loadLogin();
   }
 
   @Override
-  void loadOverview(ActionEvent event) throws IOException {
-    super.loadOverview(event);
+  void loadOverview() throws IOException {
+    super.loadOverview();
   }
 
   void setUser(User user) {
