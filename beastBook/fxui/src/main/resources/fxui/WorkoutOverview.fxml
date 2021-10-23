@@ -31,10 +31,13 @@
             </Menu>
          </menus>
       </MenuBar>
-      <Text layoutX="202.0" layoutY="77.0" strokeType="OUTSIDE" strokeWidth="0.0" text="My Workouts">
+      <Text layoutX="177.0" layoutY="78.0" strokeType="OUTSIDE" strokeWidth="0.0" text="My Workouts">
          <font>
             <Font size="36.0" />
          </font></Text>
-      <TableView fx:id="workout_overview" layoutX="209.0" layoutY="100.0" minWidth="152.0" prefHeight="200.0" prefWidth="152.0" />
+      <TableView fx:id="workout_overview" layoutX="209.0" layoutY="100.0" minWidth="152.0" onMouseClicked="#workoutSelectedListener" prefHeight="200.0" prefWidth="152.0" />
+      <Button fx:id="openButton" disable="true" layoutX="161.0" layoutY="344.0" mnemonicParsing="false" onAction="#loadWorkout" text="Open workout" />
+      <Button fx:id="deleteButton" disable="true" layoutX="303.0" layoutY="344.0" mnemonicParsing="false" onAction="#deleteWorkout" text="Delete workout" />
+      <Text fx:id="exceptionFeedback" fill="#ff2323" layoutX="219.0" layoutY="319.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="132.0" />
    </children>
 </AnchorPane>

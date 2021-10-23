@@ -5,12 +5,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.event.ActionEvent;
 import java.io.IOException;
-
 import core.Workout;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
+import json.BeastBookPersistence;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.input.MouseButton;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +26,15 @@ public class WorkoutOverviewController extends AbstractController{
   private Button back_button;
 
   @FXML
+  private Button openButton;
+
+  @FXML
+  private Button deleteButton;
+
+  @FXML
+  private Text exceptionFeedback;
+
+  @FXML
   private TableView<Workout> workout_overview = new TableView<Workout>();
 
   private TableColumn<Workout, String> workoutNameColumn;
@@ -34,14 +43,14 @@ public class WorkoutOverviewController extends AbstractController{
   private Workout workout = new Workout();
 
   public void initialize() {
-    setTable();
+    loadTable();
   } 
     
   /**
   * Creates a table view with a column for workout name and
   * adds the users workouts to the table view.
   */
-  public void setTable() {
+  public void loadTable() {
     setWorkouts();
     workout_overview.getColumns().clear();
     workoutNameColumn = new TableColumn<Workout, String>("Workout name:");
@@ -49,35 +58,19 @@ public class WorkoutOverviewController extends AbstractController{
     workout_overview.getColumns().add(workoutNameColumn);
     workout_overview.getItems().setAll(allWorkouts);
     setColumnsSize();
-    getClickedRow();
   }
 
-  /**
-  * Registers the workout/row that you have clicked on
-  * and uses loadWorkout() to load the workout.
-  *
-  * @return TableRow that is clicked on
-  */
-  private TableRow<Workout> getClickedRow() {
-    // Source: https://stackoverflow.com/questions/30191264/javafx-tableview-how-to-get-the-row-i-clicked
-    workout_overview.setRowFactory(tableView -> {
-      TableRow<Workout> row = new TableRow<>();
-      row.setOnMouseClicked(event -> {
-        if (! row.isEmpty() && event.getButton() == MouseButton.PRIMARY 
-            && event.getClickCount() == 1) {
-              Workout clickedRow = row.getItem();
-              setWorkout(clickedRow);
-              try {
-                loadWorkout();
-              } catch (IOException e) {
-                  e.printStackTrace();
-                  tableView.getSelectionModel();
-                }
-        }
-    });
-      return row;
-    });
-    return null;
+  @FXML
+  private void workoutSelectedListener() throws IOException {
+    workout = workout_overview.getSelectionModel().getSelectedItem();
+    if (workout != null) {
+      exceptionFeedback.setText("");
+      openButton.setDisable(false);
+      deleteButton.setDisable(false);
+    } else {
+      openButton.setDisable(true);
+      deleteButton.setDisable(true);
+    }
   }
 
   public void setWorkout(Workout workout) {
@@ -121,6 +114,7 @@ public class WorkoutOverviewController extends AbstractController{
   @FXML
   void loadWorkout() throws IOException {
     try {
+      exceptionFeedback.setText("");
       WorkoutController workoutController = new WorkoutController();
       FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("Workout.fxml"));
       fxmlLoader.setController(workoutController);
@@ -130,8 +124,27 @@ public class WorkoutOverviewController extends AbstractController{
       AnchorPane pane =  fxmlLoader.load();
       rootPane.getChildren().setAll(pane);
     } catch (Exception e) {
-      e.printStackTrace();
+      openButton.setDisable(true);
+      deleteButton.setDisable(true);
+      exceptionFeedback.setText("No workout is selected!");
     }
+  }
+
+  @FXML
+  void deleteWorkout() {
+    try { 
+      user.removeWorkout(workout);
+      loadTable();
+      exceptionFeedback.setText("Workout deleted!");
+      BeastBookPersistence persistence = new BeastBookPersistence();
+      persistence.setSaveFilePath(user.getUserName());
+      persistence.saveUser(user);
+      
+    } catch (Exception e) {
+      openButton.setDisable(true);
+      deleteButton.setDisable(true);
+      exceptionFeedback.setText("No workout is selected!");
+    } 
   }
     
   void setUser(User user) {
