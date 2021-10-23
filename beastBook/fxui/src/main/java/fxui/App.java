@@ -21,7 +21,7 @@ public class App extends Application {
     fxmlLoader.setController(loginController);
         
     Parent parent = fxmlLoader.load();
-    stage.setScene(new Scene(parent));
+    stage.setScene(new Scene(parent, 600, 500));
     stage.show();
   }
 
