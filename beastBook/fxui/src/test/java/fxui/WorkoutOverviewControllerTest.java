@@ -7,8 +7,9 @@ import java.io.IOException;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Test;import org.testfx.api.FxAssert;
 import org.testfx.framework.junit5.ApplicationTest;
+import org.testfx.matcher.control.TextMatchers;
 import core.Exercise;
 import core.Workout;
 import core.User;
@@ -18,14 +19,13 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-
 public class WorkoutOverviewControllerTest extends ApplicationTest{  
   private WorkoutOverviewController woc;
   private User user = new User();
     
   @Override
   public void start(final Stage stage) throws IOException {
-    final FXMLLoader loader = new FXMLLoader(this.getClass().getResource("WorkoutOverview.fxml"));
+    FXMLLoader loader = new FXMLLoader(this.getClass().getResource("WorkoutOverview.fxml"));
     woc = new WorkoutOverviewController();
     loader.setController(woc);
     woc.setUser(user);
@@ -35,40 +35,35 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
     stage.setScene(new Scene(root));
     stage.show();
   }
-    
   @Test
-  void testClickedRow1IsCorrectWorkout(){
+  void testOpenWorkout() throws InterruptedException {
     WorkoutController wc = new WorkoutController();
     wc.setUser(user);
     woc.getWorkoutOverview().getColumns().get(0).setId("workoutName");
     Node node = lookup("#workoutName").nth(1).query();
     clickOn(node);
-    wc.setWorkout(user.getWorkouts().get(0));
-
-    Assertions.assertEquals(user.getWorkouts().get(0), woc.getWorkout());
-    Assertions.assertNotEquals(user.getWorkouts().get(1), woc.getWorkout());
-    Assertions.assertEquals("Pull workout", wc.getWorkout().getName());
-    Assertions.assertEquals("Benchpress", wc.getWorkout().getExercises().get(0).getExerciseName());
-    Assertions.assertEquals(20, wc.getWorkout().getExercises().get(0).getRepGoal());
-    Assertions.assertEquals(30, wc.getWorkout().getExercises().get(0).getWeight());
-    Assertions.assertEquals(40, wc.getWorkout().getExercises().get(0).getSets());
-    Assertions.assertEquals(50, wc.getWorkout().getExercises().get(0).getRestTime());
+    wc.setWorkout(woc.getAllWorkouts().get(0));
+    clickOn("#openButton");
+    FxAssert.verifyThat("#title", TextMatchers.hasText(wc.getWorkout().getName()));
   }
 
   @Test
-  void testClickedRow2IsCorrectWorkout(){
-    WorkoutController wc = new WorkoutController();
-    wc.setUser(user);
+  void testDeleteWorkout() throws InterruptedException {
+    // 2 workouts
+    Assertions.assertEquals(woc.getWorkoutOverview().getItems(), user.getWorkouts());
     woc.getWorkoutOverview().getColumns().get(0).setId("workoutName");
-    Node node2 = lookup("#workoutName").nth(2).query();
-    clickOn(node2);
-    wc.setWorkout(user.getWorkouts().get(1));
-
-    Assertions.assertEquals(user.getWorkouts().get(1), woc.getWorkout());
-    Assertions.assertNotEquals(user.getWorkouts().get(0), woc.getWorkout());
+    Node node = lookup("#workoutName").nth(1).query();
+    clickOn(node);
+    clickOn("#deleteButton");
+    // 1 workout
+    Assertions.assertEquals(woc.getWorkoutOverview().getItems(), user.getWorkouts());
+    FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Workout deleted!"));
+    clickOn("#deleteButton");
+    FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("No workout is selected!"));
+    Assertions.assertEquals(woc.getWorkoutOverview().getItems(), user.getWorkouts());
   }
-
-  private void addWorkoutsToUser(){
+ 
+  private void addWorkoutsToUser() {
     Workout workout1 = new Workout("Pull workout");
     Workout workout2 = new Workout("LEGS");
     workout1.addExercise(new Exercise("Benchpress", 20, 30, 40, 50));
