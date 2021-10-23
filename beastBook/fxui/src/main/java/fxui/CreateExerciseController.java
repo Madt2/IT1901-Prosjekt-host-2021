@@ -310,6 +310,8 @@ public class CreateExerciseController extends AbstractController{
         persistence.setSaveFilePath(user.getUserName());
         persistence.saveUser(user);
         exceptionFeedback.setText("Workout saved!");
+      } catch (IllegalArgumentException i) {
+        exceptionFeedback.setText(i.getMessage());
       } catch (Exception e) {
         System.err.println(e);
         exceptionFeedback.setText("Save Workout failed!");
@@ -323,8 +325,8 @@ public class CreateExerciseController extends AbstractController{
   }
 
   @Override
-  void loadLogin(ActionEvent event) throws IOException {
-    super.loadLogin(event);
+  void loadLogin() throws IOException {
+    super.loadLogin();
   }
 
   void setUser(User user) {

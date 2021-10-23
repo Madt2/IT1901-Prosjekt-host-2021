@@ -41,6 +41,11 @@ public class Workout {
   * @param exercise exercise object to add to workout.
   */
   public void addExercise(Exercise exercise) {
+    for (Exercise e : exercises) {
+      if (e.getExerciseName().equals(exercise.getExerciseName())) {
+        throw new IllegalArgumentException(exercise + " is already added as an exercise!");
+      }
+    }
     exercises.add(exercise);
   }
 

@@ -4,7 +4,6 @@ import core.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
-import javafx.event.ActionEvent;
 import java.io.IOException;
 import javafx.scene.control.MenuItem;
 
@@ -24,8 +23,8 @@ public class HistoryController extends AbstractController{
   }
 
   @Override
-  void loadLogin(ActionEvent event) throws IOException {
-    super.loadLogin(event);
+  void loadLogin() throws IOException {
+    super.loadLogin();
   }
 
   public void setUser(User user) {

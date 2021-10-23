@@ -32,6 +32,9 @@ public class UserTest {
   void testAddWorkout() {
     testUser.addWorkout(testWorkout);
     Assertions.assertTrue(testUser.getWorkouts().contains(testWorkout));
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      testUser.addWorkout(testWorkout);
+    });
   }
 
   @Test
@@ -39,5 +42,8 @@ public class UserTest {
     testUser.addWorkout(testWorkout);
     testUser.removeWorkout(testWorkout);
     Assertions.assertFalse(testUser.getWorkouts().contains(testWorkout));
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      testUser.removeWorkout(testWorkout);
+    });
   }
 }

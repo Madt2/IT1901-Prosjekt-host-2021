@@ -31,7 +31,7 @@ public class User {
     if (username.length() >= MIN_CHAR_USERNAME) {
       this.username = username;
     } else {
-      throw new IllegalArgumentException("Username must be " + MIN_CHAR_USERNAME + " or more characters");
+      throw new IllegalArgumentException("Username must be " + MIN_CHAR_USERNAME + " or more characters!");
     }
   }
 
@@ -47,7 +47,7 @@ public class User {
     if (password.length() >= MIN_CHAR_PASSWORD) {
       this.password = password;
     } else {
-      throw new IllegalArgumentException("Password must be " + MIN_CHAR_PASSWORD + " or more characters");
+      throw new IllegalArgumentException("Password must be " + MIN_CHAR_PASSWORD + " or more characters!");
     }
   }
   
@@ -56,6 +56,11 @@ public class User {
   }
 
   public void addWorkout(Workout workout) {
+    for (Workout w : workouts) {
+      if (w.getName().equals(workout.getName())) {
+        throw new IllegalArgumentException("User already have workout " + workout.getName() + " saved!");
+      }
+    }
     workouts.add(workout);
   }
 
@@ -65,7 +70,7 @@ public class User {
   */
   public void removeWorkout(Workout workout) {
     if (!workouts.contains(workout)) {
-      throw new IllegalArgumentException("User does not have workout " + workout + " saved.");
+      throw new IllegalArgumentException("User does not have workout " + workout + " saved!");
     }  
     workouts.remove(workout);
   }
