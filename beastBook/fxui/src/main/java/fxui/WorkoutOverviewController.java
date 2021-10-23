@@ -19,10 +19,10 @@ public class WorkoutOverviewController extends AbstractController{
   private AnchorPane rootPane;
 
   @FXML
-  private MenuItem logout_button;
+  private MenuItem logOutButton;
 
   @FXML
-  private Button back_button;
+  private Button backButton;
 
   @FXML
   private Button openButton;
@@ -34,7 +34,7 @@ public class WorkoutOverviewController extends AbstractController{
   private Text exceptionFeedback;
 
   @FXML
-  private TableView<Workout> workout_overview = new TableView<Workout>();
+  private TableView<Workout> workoutOverview = new TableView<Workout>();
 
   private TableColumn<Workout, String> workoutNameColumn;
   private List<Workout> allWorkouts = new ArrayList<>();
@@ -51,17 +51,17 @@ public class WorkoutOverviewController extends AbstractController{
   */
   public void loadTable() {
     setWorkouts();
-    workout_overview.getColumns().clear();
+    workoutOverview.getColumns().clear();
     workoutNameColumn = new TableColumn<Workout, String>("Workout name:");
     workoutNameColumn.setCellValueFactory(new PropertyValueFactory<Workout, String>("name"));
-    workout_overview.getColumns().add(workoutNameColumn);
-    workout_overview.getItems().setAll(allWorkouts);
+    workoutOverview.getColumns().add(workoutNameColumn);
+    workoutOverview.getItems().setAll(allWorkouts);
     setColumnsSize();
   }
 
   @FXML
   private void workoutSelectedListener() throws IOException {
-    workout = workout_overview.getSelectionModel().getSelectedItem();
+    workout = workoutOverview.getSelectionModel().getSelectedItem();
     if (workout != null) {
       exceptionFeedback.setText("");
       openButton.setDisable(false);
@@ -89,11 +89,11 @@ public class WorkoutOverviewController extends AbstractController{
   }
 
   Workout getTable(int row) {
-    return workout_overview.getItems().get(row);
+    return workoutOverview.getItems().get(row);
   }
 
   public TableView<Workout> getWorkoutOverview() {
-    return workout_overview;
+    return workoutOverview;
   }
 
   private void setColumnsSize() {
