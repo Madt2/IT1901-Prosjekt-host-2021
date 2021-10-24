@@ -42,20 +42,21 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
     woc.getWorkoutOverview().getColumns().get(0).setId("workoutName");
     Node node = lookup("#workoutName").nth(1).query();
     clickOn(node);
-    wc.setWorkout(woc.getAllWorkouts().get(0));
+    Assertions.assertEquals("Pull workout", woc.getWorkoutOverview().getSelectionModel().getSelectedItem().getName());
     clickOn("#openButton");
-    FxAssert.verifyThat("#title", TextMatchers.hasText(wc.getWorkout().getName()));
+    FxAssert.verifyThat("#title", TextMatchers.hasText("Pull workout"));
   }
 
   @Test
   void testDeleteWorkout() throws InterruptedException {
-    // 2 workouts
+    // 2 workouts left
     Assertions.assertEquals(woc.getWorkoutOverview().getItems(), user.getWorkouts());
     woc.getWorkoutOverview().getColumns().get(0).setId("workoutName");
     Node node = lookup("#workoutName").nth(1).query();
     clickOn(node);
+    Assertions.assertEquals("Pull workout", woc.getWorkoutOverview().getSelectionModel().getSelectedItem().getName());
     clickOn("#deleteButton");
-    // 1 workout
+    // 1 workout left
     Assertions.assertEquals(woc.getWorkoutOverview().getItems(), user.getWorkouts());
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Workout deleted!"));
     clickOn("#deleteButton");

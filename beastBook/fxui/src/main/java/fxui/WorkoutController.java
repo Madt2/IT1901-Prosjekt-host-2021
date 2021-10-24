@@ -114,10 +114,10 @@ public class WorkoutController extends AbstractController{
         emptyExceptionFeedback();
       } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
-        updateTable();
+        workoutTable.refresh();
       } catch (Exception e) {
         exceptionFeedback.setText("Wrong input, please try again. Value was not changed!");
-        updateTable();
+        workoutTable.refresh();
       }
     });
 
@@ -130,10 +130,10 @@ public class WorkoutController extends AbstractController{
         emptyExceptionFeedback();
       } catch(IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
-        updateTable();
+        workoutTable.refresh();
       } catch (Exception e) {
         exceptionFeedback.setText("Rep Goal must be a number. Value was not changed!");
-        updateTable();
+        workoutTable.refresh();
       }
     });
    
@@ -146,10 +146,10 @@ public class WorkoutController extends AbstractController{
         emptyExceptionFeedback();
       } catch(IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
-        updateTable();
+        workoutTable.refresh();
       } catch (Exception e) {
         exceptionFeedback.setText("Working Weight must be a number. Value was not changed!");
-        updateTable();
+        workoutTable.refresh();
       }
     });
      
@@ -162,10 +162,10 @@ public class WorkoutController extends AbstractController{
         emptyExceptionFeedback();
       } catch(IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
-        updateTable();
+        workoutTable.refresh();
       } catch (Exception e) {
         exceptionFeedback.setText("Sets must be a number. Value was not changed!");
-        updateTable();
+        workoutTable.refresh();
       }
     });
 
@@ -178,10 +178,10 @@ public class WorkoutController extends AbstractController{
         emptyExceptionFeedback();
       } catch(IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
-        updateTable();
+        workoutTable.refresh();
       } catch (Exception e) {
         exceptionFeedback.setText("Reps per set must be a number. Value was not changed!");
-        updateTable();
+        workoutTable.refresh();
       }
     });
 
@@ -194,10 +194,10 @@ public class WorkoutController extends AbstractController{
         emptyExceptionFeedback();
       } catch(IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
-        updateTable();
+        workoutTable.refresh();
       } catch (Exception e) {
         exceptionFeedback.setText("Rest time must be a number. Value was not changed!");
-        updateTable();
+        workoutTable.refresh();
         }
     });
     workoutTable.getItems().setAll(workout.getExercises());
