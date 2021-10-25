@@ -27,6 +27,8 @@ public class LoginController extends AbstractController{
   @FXML
   private Button login_button;
 
+  private BeastBookPersistence persistence = new BeastBookPersistence();
+
   //private User registerUser = new User();
 
   /**
@@ -96,7 +98,6 @@ public class LoginController extends AbstractController{
   * @param user user to save.
   */
   private void saveUser(User user) {
-    BeastBookPersistence persistence = new BeastBookPersistence();
     try {
       persistence.setSaveFilePath(user.getUserName());
       persistence.saveUser(user);
@@ -112,7 +113,6 @@ public class LoginController extends AbstractController{
   * @return
   */
   private User getUser(String userName) {
-    BeastBookPersistence persistence = new BeastBookPersistence();
     try {
       persistence.setSaveFilePath(userName);
       User user = persistence.loadUser();

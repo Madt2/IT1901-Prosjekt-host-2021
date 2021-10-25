@@ -83,6 +83,7 @@ public class CreateExerciseController extends AbstractController {
   private TableColumn<Exercise, Double> weightColumn;
   private TableColumn<Exercise, Integer> setsColumn;
   private TableColumn<Exercise, Integer> restTimeColumn;
+  private BeastBookPersistence persistence = new BeastBookPersistence();
 
   public static final String WRONG_INPUT_BORDER_COLOR = "-fx-text-box-border: #B22222; -fx-focus-color: #B22222";
   public static final String CORRECT_INPUT_BORDER_COLOR = "";  
@@ -313,7 +314,6 @@ public class CreateExerciseController extends AbstractController {
     } else {
       try {
         user.addWorkout(workout);
-        BeastBookPersistence persistence = new BeastBookPersistence();
         persistence.setSaveFilePath(user.getUserName());
         persistence.saveUser(user);
         exceptionFeedback.setText("Workout saved!");
@@ -340,7 +340,6 @@ public class CreateExerciseController extends AbstractController {
   void deleteExercise() throws IllegalStateException, IOException {
     workout.removeExercise(selectedExercise);
     exceptionFeedback.setText("The exercise '" + selectedExercise.getExerciseName() + "' was deleted!");
-    BeastBookPersistence persistence = new BeastBookPersistence();
     persistence.setSaveFilePath(user.getUserName());
     persistence.saveUser(user);
     updateTable();

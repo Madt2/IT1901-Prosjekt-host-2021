@@ -44,7 +44,8 @@ public class WorkoutController extends AbstractController{
   private TableColumn<Exercise, Integer> restTimeColumn;
   private Workout workout = new Workout();
   public static final String WRONG_INPUT_BORDER_COLOR = "-fx-text-box-border: #B22222; -fx-focus-color: #B22222";
-  public static final String CORRECT_INPUT_BORDER_COLOR = "";  
+  public static final String CORRECT_INPUT_BORDER_COLOR = "";
+  BeastBookPersistence persistence = new BeastBookPersistence();
 
   @FXML
   public void initialize() {
@@ -242,7 +243,6 @@ public class WorkoutController extends AbstractController{
   * Updates the exercises/workouts for a user in file format
   */
   private void saveUserState() throws IOException {
-    BeastBookPersistence persistence = new BeastBookPersistence();
     persistence.setSaveFilePath(user.getUserName());
     persistence.saveUser(user);
   }

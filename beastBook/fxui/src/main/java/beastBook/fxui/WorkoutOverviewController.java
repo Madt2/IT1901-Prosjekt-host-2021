@@ -40,6 +40,7 @@ public class WorkoutOverviewController extends AbstractController{
   private List<Workout> allWorkouts = new ArrayList<>();
   public static Workout clickedWorkout = new Workout();  
   private Workout workout = new Workout();
+  private BeastBookPersistence persistence = new BeastBookPersistence();
 
   public void initialize() {
     loadTable();
@@ -134,7 +135,6 @@ public class WorkoutOverviewController extends AbstractController{
     user.removeWorkout(workout);
     loadTable();
     exceptionFeedback.setText("Workout deleted!");
-    BeastBookPersistence persistence = new BeastBookPersistence();
     persistence.setSaveFilePath(user.getUserName());
     persistence.saveUser(user);
     openButton.setDisable(true);
