@@ -13,13 +13,13 @@ public class HomeScreenController extends AbstractController {
   private Button logoutButton;
 
   @FXML
-  private Button create_button;
+  private Button createButton;
 
   @FXML
-  private Button workouts_button;
+  private Button workoutsButton;
 
   @FXML
-  private Button history_button;
+  private Button historyButton;
 
   @Override
   void loadHistory() throws IOException {

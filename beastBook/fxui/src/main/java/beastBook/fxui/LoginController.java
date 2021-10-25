@@ -1,13 +1,14 @@
 package beastBook.fxui;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.TextField;
-import javafx.event.ActionEvent;
+import beastBook.core.User;
+import beastBook.json.BeastBookPersistence;
 import java.io.IOException;
 import java.lang.IllegalArgumentException;
 import java.util.Objects;
-import beastBook.core.User;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
 /**
@@ -15,27 +16,26 @@ import javafx.scene.text.Text;
  */
 public class LoginController extends AbstractController {
   @FXML
-  private TextField username_input;
+  private TextField usernameInput;
 
   @FXML
-  private TextField password_input;
+  private TextField passwordInput;
 
   @FXML
-  private Text login_error;
+  private Text loginError;
 
   @FXML
-  private Button register_button;
+  private Button registerButton;
 
   @FXML
-  private Button login_button;
+  private Button loginButton;
 
   private BeastBookPersistence persistence = new BeastBookPersistence();
 
-  //private User registerUser = new User();
-
   /**
   * Loads home in gui.
-  * @throws IOException
+  *
+   * @throws IOException if loading home screen fails
   */
   @Override
   void loadHome() throws IOException {
@@ -45,8 +45,8 @@ public class LoginController extends AbstractController {
   /**
   * Registers user, saves user to file. Retrieves username and password input from gui.
   *
-  * @param event
-  * @throws IllegalArgumentException
+  * @param event when register button is clicked
+  * @throws IllegalArgumentException if username or password is invalid
   */
   @FXML
   void registerUser(ActionEvent event) throws IllegalArgumentException {
@@ -63,11 +63,12 @@ public class LoginController extends AbstractController {
   }
 
   /**
-  * Login for user. Validation for user-input for existing user and correct password. Also validates for empty input.
+  * Login for user. Validation for user-input for existing user and correct password.
+   * Also validates for empty input.
   *
-  * @param event
-  * @throws IllegalArgumentException
-  * @throws IOException
+  * @param event when log in button is clicked
+  * @throws IllegalArgumentException if username or password is not valid
+  * @throws IOException if loading home screen fails
   */
   @FXML
   void loginUser(ActionEvent event) throws IllegalArgumentException, IOException {

@@ -13,12 +13,12 @@
             <Font size="24.0" />
          </font>
       </Text>
-      <TextField fx:id="username_input" layoutX="212.0" layoutY="110.0" prefHeight="26.0" prefWidth="175.0" />
+      <TextField fx:id="usernameInput" layoutX="212.0" layoutY="110.0" prefHeight="26.0" prefWidth="175.0" />
       <Text layoutX="149.0" layoutY="128.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Username:" />
-      <TextField fx:id="password_input" layoutX="212.0" layoutY="146.0" prefHeight="26.0" prefWidth="175.0" />
+      <TextField fx:id="passwordInput" layoutX="212.0" layoutY="146.0" prefHeight="26.0" prefWidth="175.0" />
       <Text layoutX="149.0" layoutY="164.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Password:" />
-      <Button fx:id="register_button" layoutX="215.0" layoutY="194.0" mnemonicParsing="false" onAction="#registerUser" text="Register" />
-      <Button fx:id="login_button" layoutX="322.0" layoutY="194.0" mnemonicParsing="false" onAction="#loginUser" text="Log in" />
-      <Text fx:id="login_error" fill="#fc0000" layoutX="234.0" layoutY="276.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="132.0" />
+      <Button fx:id="registerButton" layoutX="215.0" layoutY="194.0" mnemonicParsing="false" onAction="#registerUser" text="Register" />
+      <Button fx:id="loginButton" layoutX="322.0" layoutY="194.0" mnemonicParsing="false" onAction="#loginUser" text="Log in" />
+      <Text fx:id="loginError" fill="#fc0000" layoutX="234.0" layoutY="276.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="132.0" />
    </children>
 </AnchorPane>
