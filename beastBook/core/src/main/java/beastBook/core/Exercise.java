@@ -1,5 +1,9 @@
 package beastBook.core;
 
+/**
+ * Exercise class used in Workout class. Creates an Exercise object containing name, rep goal,
+ * weight used, amount of sets, reps per set and rest time for exercise.
+ */
 public class Exercise {
   private String exerciseName;
   private int repGoal;
@@ -37,7 +41,7 @@ public class Exercise {
   */
   private void validateExerciseName(String name) {
     name = name.trim();
-    if ((name.length() <= 0) || (name.equals(""))){
+    if ((name.length() <= 0) || (name.equals(""))) {
       throw new IllegalArgumentException("Exercise can not be blank!");
     } 
   }

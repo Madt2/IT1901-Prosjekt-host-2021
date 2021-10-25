@@ -11,9 +11,6 @@ import java.io.IOException;
  * Custom JSON-Serializer for User, converts User objects to JSON-File.
  */
 public class UserSerializer extends JsonSerializer<User> {
-  /*
-  * format for User in json: { username: "...", password: "...", workouts: "[...,...]" }
-  */
 
   /**
   * Serializes user from input argument. Serializes user-object to json format.
@@ -26,7 +23,11 @@ public class UserSerializer extends JsonSerializer<User> {
   *     encoding issue at format layer
   */
   @Override
-  public void serialize(User user, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+  public void serialize(
+      User user,
+      JsonGenerator jsonGenerator,
+      SerializerProvider serializerProvider
+  ) throws IOException {
     jsonGenerator.writeStartObject();
     if (user.getUserName() != null) {
       jsonGenerator.writeStringField("username", user.getUserName());

@@ -1,22 +1,21 @@
 package beastBook.json;
 
+import beastBook.core.User;
 import beastBook.json.internal.BeastBookModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import beastBook.core.User;
-
-import java.io.Writer;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.io.Reader;
+import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.io.IOException;
-import java.io.FileWriter;
-import java.io.FileReader;
 
+/**
+ * Class for saving and loading user from file.
+ */
 public class BeastBookPersistence {
-  /**
-  * Class for saving and loading user from file.
-  */
   private ObjectMapper mapper;
   private Path saveFilePath = null;
 
@@ -27,9 +26,10 @@ public class BeastBookPersistence {
 
   /**
   * Help method for loadUser.
-  * @param reader
-  * @return
-  * @throws IOException
+  *
+  * @param reader filereader object
+  * @return user from file
+  * @throws IOException when filepath from reader does not point to existing file.
   */
   private User readUser(Reader reader) throws IOException {
     return mapper.readValue(reader, User.class);
@@ -37,9 +37,10 @@ public class BeastBookPersistence {
 
   /**
   * Help method for saveUser.
-  * @param user
-  * @param writer
-  * @throws IOException
+  *
+  * @param user user to write to file
+  * @param writer filewriter object
+  * @throws IOException when filepath from writer does not point to existing file.
   */
   private void writeUser(User user, Writer writer) throws IOException {
     mapper.writerWithDefaultPrettyPrinter().writeValue(writer, user);
@@ -47,6 +48,7 @@ public class BeastBookPersistence {
 
   /**
   * Sets path to user saveFile, required before calling loadUser and saveUser methods.
+  *
   * @param saveFile name of user.
   */
   public void setSaveFilePath(String saveFile) {
@@ -55,9 +57,10 @@ public class BeastBookPersistence {
 
   /**
   * Loads user. Required to run setSaveFilePath before calling.
+  *
   * @return User selected in setSaveFilePath
-  * @throws IOException
-  * @throws IllegalStateException
+  * @throws IOException when filepath from FileReader does not point to existing file
+  * @throws IllegalStateException when saveFilePath is null
   */
   public User loadUser() throws IOException, IllegalStateException {
     if (saveFilePath == null) {
@@ -70,9 +73,10 @@ public class BeastBookPersistence {
 
   /**
   * Saves user. Required to run setSaveFilePath before calling.
+  *
   * @param user username for user to load.
-  * @throws IOException
-  * @throws IllegalStateException
+  * @throws IOException when filepath from FileWriter does not point to existing file.
+  * @throws IllegalStateException when saveFilePath is null
   */
   public void saveUser(User user) throws IOException, IllegalStateException {
     if (saveFilePath == null) {

@@ -16,9 +16,6 @@ import java.io.IOException;
  * Custom JSON-Deserializer for User, converts JSON-file to User object.
  */
 public class UserDeserializer extends JsonDeserializer<User> {
-  /*
-  * format for User in json: { username: "...", password: "...", workouts: "[...,...]" }
-  */
 
   private WorkoutDeserializer deserializer = new WorkoutDeserializer();
   

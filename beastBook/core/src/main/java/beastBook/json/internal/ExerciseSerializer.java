@@ -10,9 +10,6 @@ import java.io.IOException;
  * Custom JSON-Serializer for Exercise objects, converts Exercise objects to JSON-file.
  */
 public class ExerciseSerializer extends JsonSerializer<Exercise> {
-  /*
-  * format for Exercise in json: { exerciseName: "...", repGoal: "...", weight: "...", sets: "...", restTime: "..." }
-  */
 
   /**
   * Serializes Exercise from input argument. Serializes Exercise object to JSON-format.
@@ -26,7 +23,11 @@ public class ExerciseSerializer extends JsonSerializer<Exercise> {
   *     encoding issue at format layer
   */
   @Override
-  public void serialize(Exercise exercise, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+  public void serialize(
+      Exercise exercise,
+      JsonGenerator jsonGenerator,
+      SerializerProvider serializerProvider
+  ) throws IOException {
     jsonGenerator.writeStartObject();
     if (exercise.getExerciseName() != null) {
       jsonGenerator.writeStringField("exerciseName", exercise.getExerciseName());

@@ -14,9 +14,6 @@ import java.io.IOException;
  * Custom JSON-Deserializer for Exercise, converts JSON-file to Exercise object.
  */
 public class ExerciseDeserializer extends JsonDeserializer<Exercise> {
-  /*
-  * format for Exercise in json: { exerciseName: "...", repGoal: "...", weight: "...", sets: "...", restTime: "..." }
-  */
 
   /**
   * Deserializes Exercise data from JSON-file.
@@ -29,7 +26,10 @@ public class ExerciseDeserializer extends JsonDeserializer<Exercise> {
   * @throws IOException for low-level read issues or decoding problems for JsonParser
   */
   @Override
-  public Exercise deserialize(JsonParser parser, DeserializationContext deserializer) throws IOException {
+  public Exercise deserialize(
+      JsonParser parser,
+      DeserializationContext deserializer
+  ) throws IOException {
     TreeNode treeNode = parser.getCodec().readTree(parser);
     return deserialize((JsonNode) treeNode);
   }
