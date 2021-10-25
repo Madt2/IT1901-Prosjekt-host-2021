@@ -3,23 +3,22 @@ package beastBook.fxui;
 import beastBook.core.Exercise;
 import beastBook.core.User;
 import beastBook.core.Workout;
+import beastBook.json.BeastBookPersistence;
 import java.io.IOException;
 import java.lang.Integer;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.MenuBar;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
-import beastBook.json.BeastBookPersistence;
 
-public class CreateExerciseController extends AbstractController {
-
-  @FXML
-  private MenuBar menuBar;
+/**
+ * Controller for the CreateWorkout screen.
+ */
+public class CreateWorkoutController extends AbstractController {
 
   @FXML
   private TableView<Exercise> workoutTable = new TableView<Exercise>();
@@ -85,9 +84,13 @@ public class CreateExerciseController extends AbstractController {
   private TableColumn<Exercise, Integer> restTimeColumn;
   private BeastBookPersistence persistence = new BeastBookPersistence();
 
-  public static final String WRONG_INPUT_BORDER_COLOR = "-fx-text-box-border: #B22222; -fx-focus-color: #B22222";
-  public static final String CORRECT_INPUT_BORDER_COLOR = "";  
+  public static final String WRONG_INPUT_BORDER_COLOR = "-fx-text-box-border: #B22222;"
+          + "-fx-focus-color: #B22222";
+  public static final String CORRECT_INPUT_BORDER_COLOR = "";
 
+  /**
+   * Initializes the CreateWorkout scene with the listeners for validation of input fields.
+   */
   public void initialize() {
     updateTable();
     exerciseNameInput.setOnKeyTyped(event -> {
@@ -111,23 +114,33 @@ public class CreateExerciseController extends AbstractController {
   * Sets the workout table columns. Clears the columns first, to avoid duplicate columns.
   * After the columns are created, they are added to the table view. 
   */
-  public void updateTable() {     
+  public void updateTable() {
     workoutTable.getColumns().clear();
          
     exerciseNameColumn = new TableColumn<Exercise, String>("Exercise name");
-    exerciseNameColumn.setCellValueFactory(new PropertyValueFactory<Exercise, String>("exerciseName"));
+    exerciseNameColumn.setCellValueFactory(
+      new PropertyValueFactory<Exercise, String>("exerciseName")
+    );
         
     repGoalColumn = new TableColumn<Exercise, Integer>("Rep goal");
-    repGoalColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("repGoal"));
+    repGoalColumn.setCellValueFactory(
+      new PropertyValueFactory<Exercise, Integer>("repGoal")
+    );
 
     weightColumn = new TableColumn<Exercise, Double>("Weight");
-    weightColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Double>("weight"));
+    weightColumn.setCellValueFactory(
+      new PropertyValueFactory<Exercise, Double>("weight")
+    );
 
     setsColumn = new TableColumn<Exercise, Integer>("Nr of sets");
-    setsColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("sets"));
+    setsColumn.setCellValueFactory(
+      new PropertyValueFactory<Exercise, Integer>("sets")
+    );
 
     restTimeColumn = new TableColumn<Exercise, Integer>("Rest time in sec");
-    restTimeColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("restTime"));
+    restTimeColumn.setCellValueFactory(
+      new PropertyValueFactory<Exercise, Integer>("restTime")
+    );
        
     workoutTable.getColumns().add(exerciseNameColumn);
     workoutTable.getColumns().add(repGoalColumn);
@@ -152,9 +165,8 @@ public class CreateExerciseController extends AbstractController {
   /**
   * Return the exercise on the specified row. Mainly used for test reasons.
   *
-  * @param row the row you want to have access to / get an Exercise object from. 
-  * int row 0 is the first row,  int row 1 is the second row and so on. 
-  * 
+  * @param row the row you want to have access to / get an Exercise object from.
+  *
   * @return the Exercise object on the requested row
   */
   Exercise getTable(int row) {
@@ -162,6 +174,7 @@ public class CreateExerciseController extends AbstractController {
   }
 
   /**
+  * Gets workout.
   *
   * @return the workout. Mainly used for test reasons
   */
@@ -170,29 +183,30 @@ public class CreateExerciseController extends AbstractController {
   }
     
   /**
+  * Gets the workout table.
   *
-  * @return the the workout table
+  * @return the workout table
   */
   TableView<Exercise> getWorkoutTable() {
     return workoutTable;
   }
 
   /**
-  *
-  *  Runs when the "Add exercise" button is clicked. If all the input fields are in the correct format, a Exercise object is made with the
-  *  input fields data. The exercise object is then added to the workout object and its list over exercises, this is then connected to the signed in user. 
+  *  Runs when the "Add exercise" button is clicked.
+  *  If all the input fields are in the correct format,
+  *  an Exercise object is made with the input fields data.
+  *  The exercise object is then added to the workout object and
+  *  its list over exercises, this is then connected to the signed-in user.
   *  The workout table is then "reloaded" with the new exercise added to the list.
-  *  
-  *  If the input fields are not in the correct format, the method catches the Exepction. A text with red color appears on the screen with 
-  *  a message to the user saying that the exercise could not be added (because of wrong inputs). The text disappears when a exercise is added successfully. 
+  *  If the input fields are not in the correct format, the method catches the Exception.
+  *  A text with red color appears on the screen with a message to the user
+  *  saying that the exercise could not be added (because of wrong inputs).
+  *  The text disappears when an exercise is added successfully.
   */
-
   @FXML
   void addExercise() {
     if (exceptionFeedback.getText().equals("") && !checkForEmptyInputFields()) {
       try {
-
-        String name = exerciseNameInput.getText(); 
         int repGoal;
         double weight;
         int sets;
@@ -217,6 +231,7 @@ public class CreateExerciseController extends AbstractController {
         } catch (NumberFormatException d) {
           throw new IllegalArgumentException("Rest Time must be a number");
         }
+        String name = exerciseNameInput.getText();
         exercise = new Exercise(name, repGoal, weight, sets, rest);
         
         this.workout.addExercise(exercise);
@@ -239,7 +254,8 @@ public class CreateExerciseController extends AbstractController {
   }
 
   /**
-  * Empties all the input fields. Should be called when a exercise is successfully added to the workout
+  * Empties all the input fields.
+  * Should be called when an exercise is successfully added to the workout
   */
   private void emptyInputFields() {
     exerciseNameInput.setText("");
@@ -278,11 +294,11 @@ public class CreateExerciseController extends AbstractController {
   }
 
   /**
-  * Loads a workout using title input in GUI
-  * If no title input is given, an error message is displayed in GUI
-  * If no file found with given title, an error message is displayed in GUI
+  * Loads a workout using title input in GUI.
+  * If no title input is given, an error message is displayed in GUI.
+  * If no file found with given title, an error message is displayed in GUI.
   *
-  * @param event When Load Workout button is clicked in GUI, loadWorkout() is fired
+  * @param event When Load Workout button is clicked in GUI, loadWorkout() is fired.
   */
   @FXML
   void loadWorkout(ActionEvent event) {     
@@ -300,9 +316,9 @@ public class CreateExerciseController extends AbstractController {
   }
 
   /**
-  * Creates a workout and saves it as a file with input given in GUI
-  * If no title input is given, an error message is displayed in GUI
-  * If an error occurs in saveWorkout, an error message is displayed in GUI
+  * Creates a workout and saves it as a file with input given in GUI.
+  * If no title input is given, an error message is displayed in GUI.
+  * If an error occurs in saveWorkout, an error message is displayed in GUI.
   *
   * @param event When Create Workout button is clicked in GUI, createWorkout() is fired
   */
@@ -339,14 +355,16 @@ public class CreateExerciseController extends AbstractController {
   @FXML
   void deleteExercise() throws IllegalStateException, IOException {
     workout.removeExercise(selectedExercise);
-    exceptionFeedback.setText("The exercise '" + selectedExercise.getExerciseName() + "' was deleted!");
+    exceptionFeedback.setText(
+            "The exercise '" + selectedExercise.getExerciseName() + "' was deleted!"
+    );
     persistence.setSaveFilePath(user.getUserName());
     persistence.saveUser(user);
     updateTable();
     deleteButton.setDisable(true);
   }
 
-  TextField getWeightInput(){
+  TextField getWeightInput() {
     return this.weigthInput;
   }
   
@@ -364,7 +382,18 @@ public class CreateExerciseController extends AbstractController {
     this.user = user;
   }
 
+  /**
+  * Validates if int given as input is allowed.
+  * If int is not accepted, border for input field is given red colour.
+  */
   public class IntValidator {
+    /**
+    * IntValidators method for validating.
+    *
+    * @param title title of the inputfield
+    * @param field input-field to be validated
+    * @param exception exception text to be changed if error found
+    */
     public IntValidator(Text title, TextField field, Text exception) {
       String text = field.getText();
       try {
@@ -377,12 +406,28 @@ public class CreateExerciseController extends AbstractController {
           field.setStyle(CORRECT_INPUT_BORDER_COLOR);
         }
       } catch (NumberFormatException e) {
-        exception.setText(title.getText().replace(":", "") + " must be a number and can not exceed " + Integer.MAX_VALUE);
+        exception.setText(
+            title.getText().replace(":", "")
+            + " must be a number and can not exceed "
+            + Integer.MAX_VALUE
+        );
         field.setStyle(WRONG_INPUT_BORDER_COLOR);
       }
     }
   }
+
+  /**
+  * Validates if double given as input is allowed.
+  * If double is not accepted, border for input field is given red colour.
+  */
   public class DoubleValidator {
+    /**
+    * DoubleValidators method for validating.
+    *
+    * @param title title of the inputfield
+    * @param field input-field to be validated
+    * @param exception exception text to be changed if error found
+    */
     public DoubleValidator(Text title, TextField field, Text exception) {
       String text = field.getText();
       try {
@@ -395,18 +440,36 @@ public class CreateExerciseController extends AbstractController {
           field.setStyle(CORRECT_INPUT_BORDER_COLOR);
         }
       } catch (NumberFormatException e) {
-        exception.setText(title.getText().replace(":", "") + " must be a number and can not exceed " + Double.MAX_VALUE);
+        exception.setText(
+                title.getText().replace(":", "")
+                + " must be a number and can not exceed "
+                + Double.MAX_VALUE
+        );
         field.setStyle(WRONG_INPUT_BORDER_COLOR);
       }
     }
   }
 
+  /**
+  * Validates if String given as input is allowed.
+  * If string is not accepted, border for input field is given red colour.
+  */
   public class StringValidator {
+    /**
+    * StringValidators method for validating.
+    *
+    * @param title title of the inputfield
+    * @param field input-field to be validated
+    * @param exception exception text to be changed if error found
+    */
     public StringValidator(Text title, TextField field, Text exception) {
       String text = field.getText();
       text = text.trim();
       if ((text.length() <= 0) || (text.equals(""))) {
-        exception.setText(title.getText().replace(":", "") + " can not be blank");
+        exception.setText(
+                title.getText().replace(":", "")
+                + " can not be blank"
+        );
         field.setStyle(WRONG_INPUT_BORDER_COLOR);
       } else {
         exceptionFeedback.setText("");

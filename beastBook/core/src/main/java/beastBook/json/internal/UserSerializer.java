@@ -7,6 +7,9 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import beastBook.core.Workout;
 import java.io.IOException;
 
+/**
+ * Custom JSON-Serializer for User, converts User objects to JSON-File.
+ */
 public class UserSerializer extends JsonSerializer<User> {
   /*
   * format for User in json: { username: "...", password: "...", workouts: "[...,...]" }
@@ -14,10 +17,13 @@ public class UserSerializer extends JsonSerializer<User> {
 
   /**
   * Serializes user from input argument. Serializes user-object to json format.
-  * @param user user to serialize.
-  * @param jsonGenerator
-  * @param serializerProvider
-  * @throws IOException
+  * Format for User in json: { username: "...", password: "...", workouts: "[...,...]" }.
+  *
+  * @param user User to serialize.
+  * @param jsonGenerator class that writes JSON-file.
+  * @param serializerProvider serializers needed to serialize object.
+  * @throws IOException if there is either an underlying I/O problem or
+  *     encoding issue at format layer
   */
   @Override
   public void serialize(User user, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {

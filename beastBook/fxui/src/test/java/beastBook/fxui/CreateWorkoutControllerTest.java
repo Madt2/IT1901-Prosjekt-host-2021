@@ -17,14 +17,14 @@ import javafx.scene.Scene;
 import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 
-public class CreateExerciseControllerTest extends ApplicationTest{
-  private CreateExerciseController controller;
+public class CreateWorkoutControllerTest extends ApplicationTest{
+  private CreateWorkoutController controller;
   private User user;
     
   @Override
   public void start(final Stage stage) throws IOException {
     final FXMLLoader loader = new FXMLLoader(this.getClass().getResource("Create.fxml"));
-    controller = new CreateExerciseController();
+    controller = new CreateWorkoutController();
     loader.setController(controller);
     final Parent root = loader.load();
     user = new User();
@@ -68,7 +68,7 @@ public class CreateExerciseControllerTest extends ApplicationTest{
 
     Assertions.assertEquals(0, controller.getWorkout().getExercises().size());
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Working Weight must be a number"));
-    Assertions.assertEquals(CreateExerciseController.WRONG_INPUT_BORDER_COLOR, controller.getWeightInput().getStyle());
+    Assertions.assertEquals(CreateWorkoutController.WRONG_INPUT_BORDER_COLOR, controller.getWeightInput().getStyle());
   }
 
   @Test
@@ -82,15 +82,15 @@ public class CreateExerciseControllerTest extends ApplicationTest{
 
     Assertions.assertEquals(0, controller.getWorkout().getExercises().size());
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Working Weight must be a number"));
-    Assertions.assertEquals(CreateExerciseController.WRONG_INPUT_BORDER_COLOR, controller.getWeightInput().getStyle());
+    Assertions.assertEquals(CreateWorkoutController.WRONG_INPUT_BORDER_COLOR, controller.getWeightInput().getStyle());
 
     doubleClickOn("#weigthInput", MouseButton.PRIMARY).write("-20");
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Working Weight must be more than 0"));
-    Assertions.assertEquals(CreateExerciseController.WRONG_INPUT_BORDER_COLOR, controller.getWeightInput().getStyle());
+    Assertions.assertEquals(CreateWorkoutController.WRONG_INPUT_BORDER_COLOR, controller.getWeightInput().getStyle());
 
     doubleClickOn("#weigthInput", MouseButton.PRIMARY).write("");
     doubleClickOn("#weigthInput", MouseButton.PRIMARY).write("20");
-    Assertions.assertEquals(CreateExerciseController.CORRECT_INPUT_BORDER_COLOR, controller.getWeightInput().getStyle());
+    Assertions.assertEquals(CreateWorkoutController.CORRECT_INPUT_BORDER_COLOR, controller.getWeightInput().getStyle());
     clickOn("#addButton", MouseButton.PRIMARY);
     
     Assertions.assertEquals(1, controller.getWorkout().getExercises().size());
@@ -109,7 +109,7 @@ public class CreateExerciseControllerTest extends ApplicationTest{
 
     Assertions.assertEquals(0, controller.getWorkout().getExercises().size());
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Working Weight must be more than 0!"));
-    Assertions.assertEquals(CreateExerciseController.WRONG_INPUT_BORDER_COLOR, controller.getWeightInput().getStyle());
+    Assertions.assertEquals(CreateWorkoutController.WRONG_INPUT_BORDER_COLOR, controller.getWeightInput().getStyle());
   }
 
   @Test

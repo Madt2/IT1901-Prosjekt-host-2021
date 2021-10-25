@@ -1,7 +1,6 @@
 package beastBook.json.internal;
 
 import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
@@ -20,19 +19,21 @@ public class WorkoutDeserializer extends JsonDeserializer<Workout> {
   * format for Workout in json: { name: "...", exercises: "[...,...]"}
   */
 
-  private ExerciseDeserializer d = new ExerciseDeserializer();
+  private ExerciseDeserializer deserializer = new ExerciseDeserializer();
   
   /**
   * Deserializes Workout data from json file.
   *
-  * @param parser
-  * @param deserializer
-  * @return Deserialized workout.
-  * @throws IOException
-  * @throws JsonProcessingException
+  * @param parser defines how JSON-file should be parsed
+  * @param deserializer defines context for deserialization
+  * @return deserialized Workout.
+  * @throws IOException for low-level read issues or decoding problems for JsonParser
   */
   @Override
-  public Workout deserialize(JsonParser parser, DeserializationContext deserializer) throws IOException, JsonProcessingException {
+  public Workout deserialize(
+        JsonParser parser,
+        DeserializationContext deserializer
+  ) throws IOException {
     TreeNode treeNode = parser.getCodec().readTree(parser);
     return deserialize((JsonNode) treeNode);
   }
@@ -53,7 +54,7 @@ public class WorkoutDeserializer extends JsonDeserializer<Workout> {
       JsonNode exercisesNode = objectNode.get("exercises");
       if (exercisesNode instanceof ArrayNode) {
         for (JsonNode elementNode : exercisesNode) {
-          Exercise exercise = d.deserialize(elementNode);
+          Exercise exercise = deserializer.deserialize(elementNode);
           if (exercise != null) {
             workout.addExercise(exercise);
           }

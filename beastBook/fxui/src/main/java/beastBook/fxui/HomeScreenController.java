@@ -1,14 +1,16 @@
 package beastBook.fxui;
 
 import beastBook.core.User;
+import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import java.io.IOException;
-import javafx.scene.control.MenuItem;
 
-public class HomeScreenController extends AbstractController{
+/**
+ * Controller for the Home screen.
+ */
+public class HomeScreenController extends AbstractController {
   @FXML
-  private MenuItem logout_button;
+  private Button logoutButton;
 
   @FXML
   private Button create_button;

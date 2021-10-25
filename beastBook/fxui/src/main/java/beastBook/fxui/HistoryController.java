@@ -4,18 +4,17 @@ import beastBook.core.User;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
-import java.io.IOException;
-import javafx.scene.control.MenuItem;
 
-public class HistoryController extends AbstractController{
-  @FXML
-  private MenuItem logout_button;
-
-  @FXML
-  private Button back_button;
+/**
+ * Controller for unimplemented History scene.
+ */
+public class HistoryController extends AbstractController {
 
   @FXML
-  private ListView<?> history_overview;
+  private Button backButton;
+
+  @FXML
+  private ListView<?> historyOverview;
 
   @Override
   void loadHome() throws IOException {

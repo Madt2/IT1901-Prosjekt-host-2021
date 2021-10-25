@@ -1,26 +1,25 @@
 package beastBook.fxui;
 
+import beastBook.core.Exercise;
 import beastBook.core.User;
+import beastBook.core.Workout;
+import beastBook.json.BeastBookPersistence;
+import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.text.Text;
 import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
-import java.io.IOException;
-import beastBook.core.Exercise;
-import beastBook.core.Workout;
-import javafx.scene.control.MenuItem;
-import beastBook.json.BeastBookPersistence;
 
-public class WorkoutController extends AbstractController{
-  @FXML
-  private MenuItem logOutButton;
-
+/**
+ * Controller for the Workout screen.
+ */
+public class WorkoutController extends AbstractController {
   @FXML
   private TableView<Exercise> workoutTable;
 
@@ -43,7 +42,9 @@ public class WorkoutController extends AbstractController{
   private TableColumn<Exercise, Integer> repsPerSetColumn;
   private TableColumn<Exercise, Integer> restTimeColumn;
   private Workout workout = new Workout();
-  public static final String WRONG_INPUT_BORDER_COLOR = "-fx-text-box-border: #B22222; -fx-focus-color: #B22222";
+  public static final String WRONG_INPUT_BORDER_COLOR =
+        "-fx-text-box-border: #B22222;"
+        + "-fx-focus-color: #B22222";
   public static final String CORRECT_INPUT_BORDER_COLOR = "";
   BeastBookPersistence persistence = new BeastBookPersistence();
 
@@ -66,7 +67,7 @@ public class WorkoutController extends AbstractController{
   */
   public void updateTable() {
     workoutTable.getColumns().clear();
-    workoutTable.setEditable(true);    
+    workoutTable.setEditable(true);
     
     exerciseNameColumn = new TableColumn<Exercise, String>("Exercise name:");
     exerciseNameColumn.setCellValueFactory(new PropertyValueFactory<Exercise, String>("exerciseName"));
@@ -129,7 +130,7 @@ public class WorkoutController extends AbstractController{
         exercise.setRepGoal(event.getNewValue());
         saveUserState();
         emptyExceptionFeedback();
-      } catch(IllegalArgumentException i) {
+      } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
         workoutTable.refresh();
       } catch (Exception e) {
@@ -145,7 +146,7 @@ public class WorkoutController extends AbstractController{
         exercise.setWeight(event.getNewValue());
         saveUserState();
         emptyExceptionFeedback();
-      } catch(IllegalArgumentException i) {
+      } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
         workoutTable.refresh();
       } catch (Exception e) {
@@ -161,7 +162,7 @@ public class WorkoutController extends AbstractController{
         exercise.setSets(event.getNewValue());
         saveUserState();
         emptyExceptionFeedback();
-      } catch(IllegalArgumentException i) {
+      } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
         workoutTable.refresh();
       } catch (Exception e) {
@@ -177,7 +178,7 @@ public class WorkoutController extends AbstractController{
         exercise.setRepsPerSet(event.getNewValue());
         saveUserState();
         emptyExceptionFeedback();
-      } catch(IllegalArgumentException i) {
+      } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
         workoutTable.refresh();
       } catch (Exception e) {
@@ -193,13 +194,13 @@ public class WorkoutController extends AbstractController{
         exercise.setRestTime(event.getNewValue());
         saveUserState();
         emptyExceptionFeedback();
-      } catch(IllegalArgumentException i) {
+      } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
         workoutTable.refresh();
       } catch (Exception e) {
         exceptionFeedback.setText("Rest time must be a number. Value was not changed!");
         workoutTable.refresh();
-        }
+      }
     });
     workoutTable.getItems().setAll(workout.getExercises());
   }
@@ -240,7 +241,7 @@ public class WorkoutController extends AbstractController{
   }
 
   /**
-  * Updates the exercises/workouts for a user in file format
+  * Updates the exercises/workouts for a user in file format.
   */
   private void saveUserState() throws IOException {
     persistence.setSaveFilePath(user.getUserName());
@@ -263,8 +264,8 @@ public class WorkoutController extends AbstractController{
       try {
         return converter.toString(object);
       } catch (NumberFormatException e) {
-          return null;
-        }
+        return null;
+      }
     }
 
     @Override
@@ -290,8 +291,8 @@ public class WorkoutController extends AbstractController{
       try {
         return converter.toString(object);
       } catch (NumberFormatException e) {
-          return null;
-        }
+        return null;
+      }
     }
 
     @Override
@@ -303,24 +304,4 @@ public class WorkoutController extends AbstractController{
       }
     }
   }
-  /*
-  public class IntValidator {
-    public IntValidator(Text title, TextField field, Text exception) {
-      String text = field.getText();
-      try {
-        int num = Integer.parseInt(text);
-        if (num <= 0) {
-          exception.setText(title.getText().replace(":", "") + " must be more than 0");
-          field.setStyle(WRONG_INPUT_BORDER_COLOR);
-        } else {
-          exceptionFeedback.setText("");
-          field.setStyle(CORRECT_INPUT_BORDER_COLOR);
-        }
-      } catch (NumberFormatException e) {
-        exception.setText(title.getText().replace(":", "") + " must be a number and can not exceed " + Integer.MAX_VALUE);
-        field.setStyle(WRONG_INPUT_BORDER_COLOR);
-      }
-    }
-  }
-  */
 }

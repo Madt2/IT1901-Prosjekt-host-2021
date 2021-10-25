@@ -13,6 +13,9 @@ import beastBook.core.User;
 import beastBook.core.Workout;
 import java.io.IOException;
 
+/**
+ * Custom JSON-Deserializer for User, converts JSON-file to User object.
+ */
 public class UserDeserializer extends JsonDeserializer<User> {
   /*
   * format for User in json: { username: "...", password: "...", workouts: "[...,...]" }
@@ -22,21 +25,26 @@ public class UserDeserializer extends JsonDeserializer<User> {
   
   /**
   * Deserializes User data from json file.
-  * @param parser
-  * @param deserializer
-  * @return Deserialized user.
-  * @throws IOException
-  * @throws JsonProcessingException
+  * Format for User in json: { username: "...", password: "...", workouts: "[...,...]" }.
+  *
+  * @param parser defines how JSON-file should be parsed
+  * @param deserializer defines context for deserialization
+  * @return deserialized User.
+  * @throws IOException for low-level read issues or decoding problems for JsonParser
   */
   @Override
-  public User deserialize(JsonParser parser, DeserializationContext deserializer) throws IOException, JsonProcessingException {
+  public User deserialize(
+        JsonParser parser,
+        DeserializationContext deserializer
+  ) throws IOException {
     TreeNode treeNode = parser.getCodec().readTree(parser);
     return deserialize((JsonNode) treeNode);
   }
 
   /**
   * Converts info from jsonNode to User.
-  * @param jsonNode
+  *
+  * @param jsonNode jsonNode to convert.
   * @return Deserialized user.
   */
   User deserialize(JsonNode jsonNode) {
@@ -53,7 +61,7 @@ public class UserDeserializer extends JsonDeserializer<User> {
       JsonNode workoutsNode = objectNode.get("workouts");
       if (workoutsNode instanceof ArrayNode) {
         for (JsonNode elementNode : ((ArrayNode) workoutsNode)) {
-          Workout workout = d.deserialize(elementNode);
+          Workout workout = deserializer.deserialize(elementNode);
           if (workout != null) {
             user.addWorkout(workout);
           }

@@ -9,9 +9,11 @@ import java.lang.IllegalArgumentException;
 import java.util.Objects;
 import beastBook.core.User;
 import javafx.scene.text.Text;
-import beastBook.json.BeastBookPersistence;
 
-public class LoginController extends AbstractController{
+/**
+ * Controller for the Login screen.
+ */
+public class LoginController extends AbstractController {
   @FXML
   private TextField username_input;
 
@@ -48,14 +50,14 @@ public class LoginController extends AbstractController{
   */
   @FXML
   void registerUser(ActionEvent event) throws IllegalArgumentException {
-    String userName = username_input.getText();
-    String password = password_input.getText();
+    String userName = usernameInput.getText();
+    String password = passwordInput.getText();
     if (!userName.equals("") && !password.equals("")) {
       try {
         user = new User(userName, password);
         saveUser(user); //Skal lagre bruker som en JSON-fil
       } catch (Exception e) {
-        login_error.setText(e.getMessage());
+        loginError.setText(e.getMessage());
       }
     }
   }
@@ -69,26 +71,26 @@ public class LoginController extends AbstractController{
   */
   @FXML
   void loginUser(ActionEvent event) throws IllegalArgumentException, IOException {
-    String userName = username_input.getText();
-    String password = password_input.getText();
+    String userName = usernameInput.getText();
+    String password = passwordInput.getText();
     if (!userName.equals("")) {
       if (!password.equals("")) {
         User login = getUser(userName);
         if (Objects.isNull(login)) {
-          login_error.setText("No user found");
+          loginError.setText("No user found");
         } else {
           if (!login.getPassword().equals(password)) {
-            login_error.setText("Wrong Password");
+            loginError.setText("Wrong Password");
           } else {
             user = login;
             super.loadHome();
           }
         }
       } else {
-        login_error.setText("No Password given!");
+        loginError.setText("No Password given!");
       }
     } else {
-      login_error.setText("No username given");
+      loginError.setText("No username given");
     }
   }
 
@@ -102,7 +104,7 @@ public class LoginController extends AbstractController{
       persistence.setSaveFilePath(user.getUserName());
       persistence.saveUser(user);
     } catch (IOException e) {
-      login_error.setText("User was not saved");
+      loginError.setText("User was not saved");
     }
   }
 
@@ -110,7 +112,7 @@ public class LoginController extends AbstractController{
   * Help method for loadUser. Uses persistence to load user.
   *
   * @param userName username for user to get.
-  * @return
+  * @return user if user found. null if no user found.
   */
   private User getUser(String userName) {
     try {

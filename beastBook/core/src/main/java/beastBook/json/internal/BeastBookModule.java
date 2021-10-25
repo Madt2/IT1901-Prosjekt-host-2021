@@ -1,16 +1,15 @@
 package beastBook.json.internal;
 
-import com.fasterxml.jackson.core.Version;
-import com.fasterxml.jackson.databind.module.SimpleModule;
+import beastBook.core.Exercise;
 import beastBook.core.User;
 import beastBook.core.Workout;
-import beastBook.core.Exercise;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 
+/**
+ * Class for creating a module which contains the custom JSON-serializers.
+ */
 public class BeastBookModule extends SimpleModule {
-  /**
-  * Configuration for JSON serialization of BeastBook instances.
-  */
-
   /**
   * Initializes this BeastBookModule with appropriate serializers and deserializers.
   */

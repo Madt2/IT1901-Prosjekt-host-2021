@@ -1,25 +1,26 @@
 package beastBook.fxui;
 
 import beastBook.core.User;
-import javafx.fxml.FXML;
-import javafx.scene.control.*;
-import java.io.IOException;
 import beastBook.core.Workout;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.text.Text;
 import beastBook.json.BeastBookPersistence;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.control.cell.PropertyValueFactory;
-
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.text.Text;
 
-public class WorkoutOverviewController extends AbstractController{
+/**
+ * Controller for the WorkoutOverview screen.
+ */
+public class WorkoutOverviewController extends AbstractController {
   @FXML
   private AnchorPane rootPane;
-
-  @FXML
-  private MenuItem logOutButton;
 
   @FXML
   private Button backButton;

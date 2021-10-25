@@ -1,11 +1,15 @@
 package beastBook.fxui;
 
-import java.io.IOException;
 import beastBook.core.User;
+import java.io.IOException;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.AnchorPane;
 
+/**
+ * Abstract controller for all controllers in fxui.
+ * Used for loading scenes.
+ */
 public abstract class AbstractController {
   @FXML
   protected AnchorPane rootPane;
@@ -33,7 +37,7 @@ public abstract class AbstractController {
 
   @FXML
   void loadCreate() throws IOException {
-    CreateExerciseController createController = new CreateExerciseController();
+    CreateWorkoutController createController = new CreateWorkoutController();
     FXMLLoader fxmlLoader = new FXMLLoader(this.getClass().getResource("Create.fxml"));
     fxmlLoader.setController(createController);
     createController.setUser(user);

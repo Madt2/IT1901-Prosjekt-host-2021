@@ -13,6 +13,7 @@ public class User {
 
   /**
   * User object for application.
+  *
   * @param username username for user.
   * @param password password for user.
   */
@@ -31,7 +32,9 @@ public class User {
     if (username.length() >= MIN_CHAR_USERNAME) {
       this.username = username;
     } else {
-      throw new IllegalArgumentException("Username must be " + MIN_CHAR_USERNAME + " or more characters!");
+      throw new IllegalArgumentException(
+        "Username must be " + MIN_CHAR_USERNAME + " or more characters!"
+      );
     }
   }
 

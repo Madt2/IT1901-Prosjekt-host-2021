@@ -9,19 +9,23 @@ import beastBook.core.Workout;
 import java.io.IOException;
 
 public class WorkoutSerializer extends JsonSerializer<Workout> {
-  /*
-  * format for Workout in json: { name: "...", exercises: "[...,...]"}
-  */
-
   /**
-  * Serializes workout from input argument. Serializes workout-object to json format.
-  * @param workout workout to serialize.
-  * @param jsonGenerator
-  * @param serializerProvider
-  * @throws IOException
+  * Serializes Workout from input-arguments. Serializes Workout-object to json format.
+  * Format for Workout in json: { name: "...", exercises: "[...,...]"}.
+  *
+  * @param workout Workout to serialize.
+  * @param jsonGenerator class that writes JSON-file.
+  * @param serializerProvider provides serializers needed
+  *     to serialize instances of types in object.
+  * @throws IOException if there is either an
+  *     underlying I/O problem or encoding issue at format layer
   */
   @Override
-  public void serialize(Workout workout, JsonGenerator jsonGenerator, SerializerProvider serializerProvider) throws IOException {
+  public void serialize(
+      Workout workout,
+      JsonGenerator jsonGenerator,
+      SerializerProvider serializerProvider
+  ) throws IOException {
     jsonGenerator.writeStartObject();
     if (workout.getName() != null) {
       jsonGenerator.writeStringField("name", workout.getName());
