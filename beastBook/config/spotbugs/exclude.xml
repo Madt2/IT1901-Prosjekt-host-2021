@@ -5,5 +5,7 @@
     <Match>
         <Bug pattern="EI_EXPOSE_REP2" />
     </Match>
-    <Match><Bug pattern="UI_INHERITANCE_UNSAFE_GETRESOURCE" /></Match>
+    <Match>
+        <Bug pattern="UI_INHERITANCE_UNSAFE_GETRESOURCE" />
+    </Match>
 </FindBugsFilter>

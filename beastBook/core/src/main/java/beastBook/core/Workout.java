@@ -53,7 +53,7 @@ public class Workout {
     if (exercises.contains(exercise)) {
       exercises.remove(exercise);
     } else {
-      throw new IllegalArgumentException(exercise.getExerciseName() + " was not found in all execises!");
+      throw new IllegalArgumentException(exercise.getExerciseName() + " was not found in workout!");
     }
   }
 

@@ -58,7 +58,7 @@ public class User {
   public void addWorkout(Workout workout) {
     for (Workout w : workouts) {
       if (w.getName().equals(workout.getName())) {
-        throw new IllegalArgumentException("User already have workout " + workout.getName() + " saved!");
+        throw new IllegalArgumentException("User already has workout " + workout.getName() + " saved!");
       }
     }
     workouts.add(workout);
