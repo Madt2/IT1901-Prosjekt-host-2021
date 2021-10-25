@@ -1,13 +1,15 @@
 package beastBook.json.internal;
 
+import beastBook.core.Exercise;
+import beastBook.core.Workout;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import beastBook.core.Exercise;
-import beastBook.core.Workout;
-
 import java.io.IOException;
 
+/**
+ * Custom JSON-Serializer for Workout, converts Workout object to JSON-file.
+ */
 public class WorkoutSerializer extends JsonSerializer<Workout> {
   /**
   * Serializes Workout from input-arguments. Serializes Workout-object to json format.

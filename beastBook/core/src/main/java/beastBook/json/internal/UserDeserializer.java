@@ -1,5 +1,7 @@
 package beastBook.json.internal;
 
+import beastBook.core.User;
+import beastBook.core.Workout;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -9,8 +11,6 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-import beastBook.core.User;
-import beastBook.core.Workout;
 import java.io.IOException;
 
 /**
@@ -21,7 +21,7 @@ public class UserDeserializer extends JsonDeserializer<User> {
   * format for User in json: { username: "...", password: "...", workouts: "[...,...]" }
   */
 
-  private WorkoutDeserializer d = new WorkoutDeserializer();
+  private WorkoutDeserializer deserializer = new WorkoutDeserializer();
   
   /**
   * Deserializes User data from json file.

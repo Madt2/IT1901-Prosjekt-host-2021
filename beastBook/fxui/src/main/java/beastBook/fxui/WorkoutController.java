@@ -24,9 +24,6 @@ public class WorkoutController extends AbstractController {
   private TableView<Exercise> workoutTable;
 
   @FXML
-  private Button backButton;
-
-  @FXML
   private Text title;
 
   @FXML
@@ -70,22 +67,34 @@ public class WorkoutController extends AbstractController {
     workoutTable.setEditable(true);
     
     exerciseNameColumn = new TableColumn<Exercise, String>("Exercise name:");
-    exerciseNameColumn.setCellValueFactory(new PropertyValueFactory<Exercise, String>("exerciseName"));
+    exerciseNameColumn.setCellValueFactory(
+      new PropertyValueFactory<Exercise, String>("exerciseName")
+    );
     
     repGoalColumn = new TableColumn<Exercise, Integer>("Rep goal:");
-    repGoalColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("repGoal"));
+    repGoalColumn.setCellValueFactory(
+      new PropertyValueFactory<Exercise, Integer>("repGoal")
+    );
 
     weightColumn = new TableColumn<Exercise, Double>("Weight:");
-    weightColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Double>("weight"));
+    weightColumn.setCellValueFactory(
+      new PropertyValueFactory<Exercise, Double>("weight")
+    );
 
     setsColumn = new TableColumn<Exercise, Integer>("Nr of sets:");
-    setsColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("sets"));
+    setsColumn.setCellValueFactory(
+      new PropertyValueFactory<Exercise, Integer>("sets")
+    );
 
     repsPerSetColumn = new TableColumn<Exercise, Integer>("Reps per set:");
-    repsPerSetColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("repsPerSet"));
+    repsPerSetColumn.setCellValueFactory(
+      new PropertyValueFactory<Exercise, Integer>("repsPerSet")
+    );
         
     restTimeColumn = new TableColumn<Exercise, Integer>("Rest time in sec:");
-    restTimeColumn.setCellValueFactory(new PropertyValueFactory<Exercise, Integer>("restTime"));
+    restTimeColumn.setCellValueFactory(
+      new PropertyValueFactory<Exercise, Integer>("restTime")
+    );
 
     workoutTable.getColumns().add(exerciseNameColumn);
     workoutTable.getColumns().add(repGoalColumn);
@@ -123,7 +132,9 @@ public class WorkoutController extends AbstractController {
       }
     });
 
-    repGoalColumn.setCellFactory(TextFieldTableCell.forTableColumn(new CustomIntegerStringConverter()));
+    repGoalColumn.setCellFactory(TextFieldTableCell.forTableColumn(
+      new CustomIntegerStringConverter())
+    );
     repGoalColumn.setOnEditCommit(event -> {
       try {
         Exercise exercise = event.getRowValue();
@@ -139,7 +150,9 @@ public class WorkoutController extends AbstractController {
       }
     });
    
-    weightColumn.setCellFactory(TextFieldTableCell.forTableColumn(new CustomDoubleStringConverter()));
+    weightColumn.setCellFactory(TextFieldTableCell.forTableColumn(
+      new CustomDoubleStringConverter())
+    );
     weightColumn.setOnEditCommit(event -> {
       try {
         Exercise exercise = event.getRowValue();
@@ -155,7 +168,9 @@ public class WorkoutController extends AbstractController {
       }
     });
      
-    setsColumn.setCellFactory(TextFieldTableCell.forTableColumn(new CustomIntegerStringConverter()));
+    setsColumn.setCellFactory(TextFieldTableCell.forTableColumn(
+      new CustomIntegerStringConverter())
+    );
     setsColumn.setOnEditCommit(event -> {
       try {
         Exercise exercise = event.getRowValue();
@@ -171,7 +186,9 @@ public class WorkoutController extends AbstractController {
       }
     });
 
-    repsPerSetColumn.setCellFactory(TextFieldTableCell.forTableColumn(new CustomIntegerStringConverter()));
+    repsPerSetColumn.setCellFactory(TextFieldTableCell.forTableColumn(
+      new CustomIntegerStringConverter())
+    );
     repsPerSetColumn.setOnEditCommit(event -> {
       try {
         Exercise exercise = event.getRowValue();
@@ -187,7 +204,9 @@ public class WorkoutController extends AbstractController {
       }
     });
 
-    restTimeColumn.setCellFactory(TextFieldTableCell.forTableColumn(new CustomIntegerStringConverter()));
+    restTimeColumn.setCellFactory(TextFieldTableCell.forTableColumn(
+      new CustomIntegerStringConverter())
+    );
     restTimeColumn.setOnEditCommit(event -> {
       try {
         Exercise exercise = event.getRowValue();
@@ -273,8 +292,8 @@ public class WorkoutController extends AbstractController {
       try {
         return converter.fromString(string);
       } catch (NumberFormatException e) {
-          return null;
-        }
+        return null;
+      }
     }
   }
 
@@ -300,7 +319,7 @@ public class WorkoutController extends AbstractController {
       try {
         return converter.fromString(string);
       } catch (NumberFormatException e) {
-          return null;
+        return null;
       }
     }
   }

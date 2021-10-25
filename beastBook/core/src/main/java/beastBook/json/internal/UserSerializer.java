@@ -1,10 +1,10 @@
 package beastBook.json.internal;
 
 import beastBook.core.User;
+import beastBook.core.Workout;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import beastBook.core.Workout;
 import java.io.IOException;
 
 /**

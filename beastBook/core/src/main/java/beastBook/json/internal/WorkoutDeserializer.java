@@ -1,5 +1,7 @@
 package beastBook.json.internal;
 
+import beastBook.core.Exercise;
+import beastBook.core.Workout;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -8,12 +10,11 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.databind.node.TextNode;
-
-import beastBook.core.Exercise;
-import beastBook.core.Workout;
-
 import java.io.IOException;
 
+/**
+ * Custom JSON-Deserializer for Workout, converts JSON-file to Workout object.
+ */
 public class WorkoutDeserializer extends JsonDeserializer<Workout> {
   /*
   * format for Workout in json: { name: "...", exercises: "[...,...]"}
