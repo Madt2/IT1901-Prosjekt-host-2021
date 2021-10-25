@@ -17,12 +17,12 @@ public class ExerciseDeserializer extends JsonDeserializer<Exercise> {
   /**
   * Deserializes Exercise data from json file.
   * @param parser
-  * @param ctxt
+  * @param deserializer
   * @return Deserialized exercise.
   * @throws IOException
   */
   @Override
-  public Exercise deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
+  public Exercise deserialize(JsonParser parser, DeserializationContext deserializer) throws IOException {
     TreeNode treeNode = parser.getCodec().readTree(parser);
     return deserialize((JsonNode) treeNode);
   }

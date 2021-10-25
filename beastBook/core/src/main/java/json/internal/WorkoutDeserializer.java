@@ -26,13 +26,13 @@ public class WorkoutDeserializer extends JsonDeserializer<Workout> {
   * Deserializes Workout data from json file.
   *
   * @param parser
-  * @param ctxt
+  * @param deserializer
   * @return Deserialized workout.
   * @throws IOException
   * @throws JsonProcessingException
   */
   @Override
-  public Workout deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+  public Workout deserialize(JsonParser parser, DeserializationContext deserializer) throws IOException, JsonProcessingException {
     TreeNode treeNode = parser.getCodec().readTree(parser);
     return deserialize((JsonNode) treeNode);
   }

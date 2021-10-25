@@ -23,13 +23,13 @@ public class UserDeserializer extends JsonDeserializer<User> {
   /**
   * Deserializes User data from json file.
   * @param parser
-  * @param ctxt
+  * @param deserializer
   * @return Deserialized user.
   * @throws IOException
   * @throws JsonProcessingException
   */
   @Override
-  public User deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException, JsonProcessingException {
+  public User deserialize(JsonParser parser, DeserializationContext deserializer) throws IOException, JsonProcessingException {
     TreeNode treeNode = parser.getCodec().readTree(parser);
     return deserialize((JsonNode) treeNode);
   }

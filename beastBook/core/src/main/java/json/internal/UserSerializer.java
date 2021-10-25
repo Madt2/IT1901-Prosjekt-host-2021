@@ -12,16 +12,6 @@ public class UserSerializer extends JsonSerializer<User> {
   * format for User in json: { username: "...", password: "...", workouts: "[...,...]" }
   */
 
-  private final boolean deep;
-
-  public UserSerializer(boolean deep) {
-    this.deep = deep;
-  }
-
-  public UserSerializer() {
-    this(true);
-  }
-
   /**
   * Serializes user from input argument. Serializes user-object to json format.
   * @param user user to serialize.

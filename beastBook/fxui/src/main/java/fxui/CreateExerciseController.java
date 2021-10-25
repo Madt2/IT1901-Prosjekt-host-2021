@@ -150,7 +150,7 @@ public class CreateExerciseController extends AbstractController {
   * @param row the row you want to have access to / get an Exercise object from. 
   * int row 0 is the first row,  int row 1 is the second row and so on. 
   * 
-  * @return the Exercise object on the the requested row 
+  * @return the Exercise object on the requested row
   */
   Exercise getTable(int row) {
     return workoutTable.getItems().get(row);
