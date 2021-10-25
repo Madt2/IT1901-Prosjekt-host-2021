@@ -43,10 +43,18 @@ public class Workout {
   public void addExercise(Exercise exercise) {
     for (Exercise e : exercises) {
       if (e.getExerciseName().equals(exercise.getExerciseName())) {
-        throw new IllegalArgumentException(exercise + " is already added as an exercise!");
+        throw new IllegalArgumentException(exercise.getExerciseName() + " is already added as an exercise!");
       }
     }
     exercises.add(exercise);
+  }
+
+  public void removeExercise(Exercise exercise) {
+    if (exercises.contains(exercise)) {
+      exercises.remove(exercise);
+    } else {
+      throw new IllegalArgumentException(exercise.getExerciseName() + " was not found in all execises!");
+    }
   }
 
   /**
@@ -66,4 +74,3 @@ public class Workout {
     return getName() + ": " + getExercises();
   }
 }
-
