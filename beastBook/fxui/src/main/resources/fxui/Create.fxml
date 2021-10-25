@@ -31,7 +31,7 @@
           </Menu>
         </menus>
       </MenuBar>
-      <TableView fx:id="workoutTable" layoutX="84.0" layoutY="83.0" minHeight="200.0" minWidth="442.0" prefHeight="200.0" prefWidth="442.0" />
+      <TableView fx:id="workoutTable" layoutX="84.0" layoutY="83.0" minHeight="200.0" minWidth="442.0" onMouseClicked="#exerciseSelectedListener" prefHeight="200.0" prefWidth="442.0" />
 
       <TextField fx:id="exerciseNameInput" layoutX="150.0" layoutY="310.0" />
       <Text fx:id="exerciseTitle" layoutX="93.0" layoutY="327.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Exercise:" wrappingWidth="50.752593994140625" />
@@ -49,5 +49,6 @@
       <Button fx:id="addButton" layoutX="134.0" layoutY="460.0" mnemonicParsing="false" onAction="#addExercise" text="Add exercise" />
       <Button fx:id="loadButton" layoutX="438.0" layoutY="460.0" mnemonicParsing="false" onAction="#loadWorkout" text="Load Workout" />
       <Text fx:id="exceptionFeedback" fill="RED" layoutX="400.0" layoutY="356.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="142.0" />
+      <Button fx:id="deleteButton" disable="true" layoutX="422.0" layoutY="289.0" mnemonicParsing="false" onAction="#deleteExercise" text="Delete  exercise" />
    </children>
 </AnchorPane>

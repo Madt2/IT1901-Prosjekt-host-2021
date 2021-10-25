@@ -130,20 +130,15 @@ public class WorkoutOverviewController extends AbstractController{
   }
 
   @FXML
-  void deleteWorkout() {
-    try { 
-      user.removeWorkout(workout);
-      loadTable();
-      exceptionFeedback.setText("Workout deleted!");
-      BeastBookPersistence persistence = new BeastBookPersistence();
-      persistence.setSaveFilePath(user.getUserName());
-      persistence.saveUser(user);
-      
-    } catch (Exception e) {
-      openButton.setDisable(true);
-      deleteButton.setDisable(true);
-      exceptionFeedback.setText("No workout is selected!");
-    } 
+  void deleteWorkout() throws IllegalStateException, IOException {
+    user.removeWorkout(workout);
+    loadTable();
+    exceptionFeedback.setText("Workout deleted!");
+    BeastBookPersistence persistence = new BeastBookPersistence();
+    persistence.setSaveFilePath(user.getUserName());
+    persistence.saveUser(user);
+    openButton.setDisable(true);
+    deleteButton.setDisable(true);
   }
     
   void setUser(User user) {

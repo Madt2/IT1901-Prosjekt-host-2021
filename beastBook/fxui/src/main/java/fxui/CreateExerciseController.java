@@ -55,6 +55,9 @@ public class CreateExerciseController extends AbstractController {
   private Button loadButton;
 
   @FXML
+  private Button deleteButton;
+
+  @FXML
   private Button addExercise;
 
   @FXML
@@ -74,6 +77,7 @@ public class CreateExerciseController extends AbstractController {
 
   private Workout workout = new Workout();
   private Exercise exercise = new Exercise();
+  private Exercise selectedExercise = new Exercise();
   private TableColumn<Exercise, String> exerciseNameColumn;
   private TableColumn<Exercise, Integer> repGoalColumn;
   private TableColumn<Exercise, Double> weightColumn;
@@ -320,6 +324,27 @@ public class CreateExerciseController extends AbstractController {
         exceptionFeedback.setText("Save Workout failed!");
       }
     }
+  }
+
+  @FXML
+  private void exerciseSelectedListener() throws IOException {
+    selectedExercise = workoutTable.getSelectionModel().getSelectedItem();
+    if (selectedExercise != null) {
+      deleteButton.setDisable(false);
+    } else {
+      deleteButton.setDisable(true);
+    }
+  }
+
+  @FXML
+  void deleteExercise() throws IllegalStateException, IOException {
+    workout.removeExercise(selectedExercise);
+    exceptionFeedback.setText("The exercise '" + selectedExercise.getExerciseName() + "' was deleted!");
+    BeastBookPersistence persistence = new BeastBookPersistence();
+    persistence.setSaveFilePath(user.getUserName());
+    persistence.saveUser(user);
+    updateTable();
+    deleteButton.setDisable(true);
   }
 
   TextField getWeightInput(){

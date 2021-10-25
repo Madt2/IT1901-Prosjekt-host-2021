@@ -60,7 +60,6 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
     Assertions.assertEquals(woc.getWorkoutOverview().getItems(), user.getWorkouts());
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Workout deleted!"));
     clickOn("#deleteButton");
-    FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("No workout is selected!"));
     Assertions.assertEquals(woc.getWorkoutOverview().getItems(), user.getWorkouts());
   }
  
