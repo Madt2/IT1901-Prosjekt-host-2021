@@ -1,7 +1,6 @@
 package beastBook.fxui;
 
 import java.io.IOException;
-
 import beastBook.core.User;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -71,7 +70,4 @@ public abstract class AbstractController {
     AnchorPane pane =  fxmlLoader.load();
     rootPane.getChildren().setAll(pane);
   }
-
-
-
 }
