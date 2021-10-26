@@ -243,7 +243,7 @@ public class WorkoutController extends AbstractController {
     weightColumn.setPrefWidth(75);
     setsColumn.setPrefWidth(75);
     repsPerSetColumn.setPrefWidth(80);
-    restTimeColumn.setPrefWidth(110);
+    restTimeColumn.setPrefWidth(106);
   }
 
   @Override

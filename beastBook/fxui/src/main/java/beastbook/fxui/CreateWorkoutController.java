@@ -159,7 +159,7 @@ public class CreateWorkoutController extends AbstractController {
     repGoalColumn.setPrefWidth(75);
     weightColumn.setPrefWidth(75);
     setsColumn.setPrefWidth(80);
-    restTimeColumn.setPrefWidth(110);
+    restTimeColumn.setPrefWidth(100);
   }
 
   /**
@@ -205,8 +205,12 @@ public class CreateWorkoutController extends AbstractController {
   */
   @FXML
   void addExercise() {
+  
     if (exceptionFeedback.getText().equals("") && !checkForEmptyInputFields()) {
       try {
+        if(workout == null){
+          workout = new Workout(titleInput.getText());
+        }
         int repGoal;
         double weight;
         int sets;
@@ -354,6 +358,9 @@ public class CreateWorkoutController extends AbstractController {
 
   @FXML
   void deleteExercise() throws IllegalStateException, IOException {
+    if (workout.getExercises().size() <= 1) {
+      exceptionFeedback.setText("Could not delete exercise '" + selectedExercise.getExerciseName() + "', at least one exercise has to be in every workout!");
+    } else {
     workout.removeExercise(selectedExercise);
     exceptionFeedback.setText(
             "The exercise '" + selectedExercise.getExerciseName() + "' was deleted!"
@@ -362,6 +369,7 @@ public class CreateWorkoutController extends AbstractController {
     persistence.saveUser(user);
     updateTable();
     deleteButton.setDisable(true);
+    }
   }
 
   TextField getWeightInput() {

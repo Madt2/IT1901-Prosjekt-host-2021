@@ -80,7 +80,7 @@ public class User {
     for (Workout w : workouts) {
       if (w.getName().equals(workout.getName())) {
         throw new IllegalArgumentException(
-          "User already has workout " + workout.getName() + " saved!"
+          "User already has workout " + workout.getName() + " saved! Workout was not created, please choose another name."
         );
       }
     }
