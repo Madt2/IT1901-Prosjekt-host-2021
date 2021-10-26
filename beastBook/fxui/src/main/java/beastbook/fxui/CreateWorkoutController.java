@@ -208,7 +208,7 @@ public class CreateWorkoutController extends AbstractController {
   
     if (exceptionFeedback.getText().equals("") && !checkForEmptyInputFields()) {
       try {
-        if(workout == null){
+        if (workout == null) {
           workout = new Workout(titleInput.getText());
         }
         int repGoal;
@@ -359,16 +359,17 @@ public class CreateWorkoutController extends AbstractController {
   @FXML
   void deleteExercise() throws IllegalStateException, IOException {
     if (workout.getExercises().size() <= 1) {
-      exceptionFeedback.setText("Could not delete exercise '" + selectedExercise.getExerciseName() + "', at least one exercise has to be in every workout!");
+      exceptionFeedback.setText("Could not delete exercise '" + selectedExercise.getExerciseName() 
+          + "', at least one exercise has to be in every workout!");
     } else {
-    workout.removeExercise(selectedExercise);
-    exceptionFeedback.setText(
+      workout.removeExercise(selectedExercise);
+      exceptionFeedback.setText(
             "The exercise '" + selectedExercise.getExerciseName() + "' was deleted!"
-    );
-    persistence.setSaveFilePath(user.getUserName());
-    persistence.saveUser(user);
-    updateTable();
-    deleteButton.setDisable(true);
+      );
+      persistence.setSaveFilePath(user.getUserName());
+      persistence.saveUser(user);
+      updateTable();
+      deleteButton.setDisable(true);
     }
   }
 
