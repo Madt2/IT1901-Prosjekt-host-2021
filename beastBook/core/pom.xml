@@ -51,7 +51,7 @@
         		<artifactId>maven-surefire-plugin</artifactId>
                 <configuration>
                     <argLine>
-                        @{jaCoCoArgLine}  --add-opens beastBook.core/beastBook.core=ALL-UNNAMED
+                        @{jaCoCoArgLine} --add-opens beastbook.core/beastbook.core=ALL-UNNAMED
                     </argLine>
                 </configuration>
 	        </plugin>

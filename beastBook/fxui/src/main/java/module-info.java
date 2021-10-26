@@ -1,7 +1,7 @@
-module beastBook.fxui {
-    requires beastBook.core;
+module beastbook.fxui {
+    requires beastbook.core;
     requires javafx.controls;
     requires javafx.fxml;
 
-    opens beastBook.fxui to javafx.graphics, javafx.fxml;
+    opens beastbook.fxui to javafx.fxml, javafx.graphics;
 }
