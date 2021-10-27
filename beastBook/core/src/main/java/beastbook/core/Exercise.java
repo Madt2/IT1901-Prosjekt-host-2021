@@ -5,7 +5,7 @@ package beastbook.core;
  * weight used, amount of sets, reps per set and rest time for exercise.
  */
 public class Exercise {
-  public final int maxStringLength = 20;
+  public final int maxStringLength = 50;
   public final int maxIntLength = 5;
   public final int maxDoubleLength = 7;
   private String exerciseName;
@@ -50,6 +50,7 @@ public class Exercise {
     if ((exerciseName.length() <= 0) || (exerciseName.equals(""))) {
       throw new IllegalArgumentException("Exercise Name can not be blank!");
     }
+  }
 
   /**
   * Checks if repGoal is valid, valid is more than 0.
