@@ -50,7 +50,6 @@ public class Exercise {
     if ((exerciseName.length() <= 0) || (exerciseName.equals(""))) {
       throw new IllegalArgumentException("Exercise Name can not be blank!");
     }
-  }
 
   /**
   * Checks if repGoal is valid, valid is more than 0.
