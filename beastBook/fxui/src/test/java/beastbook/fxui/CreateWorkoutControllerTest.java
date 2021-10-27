@@ -19,6 +19,7 @@ import org.testfx.matcher.control.TextMatchers;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class CreateWorkoutControllerTest extends ApplicationTest{
   private CreateWorkoutController controller;
@@ -32,10 +33,10 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
     final FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/beastbook.fxui/Create.fxml"));
     controller = new CreateWorkoutController();
     loader.setController(controller);
-    final Parent root = loader.load();
     user = new User();
     controller.setUser(user);
     user.setUserName("test");
+    final Parent root = loader.load();
     stage.setScene(new Scene(root));
     stage.show();
   }  
@@ -167,7 +168,7 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
     clickOn("#titleInput", MouseButton.PRIMARY).write("testWorkout");
     clickOn("#loadButton", MouseButton.PRIMARY);
 
-    Assertions.assertEquals(null, controller.getWorkout());
+    Assertions.assertEquals(null, controller.getWorkout().getName());
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Workout not found!"));
   }
 

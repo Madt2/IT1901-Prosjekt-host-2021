@@ -10,7 +10,6 @@
    <children>
    <Button fx:id="backButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#loadHome" text="&lt;- Back" />
       <TableView fx:id="workoutTable" layoutX="84.0" layoutY="83.0" minHeight="200.0" minWidth="434.0" onMouseClicked="#exerciseSelectedListener" prefHeight="200.0" prefWidth="434.0" />
-
       <TextField fx:id="exerciseNameInput" layoutX="150.0" layoutY="310.0" />
       <Text fx:id="exerciseTitle" layoutX="93.0" layoutY="327.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Exercise:" wrappingWidth="50.752593994140625" />
       <TextField fx:id="repGoalInput" layoutX="150.0" layoutY="340.0" />
