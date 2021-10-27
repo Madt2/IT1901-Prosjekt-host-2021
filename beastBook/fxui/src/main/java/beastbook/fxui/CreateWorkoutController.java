@@ -424,7 +424,7 @@ public class CreateWorkoutController extends AbstractController {
         exception.setText(
             title.getText().replace(":", "")
             + " must be a number and can not exceed "
-            + Integer.MAX_VALUE
+            + exercise.maxIntLength
         );
         field.setStyle(WRONG_INPUT_BORDER_COLOR);
       }
@@ -464,7 +464,7 @@ public class CreateWorkoutController extends AbstractController {
         exception.setText(
                 title.getText().replace(":", "")
                 + " must be a number and can not exceed "
-                + Double.MAX_VALUE
+                + exercise.maxDoubleLength
         );
         field.setStyle(WRONG_INPUT_BORDER_COLOR);
       }

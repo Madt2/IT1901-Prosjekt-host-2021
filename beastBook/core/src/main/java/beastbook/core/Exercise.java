@@ -43,11 +43,13 @@ public class Exercise {
   * @param name Name of the exercise
   */
   private void validateExerciseName(String exerciseName) {
-    if ((exerciseName.length() >= maxStringLength)) {
+    boolean isTooLong = exerciseName.length() >= maxStringLength;
+    if (isTooLong) {
       throw new IllegalArgumentException("Exercise Name can not be longer than " + maxStringLength + " characters!");
     }
     exerciseName = exerciseName.trim();
-    if ((exerciseName.length() <= 0) || (exerciseName.equals(""))) {
+    boolean isBlank = (exerciseName.length() <= 0) || (exerciseName.equals(""));
+    if (isBlank) {
       throw new IllegalArgumentException("Exercise Name can not be blank!");
     }
   }
@@ -58,10 +60,12 @@ public class Exercise {
   * @param repGoal Number of repetitions to be performed
   */
   private void validateRepGoal(int repGoal) {
-    if (repGoal <= 0) {
+    boolean isTooLow = repGoal <= 0;
+    if (isTooLow) {
       throw new IllegalArgumentException("Rep Goal must be more than 0!");
     }
-    if (String.valueOf(repGoal).length() >= maxIntLength) {
+    boolean isTooLong = String.valueOf(repGoal).length() >= maxIntLength;
+    if (isTooLong) {
       throw new IllegalArgumentException("Rep Goal can not be longer than " + maxIntLength + " characters!");
     }
   }
@@ -72,10 +76,12 @@ public class Exercise {
   * @param weight Weight to be used for the exercise
   */
   private void validateWeight(double weight) {
-    if (weight <= 0) {
+    boolean isTooLow = weight <= 0;
+    if (isTooLow) {
       throw new IllegalArgumentException("Working Weight must be more than 0!");
     }
-    if (String.valueOf(weight).length() >= maxDoubleLength) {
+    boolean isTooLong = String.valueOf(weight).length() >= maxDoubleLength;
+    if (isTooLong) {
       throw new IllegalArgumentException("Working Weight can not be longer than " + maxDoubleLength + " characters!");
     }
   }
@@ -86,19 +92,23 @@ public class Exercise {
   * @param sets Number of sets to be performed
   */
   private void validateSets(int sets) {
-    if (sets <= 0) {
+    boolean isTooLow = sets <= 0;
+    if (isTooLow) {
       throw new IllegalArgumentException("Sets must be more than 0!");
     }
-    if (String.valueOf(sets).length() >= maxIntLength) {
+    boolean isTooLong = String.valueOf(sets).length() >= maxIntLength;
+    if (isTooLong) {
       throw new IllegalArgumentException("Sets can not be longer than " + maxIntLength + " characters!");
     }
   }
 
   private void validateRepsPerSet(int repsPerSet) {
-    if (repsPerSet <= 0) {
+    boolean isTooLow = repsPerSet <= 0;
+    if (isTooLow) {
       throw new IllegalArgumentException("Reps Per Set must be more than 0!");
     }
-    if (String.valueOf(repsPerSet).length() >= maxIntLength) {
+    boolean isTooLong = String.valueOf(repsPerSet).length() >= maxIntLength;
+    if (isTooLong) {
       throw new IllegalArgumentException("Reps Per Set can not be longer than " + maxIntLength + " characters!");
     }
   }
@@ -109,10 +119,12 @@ public class Exercise {
   * @param restTime How many seconds of rest between each set
   */
   private void validateRestTime(int restTime) {
-    if (restTime <= 0) {
+    boolean isTooLow = restTime <= 0;
+    if (isTooLow) {
       throw new IllegalArgumentException("Rest Time must be more than 0!");
     }
-    if (String.valueOf(restTime).length() >= maxIntLength) {
+    boolean isTooLong = String.valueOf(restTime).length() >= maxIntLength;
+    if (isTooLong) {
       throw new IllegalArgumentException("Rest Time can not be longer than " + maxIntLength + " characters!");
     }
   }
