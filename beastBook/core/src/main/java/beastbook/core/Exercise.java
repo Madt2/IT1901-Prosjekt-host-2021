@@ -41,7 +41,8 @@ public class Exercise {
   */
   private void validateExerciseName(String name) {
     name = name.trim();
-    if ((name.length() <= 0) || (name.equals(""))) {
+    Boolean isCorrectFormat = (name.length() <= 0) || (name.equals(""));
+    if (isCorrectFormat) {
       throw new IllegalArgumentException("Exercise can not be blank!");
     } 
   }

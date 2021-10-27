@@ -73,25 +73,25 @@ public class LoginController extends AbstractController {
   void loginUser(ActionEvent event) throws IllegalArgumentException, IOException {
     String userName = usernameInput.getText();
     String password = passwordInput.getText();
-    if (!userName.equals("")) {
-      if (!password.equals("")) {
-        User login = getUser(userName);
-        if (Objects.isNull(login)) {
-          loginError.setText("No user found");
-        } else {
-          if (!login.getPassword().equals(password)) {
-            loginError.setText("Wrong Password");
-          } else {
-            user = login;
-            super.loadHome();
-          }
-        }
-      } else {
-        loginError.setText("No Password given!");
-      }
-    } else {
+    if (userName.equals("")) {
       loginError.setText("No username given");
+      return;
     }
+    if (password.equals("")) {
+      loginError.setText("No Password given!");
+      return;
+    }
+    User login = getUser(userName);
+    if (Objects.isNull(login)) {
+      loginError.setText("No user found");
+      return;
+    }
+    if (!login.getPassword().equals(password)) {
+      loginError.setText("Wrong Password");
+      return;
+    }
+    user = login;
+    super.loadHome();
   }
 
   /**
