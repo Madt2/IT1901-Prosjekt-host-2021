@@ -3,8 +3,12 @@ package beastbook.json;
 import beastbook.core.Exercise;
 import beastbook.core.User;
 import beastbook.core.Workout;
+
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
+import java.io.File;
 import java.io.IOException;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -45,5 +49,11 @@ public class PersistenceTest {
     } catch (IOException e) {
         Assertions.fail();
     }
+  }
+
+  @AfterAll
+  static void cleanUp() {
+    File file = new File(System.getProperty("user.home") + "/utest");
+    file.delete();
   }
 }
