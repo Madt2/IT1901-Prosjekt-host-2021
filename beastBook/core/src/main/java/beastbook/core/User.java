@@ -34,7 +34,8 @@ public class User {
   * @param username the username to set
   */
   public void setUserName(String username) {
-    if (username.length() >= MIN_CHAR_USERNAME) {
+    Boolean isLongEnough = username.length() >= MIN_CHAR_USERNAME;
+    if (isLongEnough) {
       this.username = username;
     } else {
       throw new IllegalArgumentException(
@@ -53,7 +54,8 @@ public class User {
   * @param password the password to set
   */
   public void setPassword(String password) {
-    if (password.length() >= MIN_CHAR_PASSWORD) {
+    Boolean isLongEnough = password.length() >= MIN_CHAR_PASSWORD;
+    if (isLongEnough) {
       this.password = password;
     } else {
       throw new IllegalArgumentException(
