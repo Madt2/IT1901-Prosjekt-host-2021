@@ -93,6 +93,7 @@ public class CreateWorkoutController extends AbstractController {
    */
   public void initialize() {
     updateTable();
+    persistence.setSaveFilePath(user.getUserName());
     exerciseNameInput.setOnKeyTyped(event -> {
       new StringValidator(exerciseTitle, exerciseNameInput, exceptionFeedback);
     });
@@ -205,7 +206,6 @@ public class CreateWorkoutController extends AbstractController {
   */
   @FXML
   void addExercise() {
-  
     if (exceptionFeedback.getText().equals("") && !checkForEmptyInputFields()) {
       try {
         if (workout == null) {
@@ -238,14 +238,14 @@ public class CreateWorkoutController extends AbstractController {
         String name = exerciseNameInput.getText();
         exercise = new Exercise(name, repGoal, weight, sets, rest);
         
-        this.workout.addExercise(exercise);
+        workout.addExercise(exercise);
         workoutTable.getItems().add(exercise);
         exercise = new Exercise();   
         exceptionFeedback.setText("");
         createButton.setDisable(false);
         emptyInputFields();
       } catch (IllegalArgumentException i) {
-        exceptionFeedback.setText(i.getMessage()); 
+        exceptionFeedback.setText(i.getMessage());
       } catch (Exception e) {
         exceptionFeedback.setText(e.getMessage());
         //exceptionFeedback.setText("exercise catch");
@@ -311,11 +311,19 @@ public class CreateWorkoutController extends AbstractController {
       return;
     }
     try {
-      workout = user.getWorkout(titleInput.getText());
+      Workout load = user.getWorkout(titleInput.getText());
+      if (load == null) {
+        throw new IllegalArgumentException("no workout");
+      }
+      for (Exercise e : load.getExercises()) {
+        workout.addExercise(e);
+      }
+      workout.setName(load.getName());
       updateTable();
       exceptionFeedback.setText("");
     } catch (Exception e) {
       exceptionFeedback.setText("Workout not found!");
+      workout = new Workout();
     }
   }
 
@@ -328,15 +336,19 @@ public class CreateWorkoutController extends AbstractController {
   */
   @FXML
   void createWorkout(ActionEvent event) {
-    workout.setName(titleInput.getText());
     if (titleInput.getText() == null || titleInput.getText().equals("")) {
       exceptionFeedback.setText("Input title is empty, please enter name to workout");
     } else {
       try {
+        workout.setName(titleInput.getText());
         user.addWorkout(workout);
-        persistence.setSaveFilePath(user.getUserName());
         persistence.saveUser(user);
         exceptionFeedback.setText("Workout saved!");
+        emptyInputFields();
+        titleInput.setText("");
+        workout = new Workout();
+        createButton.setDisable(true);
+        updateTable();
       } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage());
       } catch (Exception e) {
@@ -358,17 +370,18 @@ public class CreateWorkoutController extends AbstractController {
 
   @FXML
   void deleteExercise() throws IllegalStateException, IOException {
-    if (workout.getExercises().size() <= 1) {
+    Workout del = user.getWorkout(workout.getName());
+    if (del.getExercises().size() <= 1) {
       exceptionFeedback.setText("Could not delete exercise '" + selectedExercise.getExerciseName() 
           + "', at least one exercise has to be in every workout!");
     } else {
+      del.removeExercise(selectedExercise);
       workout.removeExercise(selectedExercise);
       exceptionFeedback.setText(
             "The exercise '" + selectedExercise.getExerciseName() + "' was deleted!"
       );
-      persistence.setSaveFilePath(user.getUserName());
-      persistence.saveUser(user);
       updateTable();
+      persistence.saveUser(user);
       deleteButton.setDisable(true);
     }
   }
@@ -410,6 +423,12 @@ public class CreateWorkoutController extends AbstractController {
         if (num <= 0) {
           exception.setText(title.getText().replace(":", "") + " must be more than 0");
           field.setStyle(WRONG_INPUT_BORDER_COLOR);
+        } else if (String.valueOf(num).length() >= exercise.maxIntLength) {
+          exception.setText(
+                title.getText().replace(":", "") + " can not be longer than "
+                + exercise.maxIntLength + " characters!"
+          );
+          field.setStyle(WRONG_INPUT_BORDER_COLOR);
         } else {
           exceptionFeedback.setText("");
           field.setStyle(CORRECT_INPUT_BORDER_COLOR);
@@ -418,7 +437,7 @@ public class CreateWorkoutController extends AbstractController {
         exception.setText(
             title.getText().replace(":", "")
             + " must be a number and can not exceed "
-            + Integer.MAX_VALUE
+            + exercise.maxIntLength
         );
         field.setStyle(WRONG_INPUT_BORDER_COLOR);
       }
@@ -444,6 +463,12 @@ public class CreateWorkoutController extends AbstractController {
         if (num <= 0) {
           exception.setText(title.getText().replace(":", "") + " must be more than 0");
           field.setStyle(WRONG_INPUT_BORDER_COLOR);
+        } else if (String.valueOf(num).length() >= exercise.maxDoubleLength) {
+          exception.setText(
+                title.getText().replace(":", "") + " can not be longer than "
+                + exercise.maxDoubleLength + " characters!"
+          );
+          field.setStyle(WRONG_INPUT_BORDER_COLOR);
         } else {
           exceptionFeedback.setText("");
           field.setStyle(CORRECT_INPUT_BORDER_COLOR);
@@ -452,7 +477,7 @@ public class CreateWorkoutController extends AbstractController {
         exception.setText(
                 title.getText().replace(":", "")
                 + " must be a number and can not exceed "
-                + Double.MAX_VALUE
+                + exercise.maxDoubleLength
         );
         field.setStyle(WRONG_INPUT_BORDER_COLOR);
       }
@@ -478,6 +503,14 @@ public class CreateWorkoutController extends AbstractController {
         exception.setText(
                 title.getText().replace(":", "")
                 + " can not be blank"
+        );
+        field.setStyle(WRONG_INPUT_BORDER_COLOR);
+      } else if (text.length() >= exercise.maxStringLength) {
+        exception.setText(
+                title.getText().replace(":", "")
+                + " must be less than "
+                + exercise.maxStringLength
+                + " characters!"
         );
         field.setStyle(WRONG_INPUT_BORDER_COLOR);
       } else {

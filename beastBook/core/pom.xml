@@ -52,6 +52,7 @@
                 <configuration>
                     <argLine>
                         @{jaCoCoArgLine} --add-opens beastbook.core/beastbook.core=ALL-UNNAMED
+                        --add-opens beastbook.core/beastbook.json=ALL-UNNAMED
                     </argLine>
                 </configuration>
 	        </plugin>

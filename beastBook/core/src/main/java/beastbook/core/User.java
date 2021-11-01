@@ -79,15 +79,19 @@ public class User {
    * @param workout workout to add
    */
   public void addWorkout(Workout workout) {
-    for (Workout w : workouts) {
+    checkWorkout(workout);
+    workouts.add(workout);
+  }
+
+  public void checkWorkout(Workout workout) {
+    for (Workout w : getWorkouts()) {
       if (w.getName().equals(workout.getName())) {
         throw new IllegalArgumentException(
-          "User already has workout " + workout.getName() 
-          + " saved! Workout was not created, please choose another name."
+            "User already has workout " + workout.getName()
+                + " saved! Workout was not created, please choose another name."
         );
       }
     }
-    workouts.add(workout);
   }
 
   /**
