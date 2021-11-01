@@ -116,9 +116,10 @@ public class WorkoutController extends AbstractController {
   * and a red text will appear in the GUI with feedback.
   * Sets the exercises from the workout to the table view.
   */
-  private void editTable() {        
-    exerciseNameColumn.setCellFactory(TextFieldTableCell.forTableColumn());
-    exerciseNameColumn.setOnEditCommit(event -> {
+
+  private void tableWithString(TableColumn<Exercise, String> javaFxTag, String errorMessage) {
+    javaFxTag.setCellFactory(TextFieldTableCell.forTableColumn());
+    javaFxTag.setOnEditCommit(event -> {
       try {
         Exercise exercise = event.getRowValue();
         exercise.setExerciseName(event.getNewValue());
@@ -128,33 +129,48 @@ public class WorkoutController extends AbstractController {
         exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
         workoutTable.refresh();
       } catch (Exception e) {
-        exceptionFeedback.setText("Wrong input, please try again. Value was not changed!");
+        exceptionFeedback.setText(errorMessage);
         workoutTable.refresh();
       }
     });
+  }
 
-    repGoalColumn.setCellFactory(TextFieldTableCell.forTableColumn(
-      new CustomIntegerStringConverter())
+  private void tableWithInteger(TableColumn<Exercise, Integer> javaFxTag, String errorMessage) {
+    javaFxTag.setCellFactory(TextFieldTableCell.forTableColumn(
+            new CustomIntegerStringConverter())
     );
-    repGoalColumn.setOnEditCommit(event -> {
+    javaFxTag.setOnEditCommit(event -> {
       try {
         Exercise exercise = event.getRowValue();
-        exercise.setRepGoal(event.getNewValue());
+        if (javaFxTag.equals(repGoalColumn)) {
+          exercise.setRepGoal(event.getNewValue());
+        }
+        if (javaFxTag.equals(setsColumn)) {
+          exercise.setSets(event.getNewValue());
+        }
+        if (javaFxTag.equals(repsPerSetColumn)) {
+          exercise.setRepsPerSet(event.getNewValue());
+        }
+        if (javaFxTag.equals(restTimeColumn)) {
+          exercise.setRestTime(event.getNewValue());
+        }
         saveUserState();
         emptyExceptionFeedback();
       } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
         workoutTable.refresh();
       } catch (Exception e) {
-        exceptionFeedback.setText("Rep Goal must be a number. Value was not changed!");
+        exceptionFeedback.setText(errorMessage);
         workoutTable.refresh();
       }
     });
-   
-    weightColumn.setCellFactory(TextFieldTableCell.forTableColumn(
-      new CustomDoubleStringConverter())
+  }
+
+  private void tableWithDouble(TableColumn<Exercise, Double> javaFxTag, String errorMessage) {
+    javaFxTag.setCellFactory(TextFieldTableCell.forTableColumn(
+            new CustomDoubleStringConverter())
     );
-    weightColumn.setOnEditCommit(event -> {
+    javaFxTag.setOnEditCommit(event -> {
       try {
         Exercise exercise = event.getRowValue();
         exercise.setWeight(event.getNewValue());
@@ -164,64 +180,19 @@ public class WorkoutController extends AbstractController {
         exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
         workoutTable.refresh();
       } catch (Exception e) {
-        exceptionFeedback.setText("Working Weight must be a number. Value was not changed!");
+        exceptionFeedback.setText(errorMessage);
         workoutTable.refresh();
       }
     });
-     
-    setsColumn.setCellFactory(TextFieldTableCell.forTableColumn(
-      new CustomIntegerStringConverter())
-    );
-    setsColumn.setOnEditCommit(event -> {
-      try {
-        Exercise exercise = event.getRowValue();
-        exercise.setSets(event.getNewValue());
-        saveUserState();
-        emptyExceptionFeedback();
-      } catch (IllegalArgumentException i) {
-        exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
-        workoutTable.refresh();
-      } catch (Exception e) {
-        exceptionFeedback.setText("Sets must be a number. Value was not changed!");
-        workoutTable.refresh();
-      }
-    });
+  }
 
-    repsPerSetColumn.setCellFactory(TextFieldTableCell.forTableColumn(
-      new CustomIntegerStringConverter())
-    );
-    repsPerSetColumn.setOnEditCommit(event -> {
-      try {
-        Exercise exercise = event.getRowValue();
-        exercise.setRepsPerSet(event.getNewValue());
-        saveUserState();
-        emptyExceptionFeedback();
-      } catch (IllegalArgumentException i) {
-        exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
-        workoutTable.refresh();
-      } catch (Exception e) {
-        exceptionFeedback.setText("Reps per set must be a number. Value was not changed!");
-        workoutTable.refresh();
-      }
-    });
-
-    restTimeColumn.setCellFactory(TextFieldTableCell.forTableColumn(
-      new CustomIntegerStringConverter())
-    );
-    restTimeColumn.setOnEditCommit(event -> {
-      try {
-        Exercise exercise = event.getRowValue();
-        exercise.setRestTime(event.getNewValue());
-        saveUserState();
-        emptyExceptionFeedback();
-      } catch (IllegalArgumentException i) {
-        exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
-        workoutTable.refresh();
-      } catch (Exception e) {
-        exceptionFeedback.setText("Rest time must be a number. Value was not changed!");
-        workoutTable.refresh();
-      }
-    });
+  private void editTable() {
+    tableWithString(exerciseNameColumn, "Wrong input, please try again. Value was not changed!");
+    tableWithInteger(repGoalColumn, "Rep Goal must be a number. Value was not changed!");
+    tableWithDouble(weightColumn, "Working Weight must be a number. Value was not changed!");
+    tableWithInteger(setsColumn, "Sets must be a number. Value was not changed!");
+    tableWithInteger(repsPerSetColumn, "Reps per set must be a number. Value was not changed!");
+    tableWithInteger(restTimeColumn, "Rest time must be a number. Value was not changed!");
     workoutTable.getItems().setAll(workout.getExercises());
   }
     
