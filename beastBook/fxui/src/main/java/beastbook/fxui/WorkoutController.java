@@ -126,23 +126,23 @@ public class WorkoutController extends AbstractController {
     });
   }
 
-  private void tableWithInteger(TableColumn<Exercise, Integer> javaFxTag, String errorMessage) {
-    javaFxTag.setCellFactory(TextFieldTableCell.forTableColumn(
+  private void tableWithInteger(TableColumn<Exercise, Integer> column, String errorMessage) {
+    column.setCellFactory(TextFieldTableCell.forTableColumn(
             new CustomIntegerStringConverter())
     );
-    javaFxTag.setOnEditCommit(event -> {
+    column.setOnEditCommit(event -> {
       try {
         Exercise exercise = event.getRowValue();
-        if (javaFxTag.equals(repGoalColumn)) {
+        if (column.equals(repGoalColumn)) {
           exercise.setRepGoal(event.getNewValue());
         }
-        if (javaFxTag.equals(setsColumn)) {
+        if (column.equals(setsColumn)) {
           exercise.setSets(event.getNewValue());
         }
-        if (javaFxTag.equals(repsPerSetColumn)) {
+        if (column.equals(repsPerSetColumn)) {
           exercise.setRepsPerSet(event.getNewValue());
         }
-        if (javaFxTag.equals(restTimeColumn)) {
+        if (column.equals(restTimeColumn)) {
           exercise.setRestTime(event.getNewValue());
         }
         user.getWorkout(workoutName).updateExercise(exercise);
@@ -159,11 +159,11 @@ public class WorkoutController extends AbstractController {
     });
   }
 
-  private void tableWithDouble(TableColumn<Exercise, Double> javaFxTag, String errorMessage) {
-    javaFxTag.setCellFactory(TextFieldTableCell.forTableColumn(
+  private void tableWithDouble(TableColumn<Exercise, Double> column, String errorMessage) {
+    column.setCellFactory(TextFieldTableCell.forTableColumn(
             new CustomDoubleStringConverter())
     );
-    javaFxTag.setOnEditCommit(event -> {
+    column.setOnEditCommit(event -> {
       try {
         Exercise exercise = event.getRowValue();
         exercise.setWeight(event.getNewValue());
