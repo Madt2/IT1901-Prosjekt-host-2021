@@ -14,8 +14,6 @@ import javafx.scene.text.Text;
 import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
 
-
-
 /**
  * Controller for the Workout screen.
  */
@@ -107,10 +105,9 @@ public class WorkoutController extends AbstractController {
   * and a red text will appear in the GUI with feedback.
   * Sets the exercises from the workout to the table view.
   */
-
-  private void tableWithString(TableColumn<Exercise, String> javaFxTag, String errorMessage) {
-    javaFxTag.setCellFactory(TextFieldTableCell.forTableColumn());
-    javaFxTag.setOnEditCommit(event -> {
+  private void tableWithString(TableColumn<Exercise, String> column, String errorMessage) {
+    column.setCellFactory(TextFieldTableCell.forTableColumn());
+    column.setOnEditCommit(event -> {
       try {
         Exercise exercise = event.getRowValue();
         exercise.setExerciseName(event.getNewValue());

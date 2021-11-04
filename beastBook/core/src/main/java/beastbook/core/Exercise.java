@@ -85,7 +85,7 @@ public class Exercise {
     if (isTooLow) {
       throw new IllegalArgumentException("Working Weight must be more than 0!");
     }
-    boolean isTooLong = String.valueOf(weight).length() >= maxDoubleLength;
+    boolean isTooLong = String.valueOf(weight).length() > maxDoubleLength;
     if (isTooLong) {
       throw new IllegalArgumentException(
               "Working Weight can not be longer than " + maxDoubleLength + " characters!"
