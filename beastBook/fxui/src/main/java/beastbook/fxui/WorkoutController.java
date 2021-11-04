@@ -48,7 +48,7 @@ public class WorkoutController extends AbstractController {
   @FXML
   public void initialize() {
     updateTable();
-    title.setText(workout.getName());
+    title.setText(workoutName);
   }
 
   /**
@@ -186,7 +186,7 @@ public class WorkoutController extends AbstractController {
     tableWithInteger(setsColumn, "Sets must be a number. Value was not changed!");
     tableWithInteger(repsPerSetColumn, "Reps per set must be a number. Value was not changed!");
     tableWithInteger(restTimeColumn, "Rest time must be a number. Value was not changed!");
-    workoutTable.getItems().setAll(workout.getExercises());
+    workoutTable.getItems().setAll(user.getWorkout(workoutName).getExercises());
   }
     
   TableView<Exercise> getWorkoutTable() {

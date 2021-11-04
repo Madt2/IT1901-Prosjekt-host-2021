@@ -303,7 +303,7 @@ public class CreateWorkoutController extends AbstractController {
   * @param event When Load Workout button is clicked in GUI, loadWorkout() is fired.
   */
   @FXML
-  void loadWorkout(ActionEvent event) {     
+  void loadWorkout(ActionEvent event) {
     if (titleInput.getText().equals("") || titleInput.getText() == null) {
       exceptionFeedback.setText("Missing Title!");
       return;

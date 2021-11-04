@@ -16,7 +16,6 @@ public class User {
   private String password;
   private BeastBookPersistence persistence = new BeastBookPersistence();
   private List<Workout> workouts = new ArrayList<Workout>();
-  //private List<String> myHistory = new ArrayList<String>(); for later release
 
   /**
   * User object for application.

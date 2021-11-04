@@ -57,19 +57,18 @@ public class WorkoutOverviewController extends AbstractController {
   * adds the users workouts to the table view.
   */
   public void loadTable() {
-    setWorkouts();
     workoutOverview.getColumns().clear();
     workoutNameColumn = new TableColumn<Workout, String>("Workout name:");
     workoutNameColumn.setCellValueFactory(new PropertyValueFactory<Workout, String>("name"));
     workoutOverview.getColumns().add(workoutNameColumn);
-    workoutOverview.getItems().setAll(allWorkouts);
+    workoutOverview.getItems().setAll(user.getWorkouts());
     setColumnsSize();
   }
 
   @FXML
   private void workoutSelectedListener() throws IOException {
-    workout = workoutOverview.getSelectionModel().getSelectedItem();
-    if (workout != null) {
+    selectedWorkoutName = workoutOverview.getSelectionModel().getSelectedItem().getName();
+    if (selectedWorkoutName != null) {
       exceptionFeedback.setText("");
       openButton.setDisable(false);
       deleteButton.setDisable(false);
@@ -79,27 +78,15 @@ public class WorkoutOverviewController extends AbstractController {
     }
   }
 
-  public void setWorkout(Workout workout) {
-    this.workout = workout;
+  String getWorkoutName() {
+    return selectedWorkoutName;
   }
 
-  public Workout getWorkout() {
-    return this.workout;
+  void setUser(String username) throws IOException {
+    this.user = user.loadUser(username);
   }
 
-  public void addToAllWorkouts(Workout workout) {
-    allWorkouts.add(workout);
-  }
-
-  List<Workout> getAllWorkouts() {
-    return new ArrayList<>(allWorkouts);
-  }
-
-  Workout getTable(int row) {
-    return workoutOverview.getItems().get(row);
-  }
-
-  public TableView<Workout> getWorkoutOverview() {
+  TableView<Workout> getWorkoutOverview() {
     return workoutOverview;
   }
 
@@ -118,14 +105,15 @@ public class WorkoutOverviewController extends AbstractController {
       exceptionFeedback.setText("");
       WorkoutController workoutController = new WorkoutController();
       FXMLLoader fxmlLoader = new FXMLLoader(
-          this.getClass().getResource("/beastbook.fxui/Workout.fxml")
+              this.getClass().getResource("/beastbook.fxui/Workout.fxml")
       );
       fxmlLoader.setController(workoutController);
-      workoutController.setUser(user);
-      workoutController.setWorkout(this.getWorkout());
-    
-      AnchorPane pane =  fxmlLoader.load();
-      rootPane.getChildren().setAll(pane);
+      workoutController.setUser(user.getUserName());
+      workoutController.setWorkoutName(getWorkoutName());
+      Parent root = fxmlLoader.load();
+      Scene scene = new Scene(root, 600, 500);
+      Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+      stage.setScene(scene);
     } catch (Exception e) {
       openButton.setDisable(true);
       deleteButton.setDisable(true);
@@ -135,19 +123,11 @@ public class WorkoutOverviewController extends AbstractController {
 
   @FXML
   void deleteWorkout() throws IllegalStateException, IOException {
-    user.removeWorkout(workout);
+    user.removeWorkout(user.getWorkout(getWorkoutName()));
     loadTable();
     exceptionFeedback.setText("Workout deleted!");
     user.saveUser();
     openButton.setDisable(true);
     deleteButton.setDisable(true);
-  }
-    
-  void setUser(User user) {
-    this.user = user;
-  }
-
-  void setWorkouts() {
-    this.allWorkouts = user.getWorkouts();
   }
 }
