@@ -3,7 +3,6 @@ package beastbook.fxui;
 import beastbook.core.Exercise;
 import beastbook.core.User;
 import beastbook.core.Workout;
-import beastbook.json.BeastBookPersistence;
 import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -82,7 +81,7 @@ public class CreateWorkoutController extends AbstractController {
   private TableColumn<Exercise, Double> weightColumn;
   private TableColumn<Exercise, Integer> setsColumn;
   private TableColumn<Exercise, Integer> restTimeColumn;
-  private BeastBookPersistence persistence = new BeastBookPersistence();
+  private User user;
 
   public static final String WRONG_INPUT_BORDER_COLOR = "-fx-text-box-border: #B22222;"
           + "-fx-focus-color: #B22222";
@@ -93,7 +92,6 @@ public class CreateWorkoutController extends AbstractController {
    */
   public void initialize() {
     updateTable();
-    persistence.setSaveFilePath(user.getUserName());
     exerciseNameInput.setOnKeyTyped(event -> {
       new StringValidator(exerciseTitle, exerciseNameInput, exceptionFeedback);
     });
@@ -237,7 +235,7 @@ public class CreateWorkoutController extends AbstractController {
         }
         String name = exerciseNameInput.getText();
         exercise = new Exercise(name, repGoal, weight, sets, rest);
-        
+
         workout.addExercise(exercise);
         workoutTable.getItems().add(exercise);
         exercise = new Exercise();   
@@ -342,7 +340,7 @@ public class CreateWorkoutController extends AbstractController {
       try {
         workout.setName(titleInput.getText());
         user.addWorkout(workout);
-        persistence.saveUser(user);
+        user.saveUser();
         exceptionFeedback.setText("Workout saved!");
         emptyInputFields();
         titleInput.setText("");
@@ -381,7 +379,7 @@ public class CreateWorkoutController extends AbstractController {
             "The exercise '" + selectedExercise.getExerciseName() + "' was deleted!"
       );
       updateTable();
-      persistence.saveUser(user);
+      user.saveUser();
       deleteButton.setDisable(true);
     }
   }
@@ -389,19 +387,14 @@ public class CreateWorkoutController extends AbstractController {
   TextField getWeightInput() {
     return this.weigthInput;
   }
-  
-  @Override
-  void loadHome() throws IOException {
-    super.loadHome();
-  }
 
   @Override
-  void loadLogin() throws IOException {
-    super.loadLogin();
+  void loadHome(ActionEvent event, String username) throws IOException {
+    super.loadHome(event, user.getUserName());
   }
 
-  void setUser(User user) {
-    this.user = user;
+  void setUser(String username) throws IOException {
+    this.user = user.loadUser(username);
   }
 
   /**

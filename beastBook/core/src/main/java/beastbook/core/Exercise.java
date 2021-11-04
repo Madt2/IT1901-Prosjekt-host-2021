@@ -45,7 +45,9 @@ public class Exercise {
   private void validateExerciseName(String exerciseName) {
     boolean isTooLong = exerciseName.length() >= maxStringLength;
     if (isTooLong) {
-      throw new IllegalArgumentException("Exercise Name can not be longer than " + maxStringLength + " characters!");
+      throw new IllegalArgumentException(
+              "Exercise Name can not be longer than " + maxStringLength + " characters!"
+      );
     }
     exerciseName = exerciseName.trim();
     boolean isBlank = (exerciseName.length() <= 0) || (exerciseName.equals(""));
@@ -60,13 +62,16 @@ public class Exercise {
   * @param repGoal Number of repetitions to be performed
   */
   private void validateRepGoal(int repGoal) {
-    boolean isTooLow = repGoal <= 0;
+    boolean isTooLow = (repGoal <= 0);
     if (isTooLow) {
       throw new IllegalArgumentException("Rep Goal must be more than 0!");
     }
-    boolean isTooLong = String.valueOf(repGoal).length() >= maxIntLength;
+    boolean isTooLong = String.valueOf(repGoal)
+            .length() > maxIntLength;
     if (isTooLong) {
-      throw new IllegalArgumentException("Rep Goal can not be longer than " + maxIntLength + " characters!");
+      throw new IllegalArgumentException(
+              "Rep Goal can not be longer than " + maxIntLength + " characters!"
+      );
     }
   }
 
@@ -82,7 +87,9 @@ public class Exercise {
     }
     boolean isTooLong = String.valueOf(weight).length() >= maxDoubleLength;
     if (isTooLong) {
-      throw new IllegalArgumentException("Working Weight can not be longer than " + maxDoubleLength + " characters!");
+      throw new IllegalArgumentException(
+              "Working Weight can not be longer than " + maxDoubleLength + " characters!"
+      );
     }
   }
 
@@ -92,13 +99,18 @@ public class Exercise {
   * @param sets Number of sets to be performed
   */
   private void validateSets(int sets) {
-    boolean isTooLow = sets <= 0;
+    boolean isTooLow = (sets <= 0);
     if (isTooLow) {
-      throw new IllegalArgumentException("Sets must be more than 0!");
+      throw new IllegalArgumentException(
+              "Sets must be more than 0!"
+      );
     }
-    boolean isTooLong = String.valueOf(sets).length() >= maxIntLength;
+    boolean isTooLong = String.valueOf(sets)
+            .length() >= maxIntLength;
     if (isTooLong) {
-      throw new IllegalArgumentException("Sets can not be longer than " + maxIntLength + " characters!");
+      throw new IllegalArgumentException(
+              "Sets can not be longer than " + maxIntLength + " characters!"
+      );
     }
   }
 
@@ -107,9 +119,12 @@ public class Exercise {
     if (isTooLow) {
       throw new IllegalArgumentException("Reps Per Set must be more than 0!");
     }
-    boolean isTooLong = String.valueOf(repsPerSet).length() >= maxIntLength;
+    boolean isTooLong = String.valueOf(repsPerSet)
+            .length() >= maxIntLength;
     if (isTooLong) {
-      throw new IllegalArgumentException("Reps Per Set can not be longer than " + maxIntLength + " characters!");
+      throw new IllegalArgumentException(
+              "Reps Per Set can not be longer than " + maxIntLength + " characters!"
+      );
     }
   }
 

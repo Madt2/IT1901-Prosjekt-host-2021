@@ -34,7 +34,7 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
     controller = new CreateWorkoutController();
     loader.setController(controller);
     user = new User();
-    controller.setUser(user);
+    controller.setUser(user.getUserName());
     user.setUserName("test");
     final Parent root = loader.load();
     stage.setScene(new Scene(root));

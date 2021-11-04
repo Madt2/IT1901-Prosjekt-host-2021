@@ -32,7 +32,7 @@ public class WorkoutControllerTest extends ApplicationTest{
     user = new User();
     user.setUserName("test");
     addWorkoutsToUser();
-    wc.setUser(user);
+    wc.setUser(user.getUserName());
     final Parent root = loader.load();
     stage.setScene(new Scene(root));
     stage.show();
@@ -95,7 +95,7 @@ public class WorkoutControllerTest extends ApplicationTest{
     workout1.addExercise(new Exercise("Deadlift", 20, 20, 20, 20));
     workout1.addExercise(new Exercise("Biceps curl", 20, 20, 20, 20));
     user.addWorkout(workout1);
-    wc.setWorkout(workout1);
+    //wc.setWorkout(workout1);
   }
 
   @AfterAll

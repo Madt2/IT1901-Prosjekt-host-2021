@@ -1,7 +1,6 @@
 package beastbook.fxui;
 
 import beastbook.core.User;
-import beastbook.json.BeastBookPersistence;
 import java.io.IOException;
 import java.util.Objects;
 import javafx.event.ActionEvent;
@@ -29,7 +28,7 @@ public class LoginController extends AbstractController {
   @FXML
   private Button loginButton;
 
-  private BeastBookPersistence persistence = new BeastBookPersistence();
+  private User user;
 
   /**
   * Loads home in gui.
@@ -37,8 +36,8 @@ public class LoginController extends AbstractController {
    * @throws IOException if loading home screen fails
   */
   @Override
-  void loadHome() throws IOException {
-    super.loadHome();
+  void loadHome(ActionEvent event, String username) throws IOException {
+    super.loadHome(event, username);
   }
 
   /**
@@ -55,6 +54,7 @@ public class LoginController extends AbstractController {
       try {
         user = new User(userName, password);
         saveUser(user); //Skal lagre bruker som en JSON-fil
+        loginUser(event);
       } catch (Exception e) {
         loginError.setText(e.getMessage());
       }
@@ -81,7 +81,7 @@ public class LoginController extends AbstractController {
       loginError.setText("No Password given!");
       return;
     }
-    User login = getUser(userName);
+    User login = user.loadUser(userName);
     if (Objects.isNull(login)) {
       loginError.setText("No user found");
       return;
@@ -91,7 +91,7 @@ public class LoginController extends AbstractController {
       return;
     }
     user = login;
-    super.loadHome();
+    super.loadHome(event, user.getUserName());
   }
 
   /**
@@ -101,8 +101,7 @@ public class LoginController extends AbstractController {
   */
   private void saveUser(User user) {
     try {
-      persistence.setSaveFilePath(user.getUserName());
-      persistence.saveUser(user);
+      user.saveUser();
     } catch (IOException e) {
       loginError.setText("User was not saved");
     }
@@ -116,8 +115,8 @@ public class LoginController extends AbstractController {
   */
   private User getUser(String userName) {
     try {
-      persistence.setSaveFilePath(userName);
-      User user = persistence.loadUser();
+      User user = new User();
+      user = user.loadUser(userName);
       return user;
     } catch (IOException e) {
       return null;

@@ -1,5 +1,7 @@
 package beastbook.core;
 
+import beastbook.json.BeastBookPersistence;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +14,7 @@ public class User {
   private static final int MIN_CHAR_PASSWORD = 3;
   private String username;
   private String password;
+  private BeastBookPersistence persistence = new BeastBookPersistence();
   private List<Workout> workouts = new ArrayList<Workout>();
   //private List<String> myHistory = new ArrayList<String>(); for later release
 
@@ -83,6 +86,21 @@ public class User {
     workouts.add(workout);
   }
 
+  public void updateWorkout(Workout workout) {
+    for (int i = 0; i < workouts.size(); i++) {
+      if (workouts.get(i).getName().equals(workout.getName())) {
+        workouts.set(i, workout);
+        return;
+      }
+    }
+    throw new IllegalArgumentException("No workout found to update!");
+  }
+
+  /**
+   * Checks if user already har Workout saved.
+   * Throws IllegalArgumentException if workout found.
+   * @param workout The Workout to be checked
+   */
   public void checkWorkout(Workout workout) {
     for (Workout w : getWorkouts()) {
       if (w.getName().equals(workout.getName())) {
@@ -128,5 +146,27 @@ public class User {
    */
   public List<Workout> getWorkouts() {
     return new ArrayList<>(workouts);
+  }
+
+  /**
+   * Saves User object to file using persistance.
+   *
+   * @throws IOException when saveFilePath is wrong.
+   */
+  public void saveUser() throws IOException {
+    persistence.setSaveFilePath(getUserName());
+    persistence.saveUser(this);
+  }
+
+  /**
+   * Loads User object from file using persistance.
+   *
+   * @param name name of user
+   * @return return User object
+   * @throws IOException when saveFilePath is wrong.
+   */
+  public User loadUser(String name) throws IOException {
+    persistence.setSaveFilePath(name);
+    return persistence.loadUser();
   }
 }

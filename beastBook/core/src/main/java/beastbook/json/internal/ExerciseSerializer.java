@@ -14,7 +14,7 @@ public class ExerciseSerializer extends JsonSerializer<Exercise> {
   /**
   * Serializes Exercise from input argument. Serializes Exercise object to JSON-format.
   * Format for Exercise in json:
-  * { exerciseName: "...", repGoal: "...", weight: "...", sets: "...", restTime: "..." }.
+  * { exerciseName: "...", repGoal: "...", weight: "...", sets: "...", restTime: "..." , repsPerSet: "..."}.
   *
   * @param exercise Exercise to serialize.
   * @param jsonGenerator class that writes JSON-file.
@@ -35,14 +35,17 @@ public class ExerciseSerializer extends JsonSerializer<Exercise> {
     if (exercise.getRepGoal() != 0) {
       jsonGenerator.writeStringField("repGoal", exercise.getRepGoal() + "");
     }
-    if (exercise.getRepGoal() != 0) {
+    if (exercise.getWeight() != 0) {
       jsonGenerator.writeStringField("weight", exercise.getWeight() + "");
     }
-    if (exercise.getRepGoal() != 0) {
+    if (exercise.getSets() != 0) {
       jsonGenerator.writeStringField("sets", exercise.getSets() + "");
     }
-    if (exercise.getRepGoal() != 0) {
+    if (exercise.getRestTime() != 0) {
       jsonGenerator.writeStringField("restTime", exercise.getRestTime() + "");
+    }
+    if (exercise.getRepsPerSet() != 0) {
+      jsonGenerator.writeStringField("repsPerGoal", exercise.getRepsPerSet() + "");
     }
     jsonGenerator.writeEndObject();
   }

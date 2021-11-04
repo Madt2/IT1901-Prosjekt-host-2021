@@ -2,18 +2,24 @@ package beastbook.fxui;
 
 import beastbook.core.User;
 import beastbook.core.Workout;
-import beastbook.json.BeastBookPersistence;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
+
 
 
 /**
@@ -37,12 +43,10 @@ public class WorkoutOverviewController extends AbstractController {
 
   @FXML
   private TableView<Workout> workoutOverview = new TableView<Workout>();
-
   private TableColumn<Workout, String> workoutNameColumn;
-  private List<Workout> allWorkouts = new ArrayList<>();
-  public static Workout clickedWorkout = new Workout();  
-  private Workout workout = new Workout();
-  private BeastBookPersistence persistence = new BeastBookPersistence();
+  //private Workout workout = new Workout();
+  private String selectedWorkoutName;
+  private User user;
 
   public void initialize() {
     loadTable();
@@ -104,17 +108,12 @@ public class WorkoutOverviewController extends AbstractController {
   }
 
   @Override
-  void loadHome() throws IOException {
-    super.loadHome();
-  }
-
-  @Override
-  void loadLogin() throws IOException {
-    super.loadLogin();
+  void loadHome(ActionEvent event, String username) throws IOException {
+    super.loadHome(event, user.getUserName());
   }
 
   @FXML
-  void loadWorkout() throws IOException {
+  void loadWorkout(ActionEvent event) throws IOException {
     try {
       exceptionFeedback.setText("");
       WorkoutController workoutController = new WorkoutController();
@@ -139,8 +138,7 @@ public class WorkoutOverviewController extends AbstractController {
     user.removeWorkout(workout);
     loadTable();
     exceptionFeedback.setText("Workout deleted!");
-    persistence.setSaveFilePath(user.getUserName());
-    persistence.saveUser(user);
+    user.saveUser();
     openButton.setDisable(true);
     deleteButton.setDisable(true);
   }

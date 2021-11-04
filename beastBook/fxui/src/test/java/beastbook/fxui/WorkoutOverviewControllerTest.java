@@ -28,7 +28,7 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
     FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/beastbook.fxui/WorkoutOverview.fxml"));
     woc = new WorkoutOverviewController();
     loader.setController(woc);
-    woc.setUser(user);
+    woc.setUser(user.getUserName());
     user.setUserName("test");
     addWorkoutsToUser();
     final Parent root = loader.load();
@@ -36,9 +36,9 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
     stage.show();
   }
   @Test
-  void testOpenWorkout() throws InterruptedException {
+  void testOpenWorkout() throws InterruptedException, IOException {
     WorkoutController wc = new WorkoutController();
-    wc.setUser(user);
+    wc.setUser(user.getUserName());
     woc.getWorkoutOverview().getColumns().get(0).setId("workoutName");
     Node node = lookup("#workoutName").nth(1).query();
     clickOn(node);

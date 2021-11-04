@@ -2,9 +2,8 @@ package beastbook.fxui;
 
 import beastbook.core.Exercise;
 import beastbook.core.User;
-import beastbook.core.Workout;
-import beastbook.json.BeastBookPersistence;
 import java.io.IOException;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -39,25 +38,17 @@ public class WorkoutController extends AbstractController {
   private TableColumn<Exercise, Integer> setsColumn;
   private TableColumn<Exercise, Integer> repsPerSetColumn;
   private TableColumn<Exercise, Integer> restTimeColumn;
-  private Workout workout = new Workout();
   public static final String WRONG_INPUT_BORDER_COLOR =
         "-fx-text-box-border: #B22222;"
         + "-fx-focus-color: #B22222";
   public static final String CORRECT_INPUT_BORDER_COLOR = "";
-  BeastBookPersistence persistence = new BeastBookPersistence();
+  private String workoutName;
+  private User user;
 
   @FXML
   public void initialize() {
     updateTable();
     title.setText(workout.getName());
-  }
-
-  public void setWorkout(Workout workout) {
-    this.workout = workout;
-  }
-    
-  public Workout getWorkout() {
-    return this.workout;
   }
 
   /**
@@ -123,7 +114,7 @@ public class WorkoutController extends AbstractController {
       try {
         Exercise exercise = event.getRowValue();
         exercise.setExerciseName(event.getNewValue());
-        saveUserState();
+        user.saveUser();
         emptyExceptionFeedback();
       } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
@@ -154,7 +145,9 @@ public class WorkoutController extends AbstractController {
         if (javaFxTag.equals(restTimeColumn)) {
           exercise.setRestTime(event.getNewValue());
         }
-        saveUserState();
+        user.getWorkout(workoutName).updateExercise(exercise);
+        user.updateWorkout(user.getWorkout(workoutName));
+        user.saveUser();
         emptyExceptionFeedback();
       } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
@@ -174,7 +167,7 @@ public class WorkoutController extends AbstractController {
       try {
         Exercise exercise = event.getRowValue();
         exercise.setWeight(event.getNewValue());
-        saveUserState();
+        user.saveUser();
         emptyExceptionFeedback();
       } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
@@ -218,25 +211,16 @@ public class WorkoutController extends AbstractController {
   }
 
   @Override
-  void loadLogin() throws IOException {
-    super.loadLogin();
+  void loadOverview(ActionEvent event, String username) throws IOException {
+    super.loadOverview(event, user.getUserName());
   }
 
-  @Override
-  void loadOverview() throws IOException {
-    super.loadOverview();
+  void setUser(String username) throws IOException {
+    this.user = user.loadUser(username);
   }
 
-  void setUser(User user) {
-    this.user = user;
-  }
-
-  /**
-  * Updates the exercises/workouts for a user in file format.
-  */
-  private void saveUserState() throws IOException {
-    persistence.setSaveFilePath(user.getUserName());
-    persistence.saveUser(user);
+  void setWorkoutName(String workoutName) {
+    this.workoutName = workoutName;
   }
 
   // SOURCE for the following two static classes: 

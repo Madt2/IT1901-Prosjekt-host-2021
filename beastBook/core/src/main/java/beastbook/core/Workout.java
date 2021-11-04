@@ -58,6 +58,17 @@ public class Workout {
     exercises.add(exercise);
   }
 
+  public void updateExercise(Exercise exercise) {
+    for (Exercise e : exercises) {
+      if (e.getExerciseName().equals(exercise.getExerciseName())) {
+        int i = exercises.indexOf(e);
+        exercises.set(i, exercise);
+        return;
+      }
+    }
+    throw new IllegalArgumentException("No exercise found!");
+  }
+
   /**
    * Removed exercise object from exercises List.
    *
