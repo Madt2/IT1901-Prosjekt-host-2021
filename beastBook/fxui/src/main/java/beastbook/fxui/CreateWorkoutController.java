@@ -362,21 +362,17 @@ public class CreateWorkoutController extends AbstractController {
 
   @FXML
   void deleteExercise() throws IllegalStateException, IOException {
-    Workout del = user.getWorkout(workout.getName());
-    if (del.getExercises().size() <= 1) {
-      exceptionFeedback.setText("Could not delete exercise '" + selectedExercise.getExerciseName() 
-          + "', at least one exercise has to be in every workout!");
-    } else {
-      del.removeExercise(selectedExercise);
-      workout.removeExercise(selectedExercise);
-      exceptionFeedback.setText(
-            "The exercise '" + selectedExercise.getExerciseName() + "' was deleted!"
-      );
-      updateTable();
-      user.saveUser();
-      deleteButton.setDisable(true);
-    }
+    Workout del = user.getWorkout("init") != null
+        ? user.getWorkout("init")
+        : user.getWorkout(titleInput.getText());
+    Exercise selectedExercise = workoutTable.getSelectionModel().getSelectedItem();
+    del.removeExercise(selectedExercise);
+    exceptionFeedback.setText("The exercise '" + selectedExercise.getExerciseName() + "' was deleted!");
+    updateTable(del.getName());
+    user.saveUser();
+    deleteButton.setDisable(true);
   }
+
 
   TextField getWeightInput() {
     return this.weigthInput;
