@@ -17,19 +17,16 @@ import javafx.stage.Stage;
  * Used for loading scenes.
  */
 public abstract class AbstractController {
-  @FXML
-  protected AnchorPane rootPane;
+  protected User user;
 
-  private User user;
-    
   @FXML
-  void loadHome(ActionEvent event, String username) throws IOException {
+  void loadHome(ActionEvent event) throws IOException {
     HomeScreenController homeScreenController = new HomeScreenController();
     FXMLLoader fxmlLoader = new FXMLLoader(
         this.getClass().getResource("/beastbook.fxui/HomeScreen.fxml")
     );
     fxmlLoader.setController(homeScreenController);
-    homeScreenController.setUser(username);
+    homeScreenController.setUser(user);
     Parent root = fxmlLoader.load();
     Scene scene = new Scene(root, 600, 500);
     Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
@@ -50,13 +47,13 @@ public abstract class AbstractController {
   }
 
   @FXML
-  void loadCreate(ActionEvent event, String username) throws IOException {
+  void loadCreate(ActionEvent event) throws IOException {
     CreateWorkoutController createController = new CreateWorkoutController();
     FXMLLoader fxmlLoader = new FXMLLoader(
             this.getClass().getResource("/beastbook.fxui/Create.fxml")
     );
     fxmlLoader.setController(createController);
-    createController.setUser(username);
+    createController.setUser(user);
     Parent root = fxmlLoader.load();
     Scene scene = new Scene(root, 600, 500);
     Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
@@ -64,44 +61,17 @@ public abstract class AbstractController {
   }
 
   @FXML
-  void loadHistory(ActionEvent event, String username) throws IOException {
-    HistoryController historyController = new HistoryController();
-    FXMLLoader fxmlLoader = new FXMLLoader(
-            this.getClass().getResource("/beastbook.fxui/History.fxml")
-    );
-    fxmlLoader.setController(historyController);
-    historyController.setUser(username);
-    Parent root = fxmlLoader.load();
-    Scene scene = new Scene(root, 600, 500);
-    Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-    stage.setScene(scene);
-  }
-
-  @FXML
-  void loadWorkouts(ActionEvent event, String username) throws IOException {
-    WorkoutController workoutController = new WorkoutController();
-    FXMLLoader fxmlLoader = new FXMLLoader(
-            this.getClass().getResource("/beastbook.fxui/Workout.fxml")
-    );
-    fxmlLoader.setController(workoutController);
-    workoutController.setUser(username);
-    Parent root = fxmlLoader.load();
-    Scene scene = new Scene(root, 600, 500);
-    Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
-    stage.setScene(scene);
-  }
-
-  @FXML
-  void loadOverview(ActionEvent event, String username) throws IOException {
+  void loadOverview(ActionEvent event) throws IOException {
     WorkoutOverviewController workoutOverviewController = new WorkoutOverviewController();
     FXMLLoader fxmlLoader = new FXMLLoader(
             this.getClass().getResource("/beastbook.fxui/WorkoutOverview.fxml")
     );
     fxmlLoader.setController(workoutOverviewController);
-    workoutOverviewController.setUser(username);
+    workoutOverviewController.setUser(user);
     Parent root = fxmlLoader.load();
     Scene scene = new Scene(root, 600, 500);
     Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
     stage.setScene(scene);
   }
+
 }

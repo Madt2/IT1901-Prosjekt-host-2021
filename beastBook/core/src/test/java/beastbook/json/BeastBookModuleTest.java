@@ -75,8 +75,8 @@ public class BeastBookModuleTest {
   public void testSerializers() {
     User user = new User("Test", "password");
     Workout workout = new Workout("Legday");
-    Exercise squat = new Exercise("Squat", 25, 100, 5, 90);
-    Exercise legPress = new Exercise("LegPress", 30, 250, 3, 60);
+    Exercise squat = new Exercise("Squat", 25, 100, 5, 0, 90);
+    Exercise legPress = new Exercise("LegPress", 30, 250, 3,0, 60);
     workout.addExercise(squat);
     workout.addExercise(legPress);
     user.addWorkout(workout);
@@ -96,8 +96,8 @@ public class BeastBookModuleTest {
       assertTrue(user.getWorkouts().size() == 1);
 
       List<Exercise> testList = new ArrayList<>();
-      Exercise squat = new Exercise("Squat", 25, 100, 5, 90);
-      Exercise legPress = new Exercise("LegPress", 30, 250, 3, 60);
+      Exercise squat = new Exercise("Squat", 25, 100, 5, 0, 90);
+      Exercise legPress = new Exercise("LegPress", 30, 250, 3, 0, 60);
       testList.add(squat);
       testList.add(legPress);
 
@@ -115,8 +115,8 @@ public class BeastBookModuleTest {
   public void testSerializersDeserializers() {
     User user = new User("Test", "password");
     Workout workout = new Workout("Legday");
-    Exercise squat = new Exercise("Squat", 25, 100, 5, 90);
-    Exercise legPress = new Exercise("LegPress", 30, 250, 3, 60);
+    Exercise squat = new Exercise("Squat", 25, 100, 5, 0, 90);
+    Exercise legPress = new Exercise("LegPress", 30, 250, 3, 0, 60);
     workout.addExercise(squat);
     workout.addExercise(legPress);
     user.addWorkout(workout);

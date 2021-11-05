@@ -41,10 +41,10 @@ public class WorkoutController extends AbstractController {
         + "-fx-focus-color: #B22222";
   public static final String CORRECT_INPUT_BORDER_COLOR = "";
   private String workoutName;
-  private User user;
 
   @FXML
-  public void initialize() {
+  public void initialize() throws IOException {
+    user = user.loadUser(user.getUserName());
     updateTable();
     title.setText(workoutName);
   }
@@ -208,12 +208,12 @@ public class WorkoutController extends AbstractController {
   }
 
   @Override
-  void loadOverview(ActionEvent event, String username) throws IOException {
-    super.loadOverview(event, user.getUserName());
+  void loadOverview(ActionEvent event) throws IOException {
+    super.loadOverview(event);
   }
 
-  void setUser(String username) throws IOException {
-    this.user = user.loadUser(username);
+  void setUser(User user) {
+    this.user = user;
   }
 
   void setWorkoutName(String workoutName) {

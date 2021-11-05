@@ -3,9 +3,6 @@ package beastbook.fxui;
 import beastbook.core.User;
 import beastbook.core.Workout;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -19,8 +16,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
-
 
 /**
  * Controller for the WorkoutOverview screen.
@@ -46,9 +41,9 @@ public class WorkoutOverviewController extends AbstractController {
   private TableColumn<Workout, String> workoutNameColumn;
   //private Workout workout = new Workout();
   private String selectedWorkoutName;
-  private User user;
 
-  public void initialize() {
+  public void initialize() throws IOException {
+    user = user.loadUser(user.getUserName());
     loadTable();
   } 
     
@@ -82,8 +77,8 @@ public class WorkoutOverviewController extends AbstractController {
     return selectedWorkoutName;
   }
 
-  void setUser(String username) throws IOException {
-    this.user = user.loadUser(username);
+  void setUser(User user) {
+    this.user = user;
   }
 
   TableView<Workout> getWorkoutOverview() {
@@ -95,8 +90,8 @@ public class WorkoutOverviewController extends AbstractController {
   }
 
   @Override
-  void loadHome(ActionEvent event, String username) throws IOException {
-    super.loadHome(event, user.getUserName());
+  void loadHome(ActionEvent event) throws IOException {
+    super.loadHome(event);
   }
 
   @FXML
@@ -108,7 +103,7 @@ public class WorkoutOverviewController extends AbstractController {
               this.getClass().getResource("/beastbook.fxui/Workout.fxml")
       );
       fxmlLoader.setController(workoutController);
-      workoutController.setUser(user.getUserName());
+      workoutController.setUser(user);
       workoutController.setWorkoutName(getWorkoutName());
       Parent root = fxmlLoader.load();
       Scene scene = new Scene(root, 600, 500);

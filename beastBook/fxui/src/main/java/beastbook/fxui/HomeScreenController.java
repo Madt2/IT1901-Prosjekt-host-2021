@@ -21,24 +21,14 @@ public class HomeScreenController extends AbstractController {
   @FXML
   private Button workoutsButton;
 
-  @FXML
-  private Button historyButton;
-
-  private User user;
-
   @Override
-  void loadHistory(ActionEvent event, String username) throws IOException {
-    super.loadHistory(event, user.getUserName());
+  void loadCreate(ActionEvent event) throws IOException {
+    super.loadCreate(event);
   }
 
   @Override
-  void loadCreate(ActionEvent event, String username) throws IOException {
-    super.loadCreate(event, user.getUserName());
-  }
-
-  @Override
-  void loadOverview(ActionEvent event, String username) throws IOException {
-    super.loadOverview(event, user.getUserName());
+  void loadOverview(ActionEvent event) throws IOException {
+    super.loadOverview(event);
   }
 
   @Override
@@ -46,8 +36,8 @@ public class HomeScreenController extends AbstractController {
     super.loadLogin(event);
   }
 
-  public void setUser(String username) throws IOException {
-    this.user = user.loadUser(username);
+  void setUser(User user) {
+    this.user = user;
   }
 }
 

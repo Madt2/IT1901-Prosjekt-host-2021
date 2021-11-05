@@ -28,16 +28,14 @@ public class LoginController extends AbstractController {
   @FXML
   private Button loginButton;
 
-  private User user;
-
   /**
   * Loads home in gui.
   *
    * @throws IOException if loading home screen fails
   */
   @Override
-  void loadHome(ActionEvent event, String username) throws IOException {
-    super.loadHome(event, username);
+  void loadHome(ActionEvent event) throws IOException {
+    super.loadHome(event);
   }
 
   /**
@@ -73,25 +71,31 @@ public class LoginController extends AbstractController {
   void loginUser(ActionEvent event) throws IllegalArgumentException, IOException {
     String userName = usernameInput.getText();
     String password = passwordInput.getText();
+    user = new User("user", "user");
+    try {
+      validateLogin(userName, password);
+      User login = user.loadUser(userName);
+      user = login;
+      super.loadHome(event);
+    } catch (IllegalArgumentException e) {
+      loginError.setText(e.getMessage());
+    }
+  }
+
+  private void validateLogin(String userName, String password) throws IOException, IllegalArgumentException {
     if (userName.equals("")) {
-      loginError.setText("No username given");
-      return;
+      throw new IllegalArgumentException("No username given");
     }
     if (password.equals("")) {
-      loginError.setText("No Password given!");
-      return;
+      throw new IllegalArgumentException("No Password given!");
     }
     User login = user.loadUser(userName);
     if (Objects.isNull(login)) {
-      loginError.setText("No user found");
-      return;
+      throw new IllegalArgumentException("No user found");
     }
     if (!login.getPassword().equals(password)) {
-      loginError.setText("Wrong Password");
-      return;
+      throw new IllegalArgumentException("Wrong Password");
     }
-    user = login;
-    super.loadHome(event, user.getUserName());
   }
 
   /**

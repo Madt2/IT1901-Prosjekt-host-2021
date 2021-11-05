@@ -53,12 +53,15 @@ public class ExerciseDeserializer extends JsonDeserializer<Exercise> {
       }
       JsonNode weightNode = objectNode.get("weight");
       if (weightNode instanceof TextNode) {
-
         exercise.setWeight(weightNode.asDouble());
       }
       JsonNode setsNode = objectNode.get("sets");
       if (setsNode instanceof TextNode) {
         exercise.setSets(setsNode.asInt());
+      }
+      JsonNode repsPerSetNode = objectNode.get("repsPerSet");
+      if (repsPerSetNode instanceof TextNode) {
+        exercise.setRepsPerSet(repsPerSetNode.asInt());
       }
       JsonNode restTimeNode = objectNode.get("restTime");
       if (restTimeNode instanceof TextNode) {

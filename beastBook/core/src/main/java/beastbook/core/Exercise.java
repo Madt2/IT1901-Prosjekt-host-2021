@@ -5,9 +5,9 @@ package beastbook.core;
  * weight used, amount of sets, reps per set and rest time for exercise.
  */
 public class Exercise {
-  public final int maxStringLength = 50;
-  public final int maxIntLength = 5;
-  public final int maxDoubleLength = 7;
+  public static final int maxStringLength = 50;
+  public static final int maxIntLength = 5;
+  public static final int maxDoubleLength = 7;
   private String exerciseName;
   private int repGoal;
   private double weight;
@@ -24,11 +24,13 @@ public class Exercise {
   * @param sets Number of sets to be performed
   * @param restTime How much rest between sets in seconds
   */
-  public Exercise(String exerciseName, int repGoal, double weight, int sets, int restTime) {
+
+  public Exercise(String exerciseName, int repGoal, double weight, int sets, int repsPerSet, int restTime) {
     setExerciseName(exerciseName);
     setRepGoal(repGoal);
     setWeight(weight);
     setSets(sets);
+    setRepsPerSet(repsPerSet);
     setRestTime(restTime);
   }
 
@@ -40,7 +42,7 @@ public class Exercise {
   /**
   * Checks if name is valid, valid is not blank.
   *
-  * @param name Name of the exercise
+  * @param exerciseName Name of the exercise
   */
   private void validateExerciseName(String exerciseName) {
     boolean isTooLong = exerciseName.length() >= maxStringLength;
@@ -185,7 +187,7 @@ public class Exercise {
   }
 
   public void setRepsPerSet(int repsPerSet) {
-    validateRepsPerSet(repsPerSet);
+/*    validateRepsPerSet(repsPerSet);*/
     this.repsPerSet = repsPerSet;
   }
 
@@ -205,6 +207,6 @@ public class Exercise {
   */
   @Override
   public String toString() {
-    return exerciseName + "," + repGoal + "," + weight + "," + sets + "," + restTime;
+    return exerciseName + "," + repGoal + "," + weight + "," + sets + "," +repsPerSet + "," + restTime;
   }
 }

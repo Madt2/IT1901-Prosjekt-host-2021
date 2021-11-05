@@ -10,7 +10,7 @@ public class WorkoutTest {
   @BeforeEach
   void setup() {
     testWorkout = new Workout("testWorkout");
-    exercise1 = new Exercise("test1", 1, 1, 1, 1);
+    exercise1 = new Exercise("test1", 1, 1, 1, 0,1);
   }
 
   @AfterEach

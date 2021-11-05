@@ -28,7 +28,7 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
     FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/beastbook.fxui/WorkoutOverview.fxml"));
     woc = new WorkoutOverviewController();
     loader.setController(woc);
-    woc.setUser(user.getUserName());
+    woc.setUser(user);
     user.setUserName("test");
     addWorkoutsToUser();
     final Parent root = loader.load();
@@ -38,7 +38,7 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
   @Test
   void testOpenWorkout() throws InterruptedException, IOException {
     WorkoutController wc = new WorkoutController();
-    wc.setUser(user.getUserName());
+    wc.setUser(user);
     woc.getWorkoutOverview().getColumns().get(0).setId("workoutName");
     Node node = lookup("#workoutName").nth(1).query();
     clickOn(node);
@@ -66,10 +66,10 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
   private void addWorkoutsToUser() {
     Workout workout1 = new Workout("Pull workout");
     Workout workout2 = new Workout("LEGS");
-    workout1.addExercise(new Exercise("Benchpress", 20, 30, 40, 50));
-    workout1.addExercise(new Exercise("Leg press", 25, 50, 75, 100));
-    workout1.addExercise(new Exercise("Deadlift", 20, 20, 20, 20));
-    workout1.addExercise(new Exercise("Biceps curl", 20, 20, 20, 20));
+    workout1.addExercise(new Exercise("Benchpress", 20, 30, 40, 0, 50));
+    workout1.addExercise(new Exercise("Leg press", 25, 50, 75, 0,  100));
+    workout1.addExercise(new Exercise("Deadlift", 20, 20, 20, 0, 20));
+    workout1.addExercise(new Exercise("Biceps curl", 20, 20, 20, 0, 20));
     user.addWorkout(workout1);
     user.addWorkout(workout2);
   }

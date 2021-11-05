@@ -12,7 +12,7 @@ public class UserTest {
   void setup() {
     testUser = new User("Test", "Test");
     testWorkout = new Workout("testWorkout");
-    testWorkout.addExercise(new Exercise("test1", 1, 1, 1, 1));
+    testWorkout.addExercise(new Exercise("test1", 1, 1, 1, 0, 1));
   }
 
   @Test
