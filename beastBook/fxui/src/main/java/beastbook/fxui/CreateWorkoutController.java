@@ -198,13 +198,16 @@ public class CreateWorkoutController extends AbstractController {
   void addExercise() {
     if (exceptionFeedback.getText().equals("") && !checkForEmptyInputFields()) {
       try {
-        if (workout == null) {
-          workout = new Workout(titleInput.getText());
-        }
+        Workout workout;
         int repGoal;
         double weight;
         int sets;
         int rest;
+
+        workout = user.getWorkout("init") != null
+                ? user.getWorkout("init")
+                : user.getWorkout(titleInput.getText());
+
         try {
           repGoal = Integer.parseInt(repGoalInput.getText());
         } catch (NumberFormatException a) {
@@ -338,7 +341,6 @@ public class CreateWorkoutController extends AbstractController {
         exceptionFeedback.setText("Workout saved!");
         emptyInputFields();
         titleInput.setText("");
-        workout = new Workout();
         createButton.setDisable(true);
         user.addWorkout(new Workout("init"));
         updateTable("init");
