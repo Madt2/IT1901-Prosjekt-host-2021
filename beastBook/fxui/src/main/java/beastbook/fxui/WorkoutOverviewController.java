@@ -61,13 +61,15 @@ public class WorkoutOverviewController extends AbstractController {
   }
 
   @FXML
-  private void workoutSelectedListener() throws IOException {
-    selectedWorkoutName = workoutOverview.getSelectionModel().getSelectedItem().getName();
-    if (selectedWorkoutName != null) {
-      exceptionFeedback.setText("");
-      openButton.setDisable(false);
-      deleteButton.setDisable(false);
-    } else {
+  private void workoutSelectedListener() throws Exception {
+    try {
+      selectedWorkoutName = workoutOverview.getSelectionModel().getSelectedItem().getName();
+      if (selectedWorkoutName != null) {
+        exceptionFeedback.setText("");
+        openButton.setDisable(false);
+        deleteButton.setDisable(false);
+      }
+    } catch (Exception e) {
       openButton.setDisable(true);
       deleteButton.setDisable(true);
     }
@@ -107,7 +109,7 @@ public class WorkoutOverviewController extends AbstractController {
       workoutController.setWorkoutName(getWorkoutName());
       Parent root = fxmlLoader.load();
       Scene scene = new Scene(root, 600, 500);
-      Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+      Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
       stage.setScene(scene);
     } catch (Exception e) {
       openButton.setDisable(true);

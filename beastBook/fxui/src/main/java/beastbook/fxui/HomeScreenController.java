@@ -2,7 +2,6 @@ package beastbook.fxui;
 
 import beastbook.core.User;
 import java.io.IOException;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;

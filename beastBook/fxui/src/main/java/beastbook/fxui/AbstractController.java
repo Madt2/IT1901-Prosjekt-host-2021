@@ -2,14 +2,12 @@ package beastbook.fxui;
 
 import beastbook.core.User;
 import java.io.IOException;
-
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.AnchorPane;
 import javafx.stage.Stage;
 
 /**
@@ -29,7 +27,7 @@ public abstract class AbstractController {
     homeScreenController.setUser(user);
     Parent root = fxmlLoader.load();
     Scene scene = new Scene(root, 600, 500);
-    Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
     stage.setScene(scene);
   }
 
@@ -42,7 +40,7 @@ public abstract class AbstractController {
     fxmlLoader.setController(loginController);
     Parent root = fxmlLoader.load();
     Scene scene = new Scene(root, 600, 500);
-    Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
     stage.setScene(scene);
   }
 
@@ -56,7 +54,7 @@ public abstract class AbstractController {
     createController.setUser(user);
     Parent root = fxmlLoader.load();
     Scene scene = new Scene(root, 600, 500);
-    Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
     stage.setScene(scene);
   }
 
@@ -70,7 +68,7 @@ public abstract class AbstractController {
     workoutOverviewController.setUser(user);
     Parent root = fxmlLoader.load();
     Scene scene = new Scene(root, 600, 500);
-    Stage stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
     stage.setScene(scene);
   }
 

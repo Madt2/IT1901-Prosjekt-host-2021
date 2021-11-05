@@ -98,6 +98,7 @@ public class User {
   /**
    * Checks if user already har Workout saved.
    * Throws IllegalArgumentException if workout found.
+   * 
    * @param workout The Workout to be checked
    */
   public void checkWorkout(Workout workout) {

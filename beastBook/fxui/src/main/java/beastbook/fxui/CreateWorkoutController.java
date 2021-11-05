@@ -73,7 +73,7 @@ public class CreateWorkoutController extends AbstractController {
   @FXML
   private Text restTimeTitle;
 
-/*  private Workout workout = new Workout();
+  /*private Workout workout = new Workout();
   private Exercise exercise = new Exercise();
   private Exercise selectedExercise = new Exercise();*/
   private TableColumn<Exercise, String> exerciseNameColumn;
@@ -369,7 +369,8 @@ public class CreateWorkoutController extends AbstractController {
         : user.getWorkout(titleInput.getText());
     Exercise selectedExercise = workoutTable.getSelectionModel().getSelectedItem();
     del.removeExercise(selectedExercise);
-    exceptionFeedback.setText("The exercise '" + selectedExercise.getExerciseName() + "' was deleted!");
+    exceptionFeedback.setText("The exercise '" 
+    + selectedExercise.getExerciseName() + "' was deleted!");
     updateTable(del.getName());
     user.saveUser();
     deleteButton.setDisable(true);

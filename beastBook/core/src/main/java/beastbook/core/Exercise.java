@@ -142,7 +142,8 @@ public class Exercise {
     }
     boolean isTooLong = String.valueOf(restTime).length() >= maxIntLength;
     if (isTooLong) {
-      throw new IllegalArgumentException("Rest Time can not be longer than " + maxIntLength + " characters!");
+      throw new IllegalArgumentException("Rest Time can not be longer than " 
+      + maxIntLength + " characters!");
     }
   }
   
@@ -187,7 +188,7 @@ public class Exercise {
   }
 
   public void setRepsPerSet(int repsPerSet) {
-/*    validateRepsPerSet(repsPerSet);*/
+    /*    validateRepsPerSet(repsPerSet);*/
     this.repsPerSet = repsPerSet;
   }
 
@@ -207,6 +208,7 @@ public class Exercise {
   */
   @Override
   public String toString() {
-    return exerciseName + "," + repGoal + "," + weight + "," + sets + "," +repsPerSet + "," + restTime;
+    return exerciseName + "," + repGoal + "," + weight 
+      + "," + sets + "," + repsPerSet + "," + restTime;
   }
 }
