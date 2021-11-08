@@ -37,7 +37,7 @@ public class BeastBookModuleTest {
                                       "repGoal": "25",
                                       "weight": "100.0",
                                       "sets": "5",
-                                      "repsPerSet":"0",
+                                      "repsPerSet": "0",
                                       "restTime": "90"
                                     },
                                     {
@@ -45,7 +45,7 @@ public class BeastBookModuleTest {
                                       "repGoal": "30",
                                       "weight": "250.0",
                                       "sets": "3",
-                                      "repsPerSet":"0",
+                                      "repsPerSet": "0",
                                       "restTime": "60"
                                     }
                                   ]
@@ -61,6 +61,7 @@ public class BeastBookModuleTest {
       assertEquals(exercises.get(i).getRepGoal(), workout.getExercises().get(i).getRepGoal());
       assertEquals(exercises.get(i).getWeight(), workout.getExercises().get(i).getWeight());
       assertEquals(exercises.get(i).getSets(), workout.getExercises().get(i).getSets());
+      assertEquals(exercises.get(i).getRepsPerSet(), workout.getExercises().get(i).getRepsPerSet());
       assertEquals(exercises.get(i).getRestTime(), workout.getExercises().get(i).getRestTime());
       }
   }
@@ -135,7 +136,7 @@ public class BeastBookModuleTest {
 
       checkWorkout(user2.getWorkouts().get(0), "Legday", testList);
 
-      checkExercise(user2.getWorkouts().get(0).getExercises().get(0), "Squat", 25, 100, 5, 0, 90);
+      checkExercise(user2.getWorkouts().get(0).getExercises().get(0), "Squat", 25, 100, 5, 0,90);
       checkExercise(user2.getWorkouts().get(0).getExercises().get(1), "LegPress", 30, 250, 3, 0, 60);
     } catch (JsonProcessingException e) {
       fail();

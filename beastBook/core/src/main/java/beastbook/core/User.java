@@ -120,7 +120,7 @@ public class User {
   public void removeWorkout(Workout workout) {
     if (!workouts.contains(workout)) {
       throw new IllegalArgumentException("User does not have workout " + workout + " saved!");
-    }  
+    }
     workouts.remove(workout);
   }
 

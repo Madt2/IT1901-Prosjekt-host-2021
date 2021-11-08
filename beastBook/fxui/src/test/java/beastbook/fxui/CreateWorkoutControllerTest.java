@@ -162,8 +162,7 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
     
   @Test
   void testWorkoutIsNotLoaded(){   
-    user.removeWorkout(workout);  
-
+    user.removeWorkout(workout);
     clickOn("#titleInput", MouseButton.PRIMARY).write("testWorkout");
     clickOn("#loadButton", MouseButton.PRIMARY);
 

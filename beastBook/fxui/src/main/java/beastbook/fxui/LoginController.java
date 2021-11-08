@@ -51,7 +51,7 @@ public class LoginController extends AbstractController {
     if (!userName.equals("") && !password.equals("")) {
       try {
         user = new User(userName, password);
-        saveUser(user); //Skal lagre bruker som en JSON-fil
+        user.saveUser(); //Skal lagre bruker som en JSON-fil
         loginUser(event);
       } catch (Exception e) {
         loginError.setText(e.getMessage());
@@ -77,7 +77,7 @@ public class LoginController extends AbstractController {
       User login = user.loadUser(userName);
       user = login;
       super.loadHome(event);
-    } catch (IllegalArgumentException e) {
+    } catch (Exception e) {
       loginError.setText(e.getMessage());
     }
   }
@@ -89,41 +89,15 @@ public class LoginController extends AbstractController {
     if (password.equals("")) {
       throw new IllegalArgumentException("No Password given!");
     }
-    User login = user.loadUser(userName);
-    if (Objects.isNull(login)) {
-      throw new IllegalArgumentException("No user found");
-    }
-    if (!login.getPassword().equals(password)) {
-      throw new IllegalArgumentException("Wrong Password");
-    }
-  }
-
-  /**
-  * Help method for registerUser. Uses persistence to save.
-  *
-  * @param user user to save.
-  */
-  private void saveUser(User user) {
     try {
-      user.saveUser();
+      User login = user.loadUser(userName);
+      if (!login.getPassword().equals(password)) {
+        throw new IllegalArgumentException("Wrong Password");
+      }
     } catch (IOException e) {
-      loginError.setText("User was not saved");
-    }
-  }
-
-  /**
-  * Help method for loadUser. Uses persistence to load user.
-  *
-  * @param userName username for user to get.
-  * @return user if user found. null if no user found.
-  */
-  private User getUser(String userName) {
-    try {
-      User user = new User();
-      user = user.loadUser(userName);
-      return user;
-    } catch (IOException e) {
-      return null;
+      throw new IOException("No user found!");
+    } catch (IllegalArgumentException e) {
+      throw e;
     }
   }
 }

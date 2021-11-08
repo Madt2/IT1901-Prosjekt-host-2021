@@ -30,6 +30,7 @@ public class WorkoutControllerTest extends ApplicationTest{
     final FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/beastbook.fxui/Workout.fxml"));
     loader.setController(wc);
     wc.setUser(user);
+    wc.setWorkoutName("Pull workout");
     addWorkoutsToUser();
     user.saveUser();
     final Parent root = loader.load();
@@ -45,9 +46,8 @@ public class WorkoutControllerTest extends ApplicationTest{
     doubleClickOn(node, MouseButton.PRIMARY).write("Biceps curl");
     press(KeyCode.ENTER).release(KeyCode.ENTER);
     Assertions.assertNotEquals("Benchpress", wc.getWorkoutTable().getSelectionModel().getSelectedItem().getExerciseName());
-
-    Assertions.assertEquals("Biceps curl", user.getWorkout("Pull workout").getExercises().get(0).getExerciseName());
     Assertions.assertEquals("Biceps curl", wc.getWorkoutTable().getSelectionModel().getSelectedItem().getExerciseName());
+    Assertions.assertEquals("Biceps curl", user.getWorkout("Pull workout").getExercises().get(0).getExerciseName());
   }
 
   @Test
@@ -56,7 +56,6 @@ public class WorkoutControllerTest extends ApplicationTest{
     Node node = lookup("#repGoal").nth(1).query();
     doubleClickOn(node, MouseButton.PRIMARY).write("-50");
     press(KeyCode.ENTER).release(KeyCode.ENTER);
-    
     Assertions.assertNotEquals(-50, wc.getWorkoutTable().getSelectionModel().getSelectedItem().getRepGoal());
     Assertions.assertNotEquals(-50, user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Rep Goal must be more than 0! Value was not changed!"));

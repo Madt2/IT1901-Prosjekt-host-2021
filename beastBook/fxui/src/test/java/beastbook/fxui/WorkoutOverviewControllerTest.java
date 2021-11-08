@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import org.testfx.api.FxAssert;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.matcher.control.TextMatchers;
-
 import java.io.File;
 import java.io.IOException;
 
@@ -34,10 +33,14 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
     stage.setScene(new Scene(root));
     stage.show();
   }
+
+  @BeforeEach
+  void setup(){
+    woc.setUser(user);
+  }
+
   @Test
-  void testOpenWorkout() throws InterruptedException, IOException {
-    WorkoutController wc = new WorkoutController();
-    wc.setUser(user);
+  void testOpenWorkout() {
     woc.getWorkoutOverview().getColumns().get(0).setId("workoutName");
     Node node = lookup("#workoutName").nth(1).query();
     clickOn(node);
@@ -47,10 +50,9 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
   }
 
   @Test
-  void testDeleteWorkout() throws InterruptedException {
+  void testDeleteWorkout() {
     // 2 workouts left
-    Assertions.assertEquals(woc.getWorkoutOverview().getItems().get(0).getName(), user.getWorkouts().get(0).ge;
-    
+    Assertions.assertEquals(woc.getWorkoutOverview().getItems().get(0).getName(), user.getWorkouts().get(0).getName());
     woc.getWorkoutOverview().getColumns().get(0).setId("workoutName");
     Node node = lookup("#workoutName").nth(1).query();
     clickOn(node);
