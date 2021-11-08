@@ -121,6 +121,7 @@ public class WorkoutOverviewController extends AbstractController {
   @FXML
   void deleteWorkout() throws IllegalStateException, IOException {
     user.removeWorkout(user.getWorkout(getWorkoutName()));
+    System.out.println(user.getWorkouts());
     loadTable();
     exceptionFeedback.setText("Workout deleted!");
     user.saveUser();

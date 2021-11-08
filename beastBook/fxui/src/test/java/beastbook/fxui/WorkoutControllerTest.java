@@ -22,17 +22,16 @@ import java.io.IOException;
 
 public class WorkoutControllerTest extends ApplicationTest{ 
   private WorkoutController wc;
-  private User user;
+  private User user = new User("Test", "123");
 
   @Override
   public void start(final Stage stage) throws IOException {
     wc = new WorkoutController();
     final FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/beastbook.fxui/Workout.fxml"));
     loader.setController(wc);
-    user = new User();
-    user.setUserName("test");
-    addWorkoutsToUser();
     wc.setUser(user);
+    addWorkoutsToUser();
+    user.saveUser();
     final Parent root = loader.load();
     stage.setScene(new Scene(root));
     stage.show();
@@ -95,7 +94,6 @@ public class WorkoutControllerTest extends ApplicationTest{
     workout1.addExercise(new Exercise("Deadlift", 20, 20, 20, 0, 20));
     workout1.addExercise(new Exercise("Biceps curl", 20, 20, 20, 0, 20));
     user.addWorkout(workout1);
-    //wc.setWorkout(workout1);
   }
 
   @AfterAll

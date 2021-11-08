@@ -23,7 +23,7 @@ import java.util.ArrayList;
 
 public class CreateWorkoutControllerTest extends ApplicationTest{
   private CreateWorkoutController controller;
-  private User user;
+  private User user = new User("Test", "123");
   private Workout workout = new Workout();
   private Exercise exercise1 = new Exercise();
   private Exercise exercise2 = new Exercise();
@@ -33,9 +33,8 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
     final FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/beastbook.fxui/Create.fxml"));
     controller = new CreateWorkoutController();
     loader.setController(controller);
-    user = new User();
     controller.setUser(user);
-    user.setUserName("test");
+    user.saveUser();
     final Parent root = loader.load();
     stage.setScene(new Scene(root));
     stage.show();

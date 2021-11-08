@@ -1,6 +1,5 @@
 package beastbook.fxui;
 
-
 import beastbook.core.Exercise;
 import beastbook.core.User;
 import beastbook.core.Workout;
@@ -21,7 +20,7 @@ import java.io.IOException;
 
 public class WorkoutOverviewControllerTest extends ApplicationTest{
   private WorkoutOverviewController woc;
-  private User user = new User();
+  private User user = new User("Test", "123");
     
   @Override
   public void start(final Stage stage) throws IOException {
@@ -29,8 +28,8 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
     woc = new WorkoutOverviewController();
     loader.setController(woc);
     woc.setUser(user);
-    user.setUserName("test");
     addWorkoutsToUser();
+    user.saveUser();
     final Parent root = loader.load();
     stage.setScene(new Scene(root));
     stage.show();
@@ -50,7 +49,8 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
   @Test
   void testDeleteWorkout() throws InterruptedException {
     // 2 workouts left
-    Assertions.assertEquals(woc.getWorkoutOverview().getItems(), user.getWorkouts());
+    Assertions.assertEquals(woc.getWorkoutOverview().getItems().get(0).getName(), user.getWorkouts().get(0).ge;
+    
     woc.getWorkoutOverview().getColumns().get(0).setId("workoutName");
     Node node = lookup("#workoutName").nth(1).query();
     clickOn(node);
@@ -61,6 +61,7 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Workout deleted!"));
     clickOn("#deleteButton");
     Assertions.assertEquals(woc.getWorkoutOverview().getItems(), user.getWorkouts());
+    
   }
  
   private void addWorkoutsToUser() {
