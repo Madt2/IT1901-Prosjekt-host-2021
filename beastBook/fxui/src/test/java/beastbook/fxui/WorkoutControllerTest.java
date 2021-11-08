@@ -12,6 +12,7 @@ import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testfx.api.FxAssert;
 import org.testfx.framework.junit5.ApplicationTest;
@@ -20,24 +21,29 @@ import org.testfx.matcher.control.TextMatchers;
 import java.io.File;
 import java.io.IOException;
 
-public class WorkoutControllerTest extends ApplicationTest{ 
+public class WorkoutControllerTest extends ApplicationTest{
   private WorkoutController wc;
   private User user = new User("Test", "123");
 
   @Override
-  public void start(final Stage stage) throws IOException {
+  public void start(Stage stage) throws IOException {
+    FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/beastbook.fxui/Workout.fxml"));
     wc = new WorkoutController();
-    final FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/beastbook.fxui/Workout.fxml"));
     loader.setController(wc);
     wc.setUser(user);
     wc.setWorkoutName("Pull workout");
     addWorkoutsToUser();
     user.saveUser();
-    final Parent root = loader.load();
+    Parent root = loader.load();
     stage.setScene(new Scene(root));
     stage.show();
   }
-   
+
+  @BeforeEach
+  void setup(){
+    wc.setUser(user);
+  }
+
   @Test
   void testEditSelectedCell() throws IOException{
     Assertions.assertEquals("Benchpress", user.getWorkout("Pull workout").getExercises().get(0).getExerciseName());
@@ -72,7 +78,7 @@ public class WorkoutControllerTest extends ApplicationTest{
     Assertions.assertNotEquals(-20, wc.getWorkoutTable().getSelectionModel().getSelectedItem().getRepGoal());
 
     Assertions.assertEquals(50, wc.getWorkoutTable().getSelectionModel().getSelectedItem().getRepGoal());
-    Assertions.assertEquals(50, user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());      
+    Assertions.assertEquals(50, user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText(""));
 
     wc.getWorkoutTable().getColumns().get(1).setId("repGoal");
@@ -82,8 +88,8 @@ public class WorkoutControllerTest extends ApplicationTest{
     press(KeyCode.ENTER).release(KeyCode.ENTER);
     Thread.sleep(1000);
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Rep Goal must be a number. Value was not changed!"));
-    Assertions.assertEquals(50, user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());    
-    Assertions.assertEquals(50, wc.getWorkoutTable().getSelectionModel().getSelectedItem().getRepGoal()); 
+    Assertions.assertEquals(50, user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());
+    Assertions.assertEquals(50, wc.getWorkoutTable().getSelectionModel().getSelectedItem().getRepGoal());
   }
 
   private void addWorkoutsToUser(){

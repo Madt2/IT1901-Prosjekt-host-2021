@@ -25,11 +25,6 @@ public class LoginControllerTest extends ApplicationTest {
     stage.show();
   }
 
-  @BeforeEach
-  void setup() {
-    lc = new LoginController();
-  }
-
   @Test
   void testLoginWithNoInput() { //Test without existing users
     clickOn("#loginButton");
