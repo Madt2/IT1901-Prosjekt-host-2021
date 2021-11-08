@@ -83,7 +83,7 @@ public class Exercise {
   * @param weight Weight to be used for the exercise
   */
   private void validateWeight(double weight) {
-    boolean isTooLow = weight <= 0;
+    boolean isTooLow = (weight <= 0);
     if (isTooLow) {
       throw new IllegalArgumentException("Working Weight must be more than 0!");
     }
@@ -117,7 +117,7 @@ public class Exercise {
   }
 
   private void validateRepsPerSet(int repsPerSet) {
-    boolean isTooLow = repsPerSet <= 0;
+    boolean isTooLow = (repsPerSet <= 0);
     if (isTooLow) {
       throw new IllegalArgumentException("Reps Per Set must be more than 0!");
     }
@@ -136,11 +136,11 @@ public class Exercise {
   * @param restTime How many seconds of rest between each set
   */
   private void validateRestTime(int restTime) {
-    boolean isTooLow = restTime <= 0;
+    boolean isTooLow = (restTime <= 0);
     if (isTooLow) {
       throw new IllegalArgumentException("Rest Time must be more than 0!");
     }
-    boolean isTooLong = String.valueOf(restTime).length() >= maxIntLength;
+    boolean isTooLong = (String.valueOf(restTime).length() >= maxIntLength);
     if (isTooLong) {
       throw new IllegalArgumentException("Rest Time can not be longer than " 
       + maxIntLength + " characters!");
