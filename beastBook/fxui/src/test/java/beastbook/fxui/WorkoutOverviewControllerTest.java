@@ -35,11 +35,6 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
     stage.show();
   }
 
-  @BeforeEach
-  void setup(){
-    woc.setUser(user);
-  }
-
   @Test
   void testOpenWorkout() {
     woc.getWorkoutOverview().getColumns().get(0).setId("workoutName");
@@ -51,7 +46,7 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
   }
 
   @Test
-  void testDeleteWorkout() {
+  void testDeleteWorkout() throws IOException {
     // 2 workouts left
     Assertions.assertEquals(woc.getWorkoutOverview().getItems().get(0).getName(), user.getWorkouts().get(0).getName());
     woc.getWorkoutOverview().getColumns().get(0).setId("workoutName");
@@ -59,11 +54,15 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
     clickOn(node);
     Assertions.assertEquals("Pull workout", woc.getWorkoutOverview().getSelectionModel().getSelectedItem().getName());
     clickOn("#deleteButton");
+    user = user.loadUser(user.getUserName());
     // 1 workout left
-    Assertions.assertEquals(woc.getWorkoutOverview().getItems(), user.getWorkouts());
+    Assertions.assertEquals(1, user.getWorkouts().size());
+    Assertions.assertEquals(1, woc.getWorkoutOverview().getItems().size());
+    Assertions.assertEquals(woc.getWorkoutOverview().getItems().get(0).getName(), user.getWorkouts().get(0).getName());
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Workout deleted!"));
+    // Tries to delete once again, without selecting a workout. Will not delete
     clickOn("#deleteButton");
-    Assertions.assertEquals(woc.getWorkoutOverview().getItems(), user.getWorkouts());
+    Assertions.assertEquals(woc.getWorkoutOverview().getItems().get(0).getName(), user.getWorkouts().get(0).getName());
   }
  
   private void addWorkoutsToUser() {
