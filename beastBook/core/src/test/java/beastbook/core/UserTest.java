@@ -38,6 +38,17 @@ public class UserTest {
   }
 
   @Test
+  void testUpdateWorkout() {
+    testUser.addWorkout(testWorkout);
+    Workout workout = new Workout("temp");
+    workout.addExercise(new Exercise("test2",1,1,1,1,1));
+    workout.setName("testWorkout");
+    testUser.updateWorkout(workout);
+    Assertions.assertTrue(testUser.getWorkouts().contains(workout));
+    Assertions.assertNotEquals(testWorkout, testUser.getWorkout("testWorkout"));
+  }
+
+  @Test
   void testRemoveWorkout() {
     testUser.addWorkout(testWorkout);
     testUser.removeWorkout(testWorkout);
