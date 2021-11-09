@@ -13,7 +13,7 @@
       <TextField fx:id="exerciseNameInput" layoutX="150.0" layoutY="310.0" />
       <Text fx:id="exerciseTitle" layoutX="61.0" layoutY="327.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Exercise Name:" wrappingWidth="84.0" />
       <TextField fx:id="repGoalInput" layoutX="150.0" layoutY="340.0" />
-      <TextField fx:id="weigthInput" layoutX="150.0" layoutY="370.0" />
+      <TextField fx:id="weightInput" layoutX="150.0" layoutY="370.0" />
       <TextField fx:id="setsInput" layoutX="150.0" layoutY="400.0" />
       <TextField fx:id="restInput" layoutX="150.0" layoutY="430.0" />
       <Text fx:id="repGoalTitle" layoutX="89.0" layoutY="358.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Rep Goal:" wrappingWidth="55.50535583496094" />

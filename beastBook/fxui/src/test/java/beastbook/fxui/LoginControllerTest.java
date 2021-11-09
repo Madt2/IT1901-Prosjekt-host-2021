@@ -9,27 +9,20 @@ import org.testfx.api.FxAssert;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.matcher.control.LabeledMatchers;
 import org.testfx.matcher.control.TextMatchers;
-
 import java.io.File;
 
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class LoginControllerTest extends ApplicationTest {
-  LoginController lc;
 
   @Override
   public void start(final Stage stage) throws Exception {
     final FXMLLoader loader = new FXMLLoader(getClass().getResource("/beastbook.fxui/Login.fxml"));
-    lc = new LoginController();
+    LoginController lc = new LoginController();
     loader.setController(lc);
     final Parent root = loader.load();
     stage.setScene(new Scene(root));
     stage.show();
-  }
-
-  @BeforeEach
-  void setup() {
-    lc = new LoginController();
   }
 
   @Test
@@ -38,11 +31,11 @@ public class LoginControllerTest extends ApplicationTest {
     FxAssert.verifyThat("#loginError", TextMatchers.hasText("No username given"));
   }
 
-    @Test 
-    void testLoginWithUsernameInput() {  //Test without existing users
-      clickOn("#usernameInput").write("test");
-      clickOn("#loginButton");
-      FxAssert.verifyThat("#loginError", TextMatchers.hasText("No Password given!"));
+  @Test
+  void testLoginWithUsernameInput() {  //Test without existing users
+    clickOn("#usernameInput").write("test");
+    clickOn("#loginButton");
+    FxAssert.verifyThat("#loginError", TextMatchers.hasText("No Password given!"));
   }
 
   @Test 
@@ -57,7 +50,7 @@ public class LoginControllerTest extends ApplicationTest {
     clickOn("#usernameInput").write("test");
     clickOn("#passwordInput").write("test");
     clickOn("#loginButton");
-    FxAssert.verifyThat("#loginError", TextMatchers.hasText("No user found"));
+    FxAssert.verifyThat("#loginError", TextMatchers.hasText("No user found!"));
   }
 
   //Test register user
@@ -83,7 +76,7 @@ public class LoginControllerTest extends ApplicationTest {
     clickOn("#usernameInput").write("wrong");
     clickOn("#passwordInput").write("correct");
     clickOn("#loginButton");
-    FxAssert.verifyThat("#loginError", TextMatchers.hasText("No user found"));
+    FxAssert.verifyThat("#loginError", TextMatchers.hasText("No user found!"));
   }
 
   @Test

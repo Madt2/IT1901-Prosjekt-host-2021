@@ -7,7 +7,7 @@ public class ExerciseTest {
 
   @BeforeEach
   void init() {
-      exercise = new Exercise("Bench Press", 25, 100, 5, 120);
+      exercise = new Exercise("Bench Press", 25, 100, 5, 0, 120);
   }
 
   @Test

@@ -20,9 +20,9 @@ public class PersistenceTest {
   public void testSerializersAndDeserializers() {
     User user = new User("utest", "utest");
     Workout w = new Workout("wtest");
-    Exercise e1 = new Exercise("etest1", 1, 1, 1, 1);
-    Exercise e2 = new Exercise("etest2", 2, 2, 2, 2);
-    Exercise e3 = new Exercise("etest3", 3, 3, 3, 3);
+    Exercise e1 = new Exercise("etest1", 1, 1, 1, 0, 1);
+    Exercise e2 = new Exercise("etest2", 2, 2, 2, 0, 2);
+    Exercise e3 = new Exercise("etest3", 3, 3, 3, 0, 3);
 
     w.addExercise(e1);
     w.addExercise(e2);
