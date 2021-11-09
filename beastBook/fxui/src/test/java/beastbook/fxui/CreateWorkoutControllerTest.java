@@ -41,7 +41,6 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
     stage.show();
   }  
 
-
   private void addWorkoutsToUser(){
     workout = new Workout("testWorkout");
     exercise1 = new Exercise("Benchpress", 10, 20, 30, 0, 40);
@@ -56,7 +55,7 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
     clickOn("#titleInput", MouseButton.PRIMARY).write("My workout");
     clickOn("#exerciseNameInput", MouseButton.PRIMARY).write("Benchpress");
     clickOn("#repGoalInput", MouseButton.PRIMARY).write("30");
-    clickOn("#weigthInput", MouseButton.PRIMARY).write("80");
+    clickOn("#weightInput", MouseButton.PRIMARY).write("80");
     clickOn("#setsInput", MouseButton.PRIMARY).write("3");
     clickOn("#restInput", MouseButton.PRIMARY).write("60");
     clickOn("#addButton", MouseButton.PRIMARY);
@@ -66,7 +65,7 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
        
     clickOn("#exerciseNameInput", MouseButton.PRIMARY).write("Leg press"); // Add another object 
     clickOn("#repGoalInput", MouseButton.PRIMARY).write("20");
-    clickOn("#weigthInput", MouseButton.PRIMARY).write("150");
+    clickOn("#weightInput", MouseButton.PRIMARY).write("150");
     clickOn("#setsInput", MouseButton.PRIMARY).write("5");
     clickOn("#restInput", MouseButton.PRIMARY).write("40");
     clickOn("#addButton", MouseButton.PRIMARY);
@@ -76,7 +75,7 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
   void testWrongFormatInputFails() {
     clickOn("#exerciseNameInput", MouseButton.PRIMARY).write("Deadlift");
     clickOn("#repGoalInput", MouseButton.PRIMARY).write("50");
-    clickOn("#weigthInput", MouseButton.PRIMARY).write("Double");
+    clickOn("#weightInput", MouseButton.PRIMARY).write("Double");
     clickOn("#setsInput", MouseButton.PRIMARY).write("3");
     clickOn("#restInput", MouseButton.PRIMARY).write("40");
     clickOn("#addButton", MouseButton.PRIMARY);
@@ -89,7 +88,7 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
   void testWrongFormatWorksAfterChanged() {
     clickOn("#exerciseNameInput", MouseButton.PRIMARY).write("Deadlift");
     clickOn("#repGoalInput", MouseButton.PRIMARY).write("50");
-    clickOn("#weigthInput", MouseButton.PRIMARY).write("Double");
+    clickOn("#weightInput", MouseButton.PRIMARY).write("Double");
     clickOn("#setsInput", MouseButton.PRIMARY).write("3");
     clickOn("#restInput", MouseButton.PRIMARY).write("40");
     clickOn("#addButton", MouseButton.PRIMARY);
@@ -97,12 +96,12 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Working Weight must be a number"));
     Assertions.assertEquals(CreateWorkoutController.WRONG_INPUT_BORDER_COLOR, controller.getWeightInput().getStyle());
 
-    doubleClickOn("#weigthInput", MouseButton.PRIMARY).write("-20");
+    doubleClickOn("#weightInput", MouseButton.PRIMARY).write("-20");
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Working Weight must be more than 0"));
     Assertions.assertEquals(CreateWorkoutController.WRONG_INPUT_BORDER_COLOR, controller.getWeightInput().getStyle());
 
-    doubleClickOn("#weigthInput", MouseButton.PRIMARY).write("");
-    doubleClickOn("#weigthInput", MouseButton.PRIMARY).write("20");
+    doubleClickOn("#weightInput", MouseButton.PRIMARY).write("");
+    doubleClickOn("#weightInput", MouseButton.PRIMARY).write("20");
     Assertions.assertEquals(CreateWorkoutController.CORRECT_INPUT_BORDER_COLOR, controller.getWeightInput().getStyle());
     clickOn("#addButton", MouseButton.PRIMARY);
 
@@ -114,7 +113,7 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
   void testIllegalArgumentFails() {
     clickOn("#exerciseNameInput", MouseButton.PRIMARY).write("Deadlift");
     clickOn("#repGoalInput", MouseButton.PRIMARY).write("50");
-    clickOn("#weigthInput", MouseButton.PRIMARY).write("-20");
+    clickOn("#weightInput", MouseButton.PRIMARY).write("-20");
     clickOn("#setsInput", MouseButton.PRIMARY).write("50");
     clickOn("#restInput", MouseButton.PRIMARY).write("40");
     clickOn("#addButton", MouseButton.PRIMARY);
@@ -129,7 +128,7 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
 
     clickOn("#exerciseNameInput", MouseButton.PRIMARY).write("Squat");
     clickOn("#repGoalInput", MouseButton.PRIMARY).write("50");
-    clickOn("#weigthInput", MouseButton.PRIMARY).write("20");
+    clickOn("#weightInput", MouseButton.PRIMARY).write("20");
     clickOn("#setsInput", MouseButton.PRIMARY).write("50");
     clickOn("#restInput", MouseButton.PRIMARY).write("40");
     clickOn("#addButton", MouseButton.PRIMARY);
@@ -139,17 +138,17 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
   }
 
   @Test
-  void testCanOverwriteWorkout(){
+  void testCanOverwriteWorkout() throws IOException{
     clickOn("#titleInput", MouseButton.PRIMARY).write(workout.getName());
     clickOn("#exerciseNameInput", MouseButton.PRIMARY).write("B");
     clickOn("#repGoalInput", MouseButton.PRIMARY).write("1");
-    clickOn("#weigthInput", MouseButton.PRIMARY).write("2");
+    clickOn("#weightInput", MouseButton.PRIMARY).write("2");
     clickOn("#setsInput", MouseButton.PRIMARY).write("3");
     clickOn("#restInput", MouseButton.PRIMARY).write("4");
     clickOn("#addButton", MouseButton.PRIMARY);
     clickOn("#createButton", MouseButton.PRIMARY);
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Workout overwritten!"));
-    System.out.println(user.getWorkout("testWorkout").getExercises());
+    user = user.loadUser(user.getUserName());
 
     Assertions.assertEquals("B", user.getWorkout("testWorkout").getExercises().get(
             user.getWorkout("testWorkout").getExercises().size()-1
@@ -157,11 +156,11 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
   }
     
   @Test
-  void testWorkoutIsNotLoaded(){   
+  void testWorkoutIsNotLoaded() throws IOException{   
     user.removeWorkout(workout);
+    
     clickOn("#titleInput", MouseButton.PRIMARY).write("testWorkout");
     clickOn("#loadButton", MouseButton.PRIMARY);
-
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Workout not found!"));
   }
 
@@ -175,11 +174,12 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
     clickOn(node);
 
     Exercise loadedExercise = controller.getWorkoutTable().getSelectionModel().getSelectedItem();
-    Assertions.assertEquals(exercise1, loadedExercise);
+    Assertions.assertEquals(exercise1.getExerciseName(), loadedExercise.getExerciseName());
+    Assertions.assertEquals(exercise1.getWeight(), loadedExercise.getWeight());
   }
 
   @Test
-  void testDeleteExercise() {
+  void testDeleteExercise() throws IOException {
     clickOn("#titleInput", MouseButton.PRIMARY).write("testWorkout");
     clickOn("#loadButton", MouseButton.PRIMARY);
 
@@ -187,6 +187,7 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
     Node node = lookup("#exerciseName").nth(1).query();
     clickOn(node);
     clickOn("#deleteButton");
+    user = user.loadUser(user.getUserName());
 
     controller.getWorkoutTable().getColumns().get(0).setId("exerciseName");
     Assertions.assertEquals(1, user.getWorkout("testWorkout").getExercises().size());
