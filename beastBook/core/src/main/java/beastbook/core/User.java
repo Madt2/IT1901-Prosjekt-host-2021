@@ -15,7 +15,7 @@ public class User {
   private String username;
   private String password;
   private BeastBookPersistence persistence = new BeastBookPersistence();
-  private List<Workout> workouts = new ArrayList<Workout>();
+  private List<Workout> workouts = new ArrayList<>();
 
   /**
   * User object for application.
@@ -36,7 +36,7 @@ public class User {
   * @param username the username to set
   */
   public void setUserName(String username) {
-    Boolean isLongEnough = username.length() >= MIN_CHAR_USERNAME;
+    boolean isLongEnough = username.length() >= MIN_CHAR_USERNAME;
     if (isLongEnough) {
       this.username = username;
     } else {
@@ -56,7 +56,7 @@ public class User {
   * @param password the password to set
   */
   public void setPassword(String password) {
-    Boolean isLongEnough = password.length() >= MIN_CHAR_PASSWORD;
+    boolean isLongEnough = password.length() >= MIN_CHAR_PASSWORD;
     if (isLongEnough) {
       this.password = password;
     } else {
@@ -85,6 +85,11 @@ public class User {
     workouts.add(workout);
   }
 
+  /**
+   * This method updates a Workout object by replacing with the new given Workout
+   *
+   * @param workout the Workout to be replaced
+   */
   public void updateWorkout(Workout workout) {
     for (int i = 0; i < workouts.size(); i++) {
       if (workouts.get(i).getName().equals(workout.getName())) {
@@ -125,7 +130,7 @@ public class User {
   }
 
   /**
-   * Getter to fetch spesific workout.
+   * Getter to fetch specific workout.
    *
    * @param workoutName name of workout to fetch.
    * @return workout if it exists, if not it returns null.

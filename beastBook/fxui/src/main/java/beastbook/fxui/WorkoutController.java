@@ -42,6 +42,11 @@ public class WorkoutController extends AbstractController {
   public static final String CORRECT_INPUT_BORDER_COLOR = "";
   private String workoutName;
 
+  /**
+   * Initializes the Workout screen with the correct User from File and updates the table based on given Workout.
+   *
+   * @throws IOException if an error occurs when loading user.
+   */
   @FXML
   public void initialize() throws IOException {
     user = user.loadUser(user.getUserName());
@@ -56,34 +61,34 @@ public class WorkoutController extends AbstractController {
     workoutTable.getColumns().clear();
     workoutTable.setEditable(true);
     
-    exerciseNameColumn = new TableColumn<Exercise, String>("Exercise name:");
+    exerciseNameColumn = new TableColumn<>("Exercise name:");
     exerciseNameColumn.setCellValueFactory(
-      new PropertyValueFactory<Exercise, String>("exerciseName")
+      new PropertyValueFactory<>("exerciseName")
     );
     
-    repGoalColumn = new TableColumn<Exercise, Integer>("Rep goal:");
+    repGoalColumn = new TableColumn<>("Rep goal:");
     repGoalColumn.setCellValueFactory(
-      new PropertyValueFactory<Exercise, Integer>("repGoal")
+      new PropertyValueFactory<>("repGoal")
     );
 
-    weightColumn = new TableColumn<Exercise, Double>("Weight:");
+    weightColumn = new TableColumn<>("Weight:");
     weightColumn.setCellValueFactory(
-      new PropertyValueFactory<Exercise, Double>("weight")
+      new PropertyValueFactory<>("weight")
     );
 
-    setsColumn = new TableColumn<Exercise, Integer>("Nr of sets:");
+    setsColumn = new TableColumn<>("Nr of sets:");
     setsColumn.setCellValueFactory(
-      new PropertyValueFactory<Exercise, Integer>("sets")
+      new PropertyValueFactory<>("sets")
     );
 
-    repsPerSetColumn = new TableColumn<Exercise, Integer>("Reps per set:");
+    repsPerSetColumn = new TableColumn<>("Reps per set:");
     repsPerSetColumn.setCellValueFactory(
-      new PropertyValueFactory<Exercise, Integer>("repsPerSet")
+      new PropertyValueFactory<>("repsPerSet")
     );
         
-    restTimeColumn = new TableColumn<Exercise, Integer>("Rest time in sec:");
+    restTimeColumn = new TableColumn<>("Rest time in sec:");
     restTimeColumn.setCellValueFactory(
-      new PropertyValueFactory<Exercise, Integer>("restTime")
+      new PropertyValueFactory<>("restTime")
     );
 
     workoutTable.getColumns().add(exerciseNameColumn);
@@ -101,7 +106,7 @@ public class WorkoutController extends AbstractController {
   * Makes the cells in workout table editable.
   * If a cell is edited, the new value will overwrite
   * the old value in both the GUI and the user database.
-  * If the value is in wrong format, an exeption will be thrown
+  * If the value is in wrong format, an exception will be thrown
   * and a red text will appear in the GUI with feedback.
   * Sets the exercises from the workout to the table view.
   */
@@ -142,8 +147,6 @@ public class WorkoutController extends AbstractController {
         if (column.equals(restTimeColumn)) {
           exercise.setRestTime(event.getNewValue());
         }
-        user.getWorkout(workoutName).updateExercise(exercise);
-        user.updateWorkout(user.getWorkout(workoutName));
         user.saveUser();
         emptyExceptionFeedback();
       } catch (IllegalArgumentException i) {
@@ -226,7 +229,7 @@ public class WorkoutController extends AbstractController {
   /**
   * Extended version of IntegerStringConverter. Used to catch NumberFormatException, as 
   * the IntegerStringConverter do not handle the NumberFormatException by default.
-  * Returns null which is catched by editTable()
+  * Returns null which is caught by editTable()
   */
   public static class CustomIntegerStringConverter extends IntegerStringConverter {
     private final IntegerStringConverter converter = new IntegerStringConverter();
@@ -253,7 +256,7 @@ public class WorkoutController extends AbstractController {
   /**
   * Extended version of DoubleStringConverter. Used to catch NumberFormatException, as 
   * the DoubleStringConverter do not handle the NumberFormatException by default.
-  * Returns null which is catched by editTable()
+  * Returns null which is caught by editTable()
   */
   public static class CustomDoubleStringConverter extends DoubleStringConverter {
     private final DoubleStringConverter converter = new DoubleStringConverter();

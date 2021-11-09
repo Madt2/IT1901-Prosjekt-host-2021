@@ -28,11 +28,6 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
   private Exercise exercise1 = new Exercise();
   private Exercise exercise2 = new Exercise();
 
-  @BeforeEach
-  void setup(){
-    controller.setUser(user);
-  }
-
   @Override
   public void start(final Stage stage) throws IOException {
     final FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/beastbook.fxui/Create.fxml"));
@@ -184,7 +179,7 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
   }
 
   @Test
-  void testDeleteExercise() throws InterruptedException{
+  void testDeleteExercise() {
     clickOn("#titleInput", MouseButton.PRIMARY).write("testWorkout");
     clickOn("#loadButton", MouseButton.PRIMARY);
 
