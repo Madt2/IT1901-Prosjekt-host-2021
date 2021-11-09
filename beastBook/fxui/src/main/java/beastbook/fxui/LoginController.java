@@ -1,7 +1,6 @@
 package beastbook.fxui;
 
 import beastbook.core.User;
-import beastbook.json.BeastBookPersistence;
 import java.io.IOException;
 import java.util.Objects;
 import javafx.event.ActionEvent;
@@ -29,16 +28,14 @@ public class LoginController extends AbstractController {
   @FXML
   private Button loginButton;
 
-  private BeastBookPersistence persistence = new BeastBookPersistence();
-
   /**
   * Loads home in gui.
   *
    * @throws IOException if loading home screen fails
   */
   @Override
-  void loadHome() throws IOException {
-    super.loadHome();
+  void loadHome(ActionEvent event) throws IOException {
+    super.loadHome(event);
   }
 
   /**
@@ -54,7 +51,8 @@ public class LoginController extends AbstractController {
     if (!userName.equals("") && !password.equals("")) {
       try {
         user = new User(userName, password);
-        saveUser(user); //Skal lagre bruker som en JSON-fil
+        user.saveUser(); //Skal lagre bruker som en JSON-fil
+        loginUser(event);
       } catch (Exception e) {
         loginError.setText(e.getMessage());
       }
@@ -73,54 +71,33 @@ public class LoginController extends AbstractController {
   void loginUser(ActionEvent event) throws IllegalArgumentException, IOException {
     String userName = usernameInput.getText();
     String password = passwordInput.getText();
+    user = new User("user", "user");
+    try {
+      validateLogin(userName, password);
+      User login = user.loadUser(userName);
+      user = login;
+      super.loadHome(event);
+    } catch (Exception e) {
+      loginError.setText(e.getMessage());
+    }
+  }
+
+  private void validateLogin(String userName, String password) throws IOException, IllegalArgumentException {
     if (userName.equals("")) {
-      loginError.setText("No username given");
-      return;
+      throw new IllegalArgumentException("No username given");
     }
     if (password.equals("")) {
-      loginError.setText("No Password given!");
-      return;
+      throw new IllegalArgumentException("No Password given!");
     }
-    User login = getUser(userName);
-    if (Objects.isNull(login)) {
-      loginError.setText("No user found");
-      return;
-    }
-    if (!login.getPassword().equals(password)) {
-      loginError.setText("Wrong Password");
-      return;
-    }
-    user = login;
-    super.loadHome();
-  }
-
-  /**
-  * Help method for registerUser. Uses persistence to save.
-  *
-  * @param user user to save.
-  */
-  private void saveUser(User user) {
     try {
-      persistence.setSaveFilePath(user.getUserName());
-      persistence.saveUser(user);
+      User login = user.loadUser(userName);
+      if (!login.getPassword().equals(password)) {
+        throw new IllegalArgumentException("Wrong Password");
+      }
     } catch (IOException e) {
-      loginError.setText("User was not saved");
-    }
-  }
-
-  /**
-  * Help method for loadUser. Uses persistence to load user.
-  *
-  * @param userName username for user to get.
-  * @return user if user found. null if no user found.
-  */
-  private User getUser(String userName) {
-    try {
-      persistence.setSaveFilePath(userName);
-      User user = persistence.loadUser();
-      return user;
-    } catch (IOException e) {
-      return null;
+      throw new IOException("No user found!");
+    } catch (IllegalArgumentException e) {
+      throw e;
     }
   }
 }

@@ -2,9 +2,8 @@ package beastbook.fxui;
 
 import beastbook.core.Exercise;
 import beastbook.core.User;
-import beastbook.core.Workout;
-import beastbook.json.BeastBookPersistence;
 import java.io.IOException;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -14,8 +13,6 @@ import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.text.Text;
 import javafx.util.converter.DoubleStringConverter;
 import javafx.util.converter.IntegerStringConverter;
-
-
 
 /**
  * Controller for the Workout screen.
@@ -39,25 +36,22 @@ public class WorkoutController extends AbstractController {
   private TableColumn<Exercise, Integer> setsColumn;
   private TableColumn<Exercise, Integer> repsPerSetColumn;
   private TableColumn<Exercise, Integer> restTimeColumn;
-  private Workout workout = new Workout();
   public static final String WRONG_INPUT_BORDER_COLOR =
         "-fx-text-box-border: #B22222;"
         + "-fx-focus-color: #B22222";
   public static final String CORRECT_INPUT_BORDER_COLOR = "";
-  BeastBookPersistence persistence = new BeastBookPersistence();
+  private String workoutName;
 
+  /**
+   * Initializes the Workout screen with the correct User from File and updates the table based on given Workout.
+   *
+   * @throws IOException if an error occurs when loading user.
+   */
   @FXML
-  public void initialize() {
+  public void initialize() throws IOException {
+    user = user.loadUser(user.getUserName());
     updateTable();
-    title.setText(workout.getName());
-  }
-
-  public void setWorkout(Workout workout) {
-    this.workout = workout;
-  }
-    
-  public Workout getWorkout() {
-    return this.workout;
+    title.setText(workoutName);
   }
 
   /**
@@ -67,34 +61,34 @@ public class WorkoutController extends AbstractController {
     workoutTable.getColumns().clear();
     workoutTable.setEditable(true);
     
-    exerciseNameColumn = new TableColumn<Exercise, String>("Exercise name:");
+    exerciseNameColumn = new TableColumn<>("Exercise name:");
     exerciseNameColumn.setCellValueFactory(
-      new PropertyValueFactory<Exercise, String>("exerciseName")
+      new PropertyValueFactory<>("exerciseName")
     );
     
-    repGoalColumn = new TableColumn<Exercise, Integer>("Rep goal:");
+    repGoalColumn = new TableColumn<>("Rep goal:");
     repGoalColumn.setCellValueFactory(
-      new PropertyValueFactory<Exercise, Integer>("repGoal")
+      new PropertyValueFactory<>("repGoal")
     );
 
-    weightColumn = new TableColumn<Exercise, Double>("Weight:");
+    weightColumn = new TableColumn<>("Weight:");
     weightColumn.setCellValueFactory(
-      new PropertyValueFactory<Exercise, Double>("weight")
+      new PropertyValueFactory<>("weight")
     );
 
-    setsColumn = new TableColumn<Exercise, Integer>("Nr of sets:");
+    setsColumn = new TableColumn<>("Nr of sets:");
     setsColumn.setCellValueFactory(
-      new PropertyValueFactory<Exercise, Integer>("sets")
+      new PropertyValueFactory<>("sets")
     );
 
-    repsPerSetColumn = new TableColumn<Exercise, Integer>("Reps per set:");
+    repsPerSetColumn = new TableColumn<>("Reps per set:");
     repsPerSetColumn.setCellValueFactory(
-      new PropertyValueFactory<Exercise, Integer>("repsPerSet")
+      new PropertyValueFactory<>("repsPerSet")
     );
         
-    restTimeColumn = new TableColumn<Exercise, Integer>("Rest time in sec:");
+    restTimeColumn = new TableColumn<>("Rest time in sec:");
     restTimeColumn.setCellValueFactory(
-      new PropertyValueFactory<Exercise, Integer>("restTime")
+      new PropertyValueFactory<>("restTime")
     );
 
     workoutTable.getColumns().add(exerciseNameColumn);
@@ -112,18 +106,17 @@ public class WorkoutController extends AbstractController {
   * Makes the cells in workout table editable.
   * If a cell is edited, the new value will overwrite
   * the old value in both the GUI and the user database.
-  * If the value is in wrong format, an exeption will be thrown
+  * If the value is in wrong format, an exception will be thrown
   * and a red text will appear in the GUI with feedback.
   * Sets the exercises from the workout to the table view.
   */
-
-  private void tableWithString(TableColumn<Exercise, String> javaFxTag, String errorMessage) {
-    javaFxTag.setCellFactory(TextFieldTableCell.forTableColumn());
-    javaFxTag.setOnEditCommit(event -> {
+  private void tableWithString(TableColumn<Exercise, String> column, String errorMessage) {
+    column.setCellFactory(TextFieldTableCell.forTableColumn());
+    column.setOnEditCommit(event -> {
       try {
         Exercise exercise = event.getRowValue();
         exercise.setExerciseName(event.getNewValue());
-        saveUserState();
+        user.saveUser();
         emptyExceptionFeedback();
       } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
@@ -135,26 +128,26 @@ public class WorkoutController extends AbstractController {
     });
   }
 
-  private void tableWithInteger(TableColumn<Exercise, Integer> javaFxTag, String errorMessage) {
-    javaFxTag.setCellFactory(TextFieldTableCell.forTableColumn(
+  private void tableWithInteger(TableColumn<Exercise, Integer> column, String errorMessage) {
+    column.setCellFactory(TextFieldTableCell.forTableColumn(
             new CustomIntegerStringConverter())
     );
-    javaFxTag.setOnEditCommit(event -> {
+    column.setOnEditCommit(event -> {
       try {
         Exercise exercise = event.getRowValue();
-        if (javaFxTag.equals(repGoalColumn)) {
+        if (column.equals(repGoalColumn)) {
           exercise.setRepGoal(event.getNewValue());
         }
-        if (javaFxTag.equals(setsColumn)) {
+        if (column.equals(setsColumn)) {
           exercise.setSets(event.getNewValue());
         }
-        if (javaFxTag.equals(repsPerSetColumn)) {
+        if (column.equals(repsPerSetColumn)) {
           exercise.setRepsPerSet(event.getNewValue());
         }
-        if (javaFxTag.equals(restTimeColumn)) {
+        if (column.equals(restTimeColumn)) {
           exercise.setRestTime(event.getNewValue());
         }
-        saveUserState();
+        user.saveUser();
         emptyExceptionFeedback();
       } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
@@ -166,15 +159,15 @@ public class WorkoutController extends AbstractController {
     });
   }
 
-  private void tableWithDouble(TableColumn<Exercise, Double> javaFxTag, String errorMessage) {
-    javaFxTag.setCellFactory(TextFieldTableCell.forTableColumn(
+  private void tableWithDouble(TableColumn<Exercise, Double> column, String errorMessage) {
+    column.setCellFactory(TextFieldTableCell.forTableColumn(
             new CustomDoubleStringConverter())
     );
-    javaFxTag.setOnEditCommit(event -> {
+    column.setOnEditCommit(event -> {
       try {
         Exercise exercise = event.getRowValue();
         exercise.setWeight(event.getNewValue());
-        saveUserState();
+        user.saveUser();
         emptyExceptionFeedback();
       } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
@@ -193,7 +186,7 @@ public class WorkoutController extends AbstractController {
     tableWithInteger(setsColumn, "Sets must be a number. Value was not changed!");
     tableWithInteger(repsPerSetColumn, "Reps per set must be a number. Value was not changed!");
     tableWithInteger(restTimeColumn, "Rest time must be a number. Value was not changed!");
-    workoutTable.getItems().setAll(workout.getExercises());
+    workoutTable.getItems().setAll(user.getWorkout(workoutName).getExercises());
   }
     
   TableView<Exercise> getWorkoutTable() {
@@ -218,25 +211,16 @@ public class WorkoutController extends AbstractController {
   }
 
   @Override
-  void loadLogin() throws IOException {
-    super.loadLogin();
-  }
-
-  @Override
-  void loadOverview() throws IOException {
-    super.loadOverview();
+  void loadOverview(ActionEvent event) throws IOException {
+    super.loadOverview(event);
   }
 
   void setUser(User user) {
     this.user = user;
   }
 
-  /**
-  * Updates the exercises/workouts for a user in file format.
-  */
-  private void saveUserState() throws IOException {
-    persistence.setSaveFilePath(user.getUserName());
-    persistence.saveUser(user);
+  void setWorkoutName(String workoutName) {
+    this.workoutName = workoutName;
   }
 
   // SOURCE for the following two static classes: 
@@ -245,7 +229,7 @@ public class WorkoutController extends AbstractController {
   /**
   * Extended version of IntegerStringConverter. Used to catch NumberFormatException, as 
   * the IntegerStringConverter do not handle the NumberFormatException by default.
-  * Returns null which is catched by editTable()
+  * Returns null which is caught by editTable()
   */
   public static class CustomIntegerStringConverter extends IntegerStringConverter {
     private final IntegerStringConverter converter = new IntegerStringConverter();
@@ -272,7 +256,7 @@ public class WorkoutController extends AbstractController {
   /**
   * Extended version of DoubleStringConverter. Used to catch NumberFormatException, as 
   * the DoubleStringConverter do not handle the NumberFormatException by default.
-  * Returns null which is catched by editTable()
+  * Returns null which is caught by editTable()
   */
   public static class CustomDoubleStringConverter extends DoubleStringConverter {
     private final DoubleStringConverter converter = new DoubleStringConverter();

@@ -1,5 +1,7 @@
 package beastbook.core;
 
+import beastbook.json.BeastBookPersistence;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,8 +14,8 @@ public class User {
   private static final int MIN_CHAR_PASSWORD = 3;
   private String username;
   private String password;
-  private List<Workout> workouts = new ArrayList<Workout>();
-  //private List<String> myHistory = new ArrayList<String>(); for later release
+  private BeastBookPersistence persistence = new BeastBookPersistence();
+  private List<Workout> workouts = new ArrayList<>();
 
   /**
   * User object for application.
@@ -34,7 +36,7 @@ public class User {
   * @param username the username to set
   */
   public void setUserName(String username) {
-    Boolean isLongEnough = username.length() >= MIN_CHAR_USERNAME;
+    boolean isLongEnough = username.length() >= MIN_CHAR_USERNAME;
     if (isLongEnough) {
       this.username = username;
     } else {
@@ -54,7 +56,7 @@ public class User {
   * @param password the password to set
   */
   public void setPassword(String password) {
-    Boolean isLongEnough = password.length() >= MIN_CHAR_PASSWORD;
+    boolean isLongEnough = password.length() >= MIN_CHAR_PASSWORD;
     if (isLongEnough) {
       this.password = password;
     } else {
@@ -83,7 +85,28 @@ public class User {
     workouts.add(workout);
   }
 
-  public void checkWorkout(Workout workout) {
+  /**
+   * This method updates a Workout object by replacing with the new given Workout
+   *
+   * @param workout the Workout to be replaced
+   */
+  public void updateWorkout(Workout workout) {
+    for (int i = 0; i < workouts.size(); i++) {
+      if (workouts.get(i).getName().equals(workout.getName())) {
+        workouts.set(i, workout);
+        return;
+      }
+    }
+    throw new IllegalArgumentException("No workout found to update!");
+  }
+
+  /**
+   * Checks if user already har Workout saved.
+   * Throws IllegalArgumentException if workout found.
+   * 
+   * @param workout The Workout to be checked
+   */
+  private void checkWorkout(Workout workout) {
     for (Workout w : getWorkouts()) {
       if (w.getName().equals(workout.getName())) {
         throw new IllegalArgumentException(
@@ -102,12 +125,12 @@ public class User {
   public void removeWorkout(Workout workout) {
     if (!workouts.contains(workout)) {
       throw new IllegalArgumentException("User does not have workout " + workout + " saved!");
-    }  
+    }
     workouts.remove(workout);
   }
 
   /**
-   * Getter to fetch spesific workout.
+   * Getter to fetch specific workout.
    *
    * @param workoutName name of workout to fetch.
    * @return workout if it exists, if not it returns null.
@@ -128,5 +151,27 @@ public class User {
    */
   public List<Workout> getWorkouts() {
     return new ArrayList<>(workouts);
+  }
+
+  /**
+   * Saves User object to file using persistance.
+   *
+   * @throws IOException when saveFilePath is wrong.
+   */
+  public void saveUser() throws IOException {
+    persistence.setSaveFilePath(getUserName());
+    persistence.saveUser(this);
+  }
+
+  /**
+   * Loads User object from file using persistance.
+   *
+   * @param name name of user
+   * @return return User object
+   * @throws IOException when saveFilePath is wrong.
+   */
+  public User loadUser(String name) throws IOException {
+    persistence.setSaveFilePath(name);
+    return persistence.loadUser();
   }
 }

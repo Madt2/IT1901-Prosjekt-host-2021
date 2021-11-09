@@ -12,7 +12,7 @@ public class UserTest {
   void setup() {
     testUser = new User("Test", "Test");
     testWorkout = new Workout("testWorkout");
-    testWorkout.addExercise(new Exercise("test1", 1, 1, 1, 1));
+    testWorkout.addExercise(new Exercise("test1", 1, 1, 1, 0, 1));
   }
 
   @Test
@@ -35,6 +35,17 @@ public class UserTest {
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
       testUser.addWorkout(testWorkout);
     });
+  }
+
+  @Test
+  void testUpdateWorkout() {
+    testUser.addWorkout(testWorkout);
+    Workout workout = new Workout("temp");
+    workout.addExercise(new Exercise("test2",1,1,1,1,1));
+    workout.setName("testWorkout");
+    testUser.updateWorkout(workout);
+    Assertions.assertTrue(testUser.getWorkouts().contains(workout));
+    Assertions.assertNotEquals(testWorkout, testUser.getWorkout("testWorkout"));
   }
 
   @Test

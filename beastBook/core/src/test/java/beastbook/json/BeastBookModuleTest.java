@@ -37,6 +37,7 @@ public class BeastBookModuleTest {
                                       "repGoal": "25",
                                       "weight": "100.0",
                                       "sets": "5",
+                                      "repsPerSet": "0",
                                       "restTime": "90"
                                     },
                                     {
@@ -44,6 +45,7 @@ public class BeastBookModuleTest {
                                       "repGoal": "30",
                                       "weight": "250.0",
                                       "sets": "3",
+                                      "repsPerSet": "0",
                                       "restTime": "60"
                                     }
                                   ]
@@ -59,15 +61,17 @@ public class BeastBookModuleTest {
       assertEquals(exercises.get(i).getRepGoal(), workout.getExercises().get(i).getRepGoal());
       assertEquals(exercises.get(i).getWeight(), workout.getExercises().get(i).getWeight());
       assertEquals(exercises.get(i).getSets(), workout.getExercises().get(i).getSets());
+      assertEquals(exercises.get(i).getRepsPerSet(), workout.getExercises().get(i).getRepsPerSet());
       assertEquals(exercises.get(i).getRestTime(), workout.getExercises().get(i).getRestTime());
       }
   }
 
-  static void checkExercise(Exercise exercise, String exerciseName, int repGoal, double weight, int sets, int restTime) {
+  static void checkExercise(Exercise exercise, String exerciseName, int repGoal, double weight, int sets, int repsPerSet, int restTime) {
     assertEquals(exerciseName, exercise.getExerciseName());
     assertEquals(repGoal, exercise.getRepGoal());
     assertEquals(weight, exercise.getWeight());
     assertEquals(sets, exercise.getSets());
+    assertEquals(repsPerSet, exercise.getRepsPerSet());
     assertEquals(restTime, exercise.getRestTime());
   }
 
@@ -75,8 +79,8 @@ public class BeastBookModuleTest {
   public void testSerializers() {
     User user = new User("Test", "password");
     Workout workout = new Workout("Legday");
-    Exercise squat = new Exercise("Squat", 25, 100, 5, 90);
-    Exercise legPress = new Exercise("LegPress", 30, 250, 3, 60);
+    Exercise squat = new Exercise("Squat", 25, 100, 5, 0, 90);
+    Exercise legPress = new Exercise("LegPress", 30, 250, 3,0, 60);
     workout.addExercise(squat);
     workout.addExercise(legPress);
     user.addWorkout(workout);
@@ -96,15 +100,15 @@ public class BeastBookModuleTest {
       assertTrue(user.getWorkouts().size() == 1);
 
       List<Exercise> testList = new ArrayList<>();
-      Exercise squat = new Exercise("Squat", 25, 100, 5, 90);
-      Exercise legPress = new Exercise("LegPress", 30, 250, 3, 60);
+      Exercise squat = new Exercise("Squat", 25, 100, 5, 0, 90);
+      Exercise legPress = new Exercise("LegPress", 30, 250, 3, 0, 60);
       testList.add(squat);
       testList.add(legPress);
 
       checkWorkout(user.getWorkouts().get(0), "Legday", testList);
 
-      checkExercise(user.getWorkouts().get(0).getExercises().get(0), "Squat", 25, 100, 5, 90);
-      checkExercise(user.getWorkouts().get(0).getExercises().get(1), "LegPress", 30, 250, 3, 60);
+      checkExercise(user.getWorkouts().get(0).getExercises().get(0), "Squat", 25, 100, 5, 0, 90);
+      checkExercise(user.getWorkouts().get(0).getExercises().get(1), "LegPress", 30, 250, 3, 0, 60);
     } catch (JsonProcessingException e) {
         fail();
     }
@@ -115,8 +119,8 @@ public class BeastBookModuleTest {
   public void testSerializersDeserializers() {
     User user = new User("Test", "password");
     Workout workout = new Workout("Legday");
-    Exercise squat = new Exercise("Squat", 25, 100, 5, 90);
-    Exercise legPress = new Exercise("LegPress", 30, 250, 3, 60);
+    Exercise squat = new Exercise("Squat", 25, 100, 5, 0, 90);
+    Exercise legPress = new Exercise("LegPress", 30, 250, 3, 0, 60);
     workout.addExercise(squat);
     workout.addExercise(legPress);
     user.addWorkout(workout);
@@ -132,8 +136,8 @@ public class BeastBookModuleTest {
 
       checkWorkout(user2.getWorkouts().get(0), "Legday", testList);
 
-      checkExercise(user2.getWorkouts().get(0).getExercises().get(0), "Squat", 25, 100, 5, 90);
-      checkExercise(user2.getWorkouts().get(0).getExercises().get(1), "LegPress", 30, 250, 3, 60);
+      checkExercise(user2.getWorkouts().get(0).getExercises().get(0), "Squat", 25, 100, 5, 0,90);
+      checkExercise(user2.getWorkouts().get(0).getExercises().get(1), "LegPress", 30, 250, 3, 0, 60);
     } catch (JsonProcessingException e) {
       fail();
     }

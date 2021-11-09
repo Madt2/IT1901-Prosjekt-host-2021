@@ -2,6 +2,7 @@ package beastbook.fxui;
 
 import beastbook.core.User;
 import java.io.IOException;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 
@@ -19,30 +20,22 @@ public class HomeScreenController extends AbstractController {
   @FXML
   private Button workoutsButton;
 
-  @FXML
-  private Button historyButton;
-
   @Override
-  void loadHistory() throws IOException {
-    super.loadHistory();
+  void loadCreate(ActionEvent event) throws IOException {
+    super.loadCreate(event);
   }
 
   @Override
-  void loadCreate() throws IOException {
-    super.loadCreate();
+  void loadOverview(ActionEvent event) throws IOException {
+    super.loadOverview(event);
   }
 
   @Override
-  void loadWorkouts() throws IOException {
-    super.loadWorkouts();
+  void loadLogin(ActionEvent event) throws IOException {
+    super.loadLogin(event);
   }
 
-  @Override
-  void loadLogin() throws IOException {
-    super.loadLogin();
-  }
-
-  public void setUser(User user) {
+  void setUser(User user) {
     this.user = user;
   }
 }

@@ -3,7 +3,6 @@ package beastbook.fxui;
 import beastbook.core.Exercise;
 import beastbook.core.User;
 import beastbook.core.Workout;
-import beastbook.json.BeastBookPersistence;
 import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -21,7 +20,7 @@ import javafx.scene.text.Text;
 public class CreateWorkoutController extends AbstractController {
 
   @FXML
-  private TableView<Exercise> workoutTable = new TableView<Exercise>();
+  private TableView<Exercise> workoutTable = new TableView<>();
 
   @FXML
   private Text exceptionFeedback;
@@ -36,7 +35,7 @@ public class CreateWorkoutController extends AbstractController {
   private TextField repGoalInput;
 
   @FXML
-  private TextField weigthInput;
+  private TextField weightInput;
 
   @FXML
   private TextField setsInput;
@@ -74,15 +73,11 @@ public class CreateWorkoutController extends AbstractController {
   @FXML
   private Text restTimeTitle;
 
-  private Workout workout = new Workout();
-  private Exercise exercise = new Exercise();
-  private Exercise selectedExercise = new Exercise();
   private TableColumn<Exercise, String> exerciseNameColumn;
   private TableColumn<Exercise, Integer> repGoalColumn;
   private TableColumn<Exercise, Double> weightColumn;
   private TableColumn<Exercise, Integer> setsColumn;
   private TableColumn<Exercise, Integer> restTimeColumn;
-  private BeastBookPersistence persistence = new BeastBookPersistence();
 
   public static final String WRONG_INPUT_BORDER_COLOR = "-fx-text-box-border: #B22222;"
           + "-fx-focus-color: #B22222";
@@ -91,24 +86,19 @@ public class CreateWorkoutController extends AbstractController {
   /**
    * Initializes the CreateWorkout scene with the listeners for validation of input fields.
    */
-  public void initialize() {
+  public void initialize() throws IOException {
+    user = user.loadUser(user.getUserName());
     updateTable();
-    persistence.setSaveFilePath(user.getUserName());
-    exerciseNameInput.setOnKeyTyped(event -> {
-      new StringValidator(exerciseTitle, exerciseNameInput, exceptionFeedback);
-    });
-    repGoalInput.setOnKeyTyped(event -> {
-      new IntValidator(repGoalTitle, repGoalInput, exceptionFeedback);
-    });
-    weigthInput.setOnKeyTyped(event -> {
-      new DoubleValidator(weightTitle, weigthInput, exceptionFeedback);
-    });
-    setsInput.setOnKeyTyped(event -> {
-      new IntValidator(setsTitle, setsInput, exceptionFeedback);
-    });
-    restInput.setOnKeyTyped(event -> {
-      new IntValidator(restTimeTitle, restInput, exceptionFeedback);
-    });
+    exerciseNameInput.setOnKeyTyped(event ->
+            new StringValidator(exerciseTitle, exerciseNameInput, exceptionFeedback));
+    repGoalInput.setOnKeyTyped(event ->
+            new IntValidator(repGoalTitle, repGoalInput, exceptionFeedback));
+    weightInput.setOnKeyTyped(event ->
+            new DoubleValidator(weightTitle, weightInput, exceptionFeedback));
+    setsInput.setOnKeyTyped(event ->
+            new IntValidator(setsTitle, setsInput, exceptionFeedback));
+    restInput.setOnKeyTyped(event ->
+            new IntValidator(restTimeTitle, restInput, exceptionFeedback));
   } 
 
   /**
@@ -117,38 +107,40 @@ public class CreateWorkoutController extends AbstractController {
   */
   public void updateTable() {
     workoutTable.getColumns().clear();
-         
-    exerciseNameColumn = new TableColumn<Exercise, String>("Exercise name");
+    exerciseNameColumn = new TableColumn<>("Exercise name");
     exerciseNameColumn.setCellValueFactory(
-      new PropertyValueFactory<Exercise, String>("exerciseName")
+            new PropertyValueFactory<>("exerciseName")
     );
-        
-    repGoalColumn = new TableColumn<Exercise, Integer>("Rep goal");
+    repGoalColumn = new TableColumn<>("Rep goal");
     repGoalColumn.setCellValueFactory(
-      new PropertyValueFactory<Exercise, Integer>("repGoal")
+            new PropertyValueFactory<>("repGoal")
     );
-
-    weightColumn = new TableColumn<Exercise, Double>("Weight");
+    weightColumn = new TableColumn<>("Weight");
     weightColumn.setCellValueFactory(
-      new PropertyValueFactory<Exercise, Double>("weight")
+            new PropertyValueFactory<>("weight")
     );
-
-    setsColumn = new TableColumn<Exercise, Integer>("Nr of sets");
+    setsColumn = new TableColumn<>("Nr of sets");
     setsColumn.setCellValueFactory(
-      new PropertyValueFactory<Exercise, Integer>("sets")
+            new PropertyValueFactory<>("sets")
     );
-
-    restTimeColumn = new TableColumn<Exercise, Integer>("Rest time in sec");
+    restTimeColumn = new TableColumn<>("Rest time in sec");
     restTimeColumn.setCellValueFactory(
-      new PropertyValueFactory<Exercise, Integer>("restTime")
+            new PropertyValueFactory<>("restTime")
     );
-       
     workoutTable.getColumns().add(exerciseNameColumn);
     workoutTable.getColumns().add(repGoalColumn);
     workoutTable.getColumns().add(weightColumn);
     workoutTable.getColumns().add(setsColumn);
     workoutTable.getColumns().add(restTimeColumn);
     setColumnsSize();
+    Workout workout;
+    if (hasWorkout()) {
+      workout = user.getWorkout(titleInput.getText());
+    } else if (hasTemp()) {
+      workout = user.getWorkout("Temp");
+    } else {
+      workout = new Workout(titleInput.getText());
+    }
     workoutTable.getItems().setAll(workout.getExercises());
   }
 
@@ -173,15 +165,6 @@ public class CreateWorkoutController extends AbstractController {
   Exercise getTable(int row) {
     return workoutTable.getItems().get(row);
   }
-
-  /**
-  * Gets workout.
-  *
-  * @return the workout. Mainly used for test reasons
-  */
-  Workout getWorkout() {
-    return workout;
-  }
     
   /**
   * Gets the workout table.
@@ -190,6 +173,24 @@ public class CreateWorkoutController extends AbstractController {
   */
   TableView<Exercise> getWorkoutTable() {
     return workoutTable;
+  }
+
+  private boolean hasWorkout() {
+    for (Workout w : user.getWorkouts()) {
+      if (w.getName().equals(titleInput.getText())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  private boolean hasTemp() {
+    for (Workout w : user.getWorkouts()) {
+      if (w.getName().equals("Temp")) {
+        return true;
+      }
+    }
+    return false;
   }
 
   /**
@@ -205,23 +206,21 @@ public class CreateWorkoutController extends AbstractController {
   *  The text disappears when an exercise is added successfully.
   */
   @FXML
-  void addExercise() {
+  void addExercise() throws IllegalArgumentException {
     if (exceptionFeedback.getText().equals("") && !checkForEmptyInputFields()) {
       try {
-        if (workout == null) {
-          workout = new Workout(titleInput.getText());
-        }
         int repGoal;
         double weight;
         int sets;
         int rest;
+
         try {
           repGoal = Integer.parseInt(repGoalInput.getText());
         } catch (NumberFormatException a) {
           throw new IllegalArgumentException("Rep Goal must be a number!");
         }
         try {
-          weight = Double.parseDouble(weigthInput.getText());
+          weight = Double.parseDouble(weightInput.getText());
         } catch (NumberFormatException b) {
           throw new IllegalArgumentException("Working Weight must be a number");
         }
@@ -236,20 +235,35 @@ public class CreateWorkoutController extends AbstractController {
           throw new IllegalArgumentException("Rest Time must be a number");
         }
         String name = exerciseNameInput.getText();
-        exercise = new Exercise(name, repGoal, weight, sets, rest);
-        
-        workout.addExercise(exercise);
-        workoutTable.getItems().add(exercise);
-        exercise = new Exercise();   
+        int repsPerSet = 0;
+        Exercise exercise = new Exercise(name, repGoal, weight, sets, repsPerSet, rest);
+        Workout workout;
+        if (hasWorkout()) {
+          workout = user.getWorkout(titleInput.getText());
+        } else if (hasTemp()) {
+          workout = user.getWorkout("Temp");
+        } else {
+          workout = new Workout("Temp");
+          user.addWorkout(workout);
+        }
+        for (Exercise e : workout.getExercises()) {
+          if (e.getExerciseName().equals(exercise.getExerciseName())) {
+            workout.removeExercise(e);
+            workout.addExercise(exercise);
+            exceptionFeedback.setText("Exercise overwritten!");
+          }
+        }
+        if (!exceptionFeedback.getText().equals("Exercise overwritten!")) {
+          workout.addExercise(exercise);
+          exceptionFeedback.setText("Exercise added!");
+        }
+        updateTable();
         exceptionFeedback.setText("");
         createButton.setDisable(false);
         emptyInputFields();
       } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage());
-      } catch (Exception e) {
-        exceptionFeedback.setText(e.getMessage());
-        //exceptionFeedback.setText("exercise catch");
-      }  
+      }
     } else if (checkForEmptyInputFields()) {
       exceptionFeedback.setText("Input missing in a field");
     } else {
@@ -264,7 +278,7 @@ public class CreateWorkoutController extends AbstractController {
   private void emptyInputFields() {
     exerciseNameInput.setText("");
     repGoalInput.setText("");
-    weigthInput.setText("");
+    weightInput.setText("");
     setsInput.setText("");
     restInput.setText("");
   }
@@ -279,8 +293,8 @@ public class CreateWorkoutController extends AbstractController {
       repGoalInput.setStyle(WRONG_INPUT_BORDER_COLOR);
       counter++;
     }
-    if (weigthInput.getText().equals("")) {
-      weigthInput.setStyle(WRONG_INPUT_BORDER_COLOR);
+    if (weightInput.getText().equals("")) {
+      weightInput.setStyle(WRONG_INPUT_BORDER_COLOR);
       counter++;
     }
     if (setsInput.getText().equals("")) {
@@ -291,10 +305,7 @@ public class CreateWorkoutController extends AbstractController {
       restInput.setStyle(WRONG_INPUT_BORDER_COLOR);
       counter++;
     }
-    if (counter > 1) {
-      return true;
-    }
-    return false;
+    return counter > 1;
   }
 
   /**
@@ -305,25 +316,21 @@ public class CreateWorkoutController extends AbstractController {
   * @param event When Load Workout button is clicked in GUI, loadWorkout() is fired.
   */
   @FXML
-  void loadWorkout(ActionEvent event) {     
+  void loadWorkout(ActionEvent event) {
     if (titleInput.getText().equals("") || titleInput.getText() == null) {
       exceptionFeedback.setText("Missing Title!");
       return;
     }
     try {
-      Workout load = user.getWorkout(titleInput.getText());
-      if (load == null) {
-        throw new IllegalArgumentException("no workout");
+      if (hasWorkout()) {
+        updateTable();
+        exceptionFeedback.setText("");
+      } else {
+        throw new IllegalArgumentException("No workout found");
       }
-      for (Exercise e : load.getExercises()) {
-        workout.addExercise(e);
-      }
-      workout.setName(load.getName());
-      updateTable();
-      exceptionFeedback.setText("");
     } catch (Exception e) {
       exceptionFeedback.setText("Workout not found!");
-      workout = new Workout();
+      updateTable();
     }
   }
 
@@ -340,65 +347,82 @@ public class CreateWorkoutController extends AbstractController {
       exceptionFeedback.setText("Input title is empty, please enter name to workout");
     } else {
       try {
-        workout.setName(titleInput.getText());
-        user.addWorkout(workout);
-        persistence.saveUser(user);
-        exceptionFeedback.setText("Workout saved!");
+        Workout workout;
+        if (hasWorkout()) {
+          workout = user.getWorkout(titleInput.getText());
+          user.updateWorkout(workout);
+          exceptionFeedback.setText("Workout overwritten!");
+          updateTable();
+        } else if (hasTemp()) {
+          workout = user.getWorkout("Temp");
+          user.removeWorkout(user.getWorkout("Temp"));
+          workout.setName(titleInput.getText());
+          user.addWorkout(workout);
+        } else {
+          workout = new Workout(titleInput.getText());
+          user.addWorkout(workout);
+          exceptionFeedback.setText("Workout saved!");
+        }
+        if (hasTemp()) {
+          user.removeWorkout(user.getWorkout("Temp"));
+        }
+        user.saveUser();
         emptyInputFields();
         titleInput.setText("");
-        workout = new Workout();
         createButton.setDisable(true);
         updateTable();
       } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage());
       } catch (Exception e) {
-        System.err.println(e);
         exceptionFeedback.setText("Save Workout failed!");
       }
     }
   }
 
   @FXML
-  private void exerciseSelectedListener() throws IOException {
-    selectedExercise = workoutTable.getSelectionModel().getSelectedItem();
-    if (selectedExercise != null) {
-      deleteButton.setDisable(false);
-    } else {
-      deleteButton.setDisable(true);
-    }
+  private void exerciseSelectedListener() {
+    Exercise selectedExercise = workoutTable.getSelectionModel().getSelectedItem();
+    deleteButton.setDisable(selectedExercise == null);
   }
 
   @FXML
-  void deleteExercise() throws IllegalStateException, IOException {
-    Workout del = user.getWorkout(workout.getName());
-    if (del.getExercises().size() <= 1) {
-      exceptionFeedback.setText("Could not delete exercise '" + selectedExercise.getExerciseName() 
-          + "', at least one exercise has to be in every workout!");
-    } else {
-      del.removeExercise(selectedExercise);
+  void deleteExercise() throws IllegalStateException {
+    Exercise selectedExercise;
+    selectedExercise = workoutTable.getSelectionModel().getSelectedItem();
+    Workout workout;
+    try {
+      if (hasWorkout()) {
+        workout = user.getWorkout(titleInput.getText());
+      } else if (hasTemp()) {
+        workout = user.getWorkout("Temp");
+      } else {
+        throw new IllegalStateException("No Exercise deleted");
+      }
       workout.removeExercise(selectedExercise);
-      exceptionFeedback.setText(
-            "The exercise '" + selectedExercise.getExerciseName() + "' was deleted!"
-      );
+      exceptionFeedback.setText("The exercise '"
+              + selectedExercise.getExerciseName() + "' was deleted!");
       updateTable();
-      persistence.saveUser(user);
+      if (hasTemp()) {
+        user.removeWorkout(user.getWorkout("Temp"));
+      }
+      user.saveUser();
       deleteButton.setDisable(true);
+    } catch (IllegalArgumentException | IOException e) {
+      exceptionFeedback.setText("The exercise '"
+              + selectedExercise.getExerciseName() + "' does not exist");
     }
   }
 
+
   TextField getWeightInput() {
-    return this.weigthInput;
-  }
-  
-  @Override
-  void loadHome() throws IOException {
-    super.loadHome();
+    return this.weightInput;
   }
 
   @Override
-  void loadLogin() throws IOException {
-    super.loadLogin();
+  void loadHome(ActionEvent event) throws IOException {
+    super.loadHome(event);
   }
+
 
   void setUser(User user) {
     this.user = user;
@@ -423,10 +447,10 @@ public class CreateWorkoutController extends AbstractController {
         if (num <= 0) {
           exception.setText(title.getText().replace(":", "") + " must be more than 0");
           field.setStyle(WRONG_INPUT_BORDER_COLOR);
-        } else if (String.valueOf(num).length() >= exercise.maxIntLength) {
+        } else if (String.valueOf(num).length() >= Exercise.maxIntLength) {
           exception.setText(
                 title.getText().replace(":", "") + " can not be longer than "
-                + exercise.maxIntLength + " characters!"
+                + Exercise.maxIntLength + " characters!"
           );
           field.setStyle(WRONG_INPUT_BORDER_COLOR);
         } else {
@@ -437,7 +461,7 @@ public class CreateWorkoutController extends AbstractController {
         exception.setText(
             title.getText().replace(":", "")
             + " must be a number and can not exceed "
-            + exercise.maxIntLength
+            + Exercise.maxIntLength
         );
         field.setStyle(WRONG_INPUT_BORDER_COLOR);
       }
@@ -463,10 +487,10 @@ public class CreateWorkoutController extends AbstractController {
         if (num <= 0) {
           exception.setText(title.getText().replace(":", "") + " must be more than 0");
           field.setStyle(WRONG_INPUT_BORDER_COLOR);
-        } else if (String.valueOf(num).length() >= exercise.maxDoubleLength) {
+        } else if (String.valueOf(num).length() >= Exercise.maxDoubleLength) {
           exception.setText(
                 title.getText().replace(":", "") + " can not be longer than "
-                + exercise.maxDoubleLength + " characters!"
+                + Exercise.maxDoubleLength + " characters!"
           );
           field.setStyle(WRONG_INPUT_BORDER_COLOR);
         } else {
@@ -477,7 +501,7 @@ public class CreateWorkoutController extends AbstractController {
         exception.setText(
                 title.getText().replace(":", "")
                 + " must be a number and can not exceed "
-                + exercise.maxDoubleLength
+                + Exercise.maxDoubleLength
         );
         field.setStyle(WRONG_INPUT_BORDER_COLOR);
       }
@@ -499,17 +523,17 @@ public class CreateWorkoutController extends AbstractController {
     public StringValidator(Text title, TextField field, Text exception) {
       String text = field.getText();
       text = text.trim();
-      if ((text.length() <= 0) || (text.equals(""))) {
+      if (text.length() <= 0) {
         exception.setText(
                 title.getText().replace(":", "")
                 + " can not be blank"
         );
         field.setStyle(WRONG_INPUT_BORDER_COLOR);
-      } else if (text.length() >= exercise.maxStringLength) {
+      } else if (text.length() >= Exercise.maxStringLength) {
         exception.setText(
                 title.getText().replace(":", "")
                 + " must be less than "
-                + exercise.maxStringLength
+                + Exercise.maxStringLength
                 + " characters!"
         );
         field.setStyle(WRONG_INPUT_BORDER_COLOR);
