@@ -81,7 +81,7 @@ public class User {
    * @param workout workout to add
    */
   public void addWorkout(Workout workout) {
-    checkWorkout(workout);
+    //checkWorkout(workout);
     workouts.add(workout);
   }
 
@@ -101,7 +101,7 @@ public class User {
    * 
    * @param workout The Workout to be checked
    */
-  public void checkWorkout(Workout workout) {
+  /*public void checkWorkout(Workout workout) {
     for (Workout w : getWorkouts()) {
       if (w.getName().equals(workout.getName())) {
         throw new IllegalArgumentException(
@@ -110,7 +110,7 @@ public class User {
         );
       }
     }
-  }
+  }*/
 
   /**
   * Removes workout object from users workouts List.
