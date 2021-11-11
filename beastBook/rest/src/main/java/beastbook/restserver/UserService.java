@@ -1,4 +1,4 @@
-package beastbook.restapi;
+package beastbook.restserver;
 
 import beastbook.core.Exercise;
 import beastbook.core.User;

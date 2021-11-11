@@ -1,7 +1,5 @@
 package beastbook.restserver;
 
-import beastbook.restapi.UserController;
-import beastbook.restapi.UserService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
