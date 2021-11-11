@@ -32,7 +32,7 @@ public class WorkoutControllerTest extends ApplicationTest{
     wc.setUser(user);
     wc.setWorkoutName("Pull workout");
     addWorkoutsToUser();
-    user.saveUser();
+    wc.user.saveUser();
     Parent root = loader.load();
     stage.setScene(new Scene(root));
     stage.show();
@@ -40,15 +40,15 @@ public class WorkoutControllerTest extends ApplicationTest{
 
   @Test
   void testEditSelectedCell() throws IOException {
-    Assertions.assertEquals("Benchpress", user.getWorkout("Pull workout").getExercises().get(0).getExerciseName());
+    Assertions.assertEquals("Benchpress", wc.user.getWorkout("Pull workout").getExercises().get(0).getExerciseName());
     wc.getWorkoutTable().getColumns().get(0).setId("exerciseName");
     Node node = lookup("#exerciseName").nth(1).query();
     doubleClickOn(node, MouseButton.PRIMARY).write("Pull ups");
     press(KeyCode.ENTER).release(KeyCode.ENTER);
-    user = user.loadUser(user.getUserName());
+    
     Assertions.assertNotEquals("Benchpress", wc.getWorkoutTable().getSelectionModel().getSelectedItem().getExerciseName());
     Assertions.assertEquals("Pull ups", wc.getWorkoutTable().getSelectionModel().getSelectedItem().getExerciseName());
-    Assertions.assertEquals("Pull ups", user.getWorkout("Pull workout").getExercises().get(0).getExerciseName());
+    Assertions.assertEquals("Pull ups", wc.user.getWorkout("Pull workout").getExercises().get(0).getExerciseName());
   }
 
   @Test
@@ -61,20 +61,19 @@ public class WorkoutControllerTest extends ApplicationTest{
     Assertions.assertNotEquals(-50, user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Rep Goal must be more than 0! Value was not changed!"));
 
-    Assertions.assertEquals(20, user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());
+    Assertions.assertEquals(20, wc.user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());
     Assertions.assertEquals(20, wc.getWorkoutTable().getSelectionModel().getSelectedItem().getRepGoal());
 
     wc.getWorkoutTable().getColumns().get(1).setId("repGoal");
     node = lookup("#repGoal").nth(1).query();
     doubleClickOn(node, MouseButton.PRIMARY).write("50");
     press(KeyCode.ENTER).release(KeyCode.ENTER);
-    user = user.loadUser(user.getUserName());
 
-    Assertions.assertNotEquals(-20, user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());
+    Assertions.assertNotEquals(-20, wc.user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());
     Assertions.assertNotEquals(-20, wc.getWorkoutTable().getSelectionModel().getSelectedItem().getRepGoal());
 
     Assertions.assertEquals(50, wc.getWorkoutTable().getSelectionModel().getSelectedItem().getRepGoal());
-    Assertions.assertEquals(50, user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());
+    Assertions.assertEquals(50, wc.user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText(""));
 
     wc.getWorkoutTable().getColumns().get(1).setId("repGoal");
@@ -85,7 +84,7 @@ public class WorkoutControllerTest extends ApplicationTest{
     
     sleep(1000);
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Rep Goal must be a number. Value was not changed!"));
-    Assertions.assertEquals(50, user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());
+    Assertions.assertEquals(50, wc.user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());
     Assertions.assertEquals(50, wc.getWorkoutTable().getSelectionModel().getSelectedItem().getRepGoal());
   }
 
@@ -95,7 +94,7 @@ public class WorkoutControllerTest extends ApplicationTest{
     workout1.addExercise(new Exercise("Leg press", 25, 50, 75, 0, 100));
     workout1.addExercise(new Exercise("Deadlift", 20, 20, 20, 0, 20));
     workout1.addExercise(new Exercise("Biceps curl", 20, 20, 20, 0, 20));
-    user.addWorkout(workout1);
+    wc.user.addWorkout(workout1);
   }
 
   @AfterAll

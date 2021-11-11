@@ -9,7 +9,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.testfx.api.FxAssert;
@@ -29,7 +28,7 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
     loader.setController(woc);
     woc.setUser(user);
     addWorkoutsToUser();
-    user.saveUser();
+    woc.user.saveUser();
     final Parent root = loader.load();
     stage.setScene(new Scene(root));
     stage.show();
@@ -48,21 +47,21 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
   @Test
   void testDeleteWorkout() throws IOException {
     // 2 workouts left
-    Assertions.assertEquals(woc.getWorkoutOverview().getItems().get(0).getName(), user.getWorkouts().get(0).getName());
+    Assertions.assertEquals(woc.getWorkoutOverview().getItems().get(0).getName(), woc.user.getWorkouts().get(0).getName());
     woc.getWorkoutOverview().getColumns().get(0).setId("workoutName");
     Node node = lookup("#workoutName").nth(1).query();
     clickOn(node);
     Assertions.assertEquals("Pull workout", woc.getWorkoutOverview().getSelectionModel().getSelectedItem().getName());
     clickOn("#deleteButton");
-    user = user.loadUser(user.getUserName());
+    
     // 1 workout left
-    Assertions.assertEquals(1, user.getWorkouts().size());
+    Assertions.assertEquals(1, woc.user.getWorkouts().size());
     Assertions.assertEquals(1, woc.getWorkoutOverview().getItems().size());
-    Assertions.assertEquals(woc.getWorkoutOverview().getItems().get(0).getName(), user.getWorkouts().get(0).getName());
+    Assertions.assertEquals(woc.getWorkoutOverview().getItems().get(0).getName(), woc.user.getWorkouts().get(0).getName());
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Workout deleted!"));
     // Tries to delete once again, without selecting a workout. Will not delete
     clickOn("#deleteButton");
-    Assertions.assertEquals(woc.getWorkoutOverview().getItems().get(0).getName(), user.getWorkouts().get(0).getName());
+    Assertions.assertEquals(woc.getWorkoutOverview().getItems().get(0).getName(), woc.user.getWorkouts().get(0).getName());
   }
  
   private void addWorkoutsToUser() {
@@ -72,8 +71,8 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
     workout1.addExercise(new Exercise("Leg press", 25, 50, 75, 0,  100));
     workout1.addExercise(new Exercise("Deadlift", 20, 20, 20, 0, 20));
     workout1.addExercise(new Exercise("Biceps curl", 20, 20, 20, 0, 20));
-    user.addWorkout(workout1);
-    user.addWorkout(workout2);
+    woc.user.addWorkout(workout1);
+    woc.user.addWorkout(workout2);
   }
 
   @AfterAll
