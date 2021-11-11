@@ -29,16 +29,6 @@ public class LoginController extends AbstractController {
   private Button loginButton;
 
   /**
-  * Loads home in gui.
-  *
-   * @throws IOException if loading home screen fails
-  */
-  @Override
-  void loadHome(ActionEvent event) throws IOException {
-    super.loadHome(event);
-  }
-
-  /**
   * Registers user, saves user to file. Retrieves username and password input from gui.
   *
   * @param event when register button is clicked

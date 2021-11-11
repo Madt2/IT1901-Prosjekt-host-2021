@@ -8,8 +8,8 @@
 
 <AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TableView fx:id="workoutTable" layoutX="41.0" layoutY="84.0" minHeight="200.0" minWidth="525.0" prefHeight="60.0" prefWidth="525.0" />
-      <Button fx:id="backButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#loadOverview" text="&lt;- Back" />
+      <TableView fx:id="historyTable" layoutX="41.0" layoutY="84.0" minHeight="200.0" minWidth="525.0" prefHeight="60.0" prefWidth="525.0" />
+      <Button fx:id="backButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#loadHistoryOverview" text="&lt;- Back" />
       <Text fx:id="title" layoutX="288.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title">
          <font>
             <Font size="18.0" />
@@ -18,7 +18,7 @@
       <Text fx:id="exceptionFeedback" fill="#f80000" layoutX="42.0" layoutY="316.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="525.0">
          <font>
             <Font size="15.0" />
-         </font></Text>
-      <Button fx:id="saveButton" layoutX="485.0" layoutY="408.0" mnemonicParsing="false" onAction="#saveHistory" text="Save History" />
+         </font>
+      </Text>
    </children>
 </AnchorPane>

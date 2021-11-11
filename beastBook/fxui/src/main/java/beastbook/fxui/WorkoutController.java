@@ -1,6 +1,7 @@
 package beastbook.fxui;
 
 import beastbook.core.Exercise;
+import beastbook.core.History;
 import beastbook.core.User;
 import java.io.IOException;
 import javafx.event.ActionEvent;
@@ -179,6 +180,23 @@ public class WorkoutController extends AbstractController {
     });
   }
 
+  @FXML
+  void saveHistory() throws IOException {
+    boolean overwritten = false;
+    for (History h : user.getHistories()) {
+      if (h.getName().equals(workoutName) && h.getDate().equals(user.getDate())) {
+        user.removeHistory(h.getSavedWorkout().getName(), h.getDate());
+        user.addHistory(user.getWorkout(workoutName));
+        exceptionFeedback.setText("History overwritten!");
+        overwritten = !overwritten;
+      }
+    }
+    if (!overwritten) {
+      user.addHistory(user.getWorkout(workoutName));
+    }
+    user.saveUser();
+  }
+
   private void editTable() {
     tableWithString(exerciseNameColumn, "Wrong input, please try again. Value was not changed!");
     tableWithInteger(repGoalColumn, "Rep Goal must be a number. Value was not changed!");
@@ -208,11 +226,6 @@ public class WorkoutController extends AbstractController {
     setsColumn.setPrefWidth(75);
     repsPerSetColumn.setPrefWidth(80);
     restTimeColumn.setPrefWidth(106);
-  }
-
-  @Override
-  void loadOverview(ActionEvent event) throws IOException {
-    super.loadOverview(event);
   }
 
   void setUser(User user) {

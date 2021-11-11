@@ -2,8 +2,8 @@ package beastbook.core;
 
 import beastbook.json.BeastBookPersistence;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 /**
  * User class for application. Creates a user with username, password and a list of workouts.
@@ -16,7 +16,15 @@ public class User {
   private String password;
   private BeastBookPersistence persistence = new BeastBookPersistence();
   private List<Workout> workouts = new ArrayList<>();
+  private List<History> history = new ArrayList<>();
 
+  public static void main(String[] args) {
+    User user = new User("test","test");
+    Workout workout = new Workout("workout");
+    workout.addExercise(new Exercise("squat", 10,10,10,50,10));
+    user.addHistory(workout);
+    System.out.println(user.history.toString());
+  }
   /**
   * User object for application.
   *
@@ -85,6 +93,39 @@ public class User {
     workouts.add(workout);
   }
 
+  public void addHistory(Workout workout) {
+    History h = new History(workout, getDate());
+    history.add(h);
+  }
+
+  public void addHistory(History history) {
+    this.history.add(history);
+  }
+
+  public void removeHistory(String historyName, String date) {
+    for (History h : history) {
+      if (h.getName().equals(historyName) && h.getDate().equals(date)) {
+        history.remove(h);
+        return;
+      }
+    }
+    throw new IllegalArgumentException("No such history found!");
+  }
+
+  public History getHistory(String historyName, String date) {
+    for (History h : history) {
+      if (h.getName().equals(historyName) && h.getDate().equals(date)) {
+        return h;
+      }
+    }
+    throw new IllegalArgumentException("No history entry found!");
+  }
+
+  public String getDate() {
+    Date d = new Date();
+    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+    return sdf.format(d);
+  }
   /**
    * This method updates a Workout object by replacing with the new given Workout
    *
@@ -173,5 +214,9 @@ public class User {
   public User loadUser(String name) throws IOException {
     persistence.setSaveFilePath(name);
     return persistence.loadUser();
+  }
+
+  public List<History> getHistories() {
+    return new ArrayList<>(history);
   }
 }

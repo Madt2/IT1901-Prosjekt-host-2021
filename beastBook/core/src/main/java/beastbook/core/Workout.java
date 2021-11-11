@@ -82,6 +82,14 @@ public class Workout {
     return new ArrayList<>(exercises);
   }
 
+  public Workout copy(Workout workout) {
+    Workout copy = new Workout(workout.getName());
+    for (Exercise e : workout.getExercises()) {
+      copy.addExercise(e);
+    }
+    return copy;
+  }
+
   /**
   * toString for workout. Returns object in more readable format.
   *
