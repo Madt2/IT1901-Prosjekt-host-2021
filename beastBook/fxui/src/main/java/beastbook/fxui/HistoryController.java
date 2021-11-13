@@ -3,7 +3,6 @@ package beastbook.fxui;
 import beastbook.core.User;
 import javafx.fxml.FXML;
 import beastbook.core.Exercise;
-import beastbook.core.Workout;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -18,6 +17,9 @@ public class HistoryController extends AbstractController{
   @FXML
   private Text title;
 
+  @FXML
+  private Text date;
+
   private TableColumn<Exercise, String> exerciseNameColumn;
   private TableColumn<Exercise, Integer> repGoalColumn;
   private TableColumn<Exercise, Double> weightColumn;
@@ -31,9 +33,9 @@ public class HistoryController extends AbstractController{
   @FXML
   public void initialize() throws IOException {
       user = user.loadUser(user.getUserName());
-      System.out.println(user.getHistories());
       setTable();
-      title.setText("Name: " + historyName + " - Date :" + historyDate);
+      title.setText("Name: " + historyName);
+      date.setText("Date: " + historyDate);
   }
 
   public void setTable() {
@@ -74,19 +76,29 @@ public class HistoryController extends AbstractController{
     historyTable.getColumns().add(setsColumn);
     historyTable.getColumns().add(repsPerSetColumn);
     historyTable.getColumns().add(restTimeColumn);
-    setColumnsSize();
-
-    historyTable.getItems().setAll(user.getWorkout(historyName).getExercises());
+    customizeHistoryTable();
+    System.out.println(user.getHistory(historyName, historyDate));
+    System.out.println((user.getHistory(historyName, historyDate).getExercises()));
+    historyTable.getItems().setAll(user.getHistory(historyName, historyDate).getSavedWorkout().getExercises());
   }
 
-
-  private void setColumnsSize() {
+  private void customizeHistoryTable() {
     exerciseNameColumn.setPrefWidth(100);
     repGoalColumn.setPrefWidth(75);
     weightColumn.setPrefWidth(75);
     setsColumn.setPrefWidth(75);
     repsPerSetColumn.setPrefWidth(80);
     restTimeColumn.setPrefWidth(106);
+
+    /*
+    exerciseNameColumn.setStyle("-fx-background-color:lightgrey");
+    repGoalColumn.setStyle("-fx-background-color:lightgrey");
+    weightColumn.setStyle("-fx-background-color:lightgrey");
+    setsColumn.setStyle("-fx-background-color:lightgrey");
+    repsPerSetColumn.setStyle("-fx-background-color:lightgrey");
+    restTimeColumn.setStyle("-fx-background-color:lightgrey");
+    */
+
   }
 
   public void setHistoryName(String historyName) {

@@ -44,7 +44,6 @@ public class HistoryOverviewController extends AbstractController{
   @FXML
   public void initialize() throws IOException {
       user = user.loadUser(user.getUserName());
-      System.out.println(user.getHistories().toString());
       loadTable();
   }
 
@@ -54,8 +53,8 @@ public class HistoryOverviewController extends AbstractController{
     historyNameColumn.setCellValueFactory(new PropertyValueFactory<History, String>("name"));
     historyDateColumn = new TableColumn<History, String>("Date:");
     historyDateColumn.setCellValueFactory((new PropertyValueFactory<History,String>("date")));
-    historyOverview.getColumns().add(historyNameColumn);
     historyOverview.getColumns().add(historyDateColumn);
+    historyOverview.getColumns().add(historyNameColumn);
     historyOverview.getItems().setAll(user.getHistories());
     setColumnsSize();
   }
