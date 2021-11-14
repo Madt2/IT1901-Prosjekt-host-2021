@@ -151,9 +151,7 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
     
   @Test
   void testWorkoutIsNotLoaded() throws IOException{  
-    System.out.println(controller.user.getWorkouts());
     controller.user.removeWorkout(controller.user.getWorkout("testWorkout"));
-    System.out.println(controller.user.getWorkouts());
     clickOn("#titleInput", MouseButton.PRIMARY).write("testWorkout");
     clickOn("#loadButton", MouseButton.PRIMARY);
  

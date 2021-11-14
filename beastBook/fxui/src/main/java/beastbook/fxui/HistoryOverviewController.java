@@ -15,10 +15,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
 import java.io.IOException;
 
-public class HistoryOverviewController extends AbstractController{
+public class HistoryOverviewController extends AbstractController {
   @FXML
   private AnchorPane rootPane;
 
@@ -43,8 +42,8 @@ public class HistoryOverviewController extends AbstractController{
 
   @FXML
   public void initialize() throws IOException {
-      user = user.loadUser(user.getUserName());
-      loadTable();
+    user = user.loadUser(user.getUserName());
+    loadTable();
   }
 
   private void loadTable() {
@@ -52,7 +51,7 @@ public class HistoryOverviewController extends AbstractController{
     historyNameColumn = new TableColumn<History, String>("Workout name:");
     historyNameColumn.setCellValueFactory(new PropertyValueFactory<History, String>("name"));
     historyDateColumn = new TableColumn<History, String>("Date:");
-    historyDateColumn.setCellValueFactory((new PropertyValueFactory<History,String>("date")));
+    historyDateColumn.setCellValueFactory((new PropertyValueFactory<History, String>("date")));
     historyOverview.getColumns().add(historyDateColumn);
     historyOverview.getColumns().add(historyNameColumn);
     historyOverview.getItems().setAll(user.getHistories());
@@ -68,61 +67,66 @@ public class HistoryOverviewController extends AbstractController{
 
   @FXML
   void loadHistory(ActionEvent event) throws IOException {
-      try {
-          exceptionFeedback.setText("");
-          HistoryController historyController = new HistoryController();
-          FXMLLoader fxmlLoader = new FXMLLoader(
-                    this.getClass().getResource("/beastbook.fxui/History.fxml")
-            );
-            fxmlLoader.setController(historyController);
-            historyController.setUser(user);
-            historyController.setHistoryName(getHistoryName());
-            historyController.setHistoryDate(getHistoryDate());
-            Parent root = fxmlLoader.load();
-            Scene scene = new Scene(root, 600, 500);
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(scene);
-        } catch (Exception e) {
-            openButton.setDisable(true);
-            deleteButton.setDisable(true);
-            exceptionFeedback.setText("No history entry is selected!");
-        }
+    try {
+      exceptionFeedback.setText("");
+      HistoryController historyController = new HistoryController();
+      FXMLLoader fxmlLoader = new FXMLLoader(
+          this.getClass().getResource("/beastbook.fxui/History.fxml")
+      );
+      fxmlLoader.setController(historyController);
+      historyController.setUser(user);
+      historyController.setHistoryName(getHistoryName());
+      historyController.setHistoryDate(getHistoryDate());
+      Parent root = fxmlLoader.load();
+      Scene scene = new Scene(root, 600, 500);
+      Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+      stage.setScene(scene);
+    } catch (Exception e) {
+      openButton.setDisable(true);
+      deleteButton.setDisable(true);
+      exceptionFeedback.setText("No history entry is selected!");
     }
+  }
 
-    @FXML
-    private void historySelectedListener() throws Exception {
-        try {
-            selectedHistoryName = historyOverview.getSelectionModel().getSelectedItem().getName();
-            selectedHistoryDate = historyOverview.getSelectionModel().getSelectedItem().getDate();
-            if (selectedHistoryName != null) {
-                exceptionFeedback.setText("");
-                openButton.setDisable(false);
-                deleteButton.setDisable(false);
-            }
-        } catch (Exception e) {
-            openButton.setDisable(true);
-            deleteButton.setDisable(true);
-        }
+  @FXML
+  private void historySelectedListener() throws Exception {
+    try {
+      selectedHistoryName = historyOverview.getSelectionModel().getSelectedItem().getName();
+      selectedHistoryDate = historyOverview.getSelectionModel().getSelectedItem().getDate();
+      if (selectedHistoryName != null) {
+        exceptionFeedback.setText("");
+        openButton.setDisable(false);
+        deleteButton.setDisable(false);
+      }
+    } catch (Exception e) {
+      openButton.setDisable(true);
+      deleteButton.setDisable(true);
     }
-    @FXML
-    void deleteHistory() throws IllegalStateException, IOException {
-        user.removeHistory(getHistoryName(), getHistoryDate());
-        loadTable();
-        exceptionFeedback.setText("History entry deleted!");
-        user.saveUser();
-        openButton.setDisable(true);
-        deleteButton.setDisable(true);
-    }
+  }
+  
+  @FXML
+  void deleteHistory() throws IllegalStateException, IOException {
+    user.removeHistory(getHistoryName(), getHistoryDate());
+    loadTable();
+    exceptionFeedback.setText("History entry deleted!");
+    user.saveUser();
+    openButton.setDisable(true);
+    deleteButton.setDisable(true);
+  }
 
-    private String getHistoryDate() {
-        return selectedHistoryDate;
-    }
+  TableView<History> getHistoryOverview() {
+    return historyOverview;
+  }
 
-    public String getHistoryName() {
-        return selectedHistoryName;
-    }
+  private String getHistoryDate() {
+    return selectedHistoryDate;
+  }
+  
+  public String getHistoryName() {
+    return selectedHistoryName;
+  }
 
-    public void setUser(User user) {
-        this.user = user;
-    }
+  public void setUser(User user) {
+    this.user = user;
+  }
 }

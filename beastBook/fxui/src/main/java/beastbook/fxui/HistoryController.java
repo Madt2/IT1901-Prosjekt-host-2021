@@ -9,7 +9,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
 import java.io.IOException;
 
-public class HistoryController extends AbstractController{
+public class HistoryController extends AbstractController {
 
   @FXML
   private TableView<Exercise> historyTable;
@@ -32,15 +32,14 @@ public class HistoryController extends AbstractController{
 
   @FXML
   public void initialize() throws IOException {
-      user = user.loadUser(user.getUserName());
-      setTable();
-      title.setText("Name: " + historyName);
-      date.setText("Date: " + historyDate);
+    user = user.loadUser(user.getUserName());
+    setTable();
+    title.setText(historyName);
+    date.setText(historyDate);
   }
 
   public void setTable() {
     historyTable.getColumns().clear();
-
     exerciseNameColumn = new TableColumn<>("Exercise name:");
     exerciseNameColumn.setCellValueFactory(
             new PropertyValueFactory<>("exerciseName")
@@ -77,8 +76,6 @@ public class HistoryController extends AbstractController{
     historyTable.getColumns().add(repsPerSetColumn);
     historyTable.getColumns().add(restTimeColumn);
     customizeHistoryTable();
-    System.out.println(user.getHistory(historyName, historyDate));
-    System.out.println((user.getHistory(historyName, historyDate).getExercises()));
     historyTable.getItems().setAll(user.getHistory(historyName, historyDate).getSavedWorkout().getExercises());
   }
 
@@ -99,6 +96,10 @@ public class HistoryController extends AbstractController{
     restTimeColumn.setStyle("-fx-background-color:lightgrey");
     */
 
+  }
+  
+  TableView<Exercise> getHistoryTable() {
+    return historyTable;
   }
 
   public void setHistoryName(String historyName) {

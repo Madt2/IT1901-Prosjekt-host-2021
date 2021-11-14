@@ -14,7 +14,7 @@
             <Cursor fx:constant="DEFAULT" />
          </cursor></TableView>
       <Button fx:id="backButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#loadHistoryOverview" text="&lt;- Back" />
-      <Text fx:id="title" layoutX="42.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title" wrappingWidth="208.484375">
+      <Text layoutX="45.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title:" wrappingWidth="42.484375">
          <font>
             <Font size="18.0" />
          </font>
@@ -24,9 +24,19 @@
             <Font size="15.0" />
          </font>
       </Text>
-      <Text fx:id="date" layoutX="391.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date" wrappingWidth="174.484375">
+      <Text fx:id="date" layoutX="428.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="[date insert here]" wrappingWidth="137.484375">
          <font>
             <Font size="18.0" />
+         </font>
+      </Text>
+      <Text fx:id="title" layoutX="87.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="[title insert here]" wrappingWidth="208.484375">
+         <font>
+            <Font size="18.0" />
+         </font>
+      </Text>
+      <Text fx:id="date1" layoutX="379.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date:" wrappingWidth="48.484375">
+         <font>
+            <Font name="System Bold Italic" size="18.0" />
          </font>
       </Text>
    </children>

@@ -16,7 +16,7 @@
       </Text>
       <Button fx:id="openButton" disable="true" layoutX="177.0" layoutY="344.0" mnemonicParsing="false" onAction="#loadHistory" text="Open history" />
       <Button fx:id="deleteButton" disable="true" layoutX="306.0" layoutY="344.0" mnemonicParsing="false" onAction="#deleteHistory" text="Delete history" />
-      <Text fx:id="exceptionFeedback" fill="#ff2323" layoutX="219.0" layoutY="319.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="132.0" />
+      <Text fx:id="exceptionFeedback" fill="#ff2323" layoutX="218.0" layoutY="384.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="132.0" />
       <TableView fx:id="historyOverview" layoutX="154.0" layoutY="114.0" onMouseClicked="#historySelectedListener" prefHeight="200.0" prefWidth="260.0" />
    </children>
 </AnchorPane>

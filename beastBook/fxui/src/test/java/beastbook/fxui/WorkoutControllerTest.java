@@ -97,6 +97,8 @@ public class WorkoutControllerTest extends ApplicationTest{
     wc.user.addWorkout(workout1);
   }
 
+  //TODO Test for history functionality
+
   @AfterAll
   static void cleanUp() {
     File file = new File(System.getProperty("user.home") + "/test");

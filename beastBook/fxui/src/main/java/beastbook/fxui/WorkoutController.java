@@ -6,6 +6,7 @@ import beastbook.core.User;
 import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -30,6 +31,9 @@ public class WorkoutController extends AbstractController {
 
   @FXML
   private Text exceptionFeedback;
+
+  @FXML
+  private Button saveButton;
 
   private TableColumn<Exercise, String> exerciseNameColumn;
   private TableColumn<Exercise, Integer> repGoalColumn;
@@ -119,6 +123,7 @@ public class WorkoutController extends AbstractController {
         exercise.setExerciseName(event.getNewValue());
         user.saveUser();
         emptyExceptionFeedback();
+        saveButton.setDisable(false);
       } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
         workoutTable.refresh();
@@ -150,6 +155,7 @@ public class WorkoutController extends AbstractController {
         }
         user.saveUser();
         emptyExceptionFeedback();
+        saveButton.setDisable(false);
       } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
         workoutTable.refresh();
@@ -170,6 +176,7 @@ public class WorkoutController extends AbstractController {
         exercise.setWeight(event.getNewValue());
         user.saveUser();
         emptyExceptionFeedback();
+        saveButton.setDisable(false);
       } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage() + " Value was not changed!");
         workoutTable.refresh();
@@ -193,7 +200,9 @@ public class WorkoutController extends AbstractController {
     }
     if (!overwritten) {
       user.addHistory(user.getWorkout(workoutName));
+      exceptionFeedback.setText("Workout was successfully added to history!");
     }
+    saveButton.setDisable(true);
     user.saveUser();
   }
 
