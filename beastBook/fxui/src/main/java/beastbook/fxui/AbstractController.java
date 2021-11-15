@@ -72,4 +72,17 @@ public abstract class AbstractController {
     stage.setScene(scene);
   }
 
+  @FXML
+  void loadHistoryOverview(ActionEvent event) throws IOException {
+    HistoryOverviewController historyOverviewController = new HistoryOverviewController();
+    FXMLLoader fxmlLoader = new FXMLLoader(
+            this.getClass().getResource("/beastbook.fxui/HistoryOverview.fxml")
+    );
+    fxmlLoader.setController(historyOverviewController);
+    historyOverviewController.setUser(user);
+    Parent root = fxmlLoader.load();
+    Scene scene = new Scene(root, 600, 500);
+    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+    stage.setScene(scene);
+  }
 }

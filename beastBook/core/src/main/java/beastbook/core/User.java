@@ -2,7 +2,9 @@ package beastbook.core;
 
 import beastbook.json.BeastBookPersistence;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -16,6 +18,7 @@ public class User {
   private String password;
   private BeastBookPersistence persistence = new BeastBookPersistence();
   private List<Workout> workouts = new ArrayList<>();
+  private List<History> histories = new ArrayList<>();
 
   /**
   * User object for application.
@@ -85,8 +88,62 @@ public class User {
     workouts.add(workout);
   }
 
+  public void addHistory(Workout workout) {
+    History h = new History(workout, getDate());
+    histories.add(h);
+  }
+
+  public void addHistory(History history) {
+    this.histories.add(history);
+  }
+
   /**
-   * This method updates a Workout object by replacing with the new given Workout
+   * Method to remove History object from histories list.
+   *
+   * @param historyName The name of the history to be removed.
+   * @param date the corresponding date for the name.
+   * @throws IllegalArgumentException if no History object found.
+   */
+  public void removeHistory(String historyName, String date) throws IllegalArgumentException {
+    for (History h : histories) {
+      if (h.getName().equals(historyName) && h.getDate().equals(date)) {
+        histories.remove(h);
+        return;
+      }
+    }
+    throw new IllegalArgumentException("No such history found!");
+  }
+
+  /**
+   * Gets a History object from the history list.
+   *
+   * @param historyName The name of the history to be fetched.
+   * @param date the corresponding date for the name.
+   * @return the History object that was requested.
+   * @throws IllegalArgumentException if no History object found.
+   */
+  public History getHistory(String historyName, String date) throws IllegalArgumentException {
+    for (History h : histories) {
+      if (h.getName().equals(historyName) && h.getDate().equals(date)) {
+        return h;
+      }
+    }
+    throw new IllegalArgumentException("No history entry found!");
+  }
+
+  /**
+   * Help method to get the current date without time.
+   *
+   * @return current date without timestamp.
+   */
+  public String getDate() {
+    Date d = new Date();
+    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+    return sdf.format(d);
+  }
+
+  /**
+   * This method updates a Workout object by replacing with the new given Workout.
    *
    * @param workout the Workout to be replaced
    */
@@ -102,11 +159,11 @@ public class User {
 
   /**
    * Checks if user already har Workout saved.
-   * Throws IllegalArgumentException if workout found.
-   * 
+   *
    * @param workout The Workout to be checked
+   * @throws IllegalArgumentException if workout found.
    */
-  private void checkWorkout(Workout workout) {
+  private void checkWorkout(Workout workout) throws IllegalArgumentException {
     for (Workout w : getWorkouts()) {
       if (w.getName().equals(workout.getName())) {
         throw new IllegalArgumentException(
@@ -173,5 +230,9 @@ public class User {
   public User loadUser(String name) throws IOException {
     persistence.setSaveFilePath(name);
     return persistence.loadUser();
+  }
+
+  public List<History> getHistories() {
+    return new ArrayList<>(histories);
   }
 }

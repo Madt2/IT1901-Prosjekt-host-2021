@@ -1,5 +1,6 @@
 package beastbook.json.internal;
 
+import beastbook.core.History;
 import beastbook.core.User;
 import beastbook.core.Workout;
 import com.fasterxml.jackson.core.JsonParser;
@@ -17,21 +18,22 @@ import java.io.IOException;
  */
 public class UserDeserializer extends JsonDeserializer<User> {
 
-  private WorkoutDeserializer deserializer = new WorkoutDeserializer();
+  private WorkoutDeserializer workoutDeserializer = new WorkoutDeserializer();
+  private HistoryDeserializer historyDeserializer = new HistoryDeserializer();
   
   /**
   * Deserializes User data from json file.
   * Format for User in json: { username: "...", password: "...", workouts: "[...,...]" }.
   *
   * @param parser defines how JSON-file should be parsed
-  * @param deserializer defines context for deserialization
+  * @param deserializationContext defines context for deserialization
   * @return deserialized User.
   * @throws IOException for low-level read issues or decoding problems for JsonParser
   */
   @Override
   public User deserialize(
         JsonParser parser,
-        DeserializationContext deserializer
+        DeserializationContext deserializationContext
   ) throws IOException {
     TreeNode treeNode = parser.getCodec().readTree(parser);
     return deserialize((JsonNode) treeNode);
@@ -56,10 +58,19 @@ public class UserDeserializer extends JsonDeserializer<User> {
       }
       JsonNode workoutsNode = objectNode.get("workouts");
       if (workoutsNode instanceof ArrayNode) {
-        for (JsonNode elementNode : ((ArrayNode) workoutsNode)) {
-          Workout workout = deserializer.deserialize(elementNode);
+        for (JsonNode node : workoutsNode) {
+          Workout workout = workoutDeserializer.deserialize(node);
           if (workout != null) {
             user.addWorkout(workout);
+          }
+        }
+      }
+      JsonNode historyNode = objectNode.get("history");
+      if (historyNode instanceof ArrayNode) {
+        for (JsonNode node : historyNode) {
+          History history = historyDeserializer.deserialize(node);
+          if (history != null) {
+            user.addHistory(history);
           }
         }
       }
