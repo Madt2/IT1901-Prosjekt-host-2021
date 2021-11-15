@@ -1,0 +1,31 @@
+@startuml architecture
+
+component beastbook {
+   component beastbook.core {
+       package core
+       package json
+   }
+
+   component beastbook.fxui {
+       package fxui
+   }
+
+}
+
+
+component jackson
+component javafx {
+    component fxml
+}
+
+fxui ..> jackson
+fxui ..> javafx
+fxui ..> fxml
+
+beastbook.fxui ..> beastbook.core
+
+core ..> json
+
+
+
+@enduml
