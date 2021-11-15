@@ -31,253 +31,189 @@ public class BeastBookPersistence {
     mapper.registerModule(new BeastBookModule());
   }
 
+  /**
+   *  Help methods
+   */
+
   private void setUserPath(String username) {
     userPath = System.getProperty("user.home") + "/" + username;
-    System.out.println(userPath);
     workoutFolderPath = userPath + "/Workouts";
     exerciseFolderPath = userPath + "/Exercises";
   }
 
-  private boolean userExists() {
-    if (userPath == null) {
-      //Todo state or argument exc?
-      throw new IllegalStateException("userPath is incorrect!");
-    }
+  private boolean userExists(String username) throws IllegalArgumentException {
+    setUserPath(username);
     File user = new File(userPath);
     return user.isDirectory();
   }
 
-  public void createUserDir(String username) {
-    setUserPath(username);
-    if (userExists()) {
-      throw new IllegalStateException("User already exists!");
-    }
-    File userFolder = new File(userPath);
-    if (userFolder.mkdir()) {
-      System.out.println("Userfolder for " + username + " created.");
-    } else {
-      //Todo fix throw
-      throw new IllegalStateException("error");
-    }
-    File userProp = new File(userPath + "/UserData");
-    try {
-      //userProp.createNewFile();
-      objectWriter(new User(), userProp);
-    } catch (Exception e) {
-      //Todo fix exeption
-      System.out.println(e);
-    }
-    File idList = new File(userPath + "/IDs");
-    try {
-      //idList.createNewFile();
-      objectWriter(new Id(), idList);
-    } catch (Exception e) {
-      //Todo fix exeption
-      System.out.println(e);
-    }
-    File workoutFolder = new File(workoutFolderPath);
-    if (workoutFolder.mkdir()) {
-      System.out.println("Workout folder for " + username + " was created");
-    } else {
-      //Todo fix throw
-      throw new IllegalStateException("error");
-    }
-
-    File exerciseFolder = new File(exerciseFolderPath);
-    if (exerciseFolder.mkdir()) {
-      System.out.println("Created user folder for " + username);
-      //Todo fix throw
-    } else {
-      throw new IllegalStateException("Error");
+  private void validateUsername(String username) throws IllegalArgumentException {
+    if (!userExists(username)) {
+      throw new IllegalArgumentException("User does not exist");
     }
   }
 
-  //Todo create repair method?
+  private void createFolder(String path) throws IllegalArgumentException {
+    File folder = new File(path);
+    if (folder.mkdir()) {
+      System.out.println("Folder: " + path + " was created.");
+    } else {
+      throw new IllegalArgumentException("Path is incorrect format!");
+    }
+  }
 
-  //Todo objectwriter good name?
-  private void objectWriter(Object object, File file) {
+  //Todo good enough catches? should show better that it could not write to file.
+  private void writeObjectToFile(Object object, String filepath) {
+    File file = new File(filepath);
     try (Writer writer = new FileWriter(file, StandardCharsets.UTF_8)) {
       mapper.writeValue(writer, object);
     } catch (JsonMappingException e) {
-      //Todo fix exceptions
-      e.printStackTrace();
+      System.err.println("Could not deserialize object: " + object.getClass());
     } catch (JsonGenerationException e) {
-      e.printStackTrace();
+      System.err.println("Could not serialize object: " + object.getClass());
     } catch (IOException e) {
-      e.printStackTrace();
+      System.err.println("IO error when writing object " + object.getClass() + " to file!");
     }
   }
 
-  public void saveWorkout(Workout workout, String username) {
-    setUserPath(username);
-    if (!userExists()) {
-      throw new IllegalStateException("user dir does not exist!");
-    }
-    if (workout.getID() == null) {
-      throw new IllegalStateException("Workout must have ID (dont set manually, use getID from restServer!)");
-    }
-    String filepath = workoutFolderPath + "/" + workout.getID();
-    File file = new File(filepath);
-    objectWriter(workout, file);
-    System.out.println("Saved workout " + workout.getName() + " to " + workoutFolderPath);
-  }
-
-  public void saveExercise(Exercise exercise, String username) {
-    setUserPath(username);
-    if (!userExists()) {
-      throw new IllegalStateException("user dir does not exist!");
-    }
-    if (exercise.getID() == null) {
-      throw new IllegalStateException("Exercise must have ID (dont set manually, use getID from restServer!)");
-    }
-    String filepath = exerciseFolderPath + "/" + exercise.getID();
-    File file = new File(filepath);
-    objectWriter(exercise, file);
-    //Todo change getExerciseName to getName?
-    System.out.println("Saved exercise " + exercise.getExerciseName() + " to " + exerciseFolderPath);
-  }
-
-  //Todo update all saveUser in project, does not do the same as old saveUser method!!!
-  public void saveUser(User user) {
-    setUserPath(user.getUsername());
-    if (!userExists()) {
-      throw new IllegalStateException("user dir does not exist!");
-    }
-    String filepath = userPath + "/UserData";
-    File file = new File(filepath);
-    objectWriter(user, file);
-    System.out.println("Saved user " + user.getUsername() + " to " + userPath);
-  }
-
-  public void saveIds(Id id, String username) {
-    setUserPath(username);
-    if (!userExists()) {
-      throw new IllegalStateException("user dir does not exist!");
-    }
-    String filepath = userPath + "/IDs";
-    File file = new File(filepath);
-    objectWriter(id, file);
-    //Todo change getExerciseName to getName?
-    System.out.println("Saved IDs to " + userPath);
-  }
-
-  public void deleteExercise(Exercise exercise, String username) {
-    setUserPath(username);
-    if (!userExists()) {
-      throw new IllegalStateException("user dir does not exist!");
-    }
-    String filepath = exerciseFolderPath + "/" + exercise.getID();
-    File file = new File(filepath);
-    if (file.delete()) {
-      System.out.println("File: " + filepath + " deleted");
-    } else {
-      //Todo fix throw
-      throw new IllegalStateException("error");
-    }
-  }
-
-  public void deleteWorkout(Workout workout, String username) {
-    setUserPath(username);
-    if (!userExists()) {
-      throw new IllegalStateException("user dir does not exist!");
-    }
-    String filepath = workoutFolderPath + "/" + workout.getID();
-    File file = new File(filepath);
-    if (file.delete()) {
-      System.out.println("File: " + filepath + " deleted");
-    } else {
-      //Todo fix throw
-      throw new IllegalStateException("error");
-    }
-  }
-
-  public void deleteUser(String username) {
-    setUserPath(username);
-    if (!userExists()) {
-      throw new IllegalStateException("user dir does not exist!");
-    }
-    File file = new File(userPath);
-    if (file.delete()) {
-      System.out.println("File: " + username + " deleted");
-    } else {
-      //Todo fix throw
-      throw new IllegalStateException("error");
-    }
-  }
-
-  private <T> Object objectReader(File file, Class<T> cls) {
+  private <T> Object readObjectFromFile(File file, Class<T> cls) {
     try (Reader reader = new FileReader(file, StandardCharsets.UTF_8)) {
       return mapper.readValue(reader, cls);
     } catch (JsonMappingException e) {
-      //Todo fix catch
-      e.printStackTrace();
-    } catch (JsonParseException e) {
-      e.printStackTrace();
+      System.err.println("Could not deserialize file: " + file.getName());
+    } catch (JsonGenerationException e) {
+      System.err.println("Could not serialize file: " + file.getName());
     } catch (IOException e) {
-      e.printStackTrace();
+      System.err.println("IO error when reading file:  " + file.getName());
     }
     return null;
   }
 
-  private boolean fileExist(String path) {
+  //Todo should show better if file could not be deleted
+  private void deleteFile(File file) {
+    if (file.delete()) {
+      System.out.println("File: " + file.getName() + " deleted");
+    } else {
+      System.err.println("Could not delete file " + file.getName());
+    }
+  }
+
+  private File getFile(String path) throws IllegalArgumentException, IllegalStateException {
     if (path == null) {
-      //Todo state or argument exc?
-      throw new IllegalStateException("userPath is incorrect!");
+      //Todo weird throw?
+      throw new IllegalStateException("path is incorrect!");
     }
-    File user = new File(path);
-    return user.isFile();
+    File file = new File(path);
+    if (!file.isFile()) {
+      throw new IllegalArgumentException("File: " + path + " is missing!");
+    }
+    return file;
   }
 
-  private File getFile(String path) {
-    String filepath = path;
-    if (!fileExist(filepath)) {
-      throw new IllegalStateException("File: " + path + " is missing!");
+  /**
+   * Public methods
+   */
+
+  public void createUser(User user) throws IllegalArgumentException, IllegalStateException {
+    if (user.getUsername() == null) {
+      throw new IllegalStateException("User must have username");
     }
-    return new File(filepath);
+    if(userExists(user.getUsername())) {
+      throw new IllegalArgumentException("User already exists, delete " + user.getUsername() + " or use another username!");
+    }
+    createFolder(userPath);
+    createFolder(workoutFolderPath);
+    createFolder(exerciseFolderPath);
+    saveUser(user);
+    saveIds(new Id(), user.getUsername());
   }
 
-  public User getUser(String username) {
-    setUserPath(username);
-    if (!userExists()) {
-      throw new IllegalStateException("user dir does not exist!");
+  public void saveExercise(Exercise exercise, String username) throws IllegalStateException, IllegalArgumentException {
+    validateUsername(username);
+    if (exercise.getID() == null) {
+      throw new IllegalStateException("Exercise must have ID (dont set manually, use getID from serverService!)");
     }
+    String filepath = exerciseFolderPath + "/" + exercise.getID();
+    writeObjectToFile(exercise, filepath);
+    System.out.println("Saved exercise " + exercise.getName() + " to " + exerciseFolderPath);
+  }
+
+  public void saveWorkout(Workout workout, String username) throws IllegalArgumentException, IllegalStateException {
+    validateUsername(username);
+    if (workout.getID() == null) {
+      throw new IllegalStateException("Workout must have ID (dont set manually, use getID from restServer!)");
+    }
+    String filepath = workoutFolderPath + "/" + workout.getID();
+    writeObjectToFile(workout, filepath);
+    System.out.println("Saved workout " + workout.getName() + " to " + workoutFolderPath);
+  }
+
+  //Todo update all saveUser in project, does not do the same as old saveUser method!!!
+  public void saveUser(User user) throws IllegalStateException, IllegalArgumentException {
+    if (user.getUsername() == null) {
+      throw new IllegalStateException("User must have username");
+    }
+    validateUsername(user.getUsername());
     String filepath = userPath + "/UserData";
-    return (User) objectReader(getFile(filepath), User.class);
+    writeObjectToFile(user, filepath);
+    System.out.println("Saved user " + user.getUsername() + " to " + userPath);
   }
 
-  public Workout getWorkout(String workoutID, String username) {
-    setUserPath(username);
-    if (!userExists()) {
-      throw new IllegalStateException("user dir does not exist!");
-    }
+  public void saveIds(Id id, String username) throws IllegalArgumentException {
+    validateUsername(username);
+    String filepath = userPath + "/IDs";
+    writeObjectToFile(id, filepath);
+    System.out.println("Saved IDs to " + userPath);
+  }
+
+  public void deleteExercise(Exercise exercise, String username) throws IllegalArgumentException {
+    validateUsername(username);
+    String filepath = exerciseFolderPath + "/" + exercise.getID();
+    File file = new File(filepath);
+    deleteFile(file);
+  }
+
+  public void deleteWorkout(Workout workout, String username) throws IllegalArgumentException {
+    validateUsername(username);
+    String filepath = workoutFolderPath + "/" + workout.getID();
+    File file = new File(filepath);
+    deleteFile(file);
+  }
+
+  public void deleteUser(String username) throws IllegalArgumentException {
+    //Todo does not work
+  }
+
+  public User getUser(String username) throws IllegalArgumentException {
+    validateUsername(username);
+    String filepath = userPath + "/UserData";
+    return (User) readObjectFromFile(getFile(filepath), User.class);
+  }
+
+  public Workout getWorkout(String workoutID, String username) throws IllegalArgumentException {
+    validateUsername(username);
     String filepath = workoutFolderPath + "/" + workoutID;
-    return (Workout) objectReader(getFile(filepath), Workout.class);
+    return (Workout) readObjectFromFile(getFile(filepath), Workout.class);
   }
 
-  public Exercise getExercise(String exerciseID, String username) {
-    setUserPath(username);
-    if (!userExists()) {
-      throw new IllegalStateException("user dir does not exist!");
-    }
+  public Exercise getExercise(String exerciseID, String username) throws IllegalArgumentException {
+    validateUsername(username);
     String filepath = exerciseFolderPath + "/" + exerciseID;
-    return (Exercise) objectReader(getFile(filepath), Exercise.class);
+    return (Exercise) readObjectFromFile(getFile(filepath), Exercise.class);
   }
 
   //Todo maybe rename?
-  public Id getIds(String username) {
-    setUserPath(username);
-    if (!userExists()) {
-      throw new IllegalStateException("user dir does not exist!");
-    }
+  public Id getIds(String username) throws IllegalArgumentException {
+    validateUsername(username);
     String filepath = userPath + "/IDs";
-    return (Id) objectReader(getFile(filepath), Id.class);
+    return (Id) readObjectFromFile(getFile(filepath), Id.class);
   }
 
   public String objectToJson(Object object) {
     try {
       return mapper.writeValueAsString(object);
     } catch (JsonProcessingException e) {
-      e.printStackTrace();
+      System.err.println("Failed to serilize " + object.getClass() + " to string!");
     }
     return null;
   }
@@ -286,120 +222,8 @@ public class BeastBookPersistence {
     try {
         return mapper.readValue(jsonString, cls);
       } catch (JsonProcessingException e) {
-        e.printStackTrace();
-        // TODO add exception
+        System.err.println("Failed to desierilize json string to object type " + cls);
       }
     return null;
   }
-
-//
-//
-//
-//  /**
-//  * Help method for loadUser.
-//  *
-//  * @param reader filereader object
-//  * @return user from file
-//  * @throws IOException when filepath from reader does not point to existing file.
-//  */
-//  private User readUser(Reader reader) throws IOException {
-//    return mapper.readValue(reader, User.class);
-//  }
-//
-//  /**
-//  * Help method for saveUser.
-//  *
-//  * @param user user to write to file
-//  * @param writer filewriter object
-//  * @throws IOException when filepath from writer does not point to existing file.
-//  */
-//  private void writeUser(User user, Writer writer) throws IOException {
-//    mapper.writerWithDefaultPrettyPrinter().writeValue(writer, user);
-//  }
-//
-//  public void writeExercise(Exercise exercise, Writer writer) throws  IOException {
-//
-//  }
-//
-//  public void saveExercise(Exercise exercise) {
-//    if (saveFilePath == null) {
-//      throw new IllegalStateException("Save file path is missing");
-//    }
-//    try (Writer writer = new FileWriter(saveFilePath.toFile(), StandardCharsets.UTF_8)) {
-//      writeExercise(exercise, writer);
-//    } catch (IOException e) {
-//      e.printStackTrace();
-//    }
-//  }
-//
-//  public String getJSONString() {
-//    try {
-//      return Files.readString(saveFilePath);
-//    } catch (Exception e) {
-//      // TODO add exception
-//    }
-//    return null;
-//  }
-//
-//  public User parseJSONString(String jsonString) {
-//      try {
-//        return mapper.readValue(jsonString, User.class);
-//      } catch (JsonProcessingException e) {
-//        e.printStackTrace();
-//        // TODO add exception
-//      }
-//    return null;
-//  }
-//
-//  public String translator(User user) {
-//    try {
-//      return mapper.writeValueAsString(user);
-//    } catch (JsonProcessingException e) {
-//      e.printStackTrace();
-//      // todo add exception
-//    }
-//    return null;
-//  }
-//
-//  /**
-//  * Sets path to user saveFile, required before calling loadUser and saveUser methods.
-//  *
-//  * @param saveFile name of user.
-//  */
-//  public void setSaveFilePath(String saveFile) {
-//    this.saveFilePath = Paths.get(System.getProperty("user.home"), saveFile);
-//  }
-//
-//  /**
-//  * Loads user. Required to run setSaveFilePath before calling.
-//  *
-//  * @return User selected in setSaveFilePath
-//  * @throws IOException when filepath from FileReader does not point to existing file
-//  * @throws IllegalStateException when saveFilePath is null
-//  */
-//  public User loadUser() throws IOException, IllegalStateException {
-//    if (saveFilePath == null) {
-//      throw new IllegalStateException("Save file path is missing");
-//    }
-//    try (Reader reader = new FileReader(saveFilePath.toFile(), StandardCharsets.UTF_8)) {
-//      return readUser(reader);
-//    }
-//  }
-//
-//  /**
-//  * Saves user. Required to run setSaveFilePath before calling.
-//  *
-//  * @param user username for user to load.
-//  * @throws IOException when filepath from FileWriter does not point to existing file.
-//  * @throws IllegalStateException when saveFilePath is null
-//  */
-//  public void saveUser(User user) throws IOException, IllegalStateException {
-//    if (saveFilePath == null) {
-//      throw new IllegalStateException("Save file path is missing");
-//    }
-//    try (Writer writer = new FileWriter(saveFilePath.toFile(), StandardCharsets.UTF_8)) {
-//      writeUser(user, writer);
-//    }
-//  }
-//
 }

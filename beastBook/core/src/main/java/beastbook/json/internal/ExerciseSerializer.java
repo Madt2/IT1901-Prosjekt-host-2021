@@ -35,8 +35,8 @@ public class ExerciseSerializer extends JsonSerializer<Exercise> {
     if (exercise.getID() != null) {
       jsonGenerator.writeStringField("workoutID", exercise.getWorkoutID());
     }
-    if (exercise.getExerciseName() != null) {
-      jsonGenerator.writeStringField("exerciseName", exercise.getExerciseName());
+    if (exercise.getName() != null) {
+      jsonGenerator.writeStringField("exerciseName", exercise.getName());
     }
     if (exercise.getRepGoal() != 0) {
       jsonGenerator.writeStringField("repGoal", exercise.getRepGoal() + "");

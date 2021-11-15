@@ -115,7 +115,7 @@ public class WorkoutController extends AbstractController {
     column.setOnEditCommit(event -> {
       try {
         Exercise exercise = event.getRowValue();
-        exercise.setExerciseName(event.getNewValue());
+        exercise.setName(event.getNewValue());
         user.saveUser();
         emptyExceptionFeedback();
       } catch (IllegalArgumentException i) {

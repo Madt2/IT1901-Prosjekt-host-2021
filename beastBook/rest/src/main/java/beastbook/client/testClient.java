@@ -19,7 +19,7 @@ public class testClient {
 
   public void addExercise(String exercisename, String workoutID, String username) {
     Exercise exercise = new Exercise();
-    exercise.setExerciseName(exercisename);
+    exercise.setName(exercisename);
     exercise.setWeight(1);
     exercise.setRestTime(2);
     exercise.setRepGoal(2);
@@ -40,7 +40,7 @@ public class testClient {
 
   public String getExercise(String username, String exerciseID) {
     Exercise exercise = clientService.queryExercise(exerciseID, username);
-    return "Name: " + exercise.getExerciseName() + " / ID: " + exercise.getID() + " / workoutID: " + exercise.getWorkoutID();
+    return "Name: " + exercise.getName() + " / ID: " + exercise.getID() + " / workoutID: " + exercise.getWorkoutID();
   }
 
   public void removeExercise(String username, String exerciseID) {
@@ -57,12 +57,12 @@ public class testClient {
     testClient testClient = new testClient();
 
     //testClient.createUser();
-    //testClient.addWorkout("testw", "testing");
+    testClient.addWorkout("testw", "testing");
     //testClient.addExercise("teste", "JF", "testing");
     //System.out.println(testClient.getUser("testing"));
     //System.out.println(testClient.getWorkout("testing", "JF"));
     //System.out.println(testClient.getExercise("Testing", "s0"));
-    testClient.removeExercise("testing", "s0");
+    //testClient.removeExercise("testing", "s0");
     //testClient.removeWorkout("testing", "JF");
   }
 

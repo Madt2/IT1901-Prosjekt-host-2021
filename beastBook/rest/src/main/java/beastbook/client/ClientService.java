@@ -12,7 +12,13 @@ import java.net.URISyntaxException;
 
 public class ClientService {
   private BeastBookPersistence beastBookPersistence = new BeastBookPersistence();
-  private final String baseURL = "http://localhost:8080/";
+  private String ipAddress = "localhost";
+  private String baseURL = "http://" + ipAddress + ":8080/";
+
+  public void setIpAddress(String ipAddress) {
+    this.ipAddress = ipAddress;
+    baseURL = "http://" + ipAddress + ":8080/";
+  }
 
   private ResponseEntity<String> sendPackage (Object object, URI uri) {
     String jsonString = beastBookPersistence.objectToJson(object);

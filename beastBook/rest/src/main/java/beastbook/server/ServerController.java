@@ -21,13 +21,25 @@ public class ServerController {
   @PostMapping("createUser/{username}")
   public void createUser(@RequestBody String jsonString, @PathVariable String username) {
     User user = (User) serverService.jsonToObject(jsonString, User.class);
-    serverService.createUser(user);
+    try {
+      serverService.createUser(user);
+    } catch (IllegalStateException e) {
+      return e;
+    } catch (IllegalArgumentException e) {
+      return e;
+    }
   }
 
   @PostMapping("addWorkout/{username}")
   public void addWorkout(@RequestBody String jsonString, @PathVariable String username) {
     Workout workout = (Workout) serverService.jsonToObject(jsonString, Workout.class);
-    serverService.addWorkout(workout, username);
+    try {
+      serverService.addWorkout(workout, username);
+    } catch (IllegalStateException e) {
+      return e;
+    } catch (IllegalArgumentException e) {
+      return e;
+    }
   }
 
   @PostMapping("addExercise/{workoutID}/{username}")
@@ -35,54 +47,94 @@ public class ServerController {
                           @PathVariable String workoutID,
                           @PathVariable String username) {
     Exercise exercise = (Exercise) serverService.jsonToObject(jsonString, Exercise.class);
-    serverService.addExercise(exercise, workoutID, username);
+    try {
+      serverService.addExercise(exercise, workoutID, username);
+    } catch (IllegalArgumentException e) {
+      return e;
+    }
   }
 
   @PostMapping("updateWorkout/{username}")
   public void updateWorkout(@RequestBody String jsonString, @PathVariable String username) {
     Workout workout = (Workout) serverService.jsonToObject(jsonString, Workout.class);
-    serverService.updateWorkout(workout, username);
+    try {
+      serverService.updateWorkout(workout, username);
+    } catch (IllegalStateException e) {
+      return e;
+    } catch (IllegalArgumentException e) {
+      return e;
+    }
   }
 
   @PostMapping("updateExercise/{username}")
   public void updateExercise(@RequestBody String jsonString, @PathVariable String username) {
     Exercise exercise = (Exercise) serverService.jsonToObject(jsonString, Exercise.class);
-    serverService.updateExercise(exercise, username);
+    try {
+      serverService.updateExercise(exercise, username);
+    } catch (IllegalStateException e) {
+      return e;
+    } catch (IllegalArgumentException e) {
+      return e;
+    }
   }
 
   @PostMapping("deleteUser/{username}")
   public void deleteUser(@PathVariable String username) {
-    serverService.deleteUser(username);
+    try {
+      serverService.deleteUser(username);
+    } catch (IllegalArgumentException e) {
+      return e;
+    }
   }
 
   @PostMapping("deleteWorkout/{username}/{workoutID}")
   public void deleteWorkout(@PathVariable String username, @PathVariable String workoutID) {
-    serverService.removeWorkout(workoutID, username);
+    try {
+      serverService.deleteWorkout(workoutID, username);
+    } catch (IllegalArgumentException e) {
+      return e;
+    }
   }
 
   @PostMapping("deleteExercise/{username}/{exerciseID}")
   public void deleteExercise(@PathVariable String username, @PathVariable String exerciseID) {
-    serverService.removeExercise(exerciseID, username);
+    try {
+      serverService.deleteExercise(exerciseID, username);
+    } catch (IllegalArgumentException e) {
+      return e;
+    }
   }
 
   @GetMapping("getUser/{username}")
   public ResponseEntity<String> sendUser(@PathVariable String username) {
-    User user = serverService.getUser(username);
-    String packageString = serverService.objectToJson(user);
-    return new ResponseEntity<>(packageString, HttpStatus.OK);
+    try {
+      User user = serverService.getUser(username);
+      String packageString = serverService.objectToJson(user);
+      return new ResponseEntity<>(packageString, HttpStatus.OK);
+    } catch (IllegalArgumentException e) {
+      return;
+    }
   }
 
   @GetMapping("getWorkout/{username}/{workoutID}")
   public ResponseEntity<String> sendWorkout(@PathVariable String username, @PathVariable String workoutID) {
-    Workout workout = serverService.getWorkout(workoutID, username);
-    String packageString = serverService.objectToJson(workout);
-    return new ResponseEntity<>(packageString, HttpStatus.OK);
+    try {
+      Workout workout = serverService.getWorkout(workoutID, username);
+      String packageString = serverService.objectToJson(workout);
+      return new ResponseEntity<>(packageString, HttpStatus.OK);
+    } catch (IllegalArgumentException e) {
+      return;
+    }
   }
 
   @GetMapping("getExercise/{username}/{exerciseID}")
   public ResponseEntity<String> sendExercise(@PathVariable String username, @PathVariable String exerciseID) {
-    Exercise exercise = serverService.getExercise(exerciseID, username);
-    String packageString = serverService.objectToJson(exercise);
-    return new ResponseEntity<>(packageString, HttpStatus.OK);
+    try {
+      Exercise exercise = serverService.getExercise(exerciseID, username);
+      String packageString = serverService.objectToJson(exercise);
+      return new ResponseEntity<>(packageString, HttpStatus.OK);
+    } catch (IllegalArgumentException e) {
+      return;
+    }
   }
 }

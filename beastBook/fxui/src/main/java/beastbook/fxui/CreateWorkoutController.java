@@ -247,7 +247,7 @@ public class CreateWorkoutController extends AbstractController {
           user.addWorkout(workout);
         }
         for (Exercise e : workout.getExercises()) {
-          if (e.getExerciseName().equals(exercise.getExerciseName())) {
+          if (e.getName().equals(exercise.getName())) {
             workout.removeExercise(e);
             workout.addExercise(exercise);
             exceptionFeedback.setText("Exercise overwritten!");
@@ -400,7 +400,7 @@ public class CreateWorkoutController extends AbstractController {
       }
       workout.removeExercise(selectedExercise);
       exceptionFeedback.setText("The exercise '"
-              + selectedExercise.getExerciseName() + "' was deleted!");
+              + selectedExercise.getName() + "' was deleted!");
       updateTable();
       if (hasTemp()) {
         user.removeWorkout(user.getWorkout("Temp"));
@@ -409,7 +409,7 @@ public class CreateWorkoutController extends AbstractController {
       deleteButton.setDisable(true);
     } catch (IllegalArgumentException | IOException e) {
       exceptionFeedback.setText("The exercise '"
-              + selectedExercise.getExerciseName() + "' does not exist");
+              + selectedExercise.getName() + "' does not exist");
     }
   }
 

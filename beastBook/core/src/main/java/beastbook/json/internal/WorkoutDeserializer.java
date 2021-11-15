@@ -1,6 +1,5 @@
 package beastbook.json.internal;
 
-import beastbook.core.Exercise;
 import beastbook.core.Workout;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.TreeNode;
@@ -43,25 +42,29 @@ public class WorkoutDeserializer extends JsonDeserializer<Workout> {
   */
   Workout deserialize(JsonNode jsonNode) {
     if (jsonNode instanceof ObjectNode objectNode) {
-      Workout workout = new Workout();
-      JsonNode idNode = objectNode.get("id");
-      if (idNode instanceof TextNode) {
-        workout.setID(idNode.asText());
-      }
-      JsonNode nameNode = objectNode.get("name");
-      if (nameNode instanceof TextNode) {
-        workout.setName(nameNode.asText());
-      }
-      JsonNode exerciseIDsNode = objectNode.get("exerciseIDs");
-      if (exerciseIDsNode instanceof ArrayNode) {
-        for (JsonNode elementNode : exerciseIDsNode) {
-          String id = elementNode.asText();
-          if (id != null) {
-            workout.addExercise(id);
+      try {
+        Workout workout = new Workout();
+        JsonNode nameNode = objectNode.get("name");
+        if (nameNode instanceof TextNode) {
+          workout.setName(nameNode.asText());
+        }
+        JsonNode idNode = objectNode.get("id");
+        if (idNode instanceof TextNode) {
+          workout.setID(idNode.asText());
+        }
+        JsonNode exerciseIDsNode = objectNode.get("exerciseIDs");
+        if (exerciseIDsNode instanceof ArrayNode) {
+          for (JsonNode elementNode : exerciseIDsNode) {
+            String id = elementNode.asText();
+            if (id != null) {
+              workout.addExercise(id);
+            }
           }
         }
+        return workout;
+      } catch (IllegalArgumentException e) {
+        System.err.println(e.getMessage() + "\nMost likely wrong format in file");
       }
-      return workout;
     }
     return null;
   }

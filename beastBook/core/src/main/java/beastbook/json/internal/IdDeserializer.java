@@ -23,26 +23,30 @@ public class IdDeserializer extends JsonDeserializer<Id> {
 
   Id deserialize(JsonNode jsonNode) {
     if (jsonNode instanceof ObjectNode objectNode) {
-      Id id = new Id();
-      JsonNode workoutIDsNode = objectNode.get("workoutIDs");
-      if (workoutIDsNode instanceof ArrayNode) {
-        for (JsonNode elementNode : workoutIDsNode) {
-          String ID = elementNode.asText();
-          if (ID != null) {
-            id.addWorkoutID(ID);
+      try {
+        Id id = new Id();
+        JsonNode workoutIDsNode = objectNode.get("workoutIDs");
+        if (workoutIDsNode instanceof ArrayNode) {
+          for (JsonNode elementNode : workoutIDsNode) {
+            String ID = elementNode.asText();
+            if (ID != null) {
+              id.addWorkoutID(ID);
+            }
           }
         }
-      }
-      JsonNode exerciseIDsNode = objectNode.get("exerciseIDs");
-      if (exerciseIDsNode instanceof ArrayNode) {
-        for (JsonNode elementNode : exerciseIDsNode) {
-          String ID = elementNode.asText();
-          if (ID != null) {
-            id.addExerciseID(ID);
+        JsonNode exerciseIDsNode = objectNode.get("exerciseIDs");
+        if (exerciseIDsNode instanceof ArrayNode) {
+          for (JsonNode elementNode : exerciseIDsNode) {
+            String ID = elementNode.asText();
+            if (ID != null) {
+              id.addExerciseID(ID);
+            }
           }
         }
+        return id;
+      } catch (IllegalArgumentException e) {
+        System.err.println(e.getMessage() + "\nMost likely wrong format in file");
       }
-      return id;
     }
     return null;
   }

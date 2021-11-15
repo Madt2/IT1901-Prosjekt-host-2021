@@ -25,6 +25,17 @@ public class Workout {
   */
   public Workout() {}
 
+  private void validateID(String id) throws IllegalArgumentException {
+    if (id.length() != 2) {
+      throw new IllegalArgumentException("ID does not contain right amount of characters!");
+    }
+    final String legalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    if (!(legalChars.contains(String.valueOf(id.charAt(0)))) &&
+            legalChars.contains(String.valueOf(id.charAt(1)))) {
+      throw new IllegalArgumentException("ID does not use correct characters!");
+    }
+  }
+
   /**
   * Method for setting name of workout.
   *
@@ -32,6 +43,11 @@ public class Workout {
   */
   public void setName(String name) {
     this.name = name;
+  }
+
+  public void setID(String id) throws IllegalArgumentException {
+    validateID(id);
+    this.id = id;
   }
 
   /**
@@ -43,12 +59,17 @@ public class Workout {
     return name;
   }
 
-  public void setID(String id) {
-    this.id = id;
-  }
-
   public String getID() {
     return id;
+  }
+
+  /**
+   * Getter for exercises.
+   *
+   * @return returns the list of exercises in workout.
+   */
+  public List<String> getExerciseIDs() {
+    return new ArrayList<>(exerciseIDs);
   }
 
   /**
@@ -56,7 +77,7 @@ public class Workout {
   *
   * @param exerciseID exerciseID to add to workout.
   */
-  public void addExercise(String exerciseID) {
+  public void addExercise(String exerciseID) throws IllegalArgumentException {
     for (String ID : exerciseIDs) {
       if (ID.equals(exerciseID)) {
         throw new IllegalArgumentException("Exercise is already added!");
@@ -71,7 +92,7 @@ public class Workout {
    * @param exerciseID to remove from workout.
    * @throws IllegalArgumentException when exerciseID does not exist in workout.
    */
-  public void removeExercise(String exerciseID) {
+  public void removeExercise(String exerciseID) throws IllegalArgumentException {
     //Todo might be a issue with remove where it looks for spesific object and not string object equal to ID string!
     for (String ID : exerciseIDs) {
       if (ID.equals(exerciseID)) {
@@ -81,24 +102,4 @@ public class Workout {
     }
     throw new IllegalArgumentException("Exercise was not found in workout!");
   }
-
-  /**
-  * Getter for exercises.
-  *
-  * @return returns the list of exercises in workout.
-  */
-  public List<String> getExerciseIDs() {
-    return new ArrayList<>(exerciseIDs);
-  }
-
-  //Todo toString still relevant?
-  /**
-  * toString for workout. Returns object in more readable format.
-  *
-  * @return (name of workout): [list of exercises]
-  */
-  /*@Override
-  public String toString() {
-    return getName() + ": " + getExercises();
-  }*/
 }

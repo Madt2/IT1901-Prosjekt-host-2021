@@ -41,7 +41,7 @@ public class WorkoutControllerTest extends ApplicationTest{
 
   @Test
   void testEditSelectedCell() {
-    Assertions.assertEquals("Benchpress", user.getWorkout("Pull workout").getExercises().get(0).getExerciseName());
+    Assertions.assertEquals("Benchpress", user.getWorkout("Pull workout").getExercises().get(0).getName());
     wc.getWorkoutTable().getColumns().get(0).setId("exerciseName");
     Node node = lookup("#exerciseName").nth(1).query();
     doubleClickOn(node, MouseButton.PRIMARY).write("Biceps curl");

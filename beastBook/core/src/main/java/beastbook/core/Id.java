@@ -27,36 +27,6 @@ public class Id {
     //Todo can be replaced with return exerciseIDs.contains(id);? problem with string and contains?
   }
 
-  public void addWorkoutID(String id) {
-    if (hasWorkoutID(id)) {
-      throw new IllegalArgumentException("User already have ID " + id + " stored in workouts");
-    }
-    workoutIDs.add(id);
-  }
-
-  public void removeWorkoutID(String id) {
-    if (!hasWorkoutID(id)) {
-      throw new IllegalArgumentException("User does not have ID " + id + " stored in workouts");
-    }
-    //Todo might be problem with remove!
-    workoutIDs.remove(id);
-  }
-
-  public void addExerciseID(String id) {
-    if (hasExerciseID(id)) {
-      throw new IllegalArgumentException("User already have ID " + id + " stored in exercises");
-    }
-    exerciseIDs.add(id);
-  }
-
-  public void removeExerciseID(String id) {
-    if (!hasExerciseID(id)) {
-      throw new IllegalArgumentException("User does not have ID " + id + " stored in exercises");
-    }
-    //Todo might be problem with remove!
-    exerciseIDs.remove(id);
-  }
-
   public List<String> getWorkoutIDs() {
     return new ArrayList<>(workoutIDs);
   }
@@ -65,4 +35,33 @@ public class Id {
     return new ArrayList<>(exerciseIDs);
   }
 
+  public void addWorkoutID(String id) throws IllegalArgumentException {
+    if (hasWorkoutID(id)) {
+      throw new IllegalArgumentException("User already have ID " + id + " stored in workouts");
+    }
+    workoutIDs.add(id);
+  }
+
+  public void removeWorkoutID(String id) throws IllegalArgumentException {
+    if (!hasWorkoutID(id)) {
+      throw new IllegalArgumentException("User does not have ID " + id + " stored in workouts");
+    }
+    //Todo might be problem with remove!
+    workoutIDs.remove(id);
+  }
+
+  public void addExerciseID(String id) throws IllegalArgumentException {
+    if (hasExerciseID(id)) {
+      throw new IllegalArgumentException("User already have ID " + id + " stored in exercises");
+    }
+    exerciseIDs.add(id);
+  }
+
+  public void removeExerciseID(String id) throws IllegalArgumentException {
+    if (!hasExerciseID(id)) {
+      throw new IllegalArgumentException("User does not have ID " + id + " stored in exercises");
+    }
+    //Todo might be problem with remove!
+    exerciseIDs.remove(id);
+  }
 }
