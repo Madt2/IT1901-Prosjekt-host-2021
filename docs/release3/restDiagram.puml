@@ -1,0 +1,11 @@
+@startuml Core Diagram
+scale 1
+rest -- client
+rest -- server
+
+rest -- ServerApplication
+client -- ClientService
+server -- ServerService
+server -- ServerController
+
+@enduml

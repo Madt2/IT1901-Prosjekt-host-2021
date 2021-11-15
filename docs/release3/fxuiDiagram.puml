@@ -1,0 +1,14 @@
+@startuml Fxui Diagram
+scale 1
+
+fxui -- HistoryOverviewController
+fxui -- HistoryController
+fxui -- WorkoutOverviewController
+fxui -- WorkoutController
+fxui -- CreateWorkoutController
+fxui -- LoginController
+fxui -- HomeScreenController
+fxui -- AbstractController
+fxui -- App
+
+@enduml

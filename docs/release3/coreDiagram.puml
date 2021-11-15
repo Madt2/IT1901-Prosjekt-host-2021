@@ -1,0 +1,29 @@
+@startuml Core Diagram
+scale 1
+/'
+beastBook -- core
+beastBook -- fxui
+beastBook -- rest
+'/
+core -- beastbook
+beastbook -- core.core
+beastbook -- core.json
+
+core.core -- Exercise
+core.core -- User
+core.core -- Workout
+core.core -- Id
+core.json -- internal
+internal -- ExerciseDeserializer
+internal -- ExerciseSerializer
+internal -- UserDeserializer
+internal -- UserSerializer
+internal -- WorkoutDeserializer
+internal -- WorkoutSerializer
+internal -- HistoryDeserializer
+internal -- HistorySerializer
+internal -- IdDeserializer
+internal -- IdSerializer
+internal -- BeastBookModule
+core.json -- BeastBookPersistence
+@enduml

@@ -1,0 +1,22 @@
+@startuml Class Diagram
+scale 1
+fxui -- resources
+resources -- Login
+/'
+resources -- Homescreen
+resources -- Create
+resources -- WorkoutOverview
+resources -- HistoryOverview
+resources -- Workout
+resources -- History
+'/
+
+Login -- Homescreen
+Homescreen -- Create
+Homescreen -- WorkoutOverview
+Homescreen -- HistoryOverview
+
+WorkoutOverview -- Workout
+HistoryOverview -- History
+
+@enduml
