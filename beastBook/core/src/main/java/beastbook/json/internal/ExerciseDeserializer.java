@@ -43,6 +43,14 @@ public class ExerciseDeserializer extends JsonDeserializer<Exercise> {
   Exercise deserialize(JsonNode jsonNode) {
     if (jsonNode instanceof ObjectNode objectNode) {
       Exercise exercise = new Exercise();
+      JsonNode idNode = objectNode.get("id");
+      if (idNode instanceof TextNode) {
+        exercise.setID(idNode.asText());
+      }
+      JsonNode workoutIDNode = objectNode.get("workoutID");
+      if (workoutIDNode instanceof TextNode) {
+        exercise.setWorkoutID(workoutIDNode.asText());
+      }
       JsonNode nameNode = objectNode.get("exerciseName");
       if (nameNode instanceof TextNode) {
         exercise.setExerciseName(nameNode.asText());

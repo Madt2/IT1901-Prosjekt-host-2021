@@ -16,8 +16,6 @@ import java.io.IOException;
  * Custom JSON-Deserializer for User, converts JSON-file to User object.
  */
 public class UserDeserializer extends JsonDeserializer<User> {
-
-  private WorkoutDeserializer deserializer = new WorkoutDeserializer();
   
   /**
   * Deserializes User data from json file.
@@ -48,18 +46,18 @@ public class UserDeserializer extends JsonDeserializer<User> {
       User user = new User();
       JsonNode usernameNode = objectNode.get("username");
       if (usernameNode instanceof TextNode) {
-        user.setUserName(usernameNode.asText());
+        user.setUsername(usernameNode.asText());
       }
       JsonNode passwordNode = objectNode.get("password");
       if (passwordNode instanceof TextNode) {
         user.setPassword(passwordNode.asText());
       }
-      JsonNode workoutsNode = objectNode.get("workouts");
-      if (workoutsNode instanceof ArrayNode) {
-        for (JsonNode elementNode : ((ArrayNode) workoutsNode)) {
-          Workout workout = deserializer.deserialize(elementNode);
-          if (workout != null) {
-            user.addWorkout(workout);
+      JsonNode workoutIDsNode = objectNode.get("workoutIDs");
+      if (workoutIDsNode instanceof ArrayNode) {
+        for (JsonNode elementNode : workoutIDsNode) {
+          String id = elementNode.asText();
+          if (id != null) {
+            user.addWorkout(id);
           }
         }
       }

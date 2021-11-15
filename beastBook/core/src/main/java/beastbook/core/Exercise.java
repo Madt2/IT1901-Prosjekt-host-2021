@@ -8,6 +8,8 @@ public class Exercise {
   public static final int maxStringLength = 50;
   public static final int maxIntLength = 5;
   public static final int maxDoubleLength = 7;
+  private String id;
+  private String workoutID;
   private String exerciseName;
   private int repGoal;
   private double weight;
@@ -25,6 +27,7 @@ public class Exercise {
   * @param restTime How much rest between sets in seconds
   */
 
+  /*
   public Exercise(String exerciseName, int repGoal, double weight, int sets, int repsPerSet, int restTime) {
     setExerciseName(exerciseName);
     setRepGoal(repGoal);
@@ -32,7 +35,7 @@ public class Exercise {
     setSets(sets);
     setRepsPerSet(repsPerSet);
     setRestTime(restTime);
-  }
+  }*/
 
   /**
    * Exercise constructor for empty Exercise object.
@@ -116,6 +119,7 @@ public class Exercise {
     }
   }
 
+  // Todo is this relevant now?
   private void validateRepsPerSet(int repsPerSet) {
     boolean isTooLow = (repsPerSet <= 0);
     if (isTooLow) {
@@ -145,6 +149,22 @@ public class Exercise {
       throw new IllegalArgumentException("Rest Time can not be longer than " 
       + maxIntLength + " characters!");
     }
+  }
+
+  public void setID(String id) {
+    this.id = id;
+  }
+
+  public String getID() {
+    return id;
+  }
+
+  public void setWorkoutID(String id) {
+    this.workoutID = id;
+  }
+
+  public String getWorkoutID() {
+    return workoutID;
   }
   
   public void setExerciseName(String exerciseName) {
@@ -188,6 +208,7 @@ public class Exercise {
   }
 
   public void setRepsPerSet(int repsPerSet) {
+    //Todo removed commented code?
     /*    validateRepsPerSet(repsPerSet);*/
     this.repsPerSet = repsPerSet;
   }

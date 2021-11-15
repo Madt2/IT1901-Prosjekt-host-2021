@@ -82,7 +82,7 @@
                         <!-- Default configuration for running with: mvn clean javafx:run -->
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>beastbook.restserver/beastbook.restserver.HelloApplication</mainClass>
+                            <mainClass>beastbook.restserver/beastbook.server.HelloApplication</mainClass>
                         </configuration>
                     </execution>
                 </executions>

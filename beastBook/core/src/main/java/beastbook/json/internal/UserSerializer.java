@@ -29,15 +29,15 @@ public class UserSerializer extends JsonSerializer<User> {
       SerializerProvider serializerProvider
   ) throws IOException {
     jsonGenerator.writeStartObject();
-    if (user.getUserName() != null) {
-      jsonGenerator.writeStringField("username", user.getUserName());
+    if (user.getUsername() != null) {
+      jsonGenerator.writeStringField("username", user.getUsername());
     }
     if (user.getPassword() != null) {
       jsonGenerator.writeStringField("password", user.getPassword());
     }
-    jsonGenerator.writeArrayFieldStart("workouts");
-    for (Workout item : user.getWorkouts()) {
-      jsonGenerator.writeObject(item);
+    jsonGenerator.writeArrayFieldStart("workoutIDs");
+    for (String id : user.getWorkoutIDs()) {
+      jsonGenerator.writeObject(id);
     }
     jsonGenerator.writeEndArray();
     jsonGenerator.writeEndObject();

@@ -1,7 +1,7 @@
 module beastbook.rest {
-  //exports beastbook.restapi;
-  exports beastbook.restserver;
-  //exports beastbook;
+  exports beastbook.server;
+  exports beastbook.client;
+  exports beastbook;
   requires javafx.controls;
   requires javafx.fxml;
   requires beastbook.core;

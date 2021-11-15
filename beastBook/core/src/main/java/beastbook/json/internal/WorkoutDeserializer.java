@@ -16,8 +16,6 @@ import java.io.IOException;
  * Custom JSON-Deserializer for Workout, converts JSON-file to Workout object.
  */
 public class WorkoutDeserializer extends JsonDeserializer<Workout> {
-
-  private ExerciseDeserializer deserializer = new ExerciseDeserializer();
   
   /**
   * Deserializes Workout data from json file.
@@ -46,16 +44,20 @@ public class WorkoutDeserializer extends JsonDeserializer<Workout> {
   Workout deserialize(JsonNode jsonNode) {
     if (jsonNode instanceof ObjectNode objectNode) {
       Workout workout = new Workout();
+      JsonNode idNode = objectNode.get("id");
+      if (idNode instanceof TextNode) {
+        workout.setID(idNode.asText());
+      }
       JsonNode nameNode = objectNode.get("name");
       if (nameNode instanceof TextNode) {
         workout.setName(nameNode.asText());
       }
-      JsonNode exercisesNode = objectNode.get("exercises");
-      if (exercisesNode instanceof ArrayNode) {
-        for (JsonNode elementNode : exercisesNode) {
-          Exercise exercise = deserializer.deserialize(elementNode);
-          if (exercise != null) {
-            workout.addExercise(exercise);
+      JsonNode exerciseIDsNode = objectNode.get("exerciseIDs");
+      if (exerciseIDsNode instanceof ArrayNode) {
+        for (JsonNode elementNode : exerciseIDsNode) {
+          String id = elementNode.asText();
+          if (id != null) {
+            workout.addExercise(id);
           }
         }
       }
