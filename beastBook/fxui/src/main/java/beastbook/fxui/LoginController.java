@@ -55,24 +55,24 @@ public class LoginController extends AbstractController {
   *
   * @param event when log in button is clicked
   * @throws IllegalArgumentException if username or password is not valid
-  * @throws IOException if loading home screen fails
   */
   @FXML
-  void loginUser(ActionEvent event) throws IllegalArgumentException, IOException {
+  void loginUser(ActionEvent event) throws IllegalArgumentException {
     String userName = usernameInput.getText();
     String password = passwordInput.getText();
     user = new User("user", "user");
     try {
       validateLogin(userName, password);
-      User login = user.loadUser(userName);
-      user = login;
+      user =  user.loadUser(userName);
       super.loadHome(event);
     } catch (Exception e) {
       loginError.setText(e.getMessage());
     }
   }
 
-  private void validateLogin(String userName, String password) throws IOException, IllegalArgumentException {
+  private void validateLogin(
+      String userName, String password)
+      throws IOException, IllegalArgumentException {
     if (userName.equals("")) {
       throw new IllegalArgumentException("No username given");
     }

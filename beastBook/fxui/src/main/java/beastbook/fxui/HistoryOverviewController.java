@@ -1,7 +1,8 @@
 package beastbook.fxui;
 
-import beastbook.core.User;
 import beastbook.core.History;
+import beastbook.core.User;
+import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -15,8 +16,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-import java.io.IOException;
 
+/**
+ * Controller for the HistoryOverview screen.
+ */
 public class HistoryOverviewController extends AbstractController {
   @FXML
   private AnchorPane rootPane;
@@ -48,10 +51,10 @@ public class HistoryOverviewController extends AbstractController {
 
   private void loadTable() {
     historyOverview.getColumns().clear();
-    historyNameColumn = new TableColumn<History, String>("Workout name:");
-    historyNameColumn.setCellValueFactory(new PropertyValueFactory<History, String>("name"));
-    historyDateColumn = new TableColumn<History, String>("Date:");
-    historyDateColumn.setCellValueFactory((new PropertyValueFactory<History, String>("date")));
+    historyNameColumn = new TableColumn<>("Workout name:");
+    historyNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+    historyDateColumn = new TableColumn<>("Date:");
+    historyDateColumn.setCellValueFactory((new PropertyValueFactory<>("date")));
     historyOverview.getColumns().add(historyDateColumn);
     historyOverview.getColumns().add(historyNameColumn);
     historyOverview.getItems().setAll(user.getHistories());
@@ -66,7 +69,7 @@ public class HistoryOverviewController extends AbstractController {
   }
 
   @FXML
-  void loadHistory(ActionEvent event) throws IOException {
+  void loadHistory(ActionEvent event) {
     try {
       exceptionFeedback.setText("");
       HistoryController historyController = new HistoryController();
@@ -89,7 +92,7 @@ public class HistoryOverviewController extends AbstractController {
   }
 
   @FXML
-  private void historySelectedListener() throws Exception {
+  private void historySelectedListener() {
     try {
       selectedHistoryName = historyOverview.getSelectionModel().getSelectedItem().getName();
       selectedHistoryDate = historyOverview.getSelectionModel().getSelectedItem().getDate();

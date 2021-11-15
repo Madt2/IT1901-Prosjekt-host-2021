@@ -1,14 +1,18 @@
 package beastbook.fxui;
 
-import beastbook.core.User;
-import javafx.fxml.FXML;
 import beastbook.core.Exercise;
+import beastbook.core.User;
+import java.io.IOException;
+import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
-import java.io.IOException;
 
+
+/**
+ * Controller for the History screen.
+ */
 public class HistoryController extends AbstractController {
 
   @FXML
@@ -76,9 +80,15 @@ public class HistoryController extends AbstractController {
     historyTable.getColumns().add(repsPerSetColumn);
     historyTable.getColumns().add(restTimeColumn);
     customizeHistoryTable();
-    historyTable.getItems().setAll(user.getHistory(historyName, historyDate).getSavedWorkout().getExercises());
+    historyTable.getItems().setAll(
+        user.getHistory(historyName, historyDate)
+            .getSavedWorkout().getExercises());
   }
 
+  /**
+   * Changes the width of the columns in the table view.
+   *
+   */
   private void customizeHistoryTable() {
     exerciseNameColumn.setPrefWidth(100);
     repGoalColumn.setPrefWidth(75);
@@ -86,18 +96,8 @@ public class HistoryController extends AbstractController {
     setsColumn.setPrefWidth(75);
     repsPerSetColumn.setPrefWidth(80);
     restTimeColumn.setPrefWidth(106);
-
-    /*
-    exerciseNameColumn.setStyle("-fx-background-color:lightgrey");
-    repGoalColumn.setStyle("-fx-background-color:lightgrey");
-    weightColumn.setStyle("-fx-background-color:lightgrey");
-    setsColumn.setStyle("-fx-background-color:lightgrey");
-    repsPerSetColumn.setStyle("-fx-background-color:lightgrey");
-    restTimeColumn.setStyle("-fx-background-color:lightgrey");
-    */
-
   }
-  
+
   TableView<Exercise> getHistoryTable() {
     return historyTable;
   }

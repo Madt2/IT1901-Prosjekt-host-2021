@@ -48,7 +48,8 @@ public class WorkoutController extends AbstractController {
   private String workoutName;
 
   /**
-   * Initializes the Workout screen with the correct User from File and updates the table based on given Workout.
+   * Initializes the Workout screen with the correct User from File,
+   * and updates the table based on given Workout.
    *
    * @throws IOException if an error occurs when loading user.
    */

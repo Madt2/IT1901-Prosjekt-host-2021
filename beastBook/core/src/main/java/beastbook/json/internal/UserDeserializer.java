@@ -26,14 +26,14 @@ public class UserDeserializer extends JsonDeserializer<User> {
   * Format for User in json: { username: "...", password: "...", workouts: "[...,...]" }.
   *
   * @param parser defines how JSON-file should be parsed
-  * @param deserializer defines context for deserialization
+  * @param deserializationContext defines context for deserialization
   * @return deserialized User.
   * @throws IOException for low-level read issues or decoding problems for JsonParser
   */
   @Override
   public User deserialize(
         JsonParser parser,
-        DeserializationContext deserializer
+        DeserializationContext deserializationContext
   ) throws IOException {
     TreeNode treeNode = parser.getCodec().readTree(parser);
     return deserialize((JsonNode) treeNode);
