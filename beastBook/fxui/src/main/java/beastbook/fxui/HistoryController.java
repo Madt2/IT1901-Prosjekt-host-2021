@@ -34,6 +34,11 @@ public class HistoryController extends AbstractController {
   private String historyName;
   private String historyDate;
 
+  /**
+   * Initialize method to load user and set the table view with its data.
+   * Also sets name and date of the workout in text fields.
+   *
+   */
   @FXML
   public void initialize() throws IOException {
     user = user.loadUser(user.getUserName());
@@ -42,6 +47,10 @@ public class HistoryController extends AbstractController {
     date.setText(historyDate);
   }
 
+  /**
+   * Adds columns for each exercise to the table view and loads data into the table view.
+   *
+   */
   public void setTable() {
     historyTable.getColumns().clear();
     exerciseNameColumn = new TableColumn<>("Exercise name:");

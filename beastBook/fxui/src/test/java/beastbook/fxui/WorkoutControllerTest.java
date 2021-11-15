@@ -39,7 +39,7 @@ public class WorkoutControllerTest extends ApplicationTest{
   }
 
   @Test
-  void testEditSelectedCell() throws IOException {
+  void testEditSelectedCell() {
     Assertions.assertEquals("Benchpress", wc.user.getWorkout("Pull workout").getExercises().get(0).getExerciseName());
     wc.getWorkoutTable().getColumns().get(0).setId("exerciseName");
     Node node = lookup("#exerciseName").nth(1).query();
@@ -52,7 +52,7 @@ public class WorkoutControllerTest extends ApplicationTest{
   }
 
   @Test
-  void testExceptionFeedback() throws InterruptedException, IOException {
+  void testExceptionFeedback() {
     wc.getWorkoutTable().getColumns().get(1).setId("repGoal");
     Node node = lookup("#repGoal").nth(1).query();
     doubleClickOn(node, MouseButton.PRIMARY).write("-50");
@@ -88,6 +88,22 @@ public class WorkoutControllerTest extends ApplicationTest{
     Assertions.assertEquals(50, wc.getWorkoutTable().getSelectionModel().getSelectedItem().getRepGoal());
   }
 
+  @Test
+  void testAddToHistory(){
+    Assertions.assertEquals(0, wc.user.getHistories().size());
+    clickOn("#saveButton");
+    FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Workout was successfully added to history!"));
+    Assertions.assertEquals(1, wc.user.getHistories().size());
+
+    wc.getWorkoutTable().getColumns().get(4).setId("repsPerSet");
+    Node node = lookup("#repsPerSet").nth(1).query();
+    doubleClickOn(node, MouseButton.PRIMARY).write("12");
+    press(KeyCode.ENTER).release(KeyCode.ENTER);
+    clickOn("#saveButton");
+    FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("History overwritten!"));
+    Assertions.assertEquals(1, wc.user.getHistories().size());
+  }
+
   private void addWorkoutsToUser(){
     Workout workout1 = new Workout("Pull workout");
     workout1.addExercise(new Exercise("Benchpress", 20, 30, 40, 0, 50));
@@ -95,13 +111,16 @@ public class WorkoutControllerTest extends ApplicationTest{
     workout1.addExercise(new Exercise("Deadlift", 20, 20, 20, 0, 20));
     workout1.addExercise(new Exercise("Biceps curl", 20, 20, 20, 0, 20));
     wc.user.addWorkout(workout1);
-  }
 
-  //TODO Test for history functionality
+  }
 
   @AfterAll
   static void cleanUp() {
     File file = new File(System.getProperty("user.home") + "/test");
-    file.delete();
+    if (file.delete()) {
+      System.out.println("Successfully deleted testworkout");
+    } else {
+      throw new IllegalStateException();
+    }
   }
 }
