@@ -39,7 +39,6 @@ public class WorkoutOverviewController extends AbstractController {
   @FXML
   private TableView<Workout> workoutOverview = new TableView<Workout>();
   private TableColumn<Workout, String> workoutNameColumn;
-  //private Workout workout = new Workout();
   private String selectedWorkoutName;
 
   public void initialize() throws IOException {
@@ -48,7 +47,7 @@ public class WorkoutOverviewController extends AbstractController {
   } 
     
   /**
-  * Creates a table view with a column for workout name and
+  * Sets the table view with a column for workout name and
   * adds the users workouts to the table view.
   */
   public void loadTable() {
@@ -60,8 +59,11 @@ public class WorkoutOverviewController extends AbstractController {
     setColumnsSize();
   }
 
+  /**
+  * Listener which registeres if a workout is clicked on in the table view.
+  */
   @FXML
-  private void workoutSelectedListener() throws Exception {
+  private void workoutSelectedListener() {
     try {
       selectedWorkoutName = workoutOverview.getSelectionModel().getSelectedItem().getName();
       if (selectedWorkoutName != null) {
@@ -91,8 +93,14 @@ public class WorkoutOverviewController extends AbstractController {
     workoutNameColumn.setPrefWidth(150);    
   }
 
+  /**
+  * Loads the workout which has been selected after Open button is clicked.
+  *
+  * @param event the event when open button is clicked
+  *
+  */
   @FXML
-  void loadWorkout(ActionEvent event) throws IOException {
+  void loadWorkout(ActionEvent event) {
     try {
       exceptionFeedback.setText("");
       WorkoutController workoutController = new WorkoutController();
@@ -113,13 +121,21 @@ public class WorkoutOverviewController extends AbstractController {
     }
   }
 
+  /**
+  * Deletes the selected workout from the tableview and the user after Delete button is clicked.
+  * 
+  */
   @FXML
-  void deleteWorkout() throws IllegalStateException, IOException {
-    user.removeWorkout(user.getWorkout(getWorkoutName()));
-    loadTable();
-    exceptionFeedback.setText("Workout deleted!");
-    user.saveUser();
-    openButton.setDisable(true);
-    deleteButton.setDisable(true);
+  void deleteWorkout() {
+    try {
+      user.removeWorkout(user.getWorkout(getWorkoutName()));
+      loadTable();
+      exceptionFeedback.setText("Workout deleted!");
+      user.saveUser();
+      openButton.setDisable(true);
+      deleteButton.setDisable(true);
+    } catch (IOException e) {
+      exceptionFeedback.setText("User could not delete workout!");
+    }
   }
 }

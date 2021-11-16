@@ -103,7 +103,8 @@ public class CreateWorkoutController extends AbstractController {
 
   /**
   * Sets the workout table columns. Clears the columns first, to avoid duplicate columns.
-  * After the columns are created, they are added to the table view. 
+  * After the columns are created, they are added to the table view.
+  * The exercises to the workout appears in to the table view if a saved workout is loaded.
   */
   public void updateTable() {
     workoutTable.getColumns().clear();
@@ -144,9 +145,6 @@ public class CreateWorkoutController extends AbstractController {
     workoutTable.getItems().setAll(workout.getExercises());
   }
 
-  /**
-  * Resizes the width of the columns.
-  */
   private void setColumnsSize() {
     exerciseNameColumn.setPrefWidth(100);        
     repGoalColumn.setPrefWidth(75);
@@ -155,22 +153,10 @@ public class CreateWorkoutController extends AbstractController {
     restTimeColumn.setPrefWidth(100);
   }
 
-  /**
-  * Return the exercise on the specified row. Mainly used for test reasons.
-  *
-  * @param row the row you want to have access to / get an Exercise object from.
-  *
-  * @return the Exercise object on the requested row
-  */
   Exercise getTable(int row) {
     return workoutTable.getItems().get(row);
   }
     
-  /**
-  * Gets the workout table.
-  *
-  * @return the workout table
-  */
   TableView<Exercise> getWorkoutTable() {
     return workoutTable;
   }
@@ -194,19 +180,12 @@ public class CreateWorkoutController extends AbstractController {
   }
 
   /**
-  *  Runs when the "Add exercise" button is clicked.
-  *  If all the input fields are in the correct format,
-  *  an Exercise object is made with the input fields data.
-  *  The exercise object is then added to the workout object and
-  *  its list over exercises, this is then connected to the signed-in user.
-  *  The workout table is then "reloaded" with the new exercise added to the list.
-  *  If the input fields are not in the correct format, the method catches the Exception.
-  *  A text with red color appears on the screen with a message to the user
-  *  saying that the exercise could not be added (because of wrong inputs).
-  *  The text disappears when an exercise is added successfully.
-  */
+   * Creates a exercise object based on the input in the input fields.
+   * Adds the exercise to the table view and to the users data.
+   * Will show an error in the GUI if the exercise could not be added/created.
+   */
   @FXML
-  void addExercise() throws IllegalArgumentException {
+  void addExercise() {
     if (exceptionFeedback.getText().equals("") && !checkForEmptyInputFields()) {
       try {
         int repGoal;
@@ -272,8 +251,7 @@ public class CreateWorkoutController extends AbstractController {
   }
 
   /**
-  * Empties all the input fields.
-  * Should be called when an exercise is successfully added to the workout
+  * Empties all the input fields when a exercises is created successfully.
   */
   private void emptyInputFields() {
     exerciseNameInput.setText("");
@@ -313,7 +291,7 @@ public class CreateWorkoutController extends AbstractController {
   * If no title input is given, an error message is displayed in GUI.
   * If no file found with given title, an error message is displayed in GUI.
   *
-  * @param event When Load Workout button is clicked in GUI, loadWorkout() is fired.
+  * @param event the event the "Load workout" button is clicked.
   */
   @FXML
   void loadWorkout(ActionEvent event) {
@@ -335,11 +313,12 @@ public class CreateWorkoutController extends AbstractController {
   }
 
   /**
-  * Creates a workout and saves it as a file with input given in GUI.
+  * Creates a workout to the user based on the exercises added and the title input.
   * If no title input is given, an error message is displayed in GUI.
   * If an error occurs in saveWorkout, an error message is displayed in GUI.
+  * Overwrites a loaded workout with the data currently added.
   *
-  * @param event When Create Workout button is clicked in GUI, createWorkout() is fired
+  * @param event the event when "Create workout" button is clicked.
   */
   @FXML
   void createWorkout(ActionEvent event) {
@@ -379,14 +358,20 @@ public class CreateWorkoutController extends AbstractController {
     }
   }
 
+  /**
+   * Listener for when a exercise is clicked in the table view.
+   */  
   @FXML
   private void exerciseSelectedListener() {
     Exercise selectedExercise = workoutTable.getSelectionModel().getSelectedItem();
     deleteButton.setDisable(selectedExercise == null);
   }
 
+  /**
+   * Deletes the selected exercise from the workout.
+   */
   @FXML
-  void deleteExercise() throws IllegalStateException {
+  void deleteExercise() {
     Exercise selectedExercise;
     selectedExercise = workoutTable.getSelectionModel().getSelectedItem();
     Workout workout;

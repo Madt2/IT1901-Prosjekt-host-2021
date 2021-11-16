@@ -49,12 +49,18 @@ public class HistoryOverviewController extends AbstractController {
     loadTable();
   }
 
+  /**
+  * Sets the column for the tableview and fills the history data from the user into the table view.
+  */
   private void loadTable() {
     historyOverview.getColumns().clear();
+
     historyNameColumn = new TableColumn<>("Workout name:");
     historyNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+
     historyDateColumn = new TableColumn<>("Date:");
     historyDateColumn.setCellValueFactory((new PropertyValueFactory<>("date")));
+
     historyOverview.getColumns().add(historyDateColumn);
     historyOverview.getColumns().add(historyNameColumn);
     historyOverview.getItems().setAll(user.getHistories());
@@ -68,6 +74,11 @@ public class HistoryOverviewController extends AbstractController {
     historyDateColumn.setResizable(false);
   }
 
+  /**
+  * Loads the history which has been selected after Open button is clicked.
+  *
+  * @param event the event when open button is clicked
+  */
   @FXML
   void loadHistory(ActionEvent event) {
     try {
@@ -91,6 +102,9 @@ public class HistoryOverviewController extends AbstractController {
     }
   }
 
+  /**
+  * Listener which registeres if a history is clicked on in the table view.
+  */
   @FXML
   private void historySelectedListener() {
     try {
@@ -106,15 +120,22 @@ public class HistoryOverviewController extends AbstractController {
       deleteButton.setDisable(true);
     }
   }
-  
+
+  /**
+  * Deletes the selected history from the tableview and the user when Delete button is clicked.
+  */
   @FXML
-  void deleteHistory() throws IllegalStateException, IOException {
-    user.removeHistory(getHistoryName(), getHistoryDate());
-    loadTable();
-    exceptionFeedback.setText("History entry deleted!");
-    user.saveUser();
-    openButton.setDisable(true);
-    deleteButton.setDisable(true);
+  void deleteHistory() {
+    try {
+      user.removeHistory(getHistoryName(), getHistoryDate());
+      loadTable();
+      exceptionFeedback.setText("History entry deleted!");
+      user.saveUser();
+      openButton.setDisable(true);
+      deleteButton.setDisable(true);
+    } catch (IOException e) {
+      exceptionFeedback.setText("User could not delete the history entry!");
+    }
   }
 
   TableView<History> getHistoryOverview() {

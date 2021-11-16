@@ -88,17 +88,13 @@ public class HistoryController extends AbstractController {
     historyTable.getColumns().add(setsColumn);
     historyTable.getColumns().add(repsPerSetColumn);
     historyTable.getColumns().add(restTimeColumn);
-    customizeHistoryTable();
+    setColumnSize();
     historyTable.getItems().setAll(
         user.getHistory(historyName, historyDate)
             .getSavedWorkout().getExercises());
   }
 
-  /**
-   * Changes the width of the columns in the table view.
-   *
-   */
-  private void customizeHistoryTable() {
+  private void setColumnSize() {
     exerciseNameColumn.setPrefWidth(100);
     repGoalColumn.setPrefWidth(75);
     weightColumn.setPrefWidth(75);
