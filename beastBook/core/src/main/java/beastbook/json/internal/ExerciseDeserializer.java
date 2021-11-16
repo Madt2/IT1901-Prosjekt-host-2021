@@ -23,7 +23,7 @@ public class ExerciseDeserializer extends JsonDeserializer<Exercise> {
   * @param parser defines how JSON-file should be parsed
   * @param deserializationContext defines context for deserialization
   * @return Deserialized exercise.
-  * @throws IOException for low-level read issues or decoding problems for JsonParser
+  * @throws IOException for low-level read issues or decoding problems for JsonParser.
   */
   @Override
   public Exercise deserialize(
@@ -38,36 +38,48 @@ public class ExerciseDeserializer extends JsonDeserializer<Exercise> {
    * Converts info from jsonNode to Exercise.
    *
    * @param jsonNode jsonNode to convert.
-   * @return deserialized exercise.
+   * @return deserialized exercise, or null deserialization fails
    */
   Exercise deserialize(JsonNode jsonNode) {
     if (jsonNode instanceof ObjectNode objectNode) {
       Exercise exercise = new Exercise();
-      JsonNode nameNode = objectNode.get("exerciseName");
-      if (nameNode instanceof TextNode) {
-        exercise.setExerciseName(nameNode.asText());
+      JsonNode idNode = objectNode.get("id");
+      try {
+        if (idNode instanceof TextNode) {
+          exercise.setID(idNode.asText());
+        }
+        JsonNode workoutIDNode = objectNode.get("workoutID");
+        if (workoutIDNode instanceof TextNode) {
+          exercise.setWorkoutID(workoutIDNode.asText());
+        }
+        JsonNode nameNode = objectNode.get("name");
+        if (nameNode instanceof TextNode) {
+          exercise.setName(nameNode.asText());
+        }
+        JsonNode repGoalNode = objectNode.get("repGoal");
+        if (repGoalNode instanceof TextNode) {
+          exercise.setRepGoal(repGoalNode.asInt());
+        }
+        JsonNode weightNode = objectNode.get("weight");
+        if (weightNode instanceof TextNode) {
+          exercise.setWeight(weightNode.asDouble());
+        }
+        JsonNode setsNode = objectNode.get("sets");
+        if (setsNode instanceof TextNode) {
+          exercise.setSets(setsNode.asInt());
+        }
+        JsonNode repsPerSetNode = objectNode.get("repsPerSet");
+        if (repsPerSetNode instanceof TextNode) {
+          exercise.setRepsPerSet(repsPerSetNode.asInt());
+        }
+        JsonNode restTimeNode = objectNode.get("restTime");
+        if (restTimeNode instanceof TextNode) {
+          exercise.setRestTime(restTimeNode.asInt());
+        }
+        return exercise;
+      } catch (IllegalArgumentException e) {
+        System.err.println(e.getMessage() + "\nMost likely wrong format in file");
       }
-      JsonNode repGoalNode = objectNode.get("repGoal");
-      if (repGoalNode instanceof TextNode) {
-        exercise.setRepGoal(repGoalNode.asInt());
-      }
-      JsonNode weightNode = objectNode.get("weight");
-      if (weightNode instanceof TextNode) {
-        exercise.setWeight(weightNode.asDouble());
-      }
-      JsonNode setsNode = objectNode.get("sets");
-      if (setsNode instanceof TextNode) {
-        exercise.setSets(setsNode.asInt());
-      }
-      JsonNode repsPerSetNode = objectNode.get("repsPerSet");
-      if (repsPerSetNode instanceof TextNode) {
-        exercise.setRepsPerSet(repsPerSetNode.asInt());
-      }
-      JsonNode restTimeNode = objectNode.get("restTime");
-      if (restTimeNode instanceof TextNode) {
-        exercise.setRestTime(restTimeNode.asInt());
-      }
-      return exercise;
     }
     return null;
   }

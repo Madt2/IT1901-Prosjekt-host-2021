@@ -1,24 +1,23 @@
 package beastbook.core;
 
-import beastbook.json.BeastBookPersistence;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 /**
- * User class for application. Creates a user with username, password and a list of workouts.
+ * User class for application. Creates a user with username, password and a list of references to workouts.
  */
-
 public class User {
-  private static final int MIN_CHAR_USERNAME = 3;
-  private static final int MIN_CHAR_PASSWORD = 3;
+  //Todo enum?
+  public static final int MIN_CHAR_USERNAME = 3;
+  public static final int MIN_CHAR_PASSWORD = 3;
+
   private String username;
   private String password;
-  private BeastBookPersistence persistence = new BeastBookPersistence();
-  private List<Workout> workouts = new ArrayList<>();
   private List<History> histories = new ArrayList<>();
+  private List<String> workoutIDs = new ArrayList<>();
+>>>>>>> beastBook/core/src/main/java/beastbook/core/User.java
 
   /**
   * User object for application.
@@ -27,65 +26,57 @@ public class User {
   * @param password password for user.
   */
   public User(String username, String password) {
-    setUserName(username);
+    setUsername(username);
     setPassword(password);
   }
 
   public User() {}
 
   /**
-  * Sets username to input argument. Validation for username length, has to be 3 or more characters.
-  *
-  * @param username the username to set
-  */
-  public void setUserName(String username) {
+   * Validation method for setUsername. Checks for username length, has to be 3 or more characters.
+   *
+   * @param username to validate.
+   * @throws IllegalArgumentException when username is to short.
+   */
+  private void validateUsername(String username) throws IllegalArgumentException {
     boolean isLongEnough = username.length() >= MIN_CHAR_USERNAME;
-    if (isLongEnough) {
-      this.username = username;
-    } else {
+    if (!isLongEnough) {
       throw new IllegalArgumentException(
-        "Username must be " + MIN_CHAR_USERNAME + " or more characters!"
+              "Username must be " + MIN_CHAR_USERNAME + " or more characters!"
       );
     }
   }
 
-  public String getUserName() {
-    return username;
-  }
-
   /**
-  * Sets password to input argument. Validation for password length, has to be 3 or more characters.
-  *
-  * @param password the password to set
-  */
-  public void setPassword(String password) {
+   * Validation method for Password. Checks for password length, has to be 3 or more characters.
+   *
+   * @param password to validate.
+   */
+  private void validatePassword(String password) throws IllegalArgumentException {
     boolean isLongEnough = password.length() >= MIN_CHAR_PASSWORD;
-    if (isLongEnough) {
-      this.password = password;
-    } else {
+    if (!isLongEnough) {
       throw new IllegalArgumentException(
-        "Password must be " + MIN_CHAR_PASSWORD + " or more characters!"
+              "Password must be " + MIN_CHAR_PASSWORD + " or more characters!"
       );
     }
   }
 
   /**
-   * Getter for password.
+   * Checks if ID given is valid as workoutID.
    *
-   * @return users password
+   * @param id to be checked.
+   * @throws IllegalArgumentException when amount of characters in id is wrong,
+   *                                  or if id consists of wrong characters.
    */
-  public String getPassword() {
-    return password;
-  }
-
-  /**
-   * This method adds a workout object to users workouts List.
-   *
-   * @param workout workout to add
-   */
-  public void addWorkout(Workout workout) {
-    checkWorkout(workout);
-    workouts.add(workout);
+  private void validateWorkoutID(String id) throws IllegalArgumentException {
+    if (id.length() != 2) {
+      throw new IllegalArgumentException("ID does not contain right amount of characters!");
+    }
+    final String legalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    if (!(legalChars.contains(String.valueOf(id.charAt(0)))) &&
+            legalChars.contains(String.valueOf(id.charAt(1)))) {
+      throw new IllegalArgumentException("ID does not use correct characters!");
+    }
   }
 
   public void addHistory(Workout workout) {
@@ -143,18 +134,18 @@ public class User {
   }
 
   /**
-   * This method updates a Workout object by replacing with the new given Workout.
+   * Checks if user already has Workout.
    *
-   * @param workout the Workout to be replaced
+   * @param id The WorkoutID to be checked.
+   * @return true if user has workout, false otherwise.
    */
-  public void updateWorkout(Workout workout) {
-    for (int i = 0; i < workouts.size(); i++) {
-      if (workouts.get(i).getName().equals(workout.getName())) {
-        workouts.set(i, workout);
-        return;
+  private boolean hasWorkout(String id) {
+    for (String ID : workoutIDs) {
+      if (ID.equals(id)) {
+        return true;
       }
     }
-    throw new IllegalArgumentException("No workout found to update!");
+    return false;
   }
 
   /**
@@ -172,64 +163,66 @@ public class User {
         );
       }
     }
+
+  public void setUsername(String username) throws IllegalArgumentException {
+    validateUsername(username);
+    this.username = username;
+  }
+
+  public void setPassword(String password) throws IllegalArgumentException {
+    validatePassword(password);
+    this.password = password;
+  }
+
+  public String getUsername() {
+    return username;
+  }
+
+  public String getPassword() {
+    return password;
+  }
+
+  /**
+   * Getter to fetch workoutIDs List from user.
+   *
+   * @return List of IDs
+   */
+  public List<String> getWorkoutIDs() {
+    return new ArrayList<>(workoutIDs);
+  }
+
+  /**
+   * This method adds a workoutID reference to workoutIDs list.
+   *
+   * @param id workoutID to add to user.
+   * @throws IllegalArgumentException when workoutID is already a reference in workoutIDs list,
+   *                                  or if validation fails.
+   */
+  public void addWorkout(String id) throws IllegalArgumentException {
+    if (hasWorkout(id)) {
+      throw new IllegalArgumentException(
+              "User already has workout saved! Workout was not created, " +
+              "please choose another name."
+      );
+    }
+    validateWorkoutID(id);
+    workoutIDs.add(id);
   }
 
   /**
   * Removes workout object from users workouts List.
   *
-  * @param workout workout to remove
+  * @throws IllegalArgumentException when workout reference is not in user's workoutIDs list.
+  * @param id workoutID to remove from User.
   */
-  public void removeWorkout(Workout workout) {
-    if (!workouts.contains(workout)) {
-      throw new IllegalArgumentException("User does not have workout " + workout + " saved!");
-    }
-    workouts.remove(workout);
-  }
-
-  /**
-   * Getter to fetch specific workout.
-   *
-   * @param workoutName name of workout to fetch.
-   * @return workout if it exists, if not it returns null.
-   */
-  public Workout getWorkout(String workoutName) {
-    for (Workout w : workouts) {
-      if (w.getName().equals(workoutName)) {
-        return w;
+  public void removeWorkout(String id) throws IllegalArgumentException {
+    for (String ID : workoutIDs) {
+      if (ID.equals(id)) {
+        workoutIDs.remove(id);
+        return;
       }
     }
-    return null;
-  }
-
-  /**
-   * Getter to fetch workouts List from user.
-   *
-   * @return copy of workouts List
-   */
-  public List<Workout> getWorkouts() {
-    return new ArrayList<>(workouts);
-  }
-
-  /**
-   * Saves User object to file using persistance.
-   *
-   * @throws IOException when saveFilePath is wrong.
-   */
-  public void saveUser() throws IOException {
-    persistence.setSaveFilePath(getUserName());
-    persistence.saveUser(this);
-  }
-
-  /**
-   * Loads User object from file using persistance.
-   *
-   * @param name name of user
-   * @return return User object
-   * @throws IOException when saveFilePath is wrong.
-   */
-  public User loadUser(String name) throws IOException {
-    persistence.setSaveFilePath(name);
-    return persistence.loadUser();
+    throw new IllegalArgumentException("User does not have workout saved!");
   }
 
   public List<History> getHistories() {

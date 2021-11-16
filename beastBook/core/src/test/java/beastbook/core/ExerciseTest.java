@@ -3,7 +3,7 @@ package beastbook.core;
 import org.junit.jupiter.api.*;
 
 public class ExerciseTest {
-  private Exercise exercise;
+  /*private Exercise exercise;
 
   @BeforeEach
   void init() {
@@ -38,5 +38,5 @@ public class ExerciseTest {
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
       exercise.setExerciseName("");
     });
-  }
+  }*/
 }

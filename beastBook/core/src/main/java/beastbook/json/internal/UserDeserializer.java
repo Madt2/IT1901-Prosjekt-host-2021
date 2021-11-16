@@ -17,9 +17,12 @@ import java.io.IOException;
  * Custom JSON-Deserializer for User, converts JSON-file to User object.
  */
 public class UserDeserializer extends JsonDeserializer<User> {
+<<<<<<< beastBook/core/src/main/java/beastbook/json/internal/UserDeserializer.java
 
   private WorkoutDeserializer workoutDeserializer = new WorkoutDeserializer();
   private HistoryDeserializer historyDeserializer = new HistoryDeserializer();
+=======
+>>>>>>> beastBook/core/src/main/java/beastbook/json/internal/UserDeserializer.java
   
   /**
   * Deserializes User data from json file.
@@ -28,7 +31,7 @@ public class UserDeserializer extends JsonDeserializer<User> {
   * @param parser defines how JSON-file should be parsed
   * @param deserializationContext defines context for deserialization
   * @return deserialized User.
-  * @throws IOException for low-level read issues or decoding problems for JsonParser
+  * @throws IOException for low-level read issues or decoding problems for JsonParser.
   */
   @Override
   public User deserialize(
@@ -43,38 +46,42 @@ public class UserDeserializer extends JsonDeserializer<User> {
   * Converts info from jsonNode to User.
   *
   * @param jsonNode jsonNode to convert.
-  * @return Deserialized user.
+  * @return Deserialized user, or null deserialization fails.
   */
   User deserialize(JsonNode jsonNode) {
     if (jsonNode instanceof ObjectNode objectNode) {
-      User user = new User();
-      JsonNode usernameNode = objectNode.get("username");
-      if (usernameNode instanceof TextNode) {
-        user.setUserName(usernameNode.asText());
-      }
-      JsonNode passwordNode = objectNode.get("password");
-      if (passwordNode instanceof TextNode) {
-        user.setPassword(passwordNode.asText());
-      }
-      JsonNode workoutsNode = objectNode.get("workouts");
-      if (workoutsNode instanceof ArrayNode) {
-        for (JsonNode node : workoutsNode) {
-          Workout workout = workoutDeserializer.deserialize(node);
-          if (workout != null) {
-            user.addWorkout(workout);
+      try {
+        User user = new User();
+        JsonNode usernameNode = objectNode.get("username");
+        if (usernameNode instanceof TextNode) {
+          user.setUsername(usernameNode.asText());
+        }
+        JsonNode passwordNode = objectNode.get("password");
+        if (passwordNode instanceof TextNode) {
+          user.setPassword(passwordNode.asText());
+        }
+        JsonNode workoutIDsNode = objectNode.get("workoutIDs");
+        if (workoutIDsNode instanceof ArrayNode) {
+          for (JsonNode elementNode : workoutIDsNode) {
+            String id = elementNode.asText();
+            if (id != null) {
+              user.addWorkout(id);
+            }
           }
         }
-      }
-      JsonNode historyNode = objectNode.get("history");
-      if (historyNode instanceof ArrayNode) {
-        for (JsonNode node : historyNode) {
-          History history = historyDeserializer.deserialize(node);
-          if (history != null) {
-            user.addHistory(history);
+        JsonNode historyNode = objectNode.get("history");
+        if (historyNode instanceof ArrayNode) {
+          for (JsonNode node : historyNode) {
+            History history = historyDeserializer.deserialize(node);
+            if (history != null) {
+             user.addHistory(history);
+            }
           }
         }
+        return user;
+      } catch (IllegalArgumentException e) {
+        System.err.println(e.getMessage() + "\nMost likely wrong format in file");
       }
-      return user;
     }
     return null;
   }

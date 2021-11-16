@@ -1,6 +1,5 @@
 package beastbook.json.internal;
 
-import beastbook.core.Exercise;
 import beastbook.core.Workout;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -29,12 +28,15 @@ public class WorkoutSerializer extends JsonSerializer<Workout> {
       SerializerProvider serializerProvider
   ) throws IOException {
     jsonGenerator.writeStartObject();
+    if (workout.getID() != null) {
+      jsonGenerator.writeStringField("id", workout.getID());
+    }
     if (workout.getName() != null) {
       jsonGenerator.writeStringField("name", workout.getName());
     }
-    jsonGenerator.writeArrayFieldStart("exercises");
-    for (Exercise item : workout.getExercises()) {
-      jsonGenerator.writeObject(item);
+    jsonGenerator.writeArrayFieldStart("exerciseIDs");
+    for (String id : workout.getExerciseIDs()) {
+      jsonGenerator.writeObject(id);
     }
     jsonGenerator.writeEndArray();
     jsonGenerator.writeEndObject();

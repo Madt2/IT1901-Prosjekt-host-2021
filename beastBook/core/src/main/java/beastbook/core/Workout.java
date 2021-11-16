@@ -4,16 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Workout class used by User class. Contains name and exercises List.
+ * Workout class that creates a workout. It has a name, a unique ID to identify it,
+ * and a list of IDs to reference exercise objects.
  */
 public class Workout {
   private String name;
-  private List<Exercise> exercises = new ArrayList<>();
+  private String id;
+  private List<String> exerciseIDs = new ArrayList<>();
     
   /**
   * Contructor for workout with name parameter.
   *
-  * @param name name of the workout.
+  * @param name of the workout.
   */
   public Workout(String name) {
     setName(name);
@@ -25,12 +27,53 @@ public class Workout {
   public Workout() {}
 
   /**
+   * Checks if ID given is valid as workoutID.
+   *
+   * @param id to be checked.
+   * @throws IllegalArgumentException when amount of characters in id is wrong,
+   *                                  or if id consists of wrong characters.
+   */
+  private void validateWorkoutID(String id) throws IllegalArgumentException {
+    if (id.length() != 2) {
+      throw new IllegalArgumentException("ID does not contain right amount of characters!");
+    }
+    final String legalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    if (!(legalChars.contains(String.valueOf(id.charAt(0)))) &&
+            legalChars.contains(String.valueOf(id.charAt(1)))) {
+      throw new IllegalArgumentException("ID does not use correct characters!");
+    }
+  }
+
+  /**
+   * Checks if ID given is valid as exerciseID.
+   *
+   * @param id to be checked.
+   * @throws IllegalArgumentException when amount of characters in id is wrong,
+   *                                  or if id consists of wrong characters.
+   */
+  private void validateExerciseID(String id) throws IllegalArgumentException {
+    if (id.length() != 2) {
+      throw new IllegalArgumentException("ID does not contain right amount of characters!");
+    }
+    final String legalChars = "abcdefghijklmnopqrstuvwxyz0123456789";
+    if (!(legalChars.contains(String.valueOf(id.charAt(0)))) &&
+            legalChars.contains(String.valueOf(id.charAt(1)))) {
+      throw new IllegalArgumentException("ID does not use correct characters!");
+    }
+  }
+
+  /**
   * Method for setting name of workout.
   *
   * @param name name of workout.
   */
   public void setName(String name) {
     this.name = name;
+  }
+
+  public void setID(String id) throws IllegalArgumentException {
+    validateWorkoutID(id);
+    this.id = id;
   }
 
   /**
@@ -42,44 +85,34 @@ public class Workout {
     return name;
   }
 
+  public String getID() {
+    return id;
+  }
+
   /**
-  * Adds an exercise to workout.
+   * Getter for exercises.
+   *
+   * @return returns the list of exercises in workout.
+   */
+  public List<String> getExerciseIDs() {
+    return new ArrayList<>(exerciseIDs);
+  }
+
+  /**
+  * Adds an exorcise to workout.
   *
-  * @param exercise exercise object to add to workout.
+  * @param exerciseID exerciseID to add to workout.
+  * @throws IllegalArgumentException when workout already have reference to exercise,
+  *                                  or if ID is wrong formatted.
   */
-  public void addExercise(Exercise exercise) {
-    for (Exercise e : exercises) {
-      if (e.getExerciseName().equals(exercise.getExerciseName())) {
-        throw new IllegalArgumentException(
-          exercise.getExerciseName() + " is already added as an exercise!"
-        );
+  public void addExercise(String exerciseID) throws IllegalArgumentException {
+    for (String ID : exerciseIDs) {
+      if (ID.equals(exerciseID)) {
+        throw new IllegalArgumentException("Exercise is already added!");
       }
     }
-    exercises.add(exercise);
-  }
-
-  /**
-   * Removed exercise object from exercises List.
-   *
-   * @param exercise exercise to remove
-   */
-  public void removeExercise(Exercise exercise) {
-    if (exercises.contains(exercise)) {
-      exercises.remove(exercise);
-    } else {
-      throw new IllegalArgumentException(
-        exercise.getExerciseName() + " was not found in workout!"
-      );
-    }
-  }
-
-  /**
-  * Getter for exercises.
-  *
-  * @return returns the list of exercises in workout.
-  */
-  public List<Exercise> getExercises() {
-    return new ArrayList<>(exercises);
+    validateExerciseID(exerciseID);
+    exerciseIDs.add(exerciseID);
   }
 
   /**
@@ -98,12 +131,19 @@ public class Workout {
   }
 
   /**
-  * toString for workout. Returns object in more readable format.
-  *
-  * @return (name of workout): [list of exercises]
-  */
-  @Override
-  public String toString() {
-    return getName() + ": " + getExercises();
+   * Removes reference to exercise object from exerciseIDs List.
+   *
+   * @param exerciseID to remove from workout.
+   * @throws IllegalArgumentException when exerciseID does not exist in workout.
+   */
+  public void removeExercise(String exerciseID) throws IllegalArgumentException {
+    //Todo might be a issue with remove where it looks for spesific object and not string object equal to ID string!
+    for (String ID : exerciseIDs) {
+      if (ID.equals(exerciseID)) {
+        exerciseIDs.remove(exerciseID);
+        return;
+      }
+    }
+    throw new IllegalArgumentException("Exercise was not found in workout!");
   }
 }

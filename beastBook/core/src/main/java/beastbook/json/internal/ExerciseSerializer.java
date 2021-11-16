@@ -29,8 +29,14 @@ public class ExerciseSerializer extends JsonSerializer<Exercise> {
       SerializerProvider serializerProvider
   ) throws IOException {
     jsonGenerator.writeStartObject();
-    if (exercise.getExerciseName() != null) {
-      jsonGenerator.writeStringField("exerciseName", exercise.getExerciseName());
+    if (exercise.getID() != null) {
+      jsonGenerator.writeStringField("id", exercise.getID());
+    }
+    if (exercise.getID() != null) {
+      jsonGenerator.writeStringField("workoutID", exercise.getWorkoutID());
+    }
+    if (exercise.getName() != null) {
+      jsonGenerator.writeStringField("exerciseName", exercise.getName());
     }
     if (exercise.getRepGoal() != 0) {
       jsonGenerator.writeStringField("repGoal", exercise.getRepGoal() + "");

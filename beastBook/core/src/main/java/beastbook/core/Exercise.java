@@ -2,13 +2,19 @@ package beastbook.core;
 
 /**
  * Exercise class used in Workout class. Creates an Exercise object containing name, rep goal,
- * weight used, amount of sets, reps per set and rest time for exercise.
+ * weight used, amount of sets, reps per set and rest time for exercise. It also has a unique ID
+ * to identify it, as well as an ID to reference the workout object it belongs to.
  */
 public class Exercise {
+  //Todo enum?
   public static final int maxStringLength = 50;
   public static final int maxIntLength = 5;
   public static final int maxDoubleLength = 7;
-  private String exerciseName;
+
+  private String id;
+  private String workoutID;
+
+  private String name;
   private int repGoal;
   private double weight;
   private int sets;
@@ -18,15 +24,14 @@ public class Exercise {
   /**
   * Creates an Exercise using given input.
   *
-  * @param exerciseName Name of the exercise
+  * @param name Name of the exercise
   * @param repGoal Number of repetitions to be performed
   * @param weight Weight to be used for the exercise
   * @param sets Number of sets to be performed
   * @param restTime How much rest between sets in seconds
   */
-
-  public Exercise(String exerciseName, int repGoal, double weight, int sets, int repsPerSet, int restTime) {
-    setExerciseName(exerciseName);
+  public Exercise(String name, int repGoal, double weight, int sets, int repsPerSet, int restTime) {
+    setName(name);
     setRepGoal(repGoal);
     setWeight(weight);
     setSets(sets);
@@ -42,17 +47,17 @@ public class Exercise {
   /**
   * Checks if name is valid, valid is not blank.
   *
-  * @param exerciseName Name of the exercise
+  * @param name Name of the exercise
   */
-  private void validateExerciseName(String exerciseName) {
-    boolean isTooLong = exerciseName.length() >= maxStringLength;
+  private void validateName(String name) throws IllegalArgumentException {
+    boolean isTooLong = name.length() >= maxStringLength;
     if (isTooLong) {
       throw new IllegalArgumentException(
               "Exercise Name can not be longer than " + maxStringLength + " characters!"
       );
     }
-    exerciseName = exerciseName.trim();
-    boolean isBlank = (exerciseName.length() <= 0) || (exerciseName.equals(""));
+    name = name.trim();
+    boolean isBlank = (name.length() <= 0) || (name.equals(""));
     if (isBlank) {
       throw new IllegalArgumentException("Exercise Name can not be blank!");
     }
@@ -63,7 +68,7 @@ public class Exercise {
   *
   * @param repGoal Number of repetitions to be performed
   */
-  private void validateRepGoal(int repGoal) {
+  private void validateRepGoal(int repGoal) throws IllegalArgumentException {
     boolean isTooLow = (repGoal <= 0);
     if (isTooLow) {
       throw new IllegalArgumentException("Rep Goal must be more than 0!");
@@ -82,7 +87,7 @@ public class Exercise {
   *
   * @param weight Weight to be used for the exercise
   */
-  private void validateWeight(double weight) {
+  private void validateWeight(double weight) throws IllegalArgumentException {
     boolean isTooLow = (weight <= 0);
     if (isTooLow) {
       throw new IllegalArgumentException("Working Weight must be more than 0!");
@@ -100,7 +105,7 @@ public class Exercise {
   *
   * @param sets Number of sets to be performed
   */
-  private void validateSets(int sets) {
+  private void validateSets(int sets) throws IllegalArgumentException {
     boolean isTooLow = (sets <= 0);
     if (isTooLow) {
       throw new IllegalArgumentException(
@@ -116,7 +121,8 @@ public class Exercise {
     }
   }
 
-  private void validateRepsPerSet(int repsPerSet) {
+  // Todo is this relevant now?
+  private void validateRepsPerSet(int repsPerSet) throws IllegalArgumentException {
     boolean isTooLow = (repsPerSet <= 0);
     if (isTooLow) {
       throw new IllegalArgumentException("Reps Per Set must be more than 0!");
@@ -135,7 +141,7 @@ public class Exercise {
   *
   * @param restTime How many seconds of rest between each set
   */
-  private void validateRestTime(int restTime) {
+  private void validateRestTime(int restTime) throws IllegalArgumentException {
     boolean isTooLow = (restTime <= 0);
     if (isTooLow) {
       throw new IllegalArgumentException("Rest Time must be more than 0!");
@@ -146,37 +152,102 @@ public class Exercise {
       + maxIntLength + " characters!");
     }
   }
-  
-  public void setExerciseName(String exerciseName) {
-    validateExerciseName(exerciseName);
-    this.exerciseName = exerciseName;
+
+  /**
+   * Checks if ID given is valid as exerciseID.
+   *
+   * @param id to be checked.
+   * @throws IllegalArgumentException when amount of characters in id is wrong,
+   *                                  or if id consists of wrong characters.
+   */
+  private void validateExerciseID(String id) throws IllegalArgumentException {
+    if (id.length() != 2) {
+      throw new IllegalArgumentException("ID does not contain right amount of characters!");
+    }
+    final String legalChars = "abcdefghijklmnopqrstuvwxyz0123456789";
+    if (!(legalChars.contains(String.valueOf(id.charAt(0)))) &&
+            legalChars.contains(String.valueOf(id.charAt(1)))) {
+      throw new IllegalArgumentException("ID does not use correct characters!");
+    }
   }
 
-  public String getExerciseName() {
-    return this.exerciseName;
+  /**
+   * Checks if ID given is valid as workoutID.
+   *
+   * @param id to be checked.
+   * @throws IllegalArgumentException when amount of characters in id is wrong,
+   *                                  or if id consists of wrong characters.
+   */
+  private void validateWorkoutID(String id) throws IllegalArgumentException {
+    if (id.length() != 2) {
+      throw new IllegalArgumentException("ID does not contain right amount of characters!");
+    }
+    final String legalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    if (!(legalChars.contains(String.valueOf(id.charAt(0)))) &&
+            legalChars.contains(String.valueOf(id.charAt(1)))) {
+      throw new IllegalArgumentException("ID does not use correct characters!");
+    }
   }
 
-  public void setRepGoal(int repGoal) {
+  public void setID(String id) throws IllegalArgumentException {
+    validateExerciseID(id);
+    this.id = id;
+  }
+
+  public void setWorkoutID(String id) throws IllegalArgumentException {
+    validateWorkoutID(id);
+    this.workoutID = id;
+  }
+
+  public void setName(String name) throws IllegalArgumentException {
+    validateName(name);
+    this.name = name;
+  }
+
+  public void setRepGoal(int repGoal) throws IllegalArgumentException {
     validateRepGoal(repGoal);
     this.repGoal = repGoal;
+  }
+
+  public void setWeight(double weight) throws IllegalArgumentException {
+    validateWeight(weight);
+    this.weight = weight;
+  }
+
+  public void setSets(int sets) throws IllegalArgumentException {
+    validateSets(sets);
+    this.sets = sets;
+  }
+
+  public void setRepsPerSet(int repsPerSet) throws IllegalArgumentException {
+    //Todo removed commented code?
+    /*    validateRepsPerSet(repsPerSet);*/
+    this.repsPerSet = repsPerSet;
+  }
+
+  public void setRestTime(int restTime) throws IllegalArgumentException {
+    validateRestTime(restTime);
+    this.restTime = restTime;
+  }
+
+  public String getID() {
+    return id;
+  }
+
+  public String getWorkoutID() {
+    return workoutID;
+  }
+
+  public String getName() {
+    return this.name;
   }
 
   public int getRepGoal() {
     return this.repGoal;
   }
 
-  public void setWeight(double weight) {
-    validateWeight(weight);
-    this.weight = weight;
-  }
-
   public double getWeight() {
     return this.weight;
-  }
-
-  public void setSets(int sets) {
-    validateSets(sets);
-    this.sets = sets;
   }
 
   public int getSets() {
@@ -187,28 +258,7 @@ public class Exercise {
     return repsPerSet;
   }
 
-  public void setRepsPerSet(int repsPerSet) {
-    /*    validateRepsPerSet(repsPerSet);*/
-    this.repsPerSet = repsPerSet;
-  }
-
-  public void setRestTime(int restTime) {
-    validateRestTime(restTime);
-    this.restTime = restTime;
-  }
-
   public int getRestTime() {
     return restTime;
-  }
-
-  /**
-  * Method to view exercise in a simple way.
-  *
-  * @return returns a string in given format with fields separated by ","
-  */
-  @Override
-  public String toString() {
-    return exerciseName + "," + repGoal + "," + weight 
-      + "," + sets + "," + repsPerSet + "," + restTime;
   }
 }
