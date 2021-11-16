@@ -116,6 +116,21 @@ public class Workout {
   }
 
   /**
+   * Method to get a copy of a workout,
+   * used to save History objects with new reference.
+   *
+   * @param workout The Workout to be copied
+   * @return a copy of the Workout
+   */
+  public Workout copy(Workout workout) {
+    Workout copy = new Workout(workout.getName());
+    for (Exercise e : workout.getExercises()) {
+      copy.addExercise(e);
+    }
+    return copy;
+  }
+
+  /**
    * Removes reference to exercise object from exerciseIDs List.
    *
    * @param exerciseID to remove from workout.

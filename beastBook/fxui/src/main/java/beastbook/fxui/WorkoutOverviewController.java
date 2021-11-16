@@ -91,11 +91,6 @@ public class WorkoutOverviewController extends AbstractController {
     workoutNameColumn.setPrefWidth(150);    
   }
 
-  @Override
-  void loadHome(ActionEvent event) throws IOException {
-    super.loadHome(event);
-  }
-
   @FXML
   void loadWorkout(ActionEvent event) throws IOException {
     try {

@@ -418,11 +418,6 @@ public class CreateWorkoutController extends AbstractController {
     return this.weightInput;
   }
 
-  @Override
-  void loadHome(ActionEvent event) throws IOException {
-    super.loadHome(event);
-  }
-
 
   void setUser(User user) {
     this.user = user;

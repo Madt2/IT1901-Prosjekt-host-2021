@@ -11,19 +11,16 @@ import javafx.scene.input.MouseButton;
 import javafx.stage.Stage;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testfx.api.FxAssert;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.matcher.control.TextMatchers;
-
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+
 
 public class CreateWorkoutControllerTest extends ApplicationTest{
   private CreateWorkoutController controller;
-  private User user = new User("Test", "123");
   private Workout workout = new Workout();
   private Exercise exercise1 = new Exercise();
   private Exercise exercise2 = new Exercise();
@@ -33,14 +30,14 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
     final FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/beastbook.fxui/Create.fxml"));
     controller = new CreateWorkoutController();
     loader.setController(controller);
+    User user = new User("Test", "123");
     controller.setUser(user);
     addWorkoutsToUser();
-    user.saveUser();
+    controller.user.saveUser();
     final Parent root = loader.load();
     stage.setScene(new Scene(root));
     stage.show();
   }  
-
 
   private void addWorkoutsToUser(){
     workout = new Workout("testWorkout");
@@ -48,7 +45,7 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
     exercise2 = new Exercise("Squat", 40, 30, 20, 0, 10);
     workout.addExercise(exercise1);
     workout.addExercise(exercise2);
-    user.addWorkout(workout);
+    controller.user.addWorkout(workout);
   }
       
   @Test
@@ -63,7 +60,6 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
        
     Assertions.assertEquals(60, controller.getWorkoutTable().getItems().get(0).getRestTime()); //Adds to row
 
-       
     clickOn("#exerciseNameInput", MouseButton.PRIMARY).write("Leg press"); // Add another object 
     clickOn("#repGoalInput", MouseButton.PRIMARY).write("20");
     clickOn("#weightInput", MouseButton.PRIMARY).write("150");
@@ -125,8 +121,6 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
 
   @Test
   void testCanNotSaveWorkoutWithoutName(){
-    user.removeWorkout(workout);
-
     clickOn("#exerciseNameInput", MouseButton.PRIMARY).write("Squat");
     clickOn("#repGoalInput", MouseButton.PRIMARY).write("50");
     clickOn("#weightInput", MouseButton.PRIMARY).write("20");
@@ -139,7 +133,7 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
   }
 
   @Test
-  void testCanOverwriteWorkout(){
+  void testCanOverwriteWorkout() throws IOException{
     clickOn("#titleInput", MouseButton.PRIMARY).write(workout.getName());
     clickOn("#exerciseNameInput", MouseButton.PRIMARY).write("B");
     clickOn("#repGoalInput", MouseButton.PRIMARY).write("1");
@@ -149,19 +143,18 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
     clickOn("#addButton", MouseButton.PRIMARY);
     clickOn("#createButton", MouseButton.PRIMARY);
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Workout overwritten!"));
-    System.out.println(user.getWorkout("testWorkout").getExercises());
 
-    Assertions.assertEquals("B", user.getWorkout("testWorkout").getExercises().get(
-            user.getWorkout("testWorkout").getExercises().size()-1
+    Assertions.assertEquals("B", controller.user.getWorkout("testWorkout").getExercises().get(
+            controller.user.getWorkout("testWorkout").getExercises().size()-1
     ).getExerciseName());
   }
     
   @Test
-  void testWorkoutIsNotLoaded(){   
-    user.removeWorkout(workout);
+  void testWorkoutIsNotLoaded() throws IOException{  
+    controller.user.removeWorkout(controller.user.getWorkout("testWorkout"));
     clickOn("#titleInput", MouseButton.PRIMARY).write("testWorkout");
     clickOn("#loadButton", MouseButton.PRIMARY);
-
+ 
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Workout not found!"));
   }
 
@@ -175,11 +168,12 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
     clickOn(node);
 
     Exercise loadedExercise = controller.getWorkoutTable().getSelectionModel().getSelectedItem();
-    Assertions.assertEquals(exercise1, loadedExercise);
+    Assertions.assertEquals(exercise1.getExerciseName(), loadedExercise.getExerciseName());
+    Assertions.assertEquals(exercise1.getWeight(), loadedExercise.getWeight());
   }
 
   @Test
-  void testDeleteExercise() {
+  void testDeleteExercise() throws IOException {
     clickOn("#titleInput", MouseButton.PRIMARY).write("testWorkout");
     clickOn("#loadButton", MouseButton.PRIMARY);
 
@@ -189,10 +183,9 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
     clickOn("#deleteButton");
 
     controller.getWorkoutTable().getColumns().get(0).setId("exerciseName");
-    Assertions.assertEquals(1, user.getWorkout("testWorkout").getExercises().size());
+    Assertions.assertEquals(1, controller.user.getWorkout("testWorkout").getExercises().size());
   }
  
-
   @AfterAll
   static void cleanUp() {
     File file = new File(System.getProperty("user.home") + "/test");

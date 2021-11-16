@@ -20,21 +20,6 @@ public class HomeScreenController extends AbstractController {
   @FXML
   private Button workoutsButton;
 
-  @Override
-  void loadCreate(ActionEvent event) throws IOException {
-    super.loadCreate(event);
-  }
-
-  @Override
-  void loadOverview(ActionEvent event) throws IOException {
-    super.loadOverview(event);
-  }
-
-  @Override
-  void loadLogin(ActionEvent event) throws IOException {
-    super.loadLogin(event);
-  }
-
   void setUser(User user) {
     this.user = user;
   }

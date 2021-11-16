@@ -1,6 +1,7 @@
 package beastbook.json.internal;
 
 import beastbook.core.Exercise;
+import beastbook.core.History;
 import beastbook.core.Id;
 import beastbook.core.User;
 import beastbook.core.Workout;
@@ -19,6 +20,11 @@ public class BeastBookModule extends SimpleModule {
     addSerializer(Exercise.class, new ExerciseSerializer());
     addSerializer(Workout.class, new WorkoutSerializer());
     addSerializer(User.class, new UserSerializer());
+    addSerializer(History.class, new HistorySerializer());
+    addDeserializer(Exercise.class, new ExerciseDeserializer());
+    addDeserializer(Workout.class, new WorkoutDeserializer());
+    addDeserializer(User.class, new UserDeserializer());
+    addDeserializer(History.class, new HistoryDeserializer());
     addSerializer(Id.class, new IdSerializer());
     addDeserializer(Exercise.class, new ExerciseDeserializer());
     addDeserializer(Workout.class, new WorkoutDeserializer());

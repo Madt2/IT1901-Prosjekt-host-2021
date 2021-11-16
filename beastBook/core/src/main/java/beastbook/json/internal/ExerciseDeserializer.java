@@ -20,15 +20,15 @@ public class ExerciseDeserializer extends JsonDeserializer<Exercise> {
   * Format for Exercise in json:
   * { exerciseName: "...", repGoal: "...", weight: "...", sets: "...", restTime: "..." }.
   *
-  * @param parser defines how JSON-file should be parsed.
-  * @param deserializer defines context for deserialization.
+  * @param parser defines how JSON-file should be parsed
+  * @param deserializationContext defines context for deserialization
   * @return Deserialized exercise.
   * @throws IOException for low-level read issues or decoding problems for JsonParser.
   */
   @Override
   public Exercise deserialize(
       JsonParser parser,
-      DeserializationContext deserializer
+      DeserializationContext deserializationContext
   ) throws IOException {
     TreeNode treeNode = parser.getCodec().readTree(parser);
     return deserialize((JsonNode) treeNode);

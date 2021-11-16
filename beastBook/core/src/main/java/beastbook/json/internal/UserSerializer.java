@@ -1,5 +1,6 @@
 package beastbook.json.internal;
 
+import beastbook.core.History;
 import beastbook.core.User;
 import beastbook.core.Workout;
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -39,6 +40,11 @@ public class UserSerializer extends JsonSerializer<User> {
     jsonGenerator.writeArrayFieldStart("workoutIDs");
     for (String id : user.getWorkoutIDs()) {
       jsonGenerator.writeObject(id);
+    }
+    jsonGenerator.writeEndArray();
+    jsonGenerator.writeArrayFieldStart("history");
+    for (History item : user.getHistories()) {
+      jsonGenerator.writeObject(item);
     }
     jsonGenerator.writeEndArray();
     jsonGenerator.writeEndObject();
