@@ -56,7 +56,7 @@ public class testClient {
   public static void main(String[] args) {
     testClient testClient = new testClient();
 
-    //testClient.createUser();
+    testClient.createUser();
     testClient.addWorkout("testw", "testing");
     //testClient.addExercise("teste", "JF", "testing");
     //System.out.println(testClient.getUser("testing"));

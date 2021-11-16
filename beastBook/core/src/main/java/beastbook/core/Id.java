@@ -11,24 +11,10 @@ import java.util.List;
 public class Id {
   private List<String> exerciseIDs = new ArrayList<>();
   private List<String> workoutIDs = new ArrayList<>();
-  private HashMap<String, String> exerciseNameIDMap = new HashMap<String, String>();
-  private HashMap<String, String> workoutNameIDMap = new HashMap<String, String>();
-
-  /**
-   * Checks if workoutID is in use.
-   *
-   * @param id to check.
-   * @return true if ID is in reference list, false otherwise.
-   */
-  public boolean hasWorkoutID(String id) {
-    for (String ID : workoutIDs) {
-      if (ID.equals(id)) {
-        return true;
-      }
-    }
-    return false;
-    //Todo can be replaced with return workoutIDs.contains(id);? problem with string and contains?
-  }
+  private List<String> historyIDs = new ArrayList<>();
+  private HashMap<String, String> exerciseNameIDMap = new HashMap<>();
+  private HashMap<String, String> workoutNameIDMap = new HashMap<>();
+  private HashMap<String, String> historyNameIDMap = new HashMap<>();
 
   /**
    * Checks if exerciseID is in use.
@@ -37,13 +23,21 @@ public class Id {
    * @return true if ID is in reference list, false otherwise.
    */
   public boolean hasExerciseID(String id) {
-    for (String ID : exerciseIDs) {
-      if (ID.equals(id)) {
-        return true;
-      }
-    }
-    return false;
-    //Todo can be replaced with return exerciseIDs.contains(id);? problem with string and contains?
+    return exerciseIDs.contains(id);
+  }
+
+  /**
+   * Checks if workoutID is in use.
+   *
+   * @param id to check.
+   * @return true if ID is in reference list, false otherwise.
+   */
+  public boolean hasWorkoutID(String id) {
+    return workoutIDs.contains(id);
+  }
+
+  public boolean hasHistoryID(String id) {
+    return historyIDs.contains(id);
   }
 
   public List<String> getWorkoutIDs() {
@@ -54,6 +48,10 @@ public class Id {
     return new ArrayList<>(exerciseIDs);
   }
 
+  public List<String> getHistoryIDs() {
+    return new ArrayList<>(historyIDs);
+  }
+
   public String getExerciseIDName(String exerciseID) {
     return exerciseNameIDMap.get(exerciseID);
   }
@@ -62,35 +60,12 @@ public class Id {
     return exerciseNameIDMap.get(workoutID);
   }
 
-  /**
-   * Adds workoutID to list over workoutIDs in use.
-   *
-   * @param id to add.
-   * @throws IllegalArgumentException if ID is in use already.
-   */
-  public void addWorkoutID(String id) throws IllegalArgumentException {
-    if (hasWorkoutID(id)) {
-      throw new IllegalArgumentException("User already have ID " + id + " stored in workouts");
-    }
-    workoutIDs.add(id);
+  public String getHistoryIDName(String historyID) {
+    return historyNameIDMap.get(historyID);
   }
 
   /**
-   * Removes workoutID from list over workoutIDs in use.
-   *
-   * @param id to remove.
-   * @throws IllegalArgumentException when ID does not exist in reference list.
-   */
-  public void removeWorkoutID(String id) throws IllegalArgumentException {
-    if (!hasWorkoutID(id)) {
-      throw new IllegalArgumentException("User does not have ID " + id + " stored in workouts");
-    }
-    //Todo might be problem with remove!
-    workoutIDs.remove(id);
-  }
-
-  /**
-   * Adds exerciseID to list over exerciseIDs in use.
+   * Adds exerciseID to list of exerciseIDs in use.
    *
    * @param id to add
    * @throws IllegalArgumentException if ID is in use already.
@@ -103,17 +78,29 @@ public class Id {
   }
 
   /**
-   * Removes exerciseID from list over exerciseIDs in use.
+   * Adds workoutID to list of workoutIDs in use.
    *
-   * @param id to remove.
-   * @throws IllegalArgumentException when ID does not exist in reference list.
+   * @param id to add.
+   * @throws IllegalArgumentException if ID is in use already.
    */
-  public void removeExerciseID(String id) throws IllegalArgumentException {
-    if (!hasExerciseID(id)) {
-      throw new IllegalArgumentException("User does not have ID " + id + " stored in exercises");
+  public void addWorkoutID(String id) throws IllegalArgumentException {
+    if (hasWorkoutID(id)) {
+      throw new IllegalArgumentException("User already has ID " + id + " stored in workouts");
     }
-    //Todo might be problem with remove!
-    exerciseIDs.remove(id);
+    workoutIDs.add(id);
+  }
+
+  /**
+   * Adds historyID to list of historyIDs in use.
+   *
+   * @param id to add
+   * @throws IllegalArgumentException if ID is in use already.
+   */
+  public void addHistoryID(String id) throws IllegalArgumentException {
+    if (hasHistoryID(id)) {
+      throw new IllegalArgumentException("User already has ID " + id + " stored in histories");
+    }
+    historyIDs.add(id);
   }
 
   /**
@@ -127,15 +114,6 @@ public class Id {
   }
 
   /**
-   * Removes entry for mapping of exerciseID.
-   *
-   * @param exerciseID entry to remove.
-   */
-  public void removeExerciseIDEntry(String exerciseID) {
-    exerciseNameIDMap.remove(exerciseID);
-  }
-
-  /**
    * Adds an entry to map over workoutID to workoutNames.
    *
    * @param workoutID value to map.
@@ -145,12 +123,98 @@ public class Id {
     workoutNameIDMap.put(workoutID, workoutName);
   }
 
+  public void addHistoryIDEntry(String historyID, String historyName) {
+    historyNameIDMap.put(historyID, historyName);
+  }
+
+  /**
+   * Removes exerciseID from list over exerciseIDs in use.
+   *
+   * @param id to remove.
+   * @throws IllegalArgumentException when ID does not exist in reference list.
+   */
+  public void removeExerciseID(String id) throws IllegalArgumentException {
+    if (!hasExerciseID(id)) {
+      throw new IllegalArgumentException("User does not have ID " + id + " stored in exercises");
+    }
+    exerciseIDs.remove(id);
+  }
+
+  /**
+   * Removes workoutID from list over workoutIDs in use.
+   *
+   * @param id to remove.
+   * @throws IllegalArgumentException when ID does not exist in reference list.
+   */
+  public void removeWorkoutID(String id) throws IllegalArgumentException {
+    if (!hasWorkoutID(id)) {
+      throw new IllegalArgumentException("User does not have ID " + id + " stored in workouts");
+    }
+    workoutIDs.remove(id);
+  }
+
+  public void removeHistoryID(String id) throws IllegalArgumentException {
+    if (!hasHistoryID(id)) {
+      throw new IllegalArgumentException("User does not have ID " + id + " stored in histories");
+    }
+    historyIDs.remove(id);
+  }
+
+  /**
+   * Removes entry for mapping of exerciseID.
+   *
+   * @param exerciseID entry to remove.
+   */
+  public void removeExerciseIDEntry(String exerciseID) {
+    exerciseNameIDMap.remove(exerciseID);
+  }
+
   /**
    * Removes entry for mapping of exerciseID.
    *
    * @param workoutID entry to remove.
    */
   public void removeWorkoutIDEntry(String workoutID) {
-    workoutIDs.remove(workoutID);
+    workoutNameIDMap.remove(workoutID);
+  }
+
+  public void removeHistoryIDEntry(String historyID) {
+    historyNameIDMap.remove(historyID);
+  }
+
+  /**
+   * Checks if ID given is valid as exerciseID.
+   *
+   * @param id to be checked.
+   * @throws IllegalArgumentException when amount of characters in id is wrong,
+   *                                  or if id consists of wrong characters.
+   */
+  public static void validateExerciseID(String id) throws IllegalArgumentException {
+    if (id.length() != 2) {
+      throw new IllegalArgumentException("ID does not contain right amount of characters!");
+    }
+    final String legalChars = "abcdefghijklmnopqrstuvwxyz0123456789";
+    if (!(legalChars.contains(String.valueOf(id.charAt(0)))) &&
+          legalChars.contains(String.valueOf(id.charAt(1)))) {
+      throw new IllegalArgumentException("ID does not use correct characters!");
+    }
+  }
+
+  /**
+   * Checks if ID given is valid as workoutID.
+   *
+   * @param id to be checked.
+   * @throws IllegalArgumentException when amount of characters in id is wrong,
+   *                                  or if id consists of wrong characters.
+   */
+  public static void validateWorkoutID(String id) throws IllegalArgumentException {
+    if (id.length() != 2) {
+      throw new IllegalArgumentException("ID does not contain right amount of characters!");
+    }
+    final String legalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    if (!(legalChars.contains(String.valueOf(id.charAt(0)))) &&
+          legalChars.contains(String.valueOf(id.charAt(1)))) {
+      throw new IllegalArgumentException("ID does not use correct characters!");
+    }
   }
 }

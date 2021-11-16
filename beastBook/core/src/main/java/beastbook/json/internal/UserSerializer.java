@@ -42,9 +42,9 @@ public class UserSerializer extends JsonSerializer<User> {
       jsonGenerator.writeObject(id);
     }
     jsonGenerator.writeEndArray();
-    jsonGenerator.writeArrayFieldStart("history");
-    for (History item : user.getHistories()) {
-      jsonGenerator.writeObject(item);
+    jsonGenerator.writeArrayFieldStart("historyIDs");
+    for (String id : user.getHistoryIDs()) {
+      jsonGenerator.writeObject(id);
     }
     jsonGenerator.writeEndArray();
     jsonGenerator.writeEndObject();

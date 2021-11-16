@@ -1,12 +1,15 @@
 package beastbook.core;
 
+import java.util.List;
+
 /**
  * History class saves a workout with a final workout object and date it was saved.
  */
 public class History extends Workout {
   private final String date;
   private final String name;
-  private final Workout savedWorkout;
+  private String id;
+  private final List<Exercise> savedExercises;
 
   /**
    * Constructor for History object.
@@ -14,18 +17,26 @@ public class History extends Workout {
    * @param workout The Workout to be saved.
    * @param date The date it was saved.
    */
-  public History(Workout workout, String date) {
-    this.name = workout.getName();
+  public History(String name, List<Exercise> workout, String date) {
+    this.name = name;
     this.date = date;
-    this.savedWorkout = workout.copy(workout);
+    this.savedExercises = workout;
+  }
+
+  public void setID(String id) {
+    this.id = id;
+  }
+
+  public String getID() {
+    return id;
   }
 
   public String getDate() {
     return date;
   }
 
-  public Workout getSavedWorkout() {
-    return savedWorkout;
+  public List<Exercise> getSavedExercises() {
+    return savedExercises;
   }
 
   public String getName() {
@@ -34,6 +45,6 @@ public class History extends Workout {
 
   @Override
   public String toString() {
-    return getSavedWorkout() + ", " + getDate();
+    return getName() + ", " + getDate() + ": " + getSavedExercises();
   }
 }

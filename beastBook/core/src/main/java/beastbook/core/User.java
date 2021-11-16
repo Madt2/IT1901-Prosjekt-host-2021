@@ -15,9 +15,8 @@ public class User {
 
   private String username;
   private String password;
-  private List<History> histories = new ArrayList<>();
+  private List<String> historyIDs = new ArrayList<>();
   private List<String> workoutIDs = new ArrayList<>();
->>>>>>> beastBook/core/src/main/java/beastbook/core/User.java
 
   /**
   * User object for application.
@@ -62,64 +61,17 @@ public class User {
   }
 
   /**
-   * Checks if ID given is valid as workoutID.
-   *
-   * @param id to be checked.
-   * @throws IllegalArgumentException when amount of characters in id is wrong,
-   *                                  or if id consists of wrong characters.
-   */
-  private void validateWorkoutID(String id) throws IllegalArgumentException {
-    if (id.length() != 2) {
-      throw new IllegalArgumentException("ID does not contain right amount of characters!");
-    }
-    final String legalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    if (!(legalChars.contains(String.valueOf(id.charAt(0)))) &&
-            legalChars.contains(String.valueOf(id.charAt(1)))) {
-      throw new IllegalArgumentException("ID does not use correct characters!");
-    }
-  }
-
-  public void addHistory(Workout workout) {
-    History h = new History(workout, getDate());
-    histories.add(h);
-  }
-
-  public void addHistory(History history) {
-    this.histories.add(history);
-  }
-
-  /**
    * Method to remove History object from histories list.
    *
-   * @param historyName The name of the history to be removed.
-   * @param date the corresponding date for the name.
-   * @throws IllegalArgumentException if no History object found.
+   * @param id The id of the history to be removed.
+   * @throws IllegalArgumentException if no History found.
    */
-  public void removeHistory(String historyName, String date) throws IllegalArgumentException {
-    for (History h : histories) {
-      if (h.getName().equals(historyName) && h.getDate().equals(date)) {
-        histories.remove(h);
-        return;
-      }
+  public void removeHistory(String id) throws IllegalArgumentException {
+    if (hasHistory(id)) {
+      historyIDs.remove(id);
+      return;
     }
     throw new IllegalArgumentException("No such history found!");
-  }
-
-  /**
-   * Gets a History object from the history list.
-   *
-   * @param historyName The name of the history to be fetched.
-   * @param date the corresponding date for the name.
-   * @return the History object that was requested.
-   * @throws IllegalArgumentException if no History object found.
-   */
-  public History getHistory(String historyName, String date) throws IllegalArgumentException {
-    for (History h : histories) {
-      if (h.getName().equals(historyName) && h.getDate().equals(date)) {
-        return h;
-      }
-    }
-    throw new IllegalArgumentException("No history entry found!");
   }
 
   /**
@@ -140,29 +92,8 @@ public class User {
    * @return true if user has workout, false otherwise.
    */
   private boolean hasWorkout(String id) {
-    for (String ID : workoutIDs) {
-      if (ID.equals(id)) {
-        return true;
-      }
-    }
-    return false;
+    return workoutIDs.contains(id);
   }
-
-  /**
-   * Checks if user already har Workout saved.
-   *
-   * @param workout The Workout to be checked
-   * @throws IllegalArgumentException if workout found.
-   */
-  private void checkWorkout(Workout workout) throws IllegalArgumentException {
-    for (Workout w : getWorkouts()) {
-      if (w.getName().equals(workout.getName())) {
-        throw new IllegalArgumentException(
-            "User already has workout " + workout.getName()
-                + " saved! Workout was not created, please choose another name."
-        );
-      }
-    }
 
   public void setUsername(String username) throws IllegalArgumentException {
     validateUsername(username);
@@ -201,11 +132,11 @@ public class User {
   public void addWorkout(String id) throws IllegalArgumentException {
     if (hasWorkout(id)) {
       throw new IllegalArgumentException(
-              "User already has workout saved! Workout was not created, " +
-              "please choose another name."
+              "User already has workout saved! Workout was not created, "
+                    + "please choose another name."
       );
     }
-    validateWorkoutID(id);
+    Id.validateWorkoutID(id);
     workoutIDs.add(id);
   }
 
@@ -216,16 +147,31 @@ public class User {
   * @param id workoutID to remove from User.
   */
   public void removeWorkout(String id) throws IllegalArgumentException {
-    for (String ID : workoutIDs) {
-      if (ID.equals(id)) {
-        workoutIDs.remove(id);
-        return;
-      }
+    if (hasWorkout(id)) {
+      workoutIDs.remove(id);
+      return;
     }
     throw new IllegalArgumentException("User does not have workout saved!");
   }
 
-  public List<History> getHistories() {
-    return new ArrayList<>(histories);
+  public List<String> getHistoryIDs() {
+    return new ArrayList<>(historyIDs);
   }
+
+  public void addHistory(String id) throws IllegalArgumentException {
+    if (hasHistory(id)) {
+      throw new IllegalArgumentException(
+            "User already has workout saved! Workout was not created, " +
+                  "please choose another name."
+      );
+    }
+    //validateHistoryID(id);
+    historyIDs.add(id);
+  }
+
+  private boolean hasHistory(String id) {
+    return historyIDs.contains(id);
+  }
+
 }
+

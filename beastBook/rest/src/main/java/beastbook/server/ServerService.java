@@ -1,9 +1,6 @@
 package beastbook.server;
 
-import beastbook.core.Exercise;
-import beastbook.core.Id;
-import beastbook.core.User;
-import beastbook.core.Workout;
+import beastbook.core.*;
 import beastbook.json.BeastBookPersistence;
 import org.springframework.stereotype.Service;
 import java.util.concurrent.ThreadLocalRandom;
@@ -37,7 +34,7 @@ public class ServerService {
     //Todo maybe try catch?
     User user = persistence.getUser(username);
     if (workout.getID() == null) {
-      Id ids = persistence.getIds(username);
+      Id ids = persistence.getIDs(username);
       String id = giveID(username, Workout.class);
       workout.setID(giveID(username, Workout.class)); //Should never throw exception
       ids.addWorkoutID(id);
@@ -47,6 +44,21 @@ public class ServerService {
     user.addWorkout(workout.getID());
     persistence.saveUser(user);
     persistence.saveWorkout(workout, username);
+  }
+
+  public void addHistory(History history, String username) throws IllegalArgumentException {
+    User user = persistence.getUser(username);
+    if (history.getID() == null) {
+      Id ids = persistence.getIDs(username);
+      String id = giveID(username, History.class);
+      history.setID(id);
+      ids.addHistoryID(id);
+      ids.addHistoryIDEntry(id, history.getName());
+      persistence.saveIds(ids, username);
+    }
+    user.addHistory(history.getID());
+    persistence.saveUser(user);
+    persistence.saveHistory(history, username);
   }
 
   /**
@@ -61,7 +73,7 @@ public class ServerService {
     //Todo maybe try catch?
     Workout workout = persistence.getWorkout(workoutID, username);
     if (exercise.getID() == null) {
-      Id ids = persistence.getIds(username);
+      Id ids = persistence.getIDs(username);
       String id = giveID(username, Exercise.class);
       exercise.setID(id);
       ids.addExerciseID(id);
@@ -87,7 +99,7 @@ public class ServerService {
       persistence.saveWorkout(workout, username);
     } catch (IllegalStateException e) {
       throw new IllegalStateException("Cannot update an workout without id, " +
-              "if this workout was gotten from user in server it is corrupted, " +
+              "if this workout was fetched from user in server it is corrupted, " +
               "if it is a new workout use persistence.addWorkout method");
     }
   }
@@ -105,7 +117,7 @@ public class ServerService {
       persistence.saveExercise(exercise, username);
     } catch (IllegalStateException e) {
       throw new IllegalStateException("Cannot update an exercise without id, " +
-              "if this exercise was gotten from user in server it is corrupted, " +
+              "if this exercise was fetched from user in server it is corrupted, " +
               "if it is a new exercise use addExercise method");
     }
   }
@@ -130,7 +142,7 @@ public class ServerService {
   public void deleteWorkout(String workoutID, String username) throws IllegalArgumentException {
     Workout workout = persistence.getWorkout(workoutID, username);
     User user = persistence.getUser(username);
-    Id ids = persistence.getIds(username);
+    Id ids = persistence.getIDs(username);
     try {
       persistence.deleteWorkout(workout, username);
       user.removeWorkout(workout.getID());
@@ -139,10 +151,7 @@ public class ServerService {
       ids.removeWorkoutID(id);
       ids.removeWorkoutIDEntry(id);
       persistence.saveIds(ids, username);
-    } catch (IllegalStateException e) {
-      //This should not happen since classes is gotten directly gotten from server.
-      System.err.println(e.getMessage());
-    } catch (IllegalArgumentException e) {
+    } catch (IllegalStateException | IllegalArgumentException e) {
       //This should not happen since classes is gotten directly gotten from server.
       System.err.println(e.getMessage());
     }
@@ -159,7 +168,7 @@ public class ServerService {
   public void deleteExercise(String exerciseID, String username) throws IllegalArgumentException {
     Exercise exercise = persistence.getExercise(exerciseID, username);
     Workout workout = persistence.getWorkout(exercise.getWorkoutID(), username);
-    Id ids = persistence.getIds(username);
+    Id ids = persistence.getIDs(username);
     try {
       persistence.deleteExercise(exercise, username);
       String id = exercise.getID();
@@ -168,11 +177,22 @@ public class ServerService {
       ids.removeExerciseIDEntry(id);
       persistence.saveWorkout(workout, username);
       persistence.saveIds(ids, username);
-    } catch (IllegalStateException e) {
+    } catch (IllegalStateException | IllegalArgumentException e) {
       //This should not happen since classes is gotten directly gotten from server.
       System.err.println(e.getMessage());
-    } catch (IllegalArgumentException e) {
-      //This should not happen since classes is gotten directly gotten from server.
+    }
+  }
+
+  public void deleteHistory(String historyID, String username) throws IllegalArgumentException{
+    History history = persistence.getHistory(historyID, username);
+    Id ids = persistence.getIDs(username);
+    try {
+      persistence.deleteHistory(history, username);
+      String id = history.getID();
+      ids.removeHistoryID(id);
+      ids.removeHistoryIDEntry(id);
+      persistence.saveIds(ids, username);
+    } catch (IllegalStateException | IllegalArgumentException e) {
       System.err.println(e.getMessage());
     }
   }
@@ -212,6 +232,10 @@ public class ServerService {
     return persistence.getExercise(exerciseID, username);
   }
 
+  public History getHistory(String historyID, String username) throws IllegalArgumentException {
+    return persistence.getHistory(historyID, username);
+  }
+
   /**
    * Getter for workout's name from server's register.
    *
@@ -220,7 +244,7 @@ public class ServerService {
    * @return workout's name
    */
   public String getWorkoutName(String workoutID, String username) {
-    Id ids = persistence.getIds(username);
+    Id ids = persistence.getIDs(username);
     return ids.getWorkoutIDName(workoutID);
   }
 
@@ -232,8 +256,13 @@ public class ServerService {
    * @return exercise's name
    */
   public String getExerciseName(String exerciseID, String username) {
-    Id ids = persistence.getIds(username);
+    Id ids = persistence.getIDs(username);
     return ids.getExerciseIDName(exerciseID);
+  }
+
+  public String getHistoryName(String historyID, String username) {
+    Id ids = persistence.getIDs(username);
+    return ids.getHistoryIDName(historyID);
   }
 
   /**
@@ -247,11 +276,11 @@ public class ServerService {
   }
 
   /**
-   * Converts json string to object
+   * Converts json string to object.
    *
    * @param jsonString json string to deserialize.
-   * @param cls
-   * @return object deserialized (must be casted to class type when used.), returns null if conversion fails
+   * @param cls type of class to be converted.
+   * @return object deserialized (must be cast to class type when used), returns null if conversion fails
    */
   public <T> Object jsonToObject(String jsonString, Class<T> cls) {
     return persistence.jsonToObject(jsonString, cls);
@@ -290,16 +319,26 @@ public class ServerService {
    */
   private <T> String generateID(Class<T> cls) throws IllegalArgumentException {
     final String legalChars;
+    String id;
     if (cls == Exercise.class) {
       legalChars = "abcdefghijklmnopqrstuvwxyz0123456789";
+      int index1 = ThreadLocalRandom.current().nextInt(legalChars.length());
+      int index2 = ThreadLocalRandom.current().nextInt(legalChars.length());
+      id = "" + legalChars.charAt(index1) + legalChars.charAt(index2);
     } else if (cls == Workout.class) {
       legalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+      int index1 = ThreadLocalRandom.current().nextInt(legalChars.length());
+      int index2 = ThreadLocalRandom.current().nextInt(legalChars.length());
+      id = "" + legalChars.charAt(index1) + legalChars.charAt(index2);
+    } else if (cls == History.class) {
+      legalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      int index1 = ThreadLocalRandom.current().nextInt(legalChars.length());
+      int index2 = ThreadLocalRandom.current().nextInt(legalChars.length());
+      int index3 = ThreadLocalRandom.current().nextInt(legalChars.length());
+      id = "" + legalChars.charAt(index1) + legalChars.charAt(index2) +  legalChars.charAt(index3);
     } else {
-      throw new IllegalArgumentException("Class must be type Exercise or Workout!");
+      throw new IllegalArgumentException("Class must be type Exercise, Workout or History!");
     }
-    int index1 = ThreadLocalRandom.current().nextInt(legalChars.length());
-    int index2 = ThreadLocalRandom.current().nextInt(legalChars.length());
-    String id = "" + legalChars.charAt(index1) + legalChars.charAt(index2);
     validateID(id, cls);
     return id;
   }
@@ -313,12 +352,13 @@ public class ServerService {
    * @throws IllegalArgumentException if class type is invalid.
    */
   private <T> String giveID(String username, Class<T> cls) throws IllegalArgumentException {
-    Id ids = persistence.getIds(username);
+    Id ids = persistence.getIDs(username);
     String id;
     int catchTries = 3;
     while (true) {
       try {
         id = generateID(cls);
+        //todo Change this line to work with all classes
         if (!ids.hasWorkoutID(id)) {
           break;
         }

@@ -1,21 +1,14 @@
 package beastbook.json;
 
-import beastbook.core.Exercise;
-import beastbook.core.Id;
-import beastbook.core.User;
-import beastbook.core.Workout;
+import beastbook.core.*;
 import beastbook.json.internal.BeastBookModule;
 import com.fasterxml.jackson.core.JsonGenerationException;
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 
 /**
  * Class for saving and loading objects to and from file.
@@ -25,6 +18,7 @@ public class BeastBookPersistence {
   private String userPath;
   private String workoutFolderPath;
   private String exerciseFolderPath;
+  private String historyFolderPath;
 
   public BeastBookPersistence() {
     mapper = new ObjectMapper();
@@ -44,6 +38,7 @@ public class BeastBookPersistence {
     userPath = System.getProperty("user.home") + "/" + username;
     workoutFolderPath = userPath + "/Workouts";
     exerciseFolderPath = userPath + "/Exercises";
+    historyFolderPath = userPath + "/Histories";
   }
 
   /**
@@ -179,6 +174,7 @@ public class BeastBookPersistence {
     createFolder(userPath);
     createFolder(workoutFolderPath);
     createFolder(exerciseFolderPath);
+    createFolder(historyFolderPath);
     saveUser(user);
     saveIds(new Id(), user.getUsername());
   }
@@ -212,11 +208,21 @@ public class BeastBookPersistence {
   public void saveWorkout(Workout workout, String username) throws IllegalArgumentException, IllegalStateException {
     validateUsername(username);
     if (workout.getID() == null) {
-      throw new IllegalStateException("Workout must have ID (dont set manually, use getID from restServer!)");
+      throw new IllegalStateException("Workout must have ID (don't set manually, use getID from restServer!)");
     }
     String filepath = workoutFolderPath + "/" + workout.getID();
     writeObjectToFile(workout, filepath);
     System.out.println("Saved workout " + workout.getName() + " to " + workoutFolderPath);
+  }
+
+  public void saveHistory(History history, String username) throws IllegalArgumentException, IllegalStateException {
+    validateUsername(username);
+    if (history.getID() == null) {
+      throw new IllegalStateException("Workout must have ID (don't set manually, use getID from restServer!)");
+    }
+    String filepath = historyFolderPath + "/" + history.getID();
+    writeObjectToFile(history, filepath);
+    System.out.println("Saved history" + history.getName() + " to " + historyFolderPath);
   }
 
   //Todo update all saveUser in project, does not do the same as old saveUser method!!!
@@ -280,6 +286,13 @@ public class BeastBookPersistence {
     deleteFile(file);
   }
 
+  public void deleteHistory(History history, String username) throws IllegalArgumentException {
+    validateUsername(username);
+    String filepath = historyFolderPath + "/" + history.getID();
+    File file = new File(filepath);
+    deleteFile(file);
+  }
+
   /**
    * Deletes user directory.
    *
@@ -331,6 +344,12 @@ public class BeastBookPersistence {
     return (Exercise) readObjectFromFile(getFile(filepath), Exercise.class);
   }
 
+  public History getHistory(String historyID, String username) throws IllegalArgumentException {
+    validateUsername(username);
+    String filepath = historyFolderPath + "/" + historyID;
+    return (History) readObjectFromFile(getFile(filepath), History.class);
+  }
+
   //Todo maybe rename?
 
   /**
@@ -340,7 +359,7 @@ public class BeastBookPersistence {
    * @return Id object.
    * @throws IllegalArgumentException from validateUsername() if username is null.
    */
-  public Id getIds(String username) throws IllegalArgumentException {
+  public Id getIDs(String username) throws IllegalArgumentException {
     validateUsername(username);
     String filepath = userPath + "/IDs";
     return (Id) readObjectFromFile(getFile(filepath), Id.class);

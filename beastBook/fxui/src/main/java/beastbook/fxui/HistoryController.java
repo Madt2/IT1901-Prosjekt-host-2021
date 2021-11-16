@@ -91,7 +91,7 @@ public class HistoryController extends AbstractController {
     customizeHistoryTable();
     historyTable.getItems().setAll(
         user.getHistory(historyName, historyDate)
-            .getSavedWorkout().getExercises());
+            .getSavedExercises());
   }
 
   /**

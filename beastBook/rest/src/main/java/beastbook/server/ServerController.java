@@ -1,6 +1,7 @@
 package beastbook.server;
 
 import beastbook.core.Exercise;
+import beastbook.core.History;
 import beastbook.core.User;
 import beastbook.core.Workout;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,9 +25,9 @@ public class ServerController {
     try {
       serverService.createUser(user);
     } catch (IllegalStateException e) {
-      return e;
+      //return e;
     } catch (IllegalArgumentException e) {
-      return e;
+      //return e;
     }
   }
 
@@ -36,9 +37,9 @@ public class ServerController {
     try {
       serverService.addWorkout(workout, username);
     } catch (IllegalStateException e) {
-      return e;
+      //return e;
     } catch (IllegalArgumentException e) {
-      return e;
+      //return e;
     }
   }
 
@@ -50,7 +51,19 @@ public class ServerController {
     try {
       serverService.addExercise(exercise, workoutID, username);
     } catch (IllegalArgumentException e) {
-      return e;
+      //return e;
+    }
+  }
+
+  @PostMapping("addHistory/{username}")
+  public void addHistory(@RequestBody String jsonString, @PathVariable String username) {
+    History history = (History) serverService.jsonToObject(jsonString, History.class);
+    try {
+      serverService.addHistory(history, username);
+    } catch (IllegalStateException e) {
+      //return e;
+    } catch (IllegalArgumentException e) {
+      //return e;
     }
   }
 
@@ -60,9 +73,9 @@ public class ServerController {
     try {
       serverService.updateWorkout(workout, username);
     } catch (IllegalStateException e) {
-      return e;
+      //return e;
     } catch (IllegalArgumentException e) {
-      return e;
+      //return e;
     }
   }
 
@@ -72,9 +85,9 @@ public class ServerController {
     try {
       serverService.updateExercise(exercise, username);
     } catch (IllegalStateException e) {
-      return e;
+      //return e;
     } catch (IllegalArgumentException e) {
-      return e;
+      //return e;
     }
   }
 
@@ -83,7 +96,7 @@ public class ServerController {
     try {
       serverService.deleteUser(username);
     } catch (IllegalArgumentException e) {
-      return e;
+      //return e;
     }
   }
 
@@ -92,7 +105,7 @@ public class ServerController {
     try {
       serverService.deleteWorkout(workoutID, username);
     } catch (IllegalArgumentException e) {
-      return e;
+      //return e;
     }
   }
 
@@ -101,7 +114,16 @@ public class ServerController {
     try {
       serverService.deleteExercise(exerciseID, username);
     } catch (IllegalArgumentException e) {
-      return e;
+      //return e;
+    }
+  }
+
+  @PostMapping("deleteHistory/{username}/{historyID}")
+  public void deleteHistory(@PathVariable String username, @PathVariable String historyID) {
+    try {
+      serverService.deleteHistory(historyID, username);
+    } catch (IllegalArgumentException e) {
+      //return e;
     }
   }
 
@@ -112,7 +134,7 @@ public class ServerController {
       String packageString = serverService.objectToJson(user);
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (IllegalArgumentException e) {
-      return;
+      return null;
     }
   }
 
@@ -123,7 +145,7 @@ public class ServerController {
       String packageString = serverService.objectToJson(workout);
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (IllegalArgumentException e) {
-      return;
+      return null;
     }
   }
 
@@ -134,17 +156,28 @@ public class ServerController {
       String packageString = serverService.objectToJson(exercise);
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (IllegalArgumentException e) {
-      return;
+      return null;
     }
   }
 
-  @GetMapping("getExerciseName/{username}/{workoutID}")
+  @GetMapping("getHistory/{username}/{historyID}")
+  public ResponseEntity<String> sendHistory(@PathVariable String username, @PathVariable String historyID) {
+    try {
+      History history = serverService.getHistory(historyID, username);
+      String packageString = serverService.objectToJson(history);
+      return new ResponseEntity<>(packageString, HttpStatus.OK);
+    } catch (IllegalArgumentException e) {
+      return null;
+    }
+  }
+
+  @GetMapping("getWorkoutName/{username}/{workoutID}")
   public ResponseEntity<String> sendWorkoutName(@PathVariable String username, @PathVariable String workoutID) {
     try {
       String packageString = serverService.getWorkoutName(workoutID, username);
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (IllegalArgumentException e) {
-      return;
+      return null;
     }
   }
 
@@ -154,7 +187,17 @@ public class ServerController {
       String packageString = serverService.getExerciseName(exerciseID, username);
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (IllegalArgumentException e) {
-      return;
+      return null;
+    }
+  }
+
+  @GetMapping("getHistoryName/{username}/{historyID}")
+  public ResponseEntity<String> sendHistoryName(@PathVariable String username, @PathVariable String historyID) {
+    try {
+      String packageString = serverService.getHistoryName(historyID, username);
+      return new ResponseEntity<>(packageString, HttpStatus.OK);
+    } catch (IllegalArgumentException e) {
+      return null;
     }
   }
 }

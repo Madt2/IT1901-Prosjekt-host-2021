@@ -57,7 +57,7 @@ public class Exercise {
       );
     }
     name = name.trim();
-    boolean isBlank = (name.length() <= 0) || (name.equals(""));
+    boolean isBlank = name.length() <= 0;
     if (isBlank) {
       throw new IllegalArgumentException("Exercise Name can not be blank!");
     }
@@ -121,11 +121,10 @@ public class Exercise {
     }
   }
 
-  // Todo is this relevant now?
   private void validateRepsPerSet(int repsPerSet) throws IllegalArgumentException {
-    boolean isTooLow = (repsPerSet <= 0);
+    boolean isTooLow = (repsPerSet < 0);
     if (isTooLow) {
-      throw new IllegalArgumentException("Reps Per Set must be more than 0!");
+      throw new IllegalArgumentException("Reps Per Set must be more than or equal to 0!");
     }
     boolean isTooLong = String.valueOf(repsPerSet)
             .length() >= maxIntLength;
@@ -153,49 +152,13 @@ public class Exercise {
     }
   }
 
-  /**
-   * Checks if ID given is valid as exerciseID.
-   *
-   * @param id to be checked.
-   * @throws IllegalArgumentException when amount of characters in id is wrong,
-   *                                  or if id consists of wrong characters.
-   */
-  private void validateExerciseID(String id) throws IllegalArgumentException {
-    if (id.length() != 2) {
-      throw new IllegalArgumentException("ID does not contain right amount of characters!");
-    }
-    final String legalChars = "abcdefghijklmnopqrstuvwxyz0123456789";
-    if (!(legalChars.contains(String.valueOf(id.charAt(0)))) &&
-            legalChars.contains(String.valueOf(id.charAt(1)))) {
-      throw new IllegalArgumentException("ID does not use correct characters!");
-    }
-  }
-
-  /**
-   * Checks if ID given is valid as workoutID.
-   *
-   * @param id to be checked.
-   * @throws IllegalArgumentException when amount of characters in id is wrong,
-   *                                  or if id consists of wrong characters.
-   */
-  private void validateWorkoutID(String id) throws IllegalArgumentException {
-    if (id.length() != 2) {
-      throw new IllegalArgumentException("ID does not contain right amount of characters!");
-    }
-    final String legalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    if (!(legalChars.contains(String.valueOf(id.charAt(0)))) &&
-            legalChars.contains(String.valueOf(id.charAt(1)))) {
-      throw new IllegalArgumentException("ID does not use correct characters!");
-    }
-  }
-
   public void setID(String id) throws IllegalArgumentException {
-    validateExerciseID(id);
+    Id.validateExerciseID(id);
     this.id = id;
   }
 
   public void setWorkoutID(String id) throws IllegalArgumentException {
-    validateWorkoutID(id);
+    Id.validateWorkoutID(id);
     this.workoutID = id;
   }
 
@@ -220,8 +183,7 @@ public class Exercise {
   }
 
   public void setRepsPerSet(int repsPerSet) throws IllegalArgumentException {
-    //Todo removed commented code?
-    /*    validateRepsPerSet(repsPerSet);*/
+    validateRepsPerSet(repsPerSet);
     this.repsPerSet = repsPerSet;
   }
 
