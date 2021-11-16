@@ -142,4 +142,18 @@ public class ClientService {
     return (Exercise) beastBookPersistence.jsonToObject(jsonString, Exercise.class);
   }
 
+  public String queryExerciseName(String exerciseID, String username) {
+    final RestTemplate restTemplate = new RestTemplateBuilder().build();
+    String url = baseURL + "/getExerciseName/" + username + "/" + exerciseID;
+    String exerciseName = restTemplate.getForObject(url, String.class);
+    return exerciseName;
+  }
+
+  public String queryWorkoutName(String workoutID, String username) {
+    final RestTemplate restTemplate = new RestTemplateBuilder().build();
+    String url = baseURL + "/getWorkout/" + username + "/" + workoutID;
+    String workoutName = restTemplate.getForObject(url, String.class);
+    return workoutName;
+  }
+
 }

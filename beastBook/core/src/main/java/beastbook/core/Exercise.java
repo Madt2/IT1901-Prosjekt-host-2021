@@ -2,7 +2,8 @@ package beastbook.core;
 
 /**
  * Exercise class used in Workout class. Creates an Exercise object containing name, rep goal,
- * weight used, amount of sets, reps per set and rest time for exercise.
+ * weight used, amount of sets, reps per set and rest time for exercise. It also has a unique ID
+ * to identify it, as well as an ID to reference the workout object it belongs to.
  */
 public class Exercise {
   //Todo enum?
@@ -12,6 +13,7 @@ public class Exercise {
 
   private String id;
   private String workoutID;
+
   private String name;
   private int repGoal;
   private double weight;
@@ -28,7 +30,6 @@ public class Exercise {
   * @param sets Number of sets to be performed
   * @param restTime How much rest between sets in seconds
   */
-
   public Exercise(String name, int repGoal, double weight, int sets, int repsPerSet, int restTime) {
     setName(name);
     setRepGoal(repGoal);
@@ -152,7 +153,14 @@ public class Exercise {
     }
   }
 
-  private void validateID(String id) throws IllegalArgumentException {
+  /**
+   * Checks if ID given is valid as exerciseID.
+   *
+   * @param id to be checked.
+   * @throws IllegalArgumentException when amount of characters in id is wrong,
+   *                                  or if id consists of wrong characters.
+   */
+  private void validateExerciseID(String id) throws IllegalArgumentException {
     if (id.length() != 2) {
       throw new IllegalArgumentException("ID does not contain right amount of characters!");
     }
@@ -163,12 +171,31 @@ public class Exercise {
     }
   }
 
+  /**
+   * Checks if ID given is valid as workoutID.
+   *
+   * @param id to be checked.
+   * @throws IllegalArgumentException when amount of characters in id is wrong,
+   *                                  or if id consists of wrong characters.
+   */
+  private void validateWorkoutID(String id) throws IllegalArgumentException {
+    if (id.length() != 2) {
+      throw new IllegalArgumentException("ID does not contain right amount of characters!");
+    }
+    final String legalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    if (!(legalChars.contains(String.valueOf(id.charAt(0)))) &&
+            legalChars.contains(String.valueOf(id.charAt(1)))) {
+      throw new IllegalArgumentException("ID does not use correct characters!");
+    }
+  }
+
   public void setID(String id) throws IllegalArgumentException {
-    validateID(id);
+    validateExerciseID(id);
     this.id = id;
   }
 
   public void setWorkoutID(String id) throws IllegalArgumentException {
+    validateWorkoutID(id);
     this.workoutID = id;
   }
 
@@ -214,6 +241,7 @@ public class Exercise {
   public String getName() {
     return this.name;
   }
+
   public int getRepGoal() {
     return this.repGoal;
   }

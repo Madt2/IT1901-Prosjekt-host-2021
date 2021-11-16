@@ -1,6 +1,5 @@
 package beastbook.json.internal;
 
-import beastbook.core.Exercise;
 import beastbook.core.Workout;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;

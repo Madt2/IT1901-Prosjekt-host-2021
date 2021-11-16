@@ -137,4 +137,24 @@ public class ServerController {
       return;
     }
   }
+
+  @GetMapping("getExerciseName/{username}/{workoutID}")
+  public ResponseEntity<String> sendWorkoutName(@PathVariable String username, @PathVariable String workoutID) {
+    try {
+      String packageString = serverService.getWorkoutName(workoutID, username);
+      return new ResponseEntity<>(packageString, HttpStatus.OK);
+    } catch (IllegalArgumentException e) {
+      return;
+    }
+  }
+
+  @GetMapping("getExerciseName/{username}/{exerciseID}")
+  public ResponseEntity<String> sendExerciseName(@PathVariable String username, @PathVariable String exerciseID) {
+    try {
+      String packageString = serverService.getExerciseName(exerciseID, username);
+      return new ResponseEntity<>(packageString, HttpStatus.OK);
+    } catch (IllegalArgumentException e) {
+      return;
+    }
+  }
 }

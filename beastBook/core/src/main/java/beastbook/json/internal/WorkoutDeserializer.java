@@ -20,10 +20,10 @@ public class WorkoutDeserializer extends JsonDeserializer<Workout> {
   * Deserializes Workout data from json file.
   * Format for Workout in json: { name: "...", exercises: "[...,...]"}.
   *
-  * @param parser defines how JSON-file should be parsed
-  * @param deserializer defines context for deserialization
-  * @return deserialized Workout.
-  * @throws IOException for low-level read issues or decoding problems for JsonParser
+  * @param parser defines how JSON-file should be parsed.
+  * @param deserializer defines context for deserialization.
+  * @return deserialized Workout, or null deserialization fails.
+  * @throws IOException for low-level read issues or decoding problems for JsonParser.
   */
   @Override
   public Workout deserialize(
@@ -38,7 +38,7 @@ public class WorkoutDeserializer extends JsonDeserializer<Workout> {
   * Converts info from jsonNode to Workout.
   *
   * @param jsonNode jsonNode to convert.
-  * @return Deserialized workout.
+  * @return Deserialized workout or null deserialization fails.
   */
   Workout deserialize(JsonNode jsonNode) {
     if (jsonNode instanceof ObjectNode objectNode) {

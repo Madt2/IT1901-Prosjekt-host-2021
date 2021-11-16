@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Workout class used by User class. Contains name and exercises List.
+ * Workout class that creates a workout. It has a name, a unique ID to identify it,
+ * and a list of IDs to reference exercise objects.
  */
 public class Workout {
   private String name;
@@ -14,7 +15,7 @@ public class Workout {
   /**
   * Contructor for workout with name parameter.
   *
-  * @param name name of the workout.
+  * @param name of the workout.
   */
   public Workout(String name) {
     setName(name);
@@ -25,11 +26,36 @@ public class Workout {
   */
   public Workout() {}
 
-  private void validateID(String id) throws IllegalArgumentException {
+  /**
+   * Checks if ID given is valid as workoutID.
+   *
+   * @param id to be checked.
+   * @throws IllegalArgumentException when amount of characters in id is wrong,
+   *                                  or if id consists of wrong characters.
+   */
+  private void validateWorkoutID(String id) throws IllegalArgumentException {
     if (id.length() != 2) {
       throw new IllegalArgumentException("ID does not contain right amount of characters!");
     }
     final String legalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    if (!(legalChars.contains(String.valueOf(id.charAt(0)))) &&
+            legalChars.contains(String.valueOf(id.charAt(1)))) {
+      throw new IllegalArgumentException("ID does not use correct characters!");
+    }
+  }
+
+  /**
+   * Checks if ID given is valid as exerciseID.
+   *
+   * @param id to be checked.
+   * @throws IllegalArgumentException when amount of characters in id is wrong,
+   *                                  or if id consists of wrong characters.
+   */
+  private void validateExerciseID(String id) throws IllegalArgumentException {
+    if (id.length() != 2) {
+      throw new IllegalArgumentException("ID does not contain right amount of characters!");
+    }
+    final String legalChars = "abcdefghijklmnopqrstuvwxyz0123456789";
     if (!(legalChars.contains(String.valueOf(id.charAt(0)))) &&
             legalChars.contains(String.valueOf(id.charAt(1)))) {
       throw new IllegalArgumentException("ID does not use correct characters!");
@@ -46,7 +72,7 @@ public class Workout {
   }
 
   public void setID(String id) throws IllegalArgumentException {
-    validateID(id);
+    validateWorkoutID(id);
     this.id = id;
   }
 
@@ -76,6 +102,8 @@ public class Workout {
   * Adds an exorcise to workout.
   *
   * @param exerciseID exerciseID to add to workout.
+  * @throws IllegalArgumentException when workout already have reference to exercise,
+  *                                  or if ID is wrong formatted.
   */
   public void addExercise(String exerciseID) throws IllegalArgumentException {
     for (String ID : exerciseIDs) {
@@ -83,11 +111,12 @@ public class Workout {
         throw new IllegalArgumentException("Exercise is already added!");
       }
     }
+    validateExerciseID(exerciseID);
     exerciseIDs.add(exerciseID);
   }
 
   /**
-   * Removed exercise object from exercises List.
+   * Removes reference to exercise object from exerciseIDs List.
    *
    * @param exerciseID to remove from workout.
    * @throws IllegalArgumentException when exerciseID does not exist in workout.

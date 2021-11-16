@@ -21,10 +21,10 @@ public class UserDeserializer extends JsonDeserializer<User> {
   * Deserializes User data from json file.
   * Format for User in json: { username: "...", password: "...", workouts: "[...,...]" }.
   *
-  * @param parser defines how JSON-file should be parsed
-  * @param deserializer defines context for deserialization
+  * @param parser defines how JSON-file should be parsed.
+  * @param deserializer defines context for deserialization.
   * @return deserialized User.
-  * @throws IOException for low-level read issues or decoding problems for JsonParser
+  * @throws IOException for low-level read issues or decoding problems for JsonParser.
   */
   @Override
   public User deserialize(
@@ -39,7 +39,7 @@ public class UserDeserializer extends JsonDeserializer<User> {
   * Converts info from jsonNode to User.
   *
   * @param jsonNode jsonNode to convert.
-  * @return Deserialized user.
+  * @return Deserialized user, or null deserialization fails.
   */
   User deserialize(JsonNode jsonNode) {
     if (jsonNode instanceof ObjectNode objectNode) {

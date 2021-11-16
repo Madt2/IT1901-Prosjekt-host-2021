@@ -20,10 +20,10 @@ public class ExerciseDeserializer extends JsonDeserializer<Exercise> {
   * Format for Exercise in json:
   * { exerciseName: "...", repGoal: "...", weight: "...", sets: "...", restTime: "..." }.
   *
-  * @param parser defines how JSON-file should be parsed
-  * @param deserializer defines context for deserialization
+  * @param parser defines how JSON-file should be parsed.
+  * @param deserializer defines context for deserialization.
   * @return Deserialized exercise.
-  * @throws IOException for low-level read issues or decoding problems for JsonParser
+  * @throws IOException for low-level read issues or decoding problems for JsonParser.
   */
   @Override
   public Exercise deserialize(
@@ -38,7 +38,7 @@ public class ExerciseDeserializer extends JsonDeserializer<Exercise> {
    * Converts info from jsonNode to Exercise.
    *
    * @param jsonNode jsonNode to convert.
-   * @return deserialized exercise.
+   * @return deserialized exercise, or null deserialization fails
    */
   Exercise deserialize(JsonNode jsonNode) {
     if (jsonNode instanceof ObjectNode objectNode) {

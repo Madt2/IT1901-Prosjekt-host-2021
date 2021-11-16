@@ -18,7 +18,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Class for saving and loading user from file.
+ * Class for saving and loading objects to and from file.
  */
 public class BeastBookPersistence {
   private ObjectMapper mapper;
@@ -32,27 +32,51 @@ public class BeastBookPersistence {
   }
 
   /**
-   *  Help methods
+   * Sets path to user folder which contains all user data.
+   *
+   * @param username of user to set path to.
+   * @throws IllegalArgumentException if username is null.
    */
-
-  private void setUserPath(String username) {
+  private void setUserPath(String username) throws IllegalArgumentException {
+    if (username == null) {
+      throw new IllegalArgumentException("username cannot be null");
+    }
     userPath = System.getProperty("user.home") + "/" + username;
     workoutFolderPath = userPath + "/Workouts";
     exerciseFolderPath = userPath + "/Exercises";
   }
 
+  /**
+   * Checks if user exists in filesystem. Also sets userPath based on username param.
+   *
+   * @param username for user to check.
+   * @return true if user folder exists, false otherwise.
+   * @throws IllegalArgumentException from setUserPath() if user is null.
+   */
   private boolean userExists(String username) throws IllegalArgumentException {
     setUserPath(username);
     File user = new File(userPath);
     return user.isDirectory();
   }
 
+  /**
+   * Validation to check if user for username exists
+   *
+   * @param username for user folder to check.
+   * @throws IllegalArgumentException from setUserPath() if user is null, or if user does not exist.
+   */
   private void validateUsername(String username) throws IllegalArgumentException {
     if (!userExists(username)) {
       throw new IllegalArgumentException("User does not exist");
     }
   }
 
+  /**
+   * Creates folder at given path.
+   *
+   * @param path to where to create folder.
+   * @throws IllegalArgumentException if path format is incorrect.
+   */
   private void createFolder(String path) throws IllegalArgumentException {
     File folder = new File(path);
     if (folder.mkdir()) {
@@ -63,6 +87,13 @@ public class BeastBookPersistence {
   }
 
   //Todo good enough catches? should show better that it could not write to file.
+
+  /**
+   * Object to write to file on filepath.
+   *
+   * @param object to write.
+   * @param filepath path to file
+   */
   private void writeObjectToFile(Object object, String filepath) {
     File file = new File(filepath);
     try (Writer writer = new FileWriter(file, StandardCharsets.UTF_8)) {
@@ -76,6 +107,13 @@ public class BeastBookPersistence {
     }
   }
 
+  /**
+   * Read and deserialize object from file.
+   *
+   * @param file file to read from.
+   * @param cls class type for object to read.
+   * @return object, or null if read fails.
+   */
   private <T> Object readObjectFromFile(File file, Class<T> cls) {
     try (Reader reader = new FileReader(file, StandardCharsets.UTF_8)) {
       return mapper.readValue(reader, cls);
@@ -90,6 +128,12 @@ public class BeastBookPersistence {
   }
 
   //Todo should show better if file could not be deleted
+
+  /**
+   * Deletes file given
+   *
+   * @param file to delete
+   */
   private void deleteFile(File file) {
     if (file.delete()) {
       System.out.println("File: " + file.getName() + " deleted");
@@ -98,10 +142,17 @@ public class BeastBookPersistence {
     }
   }
 
-  private File getFile(String path) throws IllegalArgumentException, IllegalStateException {
+  /**
+   * Getter for file at path.
+   *
+   * @param path to file
+   * @return File at path
+   * @throws IllegalArgumentException if path is null, or if file at path does not exist.
+   */
+  private File getFile(String path) throws IllegalArgumentException {
     if (path == null) {
       //Todo weird throw?
-      throw new IllegalStateException("path is incorrect!");
+      throw new IllegalArgumentException("path is incorrect!");
     }
     File file = new File(path);
     if (!file.isFile()) {
@@ -111,9 +162,13 @@ public class BeastBookPersistence {
   }
 
   /**
-   * Public methods
+   * Creates user directory with username. Contains Exercises and Workouts folder,
+   * and userProp (file where user class is stored) and IDs (file where Id class is stored).
+   *
+   * @param user to create directory for.
+   * @throws IllegalArgumentException if user directory already exists.
+   * @throws IllegalStateException if username is null.
    */
-
   public void createUser(User user) throws IllegalArgumentException, IllegalStateException {
     if (user.getUsername() == null) {
       throw new IllegalStateException("User must have username");
@@ -128,6 +183,14 @@ public class BeastBookPersistence {
     saveIds(new Id(), user.getUsername());
   }
 
+  /**
+   * Saves exercise object to file.
+   *
+   * @param exercise to save.
+   * @param username of user to save exercise to.
+   * @throws IllegalStateException if exercise does not have ID.
+   * @throws IllegalArgumentException from validateUsername() if userame is null.
+   */
   public void saveExercise(Exercise exercise, String username) throws IllegalStateException, IllegalArgumentException {
     validateUsername(username);
     if (exercise.getID() == null) {
@@ -138,6 +201,14 @@ public class BeastBookPersistence {
     System.out.println("Saved exercise " + exercise.getName() + " to " + exerciseFolderPath);
   }
 
+  /**
+   * Saves workout object to file.
+   *
+   * @param workout to save.
+   * @param username of user to save workout to.
+   * @throws IllegalArgumentException if workout does not have ID.
+   * @throws IllegalStateException from validateUsername() if username is null.
+   */
   public void saveWorkout(Workout workout, String username) throws IllegalArgumentException, IllegalStateException {
     validateUsername(username);
     if (workout.getID() == null) {
@@ -149,9 +220,17 @@ public class BeastBookPersistence {
   }
 
   //Todo update all saveUser in project, does not do the same as old saveUser method!!!
+
+  /**
+   * Saves user object to file.
+   *
+   * @param user to save.
+   * @throws IllegalStateException from validateUsername() if username is null.
+   * @throws IllegalArgumentException if user is null.
+   */
   public void saveUser(User user) throws IllegalStateException, IllegalArgumentException {
-    if (user.getUsername() == null) {
-      throw new IllegalStateException("User must have username");
+    if (user == null) {
+      throw new IllegalArgumentException("User cannot be null");
     }
     validateUsername(user.getUsername());
     String filepath = userPath + "/UserData";
@@ -159,6 +238,13 @@ public class BeastBookPersistence {
     System.out.println("Saved user " + user.getUsername() + " to " + userPath);
   }
 
+  /**
+   * Saves Id object to file.
+   *
+   * @param id to save.
+   * @param username of user to save IDs to.
+   * @throws IllegalArgumentException from validateUsername() if username is null.
+   */
   public void saveIds(Id id, String username) throws IllegalArgumentException {
     validateUsername(username);
     String filepath = userPath + "/IDs";
@@ -166,6 +252,13 @@ public class BeastBookPersistence {
     System.out.println("Saved IDs to " + userPath);
   }
 
+  /**
+   * Deletes exercise in user directory.
+   *
+   * @param exercise to delete
+   * @param username of user to remove exercise from.
+   * @throws IllegalArgumentException from validateUsername() if username is null.
+   */
   public void deleteExercise(Exercise exercise, String username) throws IllegalArgumentException {
     validateUsername(username);
     String filepath = exerciseFolderPath + "/" + exercise.getID();
@@ -173,6 +266,13 @@ public class BeastBookPersistence {
     deleteFile(file);
   }
 
+  /**
+   * Deletes workout in user directory.
+   *
+   * @param workout to delete
+   * @param username of user to remove workout from.
+   * @throws IllegalArgumentException from validateUsername() if username is null.
+   */
   public void deleteWorkout(Workout workout, String username) throws IllegalArgumentException {
     validateUsername(username);
     String filepath = workoutFolderPath + "/" + workout.getID();
@@ -180,22 +280,51 @@ public class BeastBookPersistence {
     deleteFile(file);
   }
 
+  /**
+   * Deletes user directory.
+   *
+   * @param username of user to delete.
+   * @throws IllegalArgumentException from validateUsername() if username is null.
+   */
   public void deleteUser(String username) throws IllegalArgumentException {
     //Todo does not work
   }
 
+  /**
+   * Getter to get user object.
+   *
+   * @param username of user to get.
+   * @return user object.
+   * @throws IllegalArgumentException from validateUsername() if username is null.
+   */
   public User getUser(String username) throws IllegalArgumentException {
     validateUsername(username);
     String filepath = userPath + "/UserData";
     return (User) readObjectFromFile(getFile(filepath), User.class);
   }
 
+  /**
+   * Getter to get workout object from user.
+   *
+   * @param workoutID of workout to get.
+   * @param username of user to get workout from.
+   * @return workout object.
+   * @throws IllegalArgumentException from validateUsername() if username is null.
+   */
   public Workout getWorkout(String workoutID, String username) throws IllegalArgumentException {
     validateUsername(username);
     String filepath = workoutFolderPath + "/" + workoutID;
     return (Workout) readObjectFromFile(getFile(filepath), Workout.class);
   }
 
+  /**
+   * Getter to get exercise object from user.
+   *
+   * @param exerciseID of exercise to get.
+   * @param username of user to get exercise from.
+   * @return exercise object.
+   * @throws IllegalArgumentException from validateUsername() if username is null.
+   */
   public Exercise getExercise(String exerciseID, String username) throws IllegalArgumentException {
     validateUsername(username);
     String filepath = exerciseFolderPath + "/" + exerciseID;
@@ -203,12 +332,26 @@ public class BeastBookPersistence {
   }
 
   //Todo maybe rename?
+
+  /**
+   * Getter to get Id object from user.
+   *
+   * @param username of user to get IDs from.
+   * @return Id object.
+   * @throws IllegalArgumentException from validateUsername() if username is null.
+   */
   public Id getIds(String username) throws IllegalArgumentException {
     validateUsername(username);
     String filepath = userPath + "/IDs";
     return (Id) readObjectFromFile(getFile(filepath), Id.class);
   }
 
+  /**
+   * Converts object to json string format.
+   *
+   * @param object to serialize.
+   * @return serialized object, returns null if conversion fails.
+   */
   public String objectToJson(Object object) {
     try {
       return mapper.writeValueAsString(object);
@@ -218,6 +361,14 @@ public class BeastBookPersistence {
     return null;
   }
 
+  /**
+   * Converts json string to object
+   *
+   * @param jsonString json string to deserialize.
+   * @param cls class type to deserialize object to.
+   * @return object deserialized (must be casted to class type when used.),
+   *         returns null if conversion fails
+   */
   public <T> Object jsonToObject(String jsonString, Class<T> cls) {
     try {
         return mapper.readValue(jsonString, cls);

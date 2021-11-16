@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * User class for application. Creates a user with username, password and a list of workouts.
+ * User class for application. Creates a user with username, password and a list of references to workouts.
  */
 public class User {
+  //Todo enum?
   public static final int MIN_CHAR_USERNAME = 3;
   public static final int MIN_CHAR_PASSWORD = 3;
 
@@ -30,7 +31,8 @@ public class User {
   /**
    * Validation method for setUsername. Checks for username length, has to be 3 or more characters.
    *
-   * @param username username to validate.
+   * @param username to validate.
+   * @throws IllegalArgumentException when username is to short.
    */
   private void validateUsername(String username) throws IllegalArgumentException {
     boolean isLongEnough = username.length() >= MIN_CHAR_USERNAME;
@@ -44,7 +46,7 @@ public class User {
   /**
    * Validation method for Password. Checks for password length, has to be 3 or more characters.
    *
-   * @param password password to check.
+   * @param password to validate.
    */
   private void validatePassword(String password) throws IllegalArgumentException {
     boolean isLongEnough = password.length() >= MIN_CHAR_PASSWORD;
@@ -56,9 +58,27 @@ public class User {
   }
 
   /**
+   * Checks if ID given is valid as workoutID.
+   *
+   * @param id to be checked.
+   * @throws IllegalArgumentException when amount of characters in id is wrong,
+   *                                  or if id consists of wrong characters.
+   */
+  private void validateWorkoutID(String id) throws IllegalArgumentException {
+    if (id.length() != 2) {
+      throw new IllegalArgumentException("ID does not contain right amount of characters!");
+    }
+    final String legalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    if (!(legalChars.contains(String.valueOf(id.charAt(0)))) &&
+            legalChars.contains(String.valueOf(id.charAt(1)))) {
+      throw new IllegalArgumentException("ID does not use correct characters!");
+    }
+  }
+
+  /**
    * Checks if user already has Workout.
    *
-   * @param id The WorkoutID to be checked
+   * @param id The WorkoutID to be checked.
    * @return true if user has workout, false otherwise.
    */
   private boolean hasWorkout(String id) {
@@ -70,21 +90,11 @@ public class User {
     return false;
   }
 
-  /**
-   * Sets username to input argument with validation.
-   *
-   * @param username the username to set
-   */
   public void setUsername(String username) throws IllegalArgumentException {
     validateUsername(username);
     this.username = username;
   }
 
-  /**
-   * Sets password to input argument with validation.
-   *
-   * @param password the password to set.
-   */
   public void setPassword(String password) throws IllegalArgumentException {
     validatePassword(password);
     this.password = password;
@@ -94,11 +104,6 @@ public class User {
     return username;
   }
 
-  /**
-   * Getter for password.
-   *
-   * @return users password
-   */
   public String getPassword() {
     return password;
   }
@@ -113,9 +118,11 @@ public class User {
   }
 
   /**
-   * This method adds a workout object to users workouts List.
+   * This method adds a workoutID reference to workoutIDs list.
    *
    * @param id workoutID to add to user.
+   * @throws IllegalArgumentException when workoutID is already a reference in workoutIDs list,
+   *                                  or if validation fails.
    */
   public void addWorkout(String id) throws IllegalArgumentException {
     if (hasWorkout(id)) {
@@ -124,13 +131,14 @@ public class User {
               "please choose another name."
       );
     }
+    validateWorkoutID(id);
     workoutIDs.add(id);
   }
 
   /**
   * Removes workout object from users workouts List.
   *
-   * @throws IllegalArgumentException when workout is not in users list.
+  * @throws IllegalArgumentException when workout reference is not in user's workoutIDs list.
   * @param id workoutID to remove from User.
   */
   public void removeWorkout(String id) throws IllegalArgumentException {
