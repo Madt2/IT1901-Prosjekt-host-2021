@@ -23,7 +23,7 @@ public class ServerService {
    * @throws IOException if writing to file fails or if it fails to create folder.
    *                     Deletes all files generated if this process fails.
    */
-  public void createUser(User user) throws IllegalArgumentException, IllegalStateException, IOException {
+  public void createUser(User user) throws IllegalArgumentException, IOException {
     try {
       persistence.createUser(user);
     } catch (IOException e) {
@@ -37,31 +37,28 @@ public class ServerService {
    *
    * @param obj IIdClass object to add.
    * @param username of user to add workout to.
-   * @param workout to add exercise to (only use if obj is Exercise object).
+   * @param workoutId to add exercise to (only use if obj is Exercise object).
    * @throws IllegalArgumentException if user with username does not exist.
-   * @throws NullPointerException if obj is instance of Exercise and workout is null.
-   * @throws IllegalStateException if workout's id is null.
+   * @throws NullPointerException if obj is instance of Exercise and workoutId is null.
    * @throws IOException if persistence fails to read from or write to file.
    */
-  public void addIdObject(IIdClases obj, String username, Workout workout) throws NullPointerException, IOException, IllegalStateException {
+  public void addIdObject(IdClasses obj, String username, String workoutId) throws NullPointerException, IllegalStateException, IOException {
     User user = persistence.getUser(username);
     Id ids = persistence.getIds(username);
-    obj = ids.giveID(obj);
+    obj = ids.giveId(obj);
     if (obj instanceof Workout) {
       user.addWorkout(obj.getId());
     }
     if (obj instanceof Exercise) {
-      if (workout == null) {
-        throw new NullPointerException("To add an exercise you have to have a workout as argument!");
+      if (workoutId == null) {
+        throw new IllegalArgumentException("WorkoutId cannot be null");
       }
-      if (workout.getId() == null) {
-        throw new IllegalStateException("Workout must have ID!");
-      }
+      Workout workout = persistence.getWorkout(workoutId, username);
       workout.addExercise(obj.getId());
-      persistence.saveIdObject((IIdClases) workout, username);
+      persistence.saveIdObject((IdClasses) workout, username);
       Exercise exercise = (Exercise) obj;
       exercise.setWorkoutID(workout.getId());
-      obj = exercise;
+      obj = (IdClasses) exercise;
     }
     if (obj instanceof History) {
       user.addHistory(obj.getId());
@@ -81,7 +78,7 @@ public class ServerService {
    * @throws IOException if persistence fails to write to file.
    */
   public void updateWorkout(Workout workout, String username) throws IllegalStateException, IOException, IllegalArgumentException {
-    persistence.saveIdObject((IIdClases) workout, username);
+    persistence.saveIdObject((IdClasses) workout, username);
   }
 
   /**
@@ -94,7 +91,7 @@ public class ServerService {
    * @throws IOException if persistence fails to write to file.
    */
   public void updateExercise(Exercise exercise, String username) throws IllegalArgumentException, IllegalStateException, IOException {
-    persistence.saveIdObject(exercise, username);
+    persistence.saveIdObject((IdClasses) exercise, username);
   }
 
   /**
@@ -107,10 +104,10 @@ public class ServerService {
   public void deleteUser(String username) throws IllegalArgumentException, IOException {
     User user = persistence.getUser(username);
     for (String id : user.getWorkoutIDs()) {
-      deleteIdObject((IIdClases) persistence.getWorkout(id, username), username);
+      deleteIdObject((IdClasses) persistence.getWorkout(id, username), username);
     }
     for (String id : user.getHistoryIDs()) {
-      deleteIdObject(persistence.getHistory(id, username), username);
+      deleteIdObject((IdClasses) persistence.getHistory(id, username), username);
     }
       persistence.deleteUserDir(username);
   }
@@ -118,25 +115,25 @@ public class ServerService {
   /**
    * Deletes workout in server's register.
    *
-   * @param obj IIdClass object to delete.
+   * @param obj IdClass object to delete.
    * @param username of user to delete workout.
    * @throws IllegalArgumentException if user with username does not exist.
    * @throws IOException if persistence fails to read frim or write to file.
    */
-  public void deleteIdObject(IIdClases obj, String username) throws IOException {
+  public void deleteIdObject(IdClasses obj, String username) throws IOException {
     User user = persistence.getUser(username);
     Id ids = persistence.getIds(username);
     if (obj instanceof Exercise) {
       Exercise exercise = (Exercise) obj;
       Workout workout = persistence.getWorkout(exercise.getWorkoutID(), username);
       workout.removeExercise(exercise.getId());
-      persistence.saveIdObject((IIdClases) workout, username);
-      obj = exercise;
+      persistence.saveIdObject((IdClasses) workout, username);
+      obj = (IdClasses) exercise;
     }
     if (obj instanceof Workout) {
       Workout workout = (Workout) obj;
       for (String id : workout.getExerciseIDs()) {
-        deleteIdObject(persistence.getExercise(id, username), username);
+        deleteIdObject((IdClasses) persistence.getExercise(id, username), username);
       }
       user.removeWorkout(workout.getId());
     }

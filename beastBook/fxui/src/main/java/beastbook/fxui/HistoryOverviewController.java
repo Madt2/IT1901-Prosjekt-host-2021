@@ -3,6 +3,9 @@ package beastbook.fxui;
 import beastbook.core.History;
 import beastbook.core.User;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -37,11 +40,12 @@ public class HistoryOverviewController extends AbstractController {
   private Text exceptionFeedback;
 
   @FXML
-  private TableView<History> historyOverview = new TableView<>();
-  private TableColumn<History, String> historyNameColumn;
-  private TableColumn<History, String> historyDateColumn;
-  private String selectedHistoryName;
-  private String selectedHistoryDate;
+  private TableView<String> historyOverview = new TableView<>();
+  private TableColumn<String, String> historyNameColumn;
+  private TableColumn<String, String> historyDateColumn;
+  private String selectedHistoryId;
+  private List<String> historyNames = new ArrayList<>();
+  private List<String> historyIds = new ArrayList<>();
 
   @FXML
   public void initialize() throws IOException {
@@ -57,7 +61,7 @@ public class HistoryOverviewController extends AbstractController {
     historyDateColumn.setCellValueFactory((new PropertyValueFactory<>("date")));
     historyOverview.getColumns().add(historyDateColumn);
     historyOverview.getColumns().add(historyNameColumn);
-    historyOverview.getItems().setAll(user.getHistories());
+    historyOverview.getItems().setAll(historyNames);
     setColumnsSize();
   }
 
@@ -94,9 +98,9 @@ public class HistoryOverviewController extends AbstractController {
   @FXML
   private void historySelectedListener() {
     try {
-      selectedHistoryName = historyOverview.getSelectionModel().getSelectedItem().getName();
-      selectedHistoryDate = historyOverview.getSelectionModel().getSelectedItem().getDate();
-      if (selectedHistoryName != null) {
+      int i = historyOverview.getSelectionModel().getFocusedIndex();
+      selectedHistoryId = historyIds.get(i);
+      if (selectedHistoryId != null) {
         exceptionFeedback.setText("");
         openButton.setDisable(false);
         deleteButton.setDisable(false);
@@ -109,27 +113,22 @@ public class HistoryOverviewController extends AbstractController {
   
   @FXML
   void deleteHistory() throws IllegalStateException, IOException {
-    user.removeHistory(getHistoryName(), getHistoryDate());
+    int i = historyOverview.getSelectionModel().getFocusedIndex();
+    service.deleteWorkout(historyIds.get(i),getUsername());
+    historyNames.remove(historyNames.get(i));
+    historyIds.remove(i);
     loadTable();
     exceptionFeedback.setText("History entry deleted!");
-    user.saveUser();
     openButton.setDisable(true);
     deleteButton.setDisable(true);
   }
 
-  TableView<History> getHistoryOverview() {
+  TableView<String> getHistoryOverview() {
     return historyOverview;
   }
 
-  private String getHistoryDate() {
-    return selectedHistoryDate;
-  }
-  
-  public String getHistoryName() {
-    return selectedHistoryName;
+  private String getSelectedHistoryId() {
+    return selectedHistoryId;
   }
 
-  public void setUser(User user) {
-    this.user = user;
-  }
 }

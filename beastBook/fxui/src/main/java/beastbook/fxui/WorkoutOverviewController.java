@@ -1,8 +1,12 @@
 package beastbook.fxui;
 
+import beastbook.core.History;
 import beastbook.core.User;
 import beastbook.core.Workout;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -37,13 +41,20 @@ public class WorkoutOverviewController extends AbstractController {
   private Text exceptionFeedback;
 
   @FXML
-  private TableView<Workout> workoutOverview = new TableView<Workout>();
-  private TableColumn<Workout, String> workoutNameColumn;
-  //private Workout workout = new Workout();
-  private String selectedWorkoutName;
+  private TableView<String> workoutOverview = new TableView<>();
+  private TableColumn<String, String> workoutNameColumn;
+  private List<String> workoutNames = new ArrayList<>();
+  private List<String> workoutIds = new ArrayList<>();
+  private String selectedWorkoutId;
 
   public void initialize() throws IOException {
-    user = user.loadUser(user.getUserName());
+    workoutIds = service.queryUser(getUsername()).getWorkoutIDs();
+    for (String id : workoutIds) {
+      String name = service.queryWorkoutName(id, getUsername());
+      if (name != null) {
+        workoutNames.add(name);
+      }
+    }
     loadTable();
   } 
     
@@ -51,20 +62,21 @@ public class WorkoutOverviewController extends AbstractController {
   * Creates a table view with a column for workout name and
   * adds the users workouts to the table view.
   */
-  public void loadTable() {
+  private void loadTable() {
     workoutOverview.getColumns().clear();
-    workoutNameColumn = new TableColumn<Workout, String>("Workout name:");
-    workoutNameColumn.setCellValueFactory(new PropertyValueFactory<Workout, String>("name"));
+    workoutNameColumn = new TableColumn<String, String>("Workout name:");
+    workoutNameColumn.setCellValueFactory(new PropertyValueFactory<String, String>("name"));
     workoutOverview.getColumns().add(workoutNameColumn);
-    workoutOverview.getItems().setAll(user.getWorkouts());
+    workoutOverview.getItems().setAll(workoutNames);
     setColumnsSize();
   }
 
   @FXML
   private void workoutSelectedListener() throws Exception {
     try {
-      selectedWorkoutName = workoutOverview.getSelectionModel().getSelectedItem().getName();
-      if (selectedWorkoutName != null) {
+      int i = workoutOverview.getSelectionModel().getFocusedIndex();
+      selectedWorkoutId = workoutIds.get(i);
+      if (selectedWorkoutId != null) {
         exceptionFeedback.setText("");
         openButton.setDisable(false);
         deleteButton.setDisable(false);
@@ -76,14 +88,10 @@ public class WorkoutOverviewController extends AbstractController {
   }
 
   String getWorkoutName() {
-    return selectedWorkoutName;
+    return selectedWorkoutId;
   }
 
-  void setUser(User user) {
-    this.user = user;
-  }
-
-  TableView<Workout> getWorkoutOverview() {
+  TableView<String> getWorkoutOverview() {
     return workoutOverview;
   }
 
@@ -100,8 +108,7 @@ public class WorkoutOverviewController extends AbstractController {
               this.getClass().getResource("/beastbook.fxui/Workout.fxml")
       );
       fxmlLoader.setController(workoutController);
-      workoutController.setUser(user);
-      workoutController.setWorkoutName(getWorkoutName());
+      workoutController.setWorkoutId(selectedWorkoutId);
       Parent root = fxmlLoader.load();
       Scene scene = new Scene(root, 600, 500);
       Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -114,11 +121,14 @@ public class WorkoutOverviewController extends AbstractController {
   }
 
   @FXML
-  void deleteWorkout() throws IllegalStateException, IOException {
-    user.removeWorkout(user.getWorkout(getWorkoutName()));
+  void deleteWorkout() throws IllegalStateException {
+    //TODO handle eventual deletion error
+    int i = workoutOverview.getSelectionModel().getFocusedIndex();
+    service.deleteWorkout(workoutIds.get(i),getUsername());
+    workoutNames.remove(workoutNames.get(i));
+    workoutIds.remove(i);
     loadTable();
     exceptionFeedback.setText("Workout deleted!");
-    user.saveUser();
     openButton.setDisable(true);
     deleteButton.setDisable(true);
   }

@@ -94,7 +94,15 @@ public class BeastBookPersistence {
    */
   private void writeObjectToFile(Object object, File file) throws IOException {
     Writer writer = new FileWriter(file, StandardCharsets.UTF_8);
-    mapper.writeValue(writer, object);
+    try {
+      mapper.writeValue(writer, object);
+      writer.flush();
+      writer.close();
+    } catch (IOException e) {
+      writer.close();
+      throw e;
+    }
+
   }
 
   /**
@@ -107,7 +115,14 @@ public class BeastBookPersistence {
    */
   private Object readObjectFromFile(File file, Class cls) throws IOException {
     Reader reader = new FileReader(file, StandardCharsets.UTF_8);
-    return mapper.readValue(reader, cls);
+    try {
+      Object obj = mapper.readValue(reader, cls);
+      reader.close();
+      return obj;
+    } catch (IOException e) {
+      reader.close();
+      throw e;
+    }
   }
 
   /**
@@ -171,7 +186,7 @@ public class BeastBookPersistence {
   }
 
   /**
-   * Saves IIdClass object to file.
+   * Saves IdClasses object to file.
    *
    * @param object to save.
    * @param username of user to save exercise to.
@@ -179,7 +194,7 @@ public class BeastBookPersistence {
    * @throws NullPointerException if userame is null.
    * @throws IOException if writing to file fails.
    */
-  public void saveIdObject(IIdClases object, String username) throws IOException {
+  public void saveIdObject(IdClasses object, String username) throws IOException {
     validateUsername(username);
     String filepath = "";
     if (object.getId() == null) {
@@ -249,7 +264,7 @@ public class BeastBookPersistence {
    * @throws NullPointerException if username is null, or if objects id is null.
    * @throws IOException if deletion of file fails.
    */
-  public void deleteIdObject(IIdClases object, String username) throws NullPointerException, IOException {
+  public void deleteIdObject(IdClasses object, String username) throws NullPointerException, IOException {
     validateUsername(username);
     String filepath = "";
     if (object.getId() == null) {

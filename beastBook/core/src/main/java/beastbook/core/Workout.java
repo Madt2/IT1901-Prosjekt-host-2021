@@ -7,7 +7,7 @@ import java.util.List;
  * Workout class that creates a workout. It has a name, a unique ID to identify it,
  * and a list of IDs to reference exercise objects.
  */
-public class Workout implements IIdClases {
+public class Workout implements IdClasses {
   private String name;
   private String id;
   private List<String> exerciseIDs = new ArrayList<>();

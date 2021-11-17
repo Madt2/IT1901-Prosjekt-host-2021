@@ -57,7 +57,7 @@ public class WorkoutController extends AbstractController {
   public void initialize() throws IOException {
     user = user.loadUser(user.getUserName());
     updateTable();
-    title.setText(workoutName);
+    title.setText(workout.getName());
   }
 
   /**
@@ -122,7 +122,7 @@ public class WorkoutController extends AbstractController {
       try {
         Exercise exercise = event.getRowValue();
         exercise.setName(event.getNewValue());
-        user.saveUser();
+        service.updateExercise(exercise, getUsername());
         emptyExceptionFeedback();
         saveButton.setDisable(false);
       } catch (IllegalArgumentException i) {
@@ -154,7 +154,7 @@ public class WorkoutController extends AbstractController {
         if (column.equals(restTimeColumn)) {
           exercise.setRestTime(event.getNewValue());
         }
-        user.saveUser();
+        service.updateExercise(exercise, getUsername());
         emptyExceptionFeedback();
         saveButton.setDisable(false);
       } catch (IllegalArgumentException i) {
@@ -175,7 +175,7 @@ public class WorkoutController extends AbstractController {
       try {
         Exercise exercise = event.getRowValue();
         exercise.setWeight(event.getNewValue());
-        user.saveUser();
+        service.updateExercise(exercise, getUsername());
         emptyExceptionFeedback();
         saveButton.setDisable(false);
       } catch (IllegalArgumentException i) {
@@ -197,14 +197,16 @@ public class WorkoutController extends AbstractController {
         user.addHistory(user.getWorkout(workoutName));
         exceptionFeedback.setText("History overwritten!");
         overwritten = !overwritten;
+        break;
       }
     }
-    if (!overwritten) {
-      user.addHistory(user.getWorkout(workoutName));
+    service.addHistory(history, getUsername());
+    saveButton.setDisable(true);
+    if (overwritten) {
+      exceptionFeedback.setText("History overwritten!");
+    } else {
       exceptionFeedback.setText("Workout was successfully added to history!");
     }
-    saveButton.setDisable(true);
-    user.saveUser();
   }
 
   private void editTable() {
@@ -214,7 +216,8 @@ public class WorkoutController extends AbstractController {
     tableWithInteger(setsColumn, "Sets must be a number. Value was not changed!");
     tableWithInteger(repsPerSetColumn, "Reps per set must be a number. Value was not changed!");
     tableWithInteger(restTimeColumn, "Rest time must be a number. Value was not changed!");
-    workoutTable.getItems().setAll(user.getWorkout(workoutName).getExercises());
+
+    workoutTable.getItems().setAll(exercises);
   }
     
   TableView<Exercise> getWorkoutTable() {
@@ -229,6 +232,10 @@ public class WorkoutController extends AbstractController {
     this.exceptionFeedback.setText("");
   }
 
+  void setWorkoutId(String id) {
+    this.workoutId = id;
+  }
+
   private void setColumnsSize() {
     exerciseNameColumn.setPrefWidth(100);        
     repGoalColumn.setPrefWidth(75);
@@ -236,14 +243,6 @@ public class WorkoutController extends AbstractController {
     setsColumn.setPrefWidth(75);
     repsPerSetColumn.setPrefWidth(80);
     restTimeColumn.setPrefWidth(106);
-  }
-
-  void setUser(User user) {
-    this.user = user;
-  }
-
-  void setWorkoutName(String workoutName) {
-    this.workoutName = workoutName;
   }
 
   // SOURCE for the following two static classes: 

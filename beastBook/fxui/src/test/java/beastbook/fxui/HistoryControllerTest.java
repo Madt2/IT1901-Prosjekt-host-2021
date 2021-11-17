@@ -30,11 +30,7 @@ public class HistoryControllerTest extends ApplicationTest {
     controller = new HistoryController();
     loader.setController(controller);
     User user = new User("Test", "123");
-    controller.setUser(user);
     addHistoryToUser();
-    controller.user.saveUser();
-    controller.setHistoryDate(user.getHistory(history.getName(), history.getDate()).getDate());
-    controller.setHistoryName(user.getHistory(history.getName(), history.getDate()).getName());
     final Parent root = loader.load();
     stage.setScene(new Scene(root));
     stage.show();

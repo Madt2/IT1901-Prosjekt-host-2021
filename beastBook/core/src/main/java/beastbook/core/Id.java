@@ -116,7 +116,7 @@ public class Id {
     for (int i = 0; i < legalChars.length(); i++) {
       for (int j = 0; j < id.length(); j++) {
         if (id.charAt(j) == legalChars.charAt(i)) {
-          id.replace(id.substring(j, j), "");
+          id = id.replace(id.substring(j, j), "");
         }
       }
     }
@@ -155,14 +155,14 @@ public class Id {
     return id;
   }
 
-  /**
+/*  *//**
    * Generates ID with bruteforce checking for available ids given class.
    *
    * @param cls to generate ID for.
    * @return valid id for class
    * @throws IllegalArgumentException if class type is not valid.
    * @throws IllegalStateException if no more ids ar available for object type.
-   */
+   *//*
   private String generateIdForLoop(Class cls, int possibilities) throws IllegalArgumentException, IllegalStateException {
     final String legalChars = setLegalChars(cls);
     final int legalLength = setLegalLength(cls);
@@ -175,8 +175,8 @@ public class Id {
     for (int i = 0; i < legalLength; i++) {
       indexes.add(legalChars.length());
     }
-    return new String("does not work!");
-  }
+    return "does not work!";
+  }*/
 
   /**
    * Gives id to IIdObject.
@@ -188,16 +188,17 @@ public class Id {
    */
   public IIdClases giveID(IIdClases obj) throws IllegalArgumentException, IllegalStateException {
     Class cls = obj.getClass();
-    String id;
+    String id = null;
     final String legalChars = setLegalChars(cls);
     final int legalLength = setLegalLength(cls);
     int possibilities = (int) Math.pow(legalChars.length(), legalLength);
     if (getIds(cls).size() < possibilities / 2) {
       id = generateIdWhileLoop(cls, possibilities);
     }
-    else {
+    //TODO FIX this
+    /*else {
       id = generateIdForLoop(cls, possibilities);
-    }
+    }*/
     obj.setId(id);
     addId(obj.getId(), obj.getName() ,obj.getClass());
     return obj;

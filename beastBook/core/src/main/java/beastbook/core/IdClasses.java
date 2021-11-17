@@ -1,6 +1,6 @@
 package beastbook.core;
 
-public interface IIdClases {
+public interface IdClasses {
     String getName();
 
     String getId();

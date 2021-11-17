@@ -5,7 +5,7 @@ package beastbook.core;
  * weight used, amount of sets, reps per set and rest time for exercise. It also has a unique ID
  * to identify it, as well as an ID to reference the workout object it belongs to.
  */
-public class Exercise implements IIdClases {
+public class Exercise implements IdClasses {
   //Todo enum?
   public static final int maxStringLength = 50;
   public static final int maxIntLength = 5;

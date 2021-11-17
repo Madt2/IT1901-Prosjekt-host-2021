@@ -39,10 +39,10 @@ public class ExerciseTest {
       exercise.setName("");
     });
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      exercise.setID("111");
+      exercise.setId("111");
     });
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      exercise.setID("2G");
+      exercise.setId("2G");
     });
   }
 }

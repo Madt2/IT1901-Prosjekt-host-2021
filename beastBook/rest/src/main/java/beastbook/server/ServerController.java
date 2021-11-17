@@ -1,13 +1,13 @@
 package beastbook.server;
 
-import beastbook.core.Exercise;
-import beastbook.core.History;
-import beastbook.core.User;
-import beastbook.core.Workout;
+import beastbook.core.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.io.IOException;
 
 @RestController
 public class ServerController {
@@ -21,115 +21,148 @@ public class ServerController {
 
   @PostMapping("createUser/")
   public void createUser(@RequestBody String jsonString) {
-    User user = (User) serverService.jsonToObject(jsonString, User.class);
+    User user = null;
     try {
+      user = (User) serverService.jsonToObject(jsonString, User.class);
       serverService.createUser(user);
-    } catch (IllegalStateException e) {
-      //return e;
+    } catch (JsonProcessingException e) {
+      //Send could not deserialize user send again, bad package?
     } catch (IllegalArgumentException e) {
-      //return e;
+      //send user already exists exception
+    } catch (IOException e) {
+      //send could not save user, IO error, send package again.
     }
   }
 
   @PostMapping("addWorkout/{username}")
   public void addWorkout(@RequestBody String jsonString, @PathVariable String username) {
-    Workout workout = (Workout) serverService.jsonToObject(jsonString, Workout.class);
     try {
+      Workout workout = (Workout) serverService.jsonToObject(jsonString, Workout.class);
       serverService.addIdObject(workout, username, null);
-    } catch (IllegalStateException e) {
-      //return e;
+    } catch (JsonProcessingException e) {
+      //Send could not deserialize user send again, bad package?
     } catch (IllegalArgumentException e) {
-      //return e;
+      //No user with username
+    } catch (IOException e) {
+      //Send could not save workout, IO error, send package again.
     }
   }
 
-  @PostMapping("addExercise/{workoutID}/{username}")
+  @PostMapping("addExercise/{workoutId}/{username}")
   public void addExercise(@RequestBody String jsonString,
-                          @RequestBody String workoutID,
+                          @PathVariable String workoutId,
                           @PathVariable String username) {
-    Exercise exercise = (Exercise) serverService.jsonToObject(jsonString, Exercise.class);
-    // Todo MUST FIX!!
-    Workout workout = new Workout();
     try {
-      serverService.addIdObject(exercise, username, workout);
+      Exercise exercise = (Exercise) serverService.jsonToObject(jsonString, Exercise.class);
+      serverService.addIdObject((IdClasses) exercise, username, workoutId);
+    } catch (NullPointerException e ) {
+      //send workoutId cannot be null
+    } catch (JsonProcessingException e) {
+      //Send could not deserialize user send again, bad package?
     } catch (IllegalArgumentException e) {
-      //return e;
+      //No user with username
+    } catch (IOException e) {
+      //Send could not save workout, IO error, send package again
     }
   }
 
   @PostMapping("addHistory/{username}")
   public void addHistory(@RequestBody String jsonString, @PathVariable String username) {
-    History history = (History) serverService.jsonToObject(jsonString, History.class);
     try {
+      History history = (History) serverService.jsonToObject(jsonString, History.class);
       serverService.addIdObject(history, username, null);
-    } catch (IllegalStateException e) {
-      //return e;
     } catch (IllegalArgumentException e) {
-      //return e;
+      //No user with username
+    } catch (JsonProcessingException e) {
+      //Send could not deserialize user send again, bad package?
+    } catch (IOException e) {
+      //Send could not save workout, IO error, send package again
     }
   }
 
   @PostMapping("updateWorkout/{username}")
   public void updateWorkout(@RequestBody String jsonString, @PathVariable String username) {
-    Workout workout = (Workout) serverService.jsonToObject(jsonString, Workout.class);
     try {
+      Workout workout = (Workout) serverService.jsonToObject(jsonString, Workout.class);
       serverService.updateWorkout(workout, username);
     } catch (IllegalStateException e) {
-      //return e;
+      //Send workout does not have id, use addWorkout
     } catch (IllegalArgumentException e) {
-      //return e;
+      //No user with username
+    } catch (JsonProcessingException e) {
+      //Send could not deserialize user send again, bad package?
+    } catch (IOException e) {
+      //Send could not save workout, IO error, send package again
     }
   }
 
   @PostMapping("updateExercise/{username}")
   public void updateExercise(@RequestBody String jsonString, @PathVariable String username) {
-    Exercise exercise = (Exercise) serverService.jsonToObject(jsonString, Exercise.class);
     try {
+      Exercise exercise = (Exercise) serverService.jsonToObject(jsonString, Exercise.class);
       serverService.updateExercise(exercise, username);
     } catch (IllegalStateException e) {
-      //return e;
+      //Send workout does not have id, use addWorkout
     } catch (IllegalArgumentException e) {
-      //return e;
+
+    } catch (IOException e) {
+
     }
   }
 
   @PostMapping("deleteUser/")
   public void deleteUser(@RequestBody String jsonString) {
-    User user = (User) serverService.jsonToObject(jsonString, User.class);
     try {
+      User user = (User) serverService.jsonToObject(jsonString, User.class);
       serverService.deleteUser(user.getUsername());
     } catch (IllegalArgumentException e) {
-      //return e;
+
+    } catch (JsonProcessingException e) {
+
+    } catch (IOException e) {
+
     }
   }
 
-  @PostMapping("deleteWorkout/{username}")
-  public void deleteWorkout(@RequestBody String jsonString, @PathVariable String username) {
-    Workout workout = (Workout) serverService.jsonToObject(jsonString, Workout.class);
+  @PostMapping("deleteWorkout/{username}/{workoutId}")
+  public void deleteWorkout(@PathVariable String workoutId, @PathVariable String username) {
     try {
+      Workout workout = serverService.getWorkout(workoutId, username);
       serverService.deleteIdObject(workout, username);
     } catch (IllegalArgumentException e) {
-      //return e;
+
+    } catch (JsonProcessingException e) {
+
+    } catch (IOException e) {
+
     }
   }
 
   @PostMapping("deleteExercise/{username}/")
   public void deleteExercise(@RequestBody String jsonString, @PathVariable String username) {
-    Exercise exercise = (Exercise) serverService.jsonToObject(jsonString, Exercise.class);
     try {
+      Exercise exercise = (Exercise) serverService.jsonToObject(jsonString, Exercise.class);
       serverService.deleteIdObject(exercise, username);
     } catch (IllegalArgumentException e) {
-      //return e;
+
+    } catch (JsonProcessingException e) {
+
+    } catch (IOException e) {
+
     }
   }
 
   @PostMapping("deleteHistory/{username}/{historyID}")
   public void deleteHistory(@RequestBody String jsonString, @PathVariable String username) {
-    History history = (History) serverService.jsonToObject(jsonString, History.class);
     try {
+      History history = (History) serverService.jsonToObject(jsonString, History.class);
       serverService.deleteIdObject(history, username);
     } catch (IllegalArgumentException e) {
       //return e;
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
     }
   }
 
@@ -141,7 +174,12 @@ public class ServerController {
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (IllegalArgumentException e) {
       return null;
+    } catch (JsonProcessingException e) {
+
+    } catch (IOException e) {
+
     }
+    return null;
   }
 
   @GetMapping("getWorkout/{username}/{workoutID}")
@@ -151,8 +189,13 @@ public class ServerController {
       String packageString = serverService.objectToJson(workout);
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (IllegalArgumentException e) {
-      return null;
+
+    } catch (JsonProcessingException e) {
+
+    } catch (IOException e) {
+
     }
+    return null;
   }
 
   @GetMapping("getExercise/{username}/{exerciseID}")
@@ -163,7 +206,12 @@ public class ServerController {
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (IllegalArgumentException e) {
       return null;
+    } catch (JsonProcessingException e) {
+
+    } catch (IOException e) {
+
     }
+    return null;
   }
 
   @GetMapping("getHistory/{username}/{historyID}")
@@ -173,8 +221,13 @@ public class ServerController {
       String packageString = serverService.objectToJson(history);
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (IllegalArgumentException e) {
-      return null;
+
+    } catch (JsonProcessingException e) {
+
+    } catch (IOException e) {
+
     }
+    return null;
   }
 
   @GetMapping("getWorkoutName/{username}/{workoutID}")
@@ -183,8 +236,11 @@ public class ServerController {
       String packageString = serverService.getName(workoutID, username, Workout.class);
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (IllegalArgumentException e) {
-      return null;
+
+    } catch (IOException e) {
+
     }
+    return null;
   }
 
   @GetMapping("getExerciseName/{username}/{exerciseID}")
@@ -193,8 +249,11 @@ public class ServerController {
       String packageString = serverService.getName(exerciseID, username, Exercise.class);
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (IllegalArgumentException e) {
-      return null;
+
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+    return null;
   }
 
   @GetMapping("getHistoryName/{username}/{historyID}")
@@ -203,7 +262,10 @@ public class ServerController {
       String packageString = serverService.getName(historyID, username, History.class);
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (IllegalArgumentException e) {
-      return null;
+
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+    return null;
   }
 }

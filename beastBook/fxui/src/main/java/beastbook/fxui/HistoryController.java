@@ -1,6 +1,7 @@
 package beastbook.fxui;
 
 import beastbook.core.Exercise;
+import beastbook.core.History;
 import beastbook.core.User;
 import java.io.IOException;
 import javafx.fxml.FXML;
@@ -30,9 +31,7 @@ public class HistoryController extends AbstractController {
   private TableColumn<Exercise, Integer> setsColumn;
   private TableColumn<Exercise, Integer> repsPerSetColumn;
   private TableColumn<Exercise, Integer> restTimeColumn;
-
-  private String historyName;
-  private String historyDate;
+  private String historyId;
 
   /**
    * Initialize method to load user and set the table view with its data.
@@ -41,17 +40,17 @@ public class HistoryController extends AbstractController {
    */
   @FXML
   public void initialize() throws IOException {
-    user = user.loadUser(user.getUserName());
-    setTable();
-    title.setText(historyName);
-    date.setText(historyDate);
+    History history = service.queryHistory(historyId, getUsername());
+    setTable(history);
+    title.setText(history.getName());
+    date.setText(history.getDate());
   }
 
   /**
    * Adds columns for each exercise to the table view and loads data into the table view.
    *
    */
-  public void setTable() {
+  public void setTable(History history) {
     historyTable.getColumns().clear();
     exerciseNameColumn = new TableColumn<>("Exercise name:");
     exerciseNameColumn.setCellValueFactory(
@@ -89,9 +88,7 @@ public class HistoryController extends AbstractController {
     historyTable.getColumns().add(repsPerSetColumn);
     historyTable.getColumns().add(restTimeColumn);
     customizeHistoryTable();
-    historyTable.getItems().setAll(
-        user.getHistory(historyName, historyDate)
-            .getSavedExercises());
+    historyTable.getItems().setAll(history.getSavedExercises());
   }
 
   /**
@@ -111,15 +108,7 @@ public class HistoryController extends AbstractController {
     return historyTable;
   }
 
-  public void setHistoryName(String historyName) {
-    this.historyName = historyName;
-  }
-
-  public void setHistoryDate(String historyDate) {
-    this.historyDate = historyDate;
-  }
-
-  public void setUser(User user) {
-    this.user = user;
+  public void setHistoryId(String historyId) {
+    this.historyId = historyId;
   }
 }

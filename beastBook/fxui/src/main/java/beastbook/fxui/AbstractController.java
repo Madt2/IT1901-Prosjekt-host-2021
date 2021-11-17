@@ -1,6 +1,6 @@
 package beastbook.fxui;
 
-import beastbook.core.User;
+import beastbook.client.ClientService;
 import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -15,7 +15,8 @@ import javafx.stage.Stage;
  * Used for loading scenes.
  */
 public abstract class AbstractController {
-  protected User user;
+  protected String username;
+  protected ClientService service;
 
   @FXML
   void loadHome(ActionEvent event) throws IOException {
@@ -24,7 +25,6 @@ public abstract class AbstractController {
         this.getClass().getResource("/beastbook.fxui/HomeScreen.fxml")
     );
     fxmlLoader.setController(homeScreenController);
-    homeScreenController.setUser(user);
     Parent root = fxmlLoader.load();
     Scene scene = new Scene(root, 600, 500);
     Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -51,7 +51,6 @@ public abstract class AbstractController {
             this.getClass().getResource("/beastbook.fxui/Create.fxml")
     );
     fxmlLoader.setController(createController);
-    createController.setUser(user);
     Parent root = fxmlLoader.load();
     Scene scene = new Scene(root, 600, 500);
     Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -65,7 +64,6 @@ public abstract class AbstractController {
             this.getClass().getResource("/beastbook.fxui/WorkoutOverview.fxml")
     );
     fxmlLoader.setController(workoutOverviewController);
-    workoutOverviewController.setUser(user);
     Parent root = fxmlLoader.load();
     Scene scene = new Scene(root, 600, 500);
     Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -79,10 +77,17 @@ public abstract class AbstractController {
             this.getClass().getResource("/beastbook.fxui/HistoryOverview.fxml")
     );
     fxmlLoader.setController(historyOverviewController);
-    historyOverviewController.setUser(user);
     Parent root = fxmlLoader.load();
     Scene scene = new Scene(root, 600, 500);
     Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
     stage.setScene(scene);
+  }
+
+  void setUsername(String username) {
+    this.username = username;
+  }
+
+  String getUsername() {
+    return this.username;
   }
 }

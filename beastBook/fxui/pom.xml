@@ -63,7 +63,12 @@
             <version>2.2</version>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>it1901</groupId>
+            <artifactId>beastBook-rest</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>

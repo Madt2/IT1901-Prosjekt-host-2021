@@ -2,7 +2,6 @@ package beastbook.fxui;
 
 import beastbook.core.User;
 import java.io.IOException;
-import java.util.Objects;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -40,8 +39,8 @@ public class LoginController extends AbstractController {
     String password = passwordInput.getText();
     if (!userName.equals("") && !password.equals("")) {
       try {
-        user = new User(userName, password);
-        user.saveUser(); //Skal lagre bruker som en JSON-fil
+        User user = new User(userName, password);
+        service.createUser(user);
         loginUser(event);
       } catch (Exception e) {
         loginError.setText(e.getMessage());
@@ -60,10 +59,10 @@ public class LoginController extends AbstractController {
   void loginUser(ActionEvent event) throws IllegalArgumentException {
     String userName = usernameInput.getText();
     String password = passwordInput.getText();
-    user = new User("user", "user");
+    User user = new User("user", "user");
     try {
       validateLogin(userName, password);
-      user =  user.loadUser(userName);
+      user = service.queryUser(userName);
       super.loadHome(event);
     } catch (Exception e) {
       loginError.setText(e.getMessage());
@@ -80,13 +79,14 @@ public class LoginController extends AbstractController {
       throw new IllegalArgumentException("No Password given!");
     }
     try {
-      User login = user.loadUser(userName);
+      User login = service.queryUser(userName);
       if (!login.getPassword().equals(password)) {
         throw new IllegalArgumentException("Wrong Password");
       }
-    } catch (IOException e) {
+      //TODO fix handling not found user
+    } /*catch (IOException e) {
       throw new IOException("No user found!");
-    } catch (IllegalArgumentException e) {
+    }*/ catch (IllegalArgumentException e) {
       throw e;
     }
   }
