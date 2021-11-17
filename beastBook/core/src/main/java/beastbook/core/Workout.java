@@ -26,25 +26,21 @@ public class Workout implements IIdClases {
   */
   public Workout() {}
 
-  /**
-  * Method for setting name of workout.
-  *
-  * @param name name of workout.
-  */
   public void setName(String name) {
     this.name = name;
   }
 
+  /**
+   * Sets id for this workout object.
+   *
+   * @param id to set
+   * @throws IllegalArgumentException if id is in wrong format.
+   */
   public void setId(String id) throws IllegalArgumentException {
     Id.validateID(id, Workout.class);
     this.id = id;
   }
 
-  /**
-  * Workout name getter.
-  *
-  * @return workout name.
-  */
   public String getName() {
     return name;
   }
@@ -53,11 +49,6 @@ public class Workout implements IIdClases {
     return id;
   }
 
-  /**
-   * Getter for exercises.
-   *
-   * @return returns the list of exercises in workout.
-   */
   public List<String> getExerciseIDs() {
     return new ArrayList<>(exerciseIDs);
   }
@@ -70,10 +61,8 @@ public class Workout implements IIdClases {
   *                                  or if ID is wrong formatted.
   */
   public void addExercise(String exerciseID) throws IllegalArgumentException {
-    for (String ID : exerciseIDs) {
-      if (ID.equals(exerciseID)) {
-        throw new IllegalArgumentException("Exercise is already added!");
-      }
+    if (exerciseIDs.contains(exerciseID)) {
+      throw new IllegalArgumentException("Exercise is already added!");
     }
     Id.validateID(exerciseID, Exercise.class);
     exerciseIDs.add(exerciseID);
@@ -86,13 +75,8 @@ public class Workout implements IIdClases {
    * @throws IllegalArgumentException when exerciseID does not exist in workout.
    */
   public void removeExercise(String exerciseID) throws IllegalArgumentException {
-    //Todo might be a issue with remove where it looks for spesific object and not string object equal to ID string!
-    for (String ID : exerciseIDs) {
-      if (ID.equals(exerciseID)) {
-        exerciseIDs.remove(exerciseID);
-        return;
-      }
+    if (!exerciseIDs.remove(exerciseID)) {
+      throw new IllegalArgumentException("Exercise was not found in workout!");
     }
-    throw new IllegalArgumentException("Exercise was not found in workout!");
   }
 }

@@ -1,7 +1,6 @@
 package beastbook.core;
 
 import java.util.ArrayList;
-import java.util.EventListener;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
@@ -36,7 +35,7 @@ public class Id {
     return map;
   }
 
-  private static String setLegalChars(Class cls) {
+  private static String setLegalChars(Class cls) throws IllegalArgumentException {
     final String legalChars;
     if (cls == Exercise.class) {
       legalChars = LEGAL_CHARS_EXERCISE_ID;
@@ -50,7 +49,7 @@ public class Id {
     return legalChars;
   }
 
-  private static int setLegalLength(Class cls) {
+  private static int setLegalLength(Class cls) throws IllegalArgumentException {
     final int legalLength;
     if (cls == Exercise.class) {
       legalLength = EXERCISE_ID_LENGTH;
@@ -77,10 +76,7 @@ public class Id {
     return getMap(cls).get(id);
   }
 
-  public void addId(IIdClases obj) throws IllegalArgumentException {
-    Class cls = obj.getClass();
-    String id = obj.getId();
-    String name = obj.getName();
+  public void addId(String id, String name, Class cls) throws IllegalArgumentException {
     HashMap<String, String> map = getMap(cls);
     if (hasId(id, cls)) {
       throw new IllegalArgumentException(cls.getName() + " already have ID " + id + " stored");
@@ -88,10 +84,17 @@ public class Id {
     map.put(id, name);
   }
 
-  public void removeId(String id, Class cls) {
+  /**
+   * Removes id from IDs in use.
+   *
+   * @param id to remove from .
+   * @param cls type of class to remove ID for.
+   * @throws IllegalArgumentException if ID is not stored in file.
+   */
+  public void removeId(String id, Class cls) throws IllegalArgumentException {
     HashMap<String, String> map = getMap(cls);
     if (!hasId(id, cls)) {
-      throw new IllegalArgumentException(cls.getName() + " does not have ID " + id + " stored");
+      throw new IllegalArgumentException(cls.getName() + " does not have ID " + id + " stored in file.");
     }
     map.remove(id);
   }
@@ -123,15 +126,21 @@ public class Id {
   }
 
   /**
-   * Generates ID for given class.
+   * Generates id in random fashion for given class.
    *
    * @param cls to generate ID for.
    * @return valid id for class
    * @throws IllegalArgumentException if class type is not valid.
+   * @throws IllegalStateException if no more ids ar available for object type.
    */
-  private String generateIdWhileLoop(Class cls) throws IllegalArgumentException {
+  private String generateIdWhileLoop(Class cls, int possibilities) throws IllegalArgumentException, IllegalStateException {
     final String legalChars = setLegalChars(cls);
     final int legalLength = setLegalLength(cls);
+    if (getIds(cls).size() == possibilities) {
+      throw new IllegalStateException("Not any more free ids for " + cls.getName()
+              + " class, please increase id limit for " + cls.getName()
+              + ", or delete some " + cls.getName() + "s though client!");
+    }
     String id = "";
     while (true) {
       for (int i = 0; i < legalLength; i++) {
@@ -146,10 +155,22 @@ public class Id {
     return id;
   }
 
-  private String generateIdForLoop(Class cls) throws IllegalArgumentException {
+  /**
+   * Generates ID with bruteforce checking for available ids given class.
+   *
+   * @param cls to generate ID for.
+   * @return valid id for class
+   * @throws IllegalArgumentException if class type is not valid.
+   * @throws IllegalStateException if no more ids ar available for object type.
+   */
+  private String generateIdForLoop(Class cls, int possibilities) throws IllegalArgumentException, IllegalStateException {
     final String legalChars = setLegalChars(cls);
     final int legalLength = setLegalLength(cls);
-    int possibilities = (int) Math.pow(setLegalChars(cls).length(), setLegalLength(cls));
+    if (getIds(cls).size() == possibilities) {
+      throw new IllegalStateException("Not any more free ids for " + cls.getName()
+              + " class, please increase id limit for " + cls.getName()
+              + ", or delete some " + cls.getName() + "s though client!");
+    }
     List<Integer> indexes = new ArrayList<>();
     for (int i = 0; i < legalLength; i++) {
       indexes.add(legalChars.length());
@@ -158,13 +179,12 @@ public class Id {
   }
 
   /**
-   * Generate ID until it find an available ID.
+   * Gives id to IIdObject.
    *
-   * @param objectName of object to give id to.
-   * @param cls class type to give ID to.
-   * @return valid ID to use for class
-   * @throws IllegalArgumentException if class type is invalid.
-   * @throws IllegalStateException if no more ids for object is available
+   * @param obj object to give id.
+   * @return IIdClass with set id
+   * @throws IllegalArgumentException if object already has an id.
+   * @throws IllegalStateException If no more ids are available.
    */
   public IIdClases giveID(IIdClases obj) throws IllegalArgumentException, IllegalStateException {
     Class cls = obj.getClass();
@@ -172,19 +192,14 @@ public class Id {
     final String legalChars = setLegalChars(cls);
     final int legalLength = setLegalLength(cls);
     int possibilities = (int) Math.pow(legalChars.length(), legalLength);
-    if (getIds(cls).size() == possibilities) {
-      throw new IllegalStateException("Not any more free ids for " + cls.getName()
-              + " class, please increase id limit for " + cls.getName()
-              + ", or delete some " + cls.getName() + "s though client!");
-    }
     if (getIds(cls).size() < possibilities / 2) {
-      id = generateIdWhileLoop(cls);
+      id = generateIdWhileLoop(cls, possibilities);
     }
     else {
-      id = generateIdForLoop(cls);
+      id = generateIdForLoop(cls, possibilities);
     }
     obj.setId(id);
-    addId(obj);
+    addId(obj.getId(), obj.getName() ,obj.getClass());
     return obj;
   }
 }

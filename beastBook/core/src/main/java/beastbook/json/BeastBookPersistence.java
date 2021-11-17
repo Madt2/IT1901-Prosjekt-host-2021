@@ -2,9 +2,7 @@ package beastbook.json;
 
 import beastbook.core.*;
 import beastbook.json.internal.BeastBookModule;
-import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -29,11 +27,11 @@ public class BeastBookPersistence {
    * Sets path to user folder which contains all user data.
    *
    * @param username of user to set path to.
-   * @throws IllegalArgumentException if username is null.
+   * @throws NullPointerException if username is null.
    */
-  private void setUserPath(String username) throws IllegalArgumentException {
+  private void setUserPath(String username) {
     if (username == null) {
-      throw new IllegalArgumentException("username cannot be null");
+      throw new NullPointerException("Username cannot be null!");
     }
     userPath = System.getProperty("user.home") + "/" + username;
     workoutFolderPath = userPath + "/Workouts";
@@ -46,9 +44,9 @@ public class BeastBookPersistence {
    *
    * @param username for user to check.
    * @return true if user folder exists, false otherwise.
-   * @throws IllegalArgumentException from setUserPath() if user is null.
+   * @throws NullPointerException if username is null.
    */
-  private boolean userExists(String username) throws IllegalArgumentException {
+  private boolean userExists(String username) throws NullPointerException {
     setUserPath(username);
     File user = new File(userPath);
     return user.isDirectory();
@@ -58,7 +56,8 @@ public class BeastBookPersistence {
    * Validation to check if user for username exists
    *
    * @param username for user folder to check.
-   * @throws IllegalArgumentException from setUserPath() if user is null, or if user does not exist.
+   * @throws IllegalArgumentException if user does not exist.
+   * @throws NullPointerException if username is null.
    */
   private void validateUsername(String username) throws IllegalArgumentException {
     if (!userExists(username)) {
@@ -69,15 +68,18 @@ public class BeastBookPersistence {
   /**
    * Creates folder at given path.
    *
-   * @param path to where to create folder.
-   * @throws IllegalArgumentException if path format is incorrect.
+   * @param folder path to where folder will be created.
+   * @throws IOException if creation of folder fails.
+   * @throws IllegalArgumentException if folder already exists.
    */
-  private void createFolder(String path) throws IllegalArgumentException {
-    File folder = new File(path);
+  private void createFolder(File folder) throws IOException, IllegalArgumentException {
+    if (folder.isDirectory()) {
+      throw new IllegalArgumentException(folder.getPath() + " is already a directory!");
+    }
     if (folder.mkdir()) {
-      System.out.println("Folder: " + path + " was created.");
+      System.out.println("Folder: " + folder.getPath() + " was created.");
     } else {
-      throw new IllegalArgumentException("Path is incorrect format!");
+      throw new IOException("Failed to create folder!");
     }
   }
 
@@ -87,19 +89,12 @@ public class BeastBookPersistence {
    * Object to write to file on filepath.
    *
    * @param object to write.
-   * @param filepath path to file
+   * @param file path to file
+   * @throws IOException if it fails to write to file.
    */
-  private void writeObjectToFile(Object object, String filepath) {
-    File file = new File(filepath);
-    try (Writer writer = new FileWriter(file, StandardCharsets.UTF_8)) {
-      mapper.writeValue(writer, object);
-    } catch (JsonMappingException e) {
-      System.err.println("Could not deserialize object: " + object.getClass());
-    } catch (JsonGenerationException e) {
-      System.err.println("Could not serialize object: " + object.getClass());
-    } catch (IOException e) {
-      System.err.println("IO error when writing object " + object.getClass() + " to file!");
-    }
+  private void writeObjectToFile(Object object, File file) throws IOException {
+    Writer writer = new FileWriter(file, StandardCharsets.UTF_8);
+    mapper.writeValue(writer, object);
   }
 
   /**
@@ -107,33 +102,27 @@ public class BeastBookPersistence {
    *
    * @param file file to read from.
    * @param cls class type for object to read.
-   * @return object, or null if read fails.
+   * @return object deserialized.
+   * @throws IOException if read fails.
    */
-  private <T> Object readObjectFromFile(File file, Class<T> cls) {
-    try (Reader reader = new FileReader(file, StandardCharsets.UTF_8)) {
-      return mapper.readValue(reader, cls);
-    } catch (JsonMappingException e) {
-      System.err.println("Could not deserialize file: " + file.getName());
-    } catch (JsonGenerationException e) {
-      System.err.println("Could not serialize file: " + file.getName());
-    } catch (IOException e) {
-      System.err.println("IO error when reading file:  " + file.getName());
-    }
-    return null;
+  private Object readObjectFromFile(File file, Class cls) throws IOException {
+    Reader reader = new FileReader(file, StandardCharsets.UTF_8);
+    return mapper.readValue(reader, cls);
   }
-
-  //Todo should show better if file could not be deleted
 
   /**
    * Deletes file given
    *
    * @param file to delete
+   * @throws IOException when file deletion fails.
    */
-  private void deleteFile(File file) {
-    if (file.delete()) {
+  private void deleteFile(File file) throws IOException {
+    if (!file.exists()) {
+      System.err.println("WARNING: Tried to delete a file that did not exist");
+    } else if (file.delete()) {
       System.out.println("File: " + file.getName() + " deleted");
     } else {
-      System.err.println("Could not delete file " + file.getName());
+      throw new IOException("Could not delete file!");
     }
   }
 
@@ -142,16 +131,12 @@ public class BeastBookPersistence {
    *
    * @param path to file
    * @return File at path
-   * @throws IllegalArgumentException if path is null, or if file at path does not exist.
+   * @throws IOException if file at path does not exist.
    */
-  private File getFile(String path) throws IllegalArgumentException {
-    if (path == null) {
-      //Todo weird throw?
-      throw new IllegalArgumentException("path is incorrect!");
-    }
+  private File getFile(String path) throws IOException {
     File file = new File(path);
     if (!file.isFile()) {
-      throw new IllegalArgumentException("File: " + path + " is missing!");
+      throw new IOException("File: " + path + " is missing!");
     }
     return file;
   }
@@ -162,21 +147,27 @@ public class BeastBookPersistence {
    *
    * @param user to create directory for.
    * @throws IllegalArgumentException if user directory already exists.
-   * @throws IllegalStateException if username is null.
+   * @throws NullPointerException if username for user is null.
+   * @throws IOException if writing to file fails or if it fails to create folder.
    */
-  public void createUser(User user) throws IllegalArgumentException, IllegalStateException {
+  public void createUser(User user) throws IllegalArgumentException, NullPointerException, IOException {
     if (user.getUsername() == null) {
-      throw new IllegalStateException("User must have username");
+      throw new NullPointerException("User must have username");
     }
     if(userExists(user.getUsername())) {
       throw new IllegalArgumentException("User already exists, delete " + user.getUsername() + " or use another username!");
     }
-    createFolder(userPath);
-    createFolder(workoutFolderPath);
-    createFolder(exerciseFolderPath);
-    createFolder(historyFolderPath);
-    saveUser(user);
-    saveIds(new Id(), user.getUsername());
+    try {
+      createFolder(new File(userPath));
+      createFolder(new File(workoutFolderPath));
+      createFolder(new File(exerciseFolderPath));
+      createFolder(new File(historyFolderPath));
+      saveUser(user);
+      saveIds(new Id(), user.getUsername());
+    } catch (IOException e) {
+      throw new IOException("Could not create all core classes. Failed at: " + e);
+    }
+
   }
 
   /**
@@ -185,13 +176,14 @@ public class BeastBookPersistence {
    * @param object to save.
    * @param username of user to save exercise to.
    * @throws IllegalStateException if object does not have ID.
-   * @throws IllegalArgumentException from validateUsername() if userame is null.
+   * @throws NullPointerException if userame is null.
+   * @throws IOException if writing to file fails.
    */
-  public void saveIdObject(IIdClases object, String username) {
+  public void saveIdObject(IIdClases object, String username) throws IOException {
     validateUsername(username);
     String filepath = "";
     if (object.getId() == null) {
-      throw new IllegalStateException(object.getClass() + " must have ID (dont set manually, use getID from serverService!)");
+      throw new NullPointerException(object.getClass() + " must have ID (dont set manually, use getID from serverService!)");
     }
     if (object instanceof Exercise) {
       filepath = exerciseFolderPath + "/" + object.getId();
@@ -202,7 +194,7 @@ public class BeastBookPersistence {
     if (object instanceof History) {
       filepath = historyFolderPath + "/" + object.getId();
     }
-    writeObjectToFile(object, filepath);
+    writeObjectToFile(object, new File(filepath));
     System.out.println("Saved " + object.getName() + " " + object.getName() + " to " + filepath);
   }
 
@@ -213,15 +205,20 @@ public class BeastBookPersistence {
    *
    * @param user to save.
    * @throws IllegalStateException from validateUsername() if username is null.
-   * @throws IllegalArgumentException if user is null.
+   * @throws NullPointerException if user is null.
+   * @throws IOException if writing to file fails.
    */
-  public void saveUser(User user) throws IllegalStateException, IllegalArgumentException {
+  public void saveUser(User user) throws NullPointerException, IllegalArgumentException, IOException {
     if (user == null) {
-      throw new IllegalArgumentException("User cannot be null");
+      throw new NullPointerException("User cannot be null");
     }
     validateUsername(user.getUsername());
     String filepath = userPath + "/UserData";
-    writeObjectToFile(user, filepath);
+    try {
+      writeObjectToFile(user, new File(filepath));
+    } catch (IOException e) {
+      throw new IOException("Could not save user to file");
+    }
     System.out.println("Saved user " + user.getUsername() + " to " + userPath);
   }
 
@@ -230,20 +227,33 @@ public class BeastBookPersistence {
    *
    * @param id to save.
    * @param username of user to save IDs to.
-   * @throws IllegalArgumentException from validateUsername() if username is null.
+   * @throws NullPointerException if username is null.
+   * @throws IOException if writing to file fails.
    */
-  public void saveIds(Id id, String username) throws IllegalArgumentException {
+  public void saveIds(Id id, String username) throws NullPointerException, IOException {
     validateUsername(username);
     String filepath = userPath + "/IDs";
-    writeObjectToFile(id, filepath);
+    try {
+      writeObjectToFile(id, new File(filepath));
+    } catch (IOException e) {
+      throw new IOException("Could not save Id object");
+    }
     System.out.println("Saved IDs to " + userPath);
   }
 
-  public void deleteIdObject(IIdClases object, String username) {
+  /**
+   * Deletes file for given object.
+   *
+   * @param object to delete file for.
+   * @param username for user.
+   * @throws NullPointerException if username is null, or if objects id is null.
+   * @throws IOException if deletion of file fails.
+   */
+  public void deleteIdObject(IIdClases object, String username) throws NullPointerException, IOException {
     validateUsername(username);
     String filepath = "";
     if (object.getId() == null) {
-      throw new IllegalStateException(object.getClass() + " must have ID (dont set manually, use getID from serverService!)");
+      throw new NullPointerException(object.getClass() + " must have ID (dont set manually, use getID from serverService!)");
     }
     if (object instanceof Exercise) {
       filepath = exerciseFolderPath + "/" + object.getId();
@@ -263,20 +273,26 @@ public class BeastBookPersistence {
    * Deletes user directory.
    *
    * @param username of user to delete.
-   * @throws IllegalArgumentException from validateUsername() if username is null.
+   * @throws NullPointerException if username is null.
+   * @throws IOException if deletion of file fails.
    */
-  public void deleteUserDir(String username) throws IllegalArgumentException {
+  public void deleteUserDir(String username) throws NullPointerException, IOException {
     setUserPath(username);
     File file = new File(workoutFolderPath);
-    deleteFile(file);
-    file = new File(exerciseFolderPath);
-    deleteFile(file);
-    file = new File(historyFolderPath);
-    deleteFile(file);
-    file = new File(userPath + "/UserData");
-    deleteFile(file);
-    file = new File(userPath + "/IDs");
-    deleteFile(file);
+    try {
+      deleteFile(file);
+      file = new File(exerciseFolderPath);
+      deleteFile(file);
+      file = new File(historyFolderPath);
+      deleteFile(file);
+      file = new File(userPath + "/UserData");
+      deleteFile(file);
+      file = new File(userPath + "/IDs");
+      deleteFile(file);
+    } catch (IOException e) {
+      throw new IOException("Could not delete base userdata files!");
+    }
+
   }
 
   /**
@@ -284,12 +300,18 @@ public class BeastBookPersistence {
    *
    * @param username of user to get.
    * @return user object.
-   * @throws IllegalArgumentException from validateUsername() if username is null.
+   * @throws NullPointerException if username is null.
+   * @throws IOException if reading from file fails.
+   * @throws IllegalArgumentException if user does not exist.
    */
-  public User getUser(String username) throws IllegalArgumentException {
+  public User getUser(String username) throws IllegalArgumentException, NullPointerException, IOException {
     validateUsername(username);
     String filepath = userPath + "/UserData";
-    return (User) readObjectFromFile(getFile(filepath), User.class);
+    try {
+      return (User) readObjectFromFile(getFile(filepath), User.class);
+    } catch (IOException e) {
+      throw new IOException("Could not read user");
+    }
   }
 
   /**
@@ -298,12 +320,17 @@ public class BeastBookPersistence {
    * @param workoutID of workout to get.
    * @param username of user to get workout from.
    * @return workout object.
-   * @throws IllegalArgumentException from validateUsername() if username is null.
+   * @throws NullPointerException if username is null.
+   * @throws IOException if reading from file fails.
    */
-  public Workout getWorkout(String workoutID, String username) throws IllegalArgumentException {
+  public Workout getWorkout(String workoutID, String username) throws IllegalArgumentException, IOException {
     validateUsername(username);
     String filepath = workoutFolderPath + "/" + workoutID;
-    return (Workout) readObjectFromFile(getFile(filepath), Workout.class);
+    try {
+      return (Workout) readObjectFromFile(getFile(filepath), Workout.class);
+    } catch (IOException e) {
+      throw new IOException("Could not read workout");
+    }
   }
 
   /**
@@ -312,48 +339,65 @@ public class BeastBookPersistence {
    * @param exerciseID of exercise to get.
    * @param username of user to get exercise from.
    * @return exercise object.
-   * @throws IllegalArgumentException from validateUsername() if username is null.
+   * @throws IllegalArgumentException if username is null.
+   * @throws IOException if reading from file fails.
    */
-  public Exercise getExercise(String exerciseID, String username) throws IllegalArgumentException {
+  public Exercise getExercise(String exerciseID, String username) throws NullPointerException, IOException {
     validateUsername(username);
     String filepath = exerciseFolderPath + "/" + exerciseID;
-    return (Exercise) readObjectFromFile(getFile(filepath), Exercise.class);
+    try {
+      return (Exercise) readObjectFromFile(getFile(filepath), Exercise.class);
+    } catch (IOException e) {
+      throw new IOException("Could not read exercise");
+    }
   }
 
-  public History getHistory(String historyID, String username) throws IllegalArgumentException {
+  /**
+   * Getter to get History object from user.
+   *
+   * @param historyID of history to get.
+   * @param username of user to get exercise from.
+   * @return history object.
+   * @throws NullPointerException if username is null.
+   * @throws IOException if reading from file fails.
+   */
+  public History getHistory(String historyID, String username) throws NullPointerException, IOException {
     validateUsername(username);
     String filepath = historyFolderPath + "/" + historyID;
-    return (History) readObjectFromFile(getFile(filepath), History.class);
+    try {
+      return (History) readObjectFromFile(getFile(filepath), History.class);
+    } catch (IOException e) {
+      throw new IOException("could not read history");
+    }
   }
-
-  //Todo maybe rename?
 
   /**
    * Getter to get Id object from user.
    *
    * @param username of user to get IDs from.
    * @return Id object.
-   * @throws IllegalArgumentException from validateUsername() if username is null.
+   * @throws NullPointerException if username is null.
+   * @throws IOException if reading from file fails.
    */
-  public Id getIds(String username) throws IllegalArgumentException {
+  public Id getIds(String username) throws IllegalArgumentException, IOException {
     validateUsername(username);
     String filepath = userPath + "/IDs";
-    return (Id) readObjectFromFile(getFile(filepath), Id.class);
+    try {
+      return (Id) readObjectFromFile(getFile(filepath), Id.class);
+    } catch (IOException e) {
+      throw new IOException("could not read IDs");
+    }
   }
 
   /**
    * Converts object to json string format.
    *
    * @param object to serialize.
-   * @return serialized object, returns null if conversion fails.
+   * @return serialized object.
+   * @throws JsonProcessingException if serialization fails.
    */
-  public String objectToJson(Object object) {
-    try {
+  public String objectToJson(Object object) throws JsonProcessingException {
       return mapper.writeValueAsString(object);
-    } catch (JsonProcessingException e) {
-      System.err.println("Failed to serilize " + object.getClass() + " to string!");
-    }
-    return null;
   }
 
   /**
@@ -361,15 +405,10 @@ public class BeastBookPersistence {
    *
    * @param jsonString json string to deserialize.
    * @param cls class type to deserialize object to.
-   * @return object deserialized (must be casted to class type when used.),
-   *         returns null if conversion fails
+   * @return object deserialized
+   * @throws JsonProcessingException if deserialization fails.
    */
-  public <T> Object jsonToObject(String jsonString, Class<T> cls) {
-    try {
-        return mapper.readValue(jsonString, cls);
-      } catch (JsonProcessingException e) {
-        System.err.println("Failed to desierilize json string to object type " + cls);
-      }
-    return null;
+  public Object jsonToObject(String jsonString, Class cls) throws JsonProcessingException {
+    return mapper.readValue(jsonString, cls);
   }
 }

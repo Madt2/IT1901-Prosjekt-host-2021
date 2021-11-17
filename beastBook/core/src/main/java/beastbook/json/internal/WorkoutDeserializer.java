@@ -50,7 +50,7 @@ public class WorkoutDeserializer extends JsonDeserializer<Workout> {
         }
         JsonNode idNode = objectNode.get("id");
         if (idNode instanceof TextNode) {
-          workout.setID(idNode.asText());
+          workout.setId(idNode.asText());
         }
         JsonNode exerciseIDsNode = objectNode.get("exerciseIDs");
         if (exerciseIDsNode instanceof ArrayNode) {

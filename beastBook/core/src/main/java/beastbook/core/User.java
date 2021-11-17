@@ -35,7 +35,7 @@ public class User {
    * Validation method for setUsername. Checks for username length, has to be 3 or more characters.
    *
    * @param username to validate.
-   * @throws IllegalArgumentException when username is to short.
+   * @throws IllegalArgumentException if username is too short.
    */
   private void validateUsername(String username) throws IllegalArgumentException {
     boolean isLongEnough = username.length() >= MIN_CHAR_USERNAME;
@@ -47,7 +47,7 @@ public class User {
   }
 
   /**
-   * Validation method for Password. Checks for password length, has to be 3 or more characters.
+   * Validation method for Password. Checks for password length.
    *
    * @param password to validate.
    */
@@ -67,11 +67,9 @@ public class User {
    * @throws IllegalArgumentException if no History found.
    */
   public void removeHistory(String id) throws IllegalArgumentException {
-    if (hasHistory(id)) {
-      historyIDs.remove(id);
-      return;
+    if (!historyIDs.remove(id)) {
+      throw new IllegalArgumentException("No such history found!");
     }
-    throw new IllegalArgumentException("No such history found!");
   }
 
   /**
@@ -86,20 +84,22 @@ public class User {
   }
 
   /**
-   * Checks if user already has Workout.
+   * Sets username.
    *
-   * @param id The WorkoutID to be checked.
-   * @return true if user has workout, false otherwise.
+   * @param username for user.
+   * @throws IllegalArgumentException if validation fails.
    */
-  private boolean hasWorkout(String id) {
-    return workoutIDs.contains(id);
-  }
-
   public void setUsername(String username) throws IllegalArgumentException {
     validateUsername(username);
     this.username = username;
   }
 
+  /**
+   * Sets password.
+   *
+   * @param password to set
+   * @throws IllegalArgumentException if validation fails.
+   */
   public void setPassword(String password) throws IllegalArgumentException {
     validatePassword(password);
     this.password = password;
@@ -130,11 +130,8 @@ public class User {
    *                                  or if validation fails.
    */
   public void addWorkout(String id) throws IllegalArgumentException {
-    if (hasWorkout(id)) {
-      throw new IllegalArgumentException(
-              "User already has workout saved! Workout was not created, "
-                    + "please choose another name."
-      );
+    if (workoutIDs.contains(id)) {
+      throw new IllegalArgumentException("Workout is already added!");
     }
     Id.validateID(id, Workout.class);
     workoutIDs.add(id);
@@ -147,31 +144,28 @@ public class User {
   * @param id workoutID to remove from User.
   */
   public void removeWorkout(String id) throws IllegalArgumentException {
-    if (hasWorkout(id)) {
-      workoutIDs.remove(id);
-      return;
+    if (!workoutIDs.remove(id)) {
+      throw new IllegalArgumentException("User does not have workout saved!");
     }
-    throw new IllegalArgumentException("User does not have workout saved!");
   }
 
   public List<String> getHistoryIDs() {
     return new ArrayList<>(historyIDs);
   }
 
+  /**
+   * This method adds a historyID reference to historyIDs list.
+   *
+   * @param id of history object to add.
+   * @throws IllegalArgumentException when historyID is already a reference in historyIDs list,
+   *                                  or if validation fails.
+   */
   public void addHistory(String id) throws IllegalArgumentException {
-    if (hasHistory(id)) {
-      throw new IllegalArgumentException(
-            "User already has workout saved! Workout was not created, " +
-                  "please choose another name."
-      );
+    if (historyIDs.contains(id)) {
+      throw new IllegalArgumentException("User already has history saved!");
     }
     Id.validateID(id, History.class);
     historyIDs.add(id);
   }
-
-  private boolean hasHistory(String id) {
-    return historyIDs.contains(id);
-  }
-
 }
 
