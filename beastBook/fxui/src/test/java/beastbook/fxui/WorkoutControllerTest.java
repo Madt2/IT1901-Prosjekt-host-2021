@@ -104,11 +104,11 @@ public class WorkoutControllerTest extends ApplicationTest{
 
   private void addWorkoutsToUser(){
     Workout workout1 = new Workout("Pull workout");
-    workout1.addExercise(new Exercise("Benchpress", 20, 30, 40, 0, 50));
-    workout1.addExercise(new Exercise("Leg press", 25, 50, 75, 0, 100));
-    workout1.addExercise(new Exercise("Deadlift", 20, 20, 20, 0, 20));
-    workout1.addExercise(new Exercise("Biceps curl", 20, 20, 20, 0, 20));
-    wc.user.addWorkout(workout1);
+    //workout1.addExercise(new Exercise("Benchpress", 20, 30, 40, 0, 50));
+    //workout1.addExercise(new Exercise("Leg press", 25, 50, 75, 0, 100));
+    //workout1.addExercise(new Exercise("Deadlift", 20, 20, 20, 0, 20));
+    //workout1.addExercise(new Exercise("Biceps curl", 20, 20, 20, 0, 20));
+    //wc.user.addWorkout(workout1);
 
   }
 
