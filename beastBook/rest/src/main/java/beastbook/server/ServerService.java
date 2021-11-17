@@ -26,7 +26,7 @@ public class ServerService {
     try {
       persistence.createUser(user);
     } catch (IOException e) {
-      deleteUser(user.getUsername());
+      //deleteUser(user.getUsername());
       throw e;
     }
   }
@@ -47,7 +47,9 @@ public class ServerService {
     System.out.println("2");
     System.out.println(username);
     Id ids = persistence.getIds(username);
+    System.out.println("3");
     obj = ids.giveId(obj);
+    System.out.println("4");
     if (obj instanceof Workout) {
       System.out.println("5");
       user.addWorkout(obj.getId());

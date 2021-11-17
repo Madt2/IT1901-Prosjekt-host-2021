@@ -96,13 +96,11 @@ public class BeastBookPersistence {
     Writer writer = new FileWriter(file, StandardCharsets.UTF_8);
     try {
       mapper.writeValue(writer, object);
-      writer.flush();
       writer.close();
     } catch (IOException e) {
       writer.close();
       throw e;
     }
-
   }
 
   /**
@@ -398,6 +396,7 @@ public class BeastBookPersistence {
     validateUsername(username);
     String filepath = userPath + "/IDs";
     try {
+      System.out.println("det virket");
       return (Id) readObjectFromFile(getFile(filepath), Id.class);
     } catch (IOException e) {
       throw new IOException("could not read IDs");
@@ -426,4 +425,22 @@ public class BeastBookPersistence {
   public Object jsonToObject(String jsonString, Class cls) throws JsonProcessingException {
     return mapper.readValue(jsonString, cls);
   }
+
+
+/*  public static void main(String[] args) {
+    User user = new User("username", "password");
+    BeastBookPersistence beastBookPersistence = new BeastBookPersistence();
+    Workout workout = new Workout("emiltullinbg");
+    try {
+      *//*Id id = beastBookPersistence.getIds(user.getUsername());
+      id.giveId(workout);
+      System.out.println(workout.getId());
+      System.out.println(id.getIds(Workout.class));
+      beastBookPersistence.saveIds(id, user.getUsername());
+      System.out.println();*//*
+      beastBookPersistence.createUser(user);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }*/
 }

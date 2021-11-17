@@ -111,11 +111,13 @@ public class ClientService {
   public ResponseEntity<String> addWorkout(Workout workout, String username) {
     URI uri = null;
     try {
+
       uri = new URI(baseURL + "addWorkout/" + username);
     } catch (URISyntaxException e) {
       e.printStackTrace();
     }
     try {
+
       return sendPackage(workout, uri);
     } catch (JsonProcessingException e) {
       e.printStackTrace();
@@ -126,11 +128,13 @@ public class ClientService {
   public ResponseEntity<String> addExercise(Exercise exercise, String workoutId, String username) {
     URI uri = null;
     try {
+
       uri = new URI(baseURL + "addExercise/" + workoutId + "/" + username);
     } catch (URISyntaxException e) {
       e.printStackTrace();
     }
     try {
+
       return sendPackage(exercise, uri);
     } catch (JsonProcessingException e) {
       e.printStackTrace();
@@ -156,6 +160,7 @@ public class ClientService {
   public ResponseEntity<String> updateWorkout(Workout workout, String username) {
     URI uri = null;
     try {
+      System.out.println("sending workout");
       uri = new URI(baseURL + "updateWorkout/" + username);
     } catch (URISyntaxException e) {
       e.printStackTrace();
@@ -170,6 +175,7 @@ public class ClientService {
 
   public ResponseEntity<String> updateExercise(Exercise exercise, String username) {
     URI uri = null;
+    System.out.println("sending exercise");
     try {
       uri = new URI(baseURL + "updateExercise/" + username);
     } catch (URISyntaxException e) {

@@ -116,7 +116,7 @@ public class Id {
     for (int i = 0; i < legalChars.length(); i++) {
       for (int j = 0; j < id.length(); j++) {
         if (id.charAt(j) == legalChars.charAt(i)) {
-          id = id.replace(id.substring(j, j), "");
+          id = id.replace(id.substring(j, j + 1), "");
         }
         if (id.length() == 0) {
           return;

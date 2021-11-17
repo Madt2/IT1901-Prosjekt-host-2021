@@ -21,9 +21,8 @@ public class ServerController {
 
   @PostMapping("createUser/")
   public void createUser(@RequestBody String jsonString) {
-    User user = null;
     try {
-      user = (User) serverService.jsonToObject(jsonString, User.class);
+      User user = (User) serverService.jsonToObject(jsonString, User.class);
       serverService.createUser(user);
     } catch (JsonProcessingException e) {
       //Send could not deserialize user send again, bad package?
@@ -37,7 +36,10 @@ public class ServerController {
   @PostMapping("addWorkout/{username}")
   public void addWorkout(@RequestBody String jsonString, @PathVariable String username) {
     try {
+      System.out.println("user gotten");
+
       Workout workout = (Workout) serverService.jsonToObject(jsonString, Workout.class);
+      System.out.println(workout.getName());
       serverService.addIdObject(workout, username, null);
     } catch (JsonProcessingException e) {
       //Send could not deserialize user send again, bad package?
@@ -53,6 +55,7 @@ public class ServerController {
                           @PathVariable String workoutId,
                           @PathVariable String username) {
     try {
+      System.out.println("exercise gotten");
       Exercise exercise = (Exercise) serverService.jsonToObject(jsonString, Exercise.class);
       serverService.addIdObject((IdClasses) exercise, username, workoutId);
     } catch (NullPointerException e ) {
