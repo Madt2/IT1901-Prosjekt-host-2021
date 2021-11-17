@@ -94,7 +94,13 @@ public class CreateWorkoutController extends AbstractController {
    * Initializes the CreateWorkout scene with the listeners for validation of input fields.
    */
   public void initialize() throws IOException {
-    user = user.loadUser(user.getUserName());
+    workoutIds = service.queryUser(getUsername()).getWorkoutIDs();
+    for (String id : workoutIds) {
+      String name = service.queryWorkoutName(id, getUsername());
+      if (name != null) {
+        workoutNames.add(name);
+      }
+    }
     updateTable();
     exerciseNameInput.setOnKeyTyped(event ->
             new StringValidator(exerciseTitle, exerciseNameInput, exceptionFeedback));
@@ -367,22 +373,16 @@ public class CreateWorkoutController extends AbstractController {
   void deleteExercise() {
     Exercise selectedExercise;
     selectedExercise = workoutTable.getSelectionModel().getSelectedItem();
-    Workout workout;
     try {
-      if (hasWorkout()) {
-        workout = user.getWorkout(titleInput.getText());
-      } else if (hasTemp()) {
-        workout = user.getWorkout("Temp");
+      if (workout.getId() != null) {
+        exercises.remove(selectedExercise);
+        service.deleteExercise(selectedExercise.getId(), getUsername());
       } else {
         exercises.remove(selectedExercise);
       }
       exceptionFeedback.setText("The exercise '"
               + selectedExercise.getName() + "' was deleted!");
       updateTable();
-      if (hasTemp()) {
-        user.removeWorkout(user.getWorkout("Temp"));
-      }
-      user.saveUser();
       deleteButton.setDisable(true);
     } catch (Exception e) {
       exceptionFeedback.setText("The exercise '"

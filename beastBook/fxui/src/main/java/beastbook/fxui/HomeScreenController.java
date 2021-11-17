@@ -17,9 +17,5 @@ public class HomeScreenController extends AbstractController {
 
   @FXML
   private Button workoutsButton;
-
-  void setUser(User user) {
-    this.user = user;
-  }
 }
 

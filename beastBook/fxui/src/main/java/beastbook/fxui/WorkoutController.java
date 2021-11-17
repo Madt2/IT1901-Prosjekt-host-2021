@@ -3,7 +3,11 @@ package beastbook.fxui;
 import beastbook.core.Exercise;
 import beastbook.core.History;
 import beastbook.core.User;
+import beastbook.core.Workout;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -45,7 +49,8 @@ public class WorkoutController extends AbstractController {
         "-fx-text-box-border: #B22222;"
         + "-fx-focus-color: #B22222";
   public static final String CORRECT_INPUT_BORDER_COLOR = "";
-  private String workoutName;
+  private String workoutId;
+  private List<Exercise> exercises = new ArrayList<>();
 
   /**
    * Initializes the Workout screen with the correct User from File,
@@ -55,7 +60,13 @@ public class WorkoutController extends AbstractController {
    */
   @FXML
   public void initialize() throws IOException {
-    user = user.loadUser(user.getUserName());
+    Workout workout = service.queryWorkout(workoutId, getUsername());
+    for (String id : workout.getExerciseIDs()) {
+      Exercise e = service.queryExercise(id, getUsername());
+      if (e != null) {
+        exercises.add(e);
+      }
+    }
     updateTable();
     title.setText(workout.getName());
   }
@@ -237,7 +248,7 @@ public class WorkoutController extends AbstractController {
   }
 
   private void setColumnsSize() {
-    exerciseNameColumn.setPrefWidth(100);        
+    exerciseNameColumn.setPrefWidth(100);
     repGoalColumn.setPrefWidth(75);
     weightColumn.setPrefWidth(75);
     setsColumn.setPrefWidth(75);

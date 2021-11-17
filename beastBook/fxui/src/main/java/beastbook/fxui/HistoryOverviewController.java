@@ -49,7 +49,13 @@ public class HistoryOverviewController extends AbstractController {
 
   @FXML
   public void initialize() throws IOException {
-    user = user.loadUser(user.getUserName());
+    historyIds = service.queryUser(getUsername()).getHistoryIDs();
+    for (String id : historyIds) {
+      String name = service.queryHistoryName(id, getUsername());
+      if (name != null) {
+        historyNames.add(name);
+      }
+    }
     loadTable();
   }
 
@@ -81,9 +87,7 @@ public class HistoryOverviewController extends AbstractController {
           this.getClass().getResource("/beastbook.fxui/History.fxml")
       );
       fxmlLoader.setController(historyController);
-      historyController.setUser(user);
-      historyController.setHistoryName(getHistoryName());
-      historyController.setHistoryDate(getHistoryDate());
+      historyController.setHistoryId(getSelectedHistoryId());
       Parent root = fxmlLoader.load();
       Scene scene = new Scene(root, 600, 500);
       Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
