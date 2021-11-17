@@ -4,7 +4,6 @@ import beastbook.core.*;
 import beastbook.json.BeastBookPersistence;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Service;
-
 import java.io.IOException;
 
 /**
