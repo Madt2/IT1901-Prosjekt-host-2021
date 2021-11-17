@@ -42,10 +42,14 @@ public class ServerService {
    * @throws IOException if persistence fails to read from or write to file.
    */
   public void addIdObject(IdClasses obj, String username, String workoutId) throws NullPointerException, IllegalStateException, IOException {
+    System.out.println("1");
     User user = persistence.getUser(username);
+    System.out.println("2");
+    System.out.println(username);
     Id ids = persistence.getIds(username);
     obj = ids.giveId(obj);
     if (obj instanceof Workout) {
+      System.out.println("5");
       user.addWorkout(obj.getId());
     }
     if (obj instanceof Exercise) {

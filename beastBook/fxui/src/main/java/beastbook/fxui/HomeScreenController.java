@@ -17,5 +17,10 @@ public class HomeScreenController extends AbstractController {
 
   @FXML
   private Button workoutsButton;
+
+  @FXML
+  void initialize() {
+      System.out.println(getUsername());
+  }
 }
 

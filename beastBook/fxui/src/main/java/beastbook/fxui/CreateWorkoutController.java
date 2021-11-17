@@ -94,6 +94,7 @@ public class CreateWorkoutController extends AbstractController {
    * Initializes the CreateWorkout scene with the listeners for validation of input fields.
    */
   public void initialize() throws IOException {
+    System.out.println(getUsername());
     workoutIds = service.queryUser(getUsername()).getWorkoutIDs();
     for (String id : workoutIds) {
       String name = service.queryWorkoutName(id, getUsername());
@@ -122,7 +123,7 @@ public class CreateWorkoutController extends AbstractController {
     workoutTable.getColumns().clear();
     exerciseNameColumn = new TableColumn<>("Exercise name");
     exerciseNameColumn.setCellValueFactory(
-            new PropertyValueFactory<>("exerciseName")
+            new PropertyValueFactory<>("name")
     );
     repGoalColumn = new TableColumn<>("Rep goal");
     repGoalColumn.setCellValueFactory(
@@ -354,6 +355,7 @@ public class CreateWorkoutController extends AbstractController {
         titleInput.setText("");
         createButton.setDisable(true);
         workout = new Workout();
+        exercises = new ArrayList<>();
         updateTable();
       } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage());

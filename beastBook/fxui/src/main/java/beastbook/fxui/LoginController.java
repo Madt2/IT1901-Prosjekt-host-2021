@@ -59,10 +59,9 @@ public class LoginController extends AbstractController {
   void loginUser(ActionEvent event) throws IllegalArgumentException {
     String userName = usernameInput.getText();
     String password = passwordInput.getText();
-    User user = new User("user", "user");
     try {
       validateLogin(userName, password);
-      user = service.queryUser(userName);
+      setUsername(userName);
       super.loadHome(event);
     } catch (Exception e) {
       loginError.setText(e.getMessage());

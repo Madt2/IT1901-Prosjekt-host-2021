@@ -180,7 +180,7 @@ public class BeastBookPersistence {
       saveUser(user);
       saveIds(new Id(), user.getUsername());
     } catch (IOException e) {
-      throw new IOException("Could not create all core classes. Failed at: " + e);
+      throw new IOException("Could not create all core classes. Failed at: " + e.getMessage());
     }
 
   }
