@@ -136,7 +136,7 @@ public class User {
                     + "please choose another name."
       );
     }
-    Id.validateWorkoutID(id);
+    Id.validateID(id, Workout.class);
     workoutIDs.add(id);
   }
 
@@ -165,7 +165,7 @@ public class User {
                   "please choose another name."
       );
     }
-    //validateHistoryID(id);
+    Id.validateID(id, History.class);
     historyIDs.add(id);
   }
 

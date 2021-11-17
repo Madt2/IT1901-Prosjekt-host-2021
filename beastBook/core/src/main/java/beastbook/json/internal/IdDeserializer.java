@@ -1,6 +1,9 @@
 package beastbook.json.internal;
 
+import beastbook.core.Exercise;
+import beastbook.core.History;
 import beastbook.core.Id;
+import beastbook.core.Workout;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -43,41 +46,33 @@ public class IdDeserializer extends JsonDeserializer<Id> {
     if (jsonNode instanceof ObjectNode objectNode) {
       try {
         Id id = new Id();
-        JsonNode exerciseIDsNode = objectNode.get("exerciseIDs");
-        if (exerciseIDsNode instanceof ArrayNode) {
-          for (JsonNode elementNode : exerciseIDsNode) {
-            String ID = elementNode.asText();
-            if (ID != null) {
-              id.addExerciseID(ID);
-            }
-          }
-        }
-        JsonNode workoutIDsNode = objectNode.get("workoutIDs");
-        if (workoutIDsNode instanceof ArrayNode) {
-          for (JsonNode elementNode : workoutIDsNode) {
-            String ID = elementNode.asText();
-            if (ID != null) {
-              id.addWorkoutID(ID);
-            }
-          }
-        }
-        JsonNode exerciseIDMapNode = objectNode.get("exerciseNameIDMap");
-        if (exerciseIDMapNode instanceof ArrayNode) {
-          for (JsonNode elementNode : exerciseIDMapNode) {
+        JsonNode exerciseMapNode = objectNode.get("exerciseMap");
+        if (exerciseMapNode instanceof ArrayNode) {
+          for (JsonNode elementNode : exerciseMapNode) {
             String ID = elementNode.asText();
             if (ID != null) {
               String[] strings = ID.split(":");
-              id.addExerciseIDEntry(strings[0], strings[1]);
+              id.addId(strings[0], strings[1], Exercise.class);
             }
           }
         }
-        JsonNode workoutIDMapNode = objectNode.get("workoutNameIDMap");
-        if (workoutIDsNode instanceof ArrayNode) {
-          for (JsonNode elementNode : workoutIDMapNode) {
+        JsonNode workoutMapNode = objectNode.get("workoutMap");
+        if (workoutMapNode instanceof ArrayNode) {
+          for (JsonNode elementNode : workoutMapNode) {
             String ID = elementNode.asText();
             if (ID != null) {
               String[] strings = ID.split(":");
-              id.addWorkoutIDEntry(strings[0], strings[1]);
+              id.addId(strings[0], strings[1], Workout.class);
+            }
+          }
+        }
+        JsonNode historyMapNode = objectNode.get("historyMap");
+        if (historyMapNode instanceof ArrayNode) {
+          for (JsonNode elementNode : historyMapNode) {
+            String ID = elementNode.asText();
+            if (ID != null) {
+              String[] strings = ID.split(":");
+              id.addId(strings[0], strings[1], History.class);
             }
           }
         }

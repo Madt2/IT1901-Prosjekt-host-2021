@@ -7,7 +7,7 @@ import java.util.List;
  * Workout class that creates a workout. It has a name, a unique ID to identify it,
  * and a list of IDs to reference exercise objects.
  */
-public class Workout {
+public class Workout implements IIdClases {
   private String name;
   private String id;
   private List<String> exerciseIDs = new ArrayList<>();
@@ -27,42 +27,6 @@ public class Workout {
   public Workout() {}
 
   /**
-   * Checks if ID given is valid as workoutID.
-   *
-   * @param id to be checked.
-   * @throws IllegalArgumentException when amount of characters in id is wrong,
-   *                                  or if id consists of wrong characters.
-   */
-  private void validateWorkoutID(String id) throws IllegalArgumentException {
-    if (id.length() != 2) {
-      throw new IllegalArgumentException("ID does not contain right amount of characters!");
-    }
-    final String legalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    if (!(legalChars.contains(String.valueOf(id.charAt(0)))) &&
-            legalChars.contains(String.valueOf(id.charAt(1)))) {
-      throw new IllegalArgumentException("ID does not use correct characters!");
-    }
-  }
-
-  /**
-   * Checks if ID given is valid as exerciseID.
-   *
-   * @param id to be checked.
-   * @throws IllegalArgumentException when amount of characters in id is wrong,
-   *                                  or if id consists of wrong characters.
-   */
-  private void validateExerciseID(String id) throws IllegalArgumentException {
-    if (id.length() != 2) {
-      throw new IllegalArgumentException("ID does not contain right amount of characters!");
-    }
-    final String legalChars = "abcdefghijklmnopqrstuvwxyz0123456789";
-    if (!(legalChars.contains(String.valueOf(id.charAt(0)))) &&
-            legalChars.contains(String.valueOf(id.charAt(1)))) {
-      throw new IllegalArgumentException("ID does not use correct characters!");
-    }
-  }
-
-  /**
   * Method for setting name of workout.
   *
   * @param name name of workout.
@@ -71,8 +35,8 @@ public class Workout {
     this.name = name;
   }
 
-  public void setID(String id) throws IllegalArgumentException {
-    validateWorkoutID(id);
+  public void setId(String id) throws IllegalArgumentException {
+    Id.validateID(id, Workout.class);
     this.id = id;
   }
 
@@ -85,7 +49,7 @@ public class Workout {
     return name;
   }
 
-  public String getID() {
+  public String getId() {
     return id;
   }
 
@@ -111,7 +75,7 @@ public class Workout {
         throw new IllegalArgumentException("Exercise is already added!");
       }
     }
-    validateExerciseID(exerciseID);
+    Id.validateID(exerciseID, Exercise.class);
     exerciseIDs.add(exerciseID);
   }
 

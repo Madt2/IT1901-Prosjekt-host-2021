@@ -2,6 +2,8 @@ package beastbook.server;
 
 import beastbook.core.*;
 import beastbook.json.BeastBookPersistence;
+import com.fasterxml.jackson.databind.introspect.ConcreteBeanPropertyBase;
+import org.jetbrains.annotations.Nullable;
 import org.springframework.stereotype.Service;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -24,66 +26,39 @@ public class ServerService {
   }
 
   /**
-   * Adds workout to user in server's register.
+   * Adds IId object to user in server's register.
    *
-   * @param workout to add.
+   * @param obj IIdClass object to add.
    * @param username of user to add workout to.
-   * @throws IllegalArgumentException from persistence.getUser() if user directory already exists.
+   * @param workout to add exercise to (only use if obj is Exercise object).
+   * @throws IllegalArgumentException from persistence.getUser() if user directory already exists. For Exercise
    */
-  public void addWorkout(Workout workout, String username) throws IllegalArgumentException {
-    //Todo maybe try catch?
+  public void addIdObject(IIdClases obj, String username, @Nullable Workout workout) {
     User user = persistence.getUser(username);
-    if (workout.getID() == null) {
-      Id ids = persistence.getIDs(username);
-      String id = giveID(username, Workout.class);
-      workout.setID(giveID(username, Workout.class)); //Should never throw exception
-      ids.addWorkoutID(id);
-      ids.addWorkoutIDEntry(id, workout.getName());
-      persistence.saveIds(ids, username);
+    Id ids = persistence.getIds(username);
+    obj = ids.giveID(obj);
+    if (obj instanceof Workout) {
+      user.addWorkout(obj.getId());
     }
-    user.addWorkout(workout.getID());
+    if (obj instanceof Exercise) {
+      if (workout == null) {
+        throw new IllegalArgumentException("To add an exercise you have to have a workout as argument!");
+      }
+      if (workout.getId() == null) {
+        throw new IllegalArgumentException("Workout must have ID!");
+      }
+      workout.addExercise(obj.getId());
+      persistence.saveIdObject(workout, username);
+      Exercise exercise = (Exercise) obj;
+      exercise.setWorkoutID(workout.getId());
+      obj = exercise;
+    }
+    if (obj instanceof History) {
+      user.addHistory(obj.getId());
+    }
+    persistence.saveIds(ids, username);
     persistence.saveUser(user);
-    persistence.saveWorkout(workout, username);
-  }
-
-  public void addHistory(History history, String username) throws IllegalArgumentException {
-    User user = persistence.getUser(username);
-    if (history.getID() == null) {
-      Id ids = persistence.getIDs(username);
-      String id = giveID(username, History.class);
-      history.setID(id);
-      ids.addHistoryID(id);
-      ids.addHistoryIDEntry(id, history.getName());
-      persistence.saveIds(ids, username);
-    }
-    user.addHistory(history.getID());
-    persistence.saveUser(user);
-    persistence.saveHistory(history, username);
-  }
-
-  /**
-   * Adds exercise to user in server's register.
-   *
-   * @param exercise to add.
-   * @param workoutID of workout to add to.
-   * @param username of user to add exercise to.
-   * @throws IllegalArgumentException from persistence.getWorkout() if user directory already exists.
-   */
-  public void addExercise(Exercise exercise, String workoutID, String username) throws IllegalArgumentException {
-    //Todo maybe try catch?
-    Workout workout = persistence.getWorkout(workoutID, username);
-    if (exercise.getID() == null) {
-      Id ids = persistence.getIDs(username);
-      String id = giveID(username, Exercise.class);
-      exercise.setID(id);
-      ids.addExerciseID(id);
-      ids.addExerciseIDEntry(id, exercise.getName());
-      persistence.saveIds(ids, username);
-    }
-    workout.addExercise(exercise.getID());
-    exercise.setWorkoutID(workout.getID());
-    persistence.saveWorkout(workout, username);
-    persistence.saveExercise(exercise, username);
+    persistence.saveIdObject(obj, username);
   }
 
   /**
@@ -96,7 +71,7 @@ public class ServerService {
    */
   public void updateWorkout(Workout workout, String username) throws IllegalArgumentException, IllegalStateException {
     try {
-      persistence.saveWorkout(workout, username);
+      persistence.saveIdObject(workout, username);
     } catch (IllegalStateException e) {
       throw new IllegalStateException("Cannot update an workout without id, " +
               "if this workout was fetched from user in server it is corrupted, " +
@@ -114,7 +89,7 @@ public class ServerService {
    */
   public void updateExercise(Exercise exercise, String username) throws IllegalArgumentException, IllegalStateException {
     try {
-      persistence.saveExercise(exercise, username);
+      persistence.saveIdObject(exercise, username);
     } catch (IllegalStateException e) {
       throw new IllegalStateException("Cannot update an exercise without id, " +
               "if this exercise was fetched from user in server it is corrupted, " +
@@ -129,72 +104,46 @@ public class ServerService {
    * @throws IllegalArgumentException from deleteUser() if user directory already exists.
    */
   public void deleteUser(String username) throws IllegalArgumentException {
-    persistence.deleteUser(username);
+    User user = persistence.getUser(username);
+    for (String id : user.getWorkoutIDs()) {
+      deleteIdObject(persistence.getWorkout(id, username), username);
+    }
+    for (String id : user.getHistoryIDs()) {
+      deleteIdObject(persistence.getHistory(id, username), username);
+    }
+    persistence.deleteUserDir(username);
   }
 
   /**
    * Deletes workout in server's register.
    *
-   * @param workoutID of workout to delete.
+   * @param obj IIdClass object to delete.
    * @param username of user to delete workout.
    * @throws IllegalArgumentException from persistence.getWorkout() if user directory already exists.
    */
-  public void deleteWorkout(String workoutID, String username) throws IllegalArgumentException {
-    Workout workout = persistence.getWorkout(workoutID, username);
+  public void deleteIdObject(IIdClases obj, String username) {
     User user = persistence.getUser(username);
-    Id ids = persistence.getIDs(username);
-    try {
-      persistence.deleteWorkout(workout, username);
-      user.removeWorkout(workout.getID());
-      persistence.saveUser(user);
-      String id = workout.getID();
-      ids.removeWorkoutID(id);
-      ids.removeWorkoutIDEntry(id);
-      persistence.saveIds(ids, username);
-    } catch (IllegalStateException | IllegalArgumentException e) {
-      //This should not happen since classes is gotten directly gotten from server.
-      System.err.println(e.getMessage());
+    Id ids = persistence.getIds(username);
+    if (obj instanceof Exercise) {
+      Exercise exercise = (Exercise) obj;
+      Workout workout = persistence.getWorkout(exercise.getWorkoutID(), username);
+      workout.removeExercise(exercise.getId());
+      persistence.saveIdObject(workout, username);
+      obj = exercise;
     }
-  }
-
-  /**
-   * Deletes exercise in server's register.
-   *
-   * @param exerciseID of exercise to delete.
-   * @param username of user to delete exercise.
-   * @throws IllegalArgumentException from persistence.getExercise() or
-   * persistence.getWorkout() if user directory already exists.
-   */
-  public void deleteExercise(String exerciseID, String username) throws IllegalArgumentException {
-    Exercise exercise = persistence.getExercise(exerciseID, username);
-    Workout workout = persistence.getWorkout(exercise.getWorkoutID(), username);
-    Id ids = persistence.getIDs(username);
-    try {
-      persistence.deleteExercise(exercise, username);
-      String id = exercise.getID();
-      workout.removeExercise(id);
-      ids.removeExerciseID(id);
-      ids.removeExerciseIDEntry(id);
-      persistence.saveWorkout(workout, username);
-      persistence.saveIds(ids, username);
-    } catch (IllegalStateException | IllegalArgumentException e) {
-      //This should not happen since classes is gotten directly gotten from server.
-      System.err.println(e.getMessage());
+    if (obj instanceof Workout) {
+      Workout workout = (Workout) obj;
+      for (String id : workout.getExerciseIDs()) {
+        deleteIdObject(persistence.getExercise(id, username), username);
+      }
+      user.removeWorkout(workout.getId());
     }
-  }
-
-  public void deleteHistory(String historyID, String username) throws IllegalArgumentException{
-    History history = persistence.getHistory(historyID, username);
-    Id ids = persistence.getIDs(username);
-    try {
-      persistence.deleteHistory(history, username);
-      String id = history.getID();
-      ids.removeHistoryID(id);
-      ids.removeHistoryIDEntry(id);
-      persistence.saveIds(ids, username);
-    } catch (IllegalStateException | IllegalArgumentException e) {
-      System.err.println(e.getMessage());
+    if (obj instanceof History) {
+      user.removeHistory(obj.getId());
     }
+    persistence.saveIdObject(obj, username);
+    persistence.saveUser(user);
+    persistence.saveIds(ids, username);
   }
 
   /**
@@ -239,30 +188,13 @@ public class ServerService {
   /**
    * Getter for workout's name from server's register.
    *
-   * @param workoutID to get name off.
+   * @param id of object to get name off.
    * @param username of user to get workout's name from.
-   * @return workout's name
+   * @return object's name
    */
-  public String getWorkoutName(String workoutID, String username) {
-    Id ids = persistence.getIDs(username);
-    return ids.getWorkoutIDName(workoutID);
-  }
-
-  /**
-   * Getter for exercise's name from server's register.
-   *
-   * @param exerciseID to get name off.
-   * @param username of user to get exercise's name from.
-   * @return exercise's name
-   */
-  public String getExerciseName(String exerciseID, String username) {
-    Id ids = persistence.getIDs(username);
-    return ids.getExerciseIDName(exerciseID);
-  }
-
-  public String getHistoryName(String historyID, String username) {
-    Id ids = persistence.getIDs(username);
-    return ids.getHistoryIDName(historyID);
+  public String getName(String id, String username, Class cls) {
+    Id ids = persistence.getIds(username);
+    return ids.getName(id, cls);
   }
 
   /**
@@ -284,96 +216,5 @@ public class ServerService {
    */
   public <T> Object jsonToObject(String jsonString, Class<T> cls) {
     return persistence.jsonToObject(jsonString, cls);
-  }
-
-  /**
-   * Validation for IDs.
-   *
-   * @param id to check.
-   * @param cls class type to check ID for.
-   * @throws IllegalArgumentException if ID does not contain correct amounts of characters,
-   * or if ID does not use valid characters.
-   */
-  private <T> void validateID(String id, Class<T> cls) throws IllegalArgumentException {
-    if (id.length() != 2) {
-      throw new IllegalArgumentException("ID does not contain right amount of characters!");
-    }
-    final String legalChars;
-    if (cls == Exercise.class) {
-      legalChars = "abcdefghijklmnopqrstuvwxyz0123456789";
-    } else {
-      legalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    }
-    if (!(legalChars.contains(String.valueOf(id.charAt(0)))) &&
-            legalChars.contains(String.valueOf(id.charAt(1)))) {
-      throw new IllegalArgumentException("ID does not use correct characters!");
-    }
-  }
-
-  /**
-   * Generates ID for given class.
-   *
-   * @param cls to generate ID for.
-   * @return id
-   * @throws IllegalArgumentException if class type is not valid.
-   */
-  private <T> String generateID(Class<T> cls) throws IllegalArgumentException {
-    final String legalChars;
-    String id;
-    if (cls == Exercise.class) {
-      legalChars = "abcdefghijklmnopqrstuvwxyz0123456789";
-      int index1 = ThreadLocalRandom.current().nextInt(legalChars.length());
-      int index2 = ThreadLocalRandom.current().nextInt(legalChars.length());
-      id = "" + legalChars.charAt(index1) + legalChars.charAt(index2);
-    } else if (cls == Workout.class) {
-      legalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-      int index1 = ThreadLocalRandom.current().nextInt(legalChars.length());
-      int index2 = ThreadLocalRandom.current().nextInt(legalChars.length());
-      id = "" + legalChars.charAt(index1) + legalChars.charAt(index2);
-    } else if (cls == History.class) {
-      legalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-      int index1 = ThreadLocalRandom.current().nextInt(legalChars.length());
-      int index2 = ThreadLocalRandom.current().nextInt(legalChars.length());
-      int index3 = ThreadLocalRandom.current().nextInt(legalChars.length());
-      id = "" + legalChars.charAt(index1) + legalChars.charAt(index2) +  legalChars.charAt(index3);
-    } else {
-      throw new IllegalArgumentException("Class must be type Exercise, Workout or History!");
-    }
-    validateID(id, cls);
-    return id;
-  }
-
-  /**
-   * Generate ID until it find an available ID.
-   *
-   * @param username to generate ID for.
-   * @param cls class type to generate ID for.
-   * @return valid ID to use for class
-   * @throws IllegalArgumentException if class type is invalid.
-   */
-  private <T> String giveID(String username, Class<T> cls) throws IllegalArgumentException {
-    Id ids = persistence.getIDs(username);
-    String id;
-    int catchTries = 3;
-    while (true) {
-      try {
-        id = generateID(cls);
-        //todo Change this line to work with all classes
-        if (!ids.hasWorkoutID(id)) {
-          break;
-        }
-      } catch (IllegalArgumentException e) {
-        if (e.getMessage().equals("Class must be type Exercise or Workout!")) {
-          throw e;
-        } else {
-          catchTries--;
-          System.err.println(e.getMessage());
-          if(catchTries <= 0) {
-            throw new Error("Something is wrong with ID generator!");
-          }
-        }
-      }
-    }
-    return id;
   }
 }

@@ -8,4 +8,5 @@ module beastbook.rest {
   requires spring.beans;
   requires spring.boot;
   requires spring.boot.autoconfigure;
+    requires org.jetbrains.annotations;
 }

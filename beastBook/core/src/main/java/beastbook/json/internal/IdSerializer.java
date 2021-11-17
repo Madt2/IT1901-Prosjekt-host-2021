@@ -1,6 +1,9 @@
 package beastbook.json.internal;
 
+import beastbook.core.Exercise;
+import beastbook.core.History;
 import beastbook.core.Id;
+import beastbook.core.Workout;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -26,24 +29,19 @@ public class IdSerializer extends JsonSerializer<Id> {
           SerializerProvider serializerProvider
   ) throws IOException {
     jsonGenerator.writeStartObject();
-    jsonGenerator.writeArrayFieldStart("workoutIDs");
-    for (String ID : id.getWorkoutIDs()) {
-      jsonGenerator.writeObject(ID);
+    jsonGenerator.writeArrayFieldStart("exerciseMap");
+    for (String ID : id.getIds(Exercise.class)) {
+      jsonGenerator.writeObject(ID + ":" + id.getName(ID, Exercise.class));
     }
     jsonGenerator.writeEndArray();
-    jsonGenerator.writeArrayFieldStart("exerciseIDs");
-    for (String ID : id.getExerciseIDs()) {
-      jsonGenerator.writeObject(ID);
+    jsonGenerator.writeArrayFieldStart("workoutMap");
+    for (String ID : id.getIds(Workout.class)) {
+      jsonGenerator.writeObject(ID + ":" + id.getName(ID, Workout.class));
     }
     jsonGenerator.writeEndArray();
-    jsonGenerator.writeArrayFieldStart("exerciseNameIDMap");
-    for (String ID : id.getExerciseIDs()) {
-      jsonGenerator.writeObject(ID + ":" + id.getExerciseIDName(ID));
-    }
-    jsonGenerator.writeEndArray();
-    jsonGenerator.writeArrayFieldStart("workoutNameIDMap");
-    for (String ID : id.getWorkoutIDs()) {
-      jsonGenerator.writeObject(ID + ":" + id.getWorkoutIDName(ID));
+    jsonGenerator.writeArrayFieldStart("historyMap");
+    for (String ID : id.getIds(History.class)) {
+      jsonGenerator.writeObject(ID + ":" + id.getName(ID, History.class));
     }
     jsonGenerator.writeEndArray();
     jsonGenerator.writeEndObject();

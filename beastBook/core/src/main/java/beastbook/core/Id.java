@@ -1,220 +1,190 @@
 package beastbook.core;
 
 import java.util.ArrayList;
+import java.util.EventListener;
 import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * Id class. This class keeps track of what IDs are in use for workout and exercise objects,
  * and contains a map of (exerciseID : exerciseName) and (workoutID : workoutName).
  */
 public class Id {
-  private List<String> exerciseIDs = new ArrayList<>();
-  private List<String> workoutIDs = new ArrayList<>();
-  private List<String> historyIDs = new ArrayList<>();
-  private HashMap<String, String> exerciseNameIDMap = new HashMap<>();
-  private HashMap<String, String> workoutNameIDMap = new HashMap<>();
-  private HashMap<String, String> historyNameIDMap = new HashMap<>();
+  public static final int HISTORY_ID_LENGTH = 3;
+  public static final int EXERCISE_ID_LENGTH = 2;
+  public static final int WORKOUT_ID_LENGTH = 2;
+  public static final String LEGAL_CHARS_HISTORY_ID = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  public static final String LEGAL_CHARS_EXERCISE_ID = "abcdefghijklmnopqrstuvwxyz0123456789";
+  public static final String LEGAL_CHARS_WORKOUT_ID = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-  /**
-   * Checks if exerciseID is in use.
-   *
-   * @param id to check
-   * @return true if ID is in reference list, false otherwise.
-   */
-  public boolean hasExerciseID(String id) {
-    return exerciseIDs.contains(id);
-  }
+  private HashMap<String, String> exerciseMap = new HashMap<>();
+  private HashMap<String, String> workoutMap = new HashMap<>();
+  private HashMap<String, String> historyMap = new HashMap<>();
 
-  /**
-   * Checks if workoutID is in use.
-   *
-   * @param id to check.
-   * @return true if ID is in reference list, false otherwise.
-   */
-  public boolean hasWorkoutID(String id) {
-    return workoutIDs.contains(id);
-  }
-
-  public boolean hasHistoryID(String id) {
-    return historyIDs.contains(id);
-  }
-
-  public List<String> getWorkoutIDs() {
-    return new ArrayList<>(workoutIDs);
-  }
-
-  public List<String> getExerciseIDs() {
-    return new ArrayList<>(exerciseIDs);
-  }
-
-  public List<String> getHistoryIDs() {
-    return new ArrayList<>(historyIDs);
-  }
-
-  public String getExerciseIDName(String exerciseID) {
-    return exerciseNameIDMap.get(exerciseID);
-  }
-
-  public String getWorkoutIDName(String workoutID) {
-    return exerciseNameIDMap.get(workoutID);
-  }
-
-  public String getHistoryIDName(String historyID) {
-    return historyNameIDMap.get(historyID);
-  }
-
-  /**
-   * Adds exerciseID to list of exerciseIDs in use.
-   *
-   * @param id to add
-   * @throws IllegalArgumentException if ID is in use already.
-   */
-  public void addExerciseID(String id) throws IllegalArgumentException {
-    if (hasExerciseID(id)) {
-      throw new IllegalArgumentException("User already have ID " + id + " stored in exercises");
+  private HashMap<String, String> getMap(Class cls) throws IllegalArgumentException {
+    HashMap<String, String> map;
+    if (cls == Exercise.class) {
+      map = exerciseMap;
+    } else if (cls == Workout.class) {
+      map = workoutMap;
+    } else if (cls == History.class) {
+      map = historyMap;
+    } else {
+      throw new IllegalArgumentException("Class must be type Exercise, Workout or History!");
     }
-    exerciseIDs.add(id);
+    return map;
   }
 
-  /**
-   * Adds workoutID to list of workoutIDs in use.
-   *
-   * @param id to add.
-   * @throws IllegalArgumentException if ID is in use already.
-   */
-  public void addWorkoutID(String id) throws IllegalArgumentException {
-    if (hasWorkoutID(id)) {
-      throw new IllegalArgumentException("User already has ID " + id + " stored in workouts");
+  private static String setLegalChars(Class cls) {
+    final String legalChars;
+    if (cls == Exercise.class) {
+      legalChars = LEGAL_CHARS_EXERCISE_ID;
+    } else if (cls == Workout.class) {
+      legalChars = LEGAL_CHARS_WORKOUT_ID;
+    } else if (cls == History.class) {
+      legalChars = LEGAL_CHARS_HISTORY_ID;
+    } else {
+      throw new IllegalArgumentException("Class must be type Exercise, Workout or History!");
     }
-    workoutIDs.add(id);
+    return legalChars;
   }
 
-  /**
-   * Adds historyID to list of historyIDs in use.
-   *
-   * @param id to add
-   * @throws IllegalArgumentException if ID is in use already.
-   */
-  public void addHistoryID(String id) throws IllegalArgumentException {
-    if (hasHistoryID(id)) {
-      throw new IllegalArgumentException("User already has ID " + id + " stored in histories");
+  private static int setLegalLength(Class cls) {
+    final int legalLength;
+    if (cls == Exercise.class) {
+      legalLength = EXERCISE_ID_LENGTH;
+    } else if (cls == Workout.class) {
+      legalLength = WORKOUT_ID_LENGTH;
+    } else if (cls == History.class) {
+      legalLength = HISTORY_ID_LENGTH;
+    } else {
+      throw new IllegalArgumentException("Class must be type Exercise, Workout or History!");
     }
-    historyIDs.add(id);
+    return legalLength;
   }
 
-  /**
-   * Adds an entry to map over exerciseID to exerciseNames.
-   *
-   * @param exerciseID value to map.
-   * @param exerciseName key to map.
-   */
-  public void addExerciseIDEntry(String exerciseID, String exerciseName) {
-    exerciseNameIDMap.put(exerciseID, exerciseName);
+  private boolean hasId(String id, Class cls) throws IllegalArgumentException {
+    List<String> ids = getIds(cls);
+    return ids.contains(id);
   }
 
-  /**
-   * Adds an entry to map over workoutID to workoutNames.
-   *
-   * @param workoutID value to map.
-   * @param workoutName key to map.
-   */
-  public void addWorkoutIDEntry(String workoutID, String workoutName) {
-    workoutNameIDMap.put(workoutID, workoutName);
+  public List<String> getIds(Class cls) throws IllegalArgumentException {
+    return new ArrayList<String>(getMap(cls).keySet());
   }
 
-  public void addHistoryIDEntry(String historyID, String historyName) {
-    historyNameIDMap.put(historyID, historyName);
+  public String getName(String id, Class cls) throws IllegalArgumentException {
+    return getMap(cls).get(id);
   }
 
-  /**
-   * Removes exerciseID from list over exerciseIDs in use.
-   *
-   * @param id to remove.
-   * @throws IllegalArgumentException when ID does not exist in reference list.
-   */
-  public void removeExerciseID(String id) throws IllegalArgumentException {
-    if (!hasExerciseID(id)) {
-      throw new IllegalArgumentException("User does not have ID " + id + " stored in exercises");
+  public void addId(IIdClases obj) throws IllegalArgumentException {
+    Class cls = obj.getClass();
+    String id = obj.getId();
+    String name = obj.getName();
+    HashMap<String, String> map = getMap(cls);
+    if (hasId(id, cls)) {
+      throw new IllegalArgumentException(cls.getName() + " already have ID " + id + " stored");
     }
-    exerciseIDs.remove(id);
+    map.put(id, name);
   }
 
-  /**
-   * Removes workoutID from list over workoutIDs in use.
-   *
-   * @param id to remove.
-   * @throws IllegalArgumentException when ID does not exist in reference list.
-   */
-  public void removeWorkoutID(String id) throws IllegalArgumentException {
-    if (!hasWorkoutID(id)) {
-      throw new IllegalArgumentException("User does not have ID " + id + " stored in workouts");
+  public void removeId(String id, Class cls) {
+    HashMap<String, String> map = getMap(cls);
+    if (!hasId(id, cls)) {
+      throw new IllegalArgumentException(cls.getName() + " does not have ID " + id + " stored");
     }
-    workoutIDs.remove(id);
-  }
-
-  public void removeHistoryID(String id) throws IllegalArgumentException {
-    if (!hasHistoryID(id)) {
-      throw new IllegalArgumentException("User does not have ID " + id + " stored in histories");
-    }
-    historyIDs.remove(id);
+    map.remove(id);
   }
 
   /**
-   * Removes entry for mapping of exerciseID.
-   *
-   * @param exerciseID entry to remove.
-   */
-  public void removeExerciseIDEntry(String exerciseID) {
-    exerciseNameIDMap.remove(exerciseID);
-  }
-
-  /**
-   * Removes entry for mapping of exerciseID.
-   *
-   * @param workoutID entry to remove.
-   */
-  public void removeWorkoutIDEntry(String workoutID) {
-    workoutNameIDMap.remove(workoutID);
-  }
-
-  public void removeHistoryIDEntry(String historyID) {
-    historyNameIDMap.remove(historyID);
-  }
-
-  /**
-   * Checks if ID given is valid as exerciseID.
+   * Checks if ID given is valid for class.
    *
    * @param id to be checked.
+   * @param cls class to validate id for.
    * @throws IllegalArgumentException when amount of characters in id is wrong,
    *                                  or if id consists of wrong characters.
    */
-  public static void validateExerciseID(String id) throws IllegalArgumentException {
-    if (id.length() != 2) {
+  public static void validateID(String id, Class cls) throws IllegalArgumentException {
+    final String legalChars = setLegalChars(cls);
+    final int legalLength = setLegalLength(cls);
+    if (id.length() != legalLength) {
       throw new IllegalArgumentException("ID does not contain right amount of characters!");
     }
-    final String legalChars = "abcdefghijklmnopqrstuvwxyz0123456789";
-    if (!(legalChars.contains(String.valueOf(id.charAt(0)))) &&
-          legalChars.contains(String.valueOf(id.charAt(1)))) {
+    for (int i = 0; i < legalChars.length(); i++) {
+      for (int j = 0; j < id.length(); j++) {
+        if (id.charAt(j) == legalChars.charAt(i)) {
+          id.replace(id.substring(j, j), "");
+        }
+      }
+    }
+    if (id.length() != 0) {
       throw new IllegalArgumentException("ID does not use correct characters!");
     }
   }
 
   /**
-   * Checks if ID given is valid as workoutID.
+   * Generates ID for given class.
    *
-   * @param id to be checked.
-   * @throws IllegalArgumentException when amount of characters in id is wrong,
-   *                                  or if id consists of wrong characters.
+   * @param cls to generate ID for.
+   * @return valid id for class
+   * @throws IllegalArgumentException if class type is not valid.
    */
-  public static void validateWorkoutID(String id) throws IllegalArgumentException {
-    if (id.length() != 2) {
-      throw new IllegalArgumentException("ID does not contain right amount of characters!");
+  private String generateIdWhileLoop(Class cls) throws IllegalArgumentException {
+    final String legalChars = setLegalChars(cls);
+    final int legalLength = setLegalLength(cls);
+    String id = "";
+    while (true) {
+      for (int i = 0; i < legalLength; i++) {
+        int randInt = ThreadLocalRandom.current().nextInt(legalChars.length());
+        id += legalChars.charAt(randInt);
+      }
+      if (!hasId(id, cls)) {
+        break;
+      }
     }
-    final String legalChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    if (!(legalChars.contains(String.valueOf(id.charAt(0)))) &&
-          legalChars.contains(String.valueOf(id.charAt(1)))) {
-      throw new IllegalArgumentException("ID does not use correct characters!");
+    validateID(id, cls);
+    return id;
+  }
+
+  private String generateIdForLoop(Class cls) throws IllegalArgumentException {
+    final String legalChars = setLegalChars(cls);
+    final int legalLength = setLegalLength(cls);
+    int possibilities = (int) Math.pow(setLegalChars(cls).length(), setLegalLength(cls));
+    List<Integer> indexes = new ArrayList<>();
+    for (int i = 0; i < legalLength; i++) {
+      indexes.add(legalChars.length());
     }
+    return new String("does not work!");
+  }
+
+  /**
+   * Generate ID until it find an available ID.
+   *
+   * @param objectName of object to give id to.
+   * @param cls class type to give ID to.
+   * @return valid ID to use for class
+   * @throws IllegalArgumentException if class type is invalid.
+   * @throws IllegalStateException if no more ids for object is available
+   */
+  public IIdClases giveID(IIdClases obj) throws IllegalArgumentException, IllegalStateException {
+    Class cls = obj.getClass();
+    String id;
+    final String legalChars = setLegalChars(cls);
+    final int legalLength = setLegalLength(cls);
+    int possibilities = (int) Math.pow(legalChars.length(), legalLength);
+    if (getIds(cls).size() == possibilities) {
+      throw new IllegalStateException("Not any more free ids for " + cls.getName()
+              + " class, please increase id limit for " + cls.getName()
+              + ", or delete some " + cls.getName() + "s though client!");
+    }
+    if (getIds(cls).size() < possibilities / 2) {
+      id = generateIdWhileLoop(cls);
+    }
+    else {
+      id = generateIdForLoop(cls);
+    }
+    obj.setId(id);
+    addId(obj);
+    return obj;
   }
 }

@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * History class saves a workout with a final workout object and date it was saved.
  */
-public class History extends Workout {
+public class History extends Workout implements IIdClases {
   private final String date;
   private final String name;
   private String id;
@@ -23,24 +23,25 @@ public class History extends Workout {
     this.savedExercises = workout;
   }
 
-  public void setID(String id) {
+  public void setId(String id) {
+    Id.validateID(id, this.getClass());
     this.id = id;
-  }
-
-  public String getID() {
-    return id;
   }
 
   public String getDate() {
     return date;
   }
 
-  public List<Exercise> getSavedExercises() {
-    return savedExercises;
-  }
-
   public String getName() {
     return name;
+  }
+
+  public String getId() {
+    return id;
+  }
+
+  public List<Exercise> getSavedExercises() {
+    return savedExercises;
   }
 
   @Override

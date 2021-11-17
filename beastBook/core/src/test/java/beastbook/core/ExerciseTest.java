@@ -3,7 +3,7 @@ package beastbook.core;
 import org.junit.jupiter.api.*;
 
 public class ExerciseTest {
-  /*private Exercise exercise;
+  private Exercise exercise;
 
   @BeforeEach
   void init() {
@@ -13,7 +13,7 @@ public class ExerciseTest {
   @Test
   @DisplayName("Tests if Constructor works as intended")
   void testExercise() {
-    Assertions.assertEquals("Bench Press", exercise.getExerciseName());
+    Assertions.assertEquals("Bench Press", exercise.getName());
     Assertions.assertEquals(25, exercise.getRepGoal());
     Assertions.assertEquals(100, exercise.getWeight());
     Assertions.assertEquals(5, exercise.getSets());
@@ -36,7 +36,13 @@ public class ExerciseTest {
       exercise.setRestTime(-1);
     });
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
-      exercise.setExerciseName("");
+      exercise.setName("");
     });
-  }*/
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      exercise.setID("111");
+    });
+    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+      exercise.setID("2G");
+    });
+  }
 }

@@ -30,30 +30,28 @@ public class ClientService {
     return data;
   }
 
-  private void sendMessage (String message, String username) {
-    /*HttpHeaders headers = new HttpHeaders();
+  public ResponseEntity<String> deleteWorkout(Workout workout, String username) {
     try {
-      URI uri = new URI(baseURL + message + "/" + username);
-      HttpEntity<String> httpEntity = new HttpEntity<>(headers);
-      RestTemplate restTemplate = new RestTemplate();
-      ResponseEntity<String> data = restTemplate.postForEntity(uri, httpEntity, String.class);
-      return data;
+      URI uri = new URI(baseURL + "deleteWorkout/" + username);
+      return sendPackage(workout, uri);
     } catch (URISyntaxException e) {
-      //Todo fix catch
+      //Todo fix try catch
       e.printStackTrace();
     }
-    return null;*/
-    final RestTemplate restTemplate = new RestTemplateBuilder().build();
-    String url = baseURL + message + "/" + username;
-    String jsonString = restTemplate.getForObject(url, String.class);
+    //Todo this will not work, find another solution!
+    return null;
   }
 
-  public void deleteWorkout (Workout workout, String  username) {
-    sendMessage("deleteWorkout/" + workout.getID(), username);
-  }
-
-  public void deleteExercise (Exercise exercise, String username) {
-    sendMessage("deleteExercise/" + exercise.getID(), username);
+  public ResponseEntity<String> deleteExercise(Exercise exercise, String username) {
+    try {
+      URI uri = new URI(baseURL + "deleteExercise/" + username);
+      return sendPackage(exercise, uri);
+    } catch (URISyntaxException e) {
+      //Todo fix try catch
+      e.printStackTrace();
+    }
+    //Todo this will not work, find another solution!
+    return null;
   }
 
   public void deleteUser (String username) {
@@ -62,7 +60,7 @@ public class ClientService {
 
   public ResponseEntity<String> createUser (User user) {
     try {
-      URI uri = new URI(baseURL + "createUser/" + user.getUsername());
+      URI uri = new URI(baseURL + "createUser/");
       return sendPackage(user, uri);
     } catch (URISyntaxException e) {
       //Todo fix try catch
@@ -86,7 +84,7 @@ public class ClientService {
 
   public ResponseEntity<String> addExercise(Exercise exercise, Workout workout, String username) {
     try {
-      URI uri = new URI(baseURL + "addExercise/" + workout.getID() + "/" + username);
+      URI uri = new URI(baseURL + "addExercise/" + exercise.getId() + "/" + username);
       return sendPackage(exercise, uri);
     } catch (URISyntaxException e) {
       //Todo fix try catch

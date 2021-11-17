@@ -5,7 +5,7 @@ package beastbook.core;
  * weight used, amount of sets, reps per set and rest time for exercise. It also has a unique ID
  * to identify it, as well as an ID to reference the workout object it belongs to.
  */
-public class Exercise {
+public class Exercise implements IIdClases {
   //Todo enum?
   public static final int maxStringLength = 50;
   public static final int maxIntLength = 5;
@@ -152,13 +152,13 @@ public class Exercise {
     }
   }
 
-  public void setID(String id) throws IllegalArgumentException {
-    Id.validateExerciseID(id);
+  public void setId(String id) throws IllegalArgumentException {
+    Id.validateID(id, Exercise.class);
     this.id = id;
   }
 
   public void setWorkoutID(String id) throws IllegalArgumentException {
-    Id.validateWorkoutID(id);
+    Id.validateID(id, Workout.class);
     this.workoutID = id;
   }
 
@@ -192,7 +192,7 @@ public class Exercise {
     this.restTime = restTime;
   }
 
-  public String getID() {
+  public String getId() {
     return id;
   }
 
