@@ -5,5 +5,7 @@ module beastbook.rest {
   requires spring.beans;
   requires spring.boot;
   requires spring.boot.autoconfigure;
-    requires org.jetbrains.annotations;
+  requires spring.context;
+
+  opens beastbook.server to spring.beans, spring.context, spring.web;
 }

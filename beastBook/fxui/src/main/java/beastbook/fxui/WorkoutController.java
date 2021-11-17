@@ -202,11 +202,18 @@ public class WorkoutController extends AbstractController {
   @FXML
   void saveHistory() throws IOException {
     boolean overwritten = false;
-    for (History h : user.getHistories()) {
-      if (h.getName().equals(workoutName) && h.getDate().equals(user.getDate())) {
-        user.removeHistory(h.getSavedWorkout().getName(), h.getDate());
-        user.addHistory(user.getWorkout(workoutName));
-        exceptionFeedback.setText("History overwritten!");
+    User user = service.queryUser(username);
+    Workout workout = service.queryWorkout(workoutId, username);
+
+    List<String> historyIds = user.getHistoryIDs();
+    List<History> historyObjs = new ArrayList<>();
+    History history = new History(workout.getName(), exercises, user.getDate());
+    for (String id : historyIds) {
+      historyObjs.add(service.queryHistory(id, getUsername()));
+    }
+    for (History h : historyObjs) {
+      if (h.getName().equals(workout.getName()) && h.getDate().equals(user.getDate())) {
+        service.deleteHistory(h.getId(), getUsername());
         overwritten = !overwritten;
         break;
       }

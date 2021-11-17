@@ -118,11 +118,12 @@ public class Id {
         if (id.charAt(j) == legalChars.charAt(i)) {
           id = id.replace(id.substring(j, j), "");
         }
+        if (id.length() == 0) {
+          return;
+        }
       }
     }
-    if (id.length() != 0) {
-      throw new IllegalArgumentException("ID does not use correct characters!");
-    }
+    throw new IllegalArgumentException("ID does not use correct characters!");
   }
 
   /**
@@ -186,7 +187,7 @@ public class Id {
    * @throws IllegalArgumentException if object already has an id.
    * @throws IllegalStateException If no more ids are available.
    */
-  public IIdClases giveID(IIdClases obj) throws IllegalArgumentException, IllegalStateException {
+  public IdClasses giveId(IdClasses obj) throws IllegalArgumentException, IllegalStateException {
     Class cls = obj.getClass();
     String id = null;
     final String legalChars = setLegalChars(cls);
