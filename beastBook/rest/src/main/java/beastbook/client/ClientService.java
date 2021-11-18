@@ -11,6 +11,7 @@ import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.HashMap;
 
 public class ClientService {
   private BeastBookPersistence beastBookPersistence = new BeastBookPersistence();
@@ -190,9 +191,9 @@ public class ClientService {
   }
 
   //Todo right use of name?
-  public User queryUser(String username)  {
+  /*public User queryUser(String username)  {
     final RestTemplate restTemplate = new RestTemplateBuilder().build();
-    String url = baseURL + "/getUser/" + username;
+    String url = baseURL + "getUser/" + username;
     String jsonString = restTemplate.getForObject(url, String.class);
     try {
       return (User) beastBookPersistence.jsonToObject(jsonString, User.class);
@@ -200,11 +201,11 @@ public class ClientService {
       e.printStackTrace();
     }
     return null;
-  }
+  }*/
 
   public Workout queryWorkout(String workoutID, String username)  {
     final RestTemplate restTemplate = new RestTemplateBuilder().build();
-    String url = baseURL + "/getWorkout/" + username + "/" + workoutID;
+    String url = baseURL + "getWorkout/" + username + "/" + workoutID;
     String jsonString = restTemplate.getForObject(url, String.class);
     try {
       return (Workout) beastBookPersistence.jsonToObject(jsonString, Workout.class);
@@ -216,7 +217,7 @@ public class ClientService {
 
   public Exercise queryExercise(String exerciseID, String username)  {
     final RestTemplate restTemplate = new RestTemplateBuilder().build();
-    String url = baseURL + "/getExercise/" + username + "/" + exerciseID;
+    String url = baseURL + "getExercise/" + username + "/" + exerciseID;
     String jsonString = restTemplate.getForObject(url, String.class);
     try {
       return (Exercise) beastBookPersistence.jsonToObject(jsonString, Exercise.class);
@@ -228,7 +229,7 @@ public class ClientService {
 
   public History queryHistory(String historyID, String username)  {
     final RestTemplate restTemplate = new RestTemplateBuilder().build();
-    String url = baseURL + "/getHistory/" + username + "/" + historyID;
+    String url = baseURL + "getHistory/" + username + "/" + historyID;
     String jsonString = restTemplate.getForObject(url, String.class);
     try {
       return (History) beastBookPersistence.jsonToObject(jsonString, History.class);
@@ -238,24 +239,68 @@ public class ClientService {
     return null;
   }
 
-  public String queryExerciseName(String exerciseID, String username) {
+  public HashMap<String, String> queryExerciseMap(String username) {
     final RestTemplate restTemplate = new RestTemplateBuilder().build();
-    String url = baseURL + "/getExerciseName/" + username + "/" + exerciseID;
-    String exerciseName = restTemplate.getForObject(url, String.class);
-    return exerciseName;
+    String url = baseURL + "getExerciseMap/" + username;
+    String jsonString = restTemplate.getForObject(url, String.class);
+    try {
+      return (HashMap<String, String>) beastBookPersistence.jsonToObject(jsonString, HashMap.class);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 
-  public String queryWorkoutName(String workoutID, String username) {
+  public HashMap<String, String> queryWorkoutMap(String username) {
     final RestTemplate restTemplate = new RestTemplateBuilder().build();
-    String url = baseURL + "/getWorkoutName/" + username + "/" + workoutID;
-    String workoutName = restTemplate.getForObject(url, String.class);
-    return workoutName;
+    String url = baseURL + "getWorkoutMap/" + username;
+    String jsonString = restTemplate.getForObject(url, String.class);
+    try {
+      return (HashMap<String, String>) beastBookPersistence.jsonToObject(jsonString, HashMap.class);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
 
-  public String queryHistoryName(String historyID, String username) {
+  public HashMap<String, String> queryHistoryMap(String username) {
     final RestTemplate restTemplate = new RestTemplateBuilder().build();
-    String url = baseURL + "/getHistoryName/" + username + "/" + historyID;
-    String workoutName = restTemplate.getForObject(url, String.class);
-    return workoutName;
+    String url = baseURL + "/getHistoryMap/" + username;
+    String jsonString = restTemplate.getForObject(url, String.class);
+    try {
+      return (HashMap<String, String>) beastBookPersistence.jsonToObject(jsonString, HashMap.class);
+    } catch (JsonProcessingException e) {
+      e.printStackTrace();
+    }
+    return null;
   }
+
+  public String queryPassword(String username) {
+    final RestTemplate restTemplate = new RestTemplateBuilder().build();
+    String url = baseURL + "getPassword/" + username;
+    String password = restTemplate.getForObject(url, String.class);
+    return password;
+  }
+
+
+//  public String queryExerciseName(String exerciseID, String username) {
+//    final RestTemplate restTemplate = new RestTemplateBuilder().build();
+//    String url = baseURL + "/getExerciseName/" + username + "/" + exerciseID;
+//    String exerciseName = restTemplate.getForObject(url, String.class);
+//    return exerciseName;
+//  }
+//
+//  public String queryWorkoutName(String workoutID, String username) {
+//    final RestTemplate restTemplate = new RestTemplateBuilder().build();
+//    String url = baseURL + "/getWorkoutName/" + username + "/" + workoutID;
+//    String workoutName = restTemplate.getForObject(url, String.class);
+//    return workoutName;
+//  }
+//
+//  public String queryHistoryName(String historyID, String username) {
+//    final RestTemplate restTemplate = new RestTemplateBuilder().build();
+//    String url = baseURL + "/getHistoryName/" + username + "/" + historyID;
+//    String workoutName = restTemplate.getForObject(url, String.class);
+//    return workoutName;
+//  }
 }

@@ -43,33 +43,34 @@ public class UserDeserializer extends JsonDeserializer<User> {
   User deserialize(JsonNode jsonNode) {
     if (jsonNode instanceof ObjectNode objectNode) {
       try {
-        User user = new User();
         JsonNode usernameNode = objectNode.get("username");
-        if (usernameNode instanceof TextNode) {
-          user.setUsername(usernameNode.asText());
-        }
         JsonNode passwordNode = objectNode.get("password");
-        if (passwordNode instanceof TextNode) {
-          user.setPassword(passwordNode.asText());
-        }
-        JsonNode workoutIDsNode = objectNode.get("workoutIDs");
-        if (workoutIDsNode instanceof ArrayNode) {
-          for (JsonNode elementNode : workoutIDsNode) {
-            String id = elementNode.asText();
-            if (id != null) {
-              user.addWorkout(id);
-            }
-          }
-        }
-        JsonNode historyIDsNode = objectNode.get("historyIDs");
-        if (historyIDsNode instanceof ArrayNode) {
-          for (JsonNode node : historyIDsNode) {
-            String id = node.asText();
-            if (id != null) {
-             user.addHistory(id);
-            }
-          }
-        }
+        User user = new User(usernameNode.asText(), passwordNode.asText());
+//        if (usernameNode instanceof TextNode) {
+//          user.setUsername(usernameNode.asText());
+//        }
+//        JsonNode passwordNode = objectNode.get("password");
+//        if (passwordNode instanceof TextNode) {
+//          user.setPassword(passwordNode.asText());
+//        }
+//        JsonNode workoutIDsNode = objectNode.get("workoutIDs");
+//        if (workoutIDsNode instanceof ArrayNode) {
+//          for (JsonNode elementNode : workoutIDsNode) {
+//            String id = elementNode.asText();
+//            if (id != null) {
+//              user.addWorkout(id);
+//            }
+//          }
+//        }
+//        JsonNode historyIDsNode = objectNode.get("historyIDs");
+//        if (historyIDsNode instanceof ArrayNode) {
+//          for (JsonNode node : historyIDsNode) {
+//            String id = node.asText();
+//            if (id != null) {
+//             user.addHistory(id);
+//            }
+//          }
+//        }
         return user;
       } catch (IllegalArgumentException e) {
         System.err.println(e.getMessage() + "\nMost likely wrong format in file");

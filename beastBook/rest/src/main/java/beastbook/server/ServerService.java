@@ -5,6 +5,7 @@ import beastbook.json.BeastBookPersistence;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
+import java.util.HashMap;
 
 /**
  * Service class for server. Contains core methods to execute rest servers requests.
@@ -212,6 +213,11 @@ public class ServerService {
   public String getName(String id, String username, Class cls) throws IOException {
     Id ids = persistence.getIds(username);
     return ids.getName(id, cls);
+  }
+
+  public HashMap<String, String> getMapping (String username, Class cls) throws IOException {
+    Id ids = persistence.getIds(username);
+    return ids.getMap(cls);
   }
 
   /**

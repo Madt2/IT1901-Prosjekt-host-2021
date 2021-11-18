@@ -21,7 +21,7 @@ public class Id {
   private HashMap<String, String> workoutMap = new HashMap<>();
   private HashMap<String, String> historyMap = new HashMap<>();
 
-  private HashMap<String, String> getMap(Class cls) throws IllegalArgumentException {
+  public HashMap<String, String> getMap(Class cls) throws IllegalArgumentException {
     HashMap<String, String> map;
     if (cls == Exercise.class) {
       map = exerciseMap;
@@ -32,7 +32,7 @@ public class Id {
     } else {
       throw new IllegalArgumentException("Class must be type Exercise, Workout or History!");
     }
-    return map;
+    return new HashMap<String, String>(map);
   }
 
   private static String setLegalChars(Class cls) throws IllegalArgumentException {

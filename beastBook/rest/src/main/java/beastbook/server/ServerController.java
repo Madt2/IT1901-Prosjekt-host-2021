@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 @RestController
 public class ServerController {
@@ -233,10 +234,11 @@ public class ServerController {
     return null;
   }
 
-  @GetMapping("getWorkoutName/{username}/{workoutID}")
-  public ResponseEntity<String> sendWorkoutName(@PathVariable String username, @PathVariable String workoutID) {
+  @GetMapping("getExerciseMap/{username}")
+  public ResponseEntity<String> sendExerciseMap(@PathVariable String username) {
     try {
-      String packageString = serverService.getName(workoutID, username, Workout.class);
+      HashMap<String, String> map = serverService.getMapping(username, Exercise.class);
+      String packageString = serverService.objectToJson(map);
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (IllegalArgumentException e) {
 
@@ -246,7 +248,48 @@ public class ServerController {
     return null;
   }
 
-  @GetMapping("getExerciseName/{username}/{exerciseID}")
+  @GetMapping("getWorkoutMap/{username}")
+  public ResponseEntity<String> sendWorkoutMap(@PathVariable String username) {
+    try {
+      HashMap<String, String> map = serverService.getMapping(username, Workout.class);
+      String packageString = serverService.objectToJson(map);
+      return new ResponseEntity<>(packageString, HttpStatus.OK);
+    } catch (IllegalArgumentException e) {
+
+    } catch (IOException e) {
+
+    }
+    return null;
+  }
+
+  @GetMapping("getHistoryMap/{username}")
+  public ResponseEntity<String> sendHistoryMap(@PathVariable String username) {
+    try {
+      HashMap<String, String> map = serverService.getMapping(username, HashMap.class);
+      String packageString = serverService.objectToJson(map);
+      return new ResponseEntity<>(packageString, HttpStatus.OK);
+    } catch (IllegalArgumentException e) {
+
+    } catch (IOException e) {
+
+    }
+    return null;
+  }
+
+  @GetMapping("getPassword/{username}")
+  public ResponseEntity<String> sendPassword (@PathVariable String username) {
+    try {
+      String packageString = serverService.getUser(username).getPassword();
+      return new ResponseEntity<>(packageString, HttpStatus.OK);
+    } catch (IllegalArgumentException e) {
+
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  /*@GetMapping("getExerciseName/{username}/{exerciseID}")
   public ResponseEntity<String> sendExerciseName(@PathVariable String username, @PathVariable String exerciseID) {
     try {
       String packageString = serverService.getName(exerciseID, username, Exercise.class);
@@ -255,6 +298,19 @@ public class ServerController {
 
     } catch (IOException e) {
       e.printStackTrace();
+    }
+    return null;
+  }
+
+  @GetMapping("getWorkoutName/{username}/{workoutID}")
+  public ResponseEntity<String> sendWorkoutName(@PathVariable String username, @PathVariable String workoutID) {
+    try {
+      String packageString = serverService.getName(workoutID, username, Workout.class);
+      return new ResponseEntity<>(packageString, HttpStatus.OK);
+    } catch (IllegalArgumentException e) {
+
+    } catch (IOException e) {
+
     }
     return null;
   }
@@ -270,5 +326,5 @@ public class ServerController {
       e.printStackTrace();
     }
     return null;
-  }
+  }*/
 }
