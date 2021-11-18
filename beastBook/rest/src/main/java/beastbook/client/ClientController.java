@@ -11,9 +11,9 @@ public class ClientController {
   private ClientService clientService = new ClientService();
   private final String username;
   private boolean isDeleted = false;
-  private HashMap<String, String> exerciseMap;
-  private HashMap<String, String> workoutMap;
-  private HashMap<String, String> historyMap;
+  private Map<String, String> exerciseMap;
+  private Map<String, String> workoutMap;
+  private Map<String, String> historyMap;
 
   public ClientController(String username, String password) {
     if (!password.equals(clientService.queryPassword(username))) {

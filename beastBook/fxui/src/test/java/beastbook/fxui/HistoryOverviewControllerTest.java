@@ -9,7 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import beastbook.client.ClientController;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.testfx.api.FxAssert;
 import org.testfx.framework.junit5.ApplicationTest;
@@ -28,8 +30,7 @@ import javafx.stage.Stage;
 public class HistoryOverviewControllerTest extends ApplicationTest {
   
   private HistoryOverviewController controller;
-  private User user;
-  private History history;
+  private History history1;
   private History history2;
   
   @Override
@@ -37,7 +38,7 @@ public class HistoryOverviewControllerTest extends ApplicationTest {
     final FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/beastbook.fxui/HistoryOverview.fxml"));
     controller = new HistoryOverviewController();
     loader.setController(controller);
-    user = new User("Test", "123");
+    controller.setService(new ClientController("Test", "Test"));
     addHistoryToUser();
     final Parent root = loader.load();
     stage.setScene(new Scene(root));
@@ -45,40 +46,49 @@ public class HistoryOverviewControllerTest extends ApplicationTest {
   } 
 
   private void addHistoryToUser(){
-    Workout workout1 = new Workout("testWorkout");
-   // workout1.addExercise(new Exercise("Benchpress", 20, 30, 40, 50, 50));
-   // workout1.addExercise(new Exercise("Chestpress", 90, 35, 22, 33, 94));
-   // history = new History(workout1, "13.11.2021");
+    List<Exercise> exercises1 = new ArrayList<>();
+    exercises1.add(new Exercise("Benchpress", 20, 30, 40, 50, 50));
+    exercises1.add(new Exercise("Chestpress", 90, 35, 22, 33, 94));
+    history1 = new History("myHistory1", exercises1);
 
-    Workout workout2 = new Workout("test2");
-   // workout2.addExercise(new Exercise("Benchpress", 20, 30, 40, 50, 50));
-   // history2 = new History(workout2, "14.11.2021");
-   
-   // controller.user.addHistory(history);
-   // controller.user.addHistory(history2);
+    List<Exercise> exercises2 = new ArrayList<>();
+    exercises2.add(new Exercise("Benchpress", 20, 30, 40, 50, 50));
+    history2 = new History("myHistory2", exercises2);
+
+    controller.service.addHistory(history1);
+    controller.service.addHistory(history2);
   }
-    
-  
+
   @Test
   void testCorrectHistoryIsOpened(){
     controller.getHistoryOverview().getColumns().get(1).setId("historyName");
     Node node = lookup("#historyName").nth(1).query();
     clickOn(node);
     clickOn("#openButton");
-  //  FxAssert.verifyThat("#title", TextMatchers.hasText(controller.user.getHistory(history.getName(), history.getDate()).getName()));
-  //  FxAssert.verifyThat("#date", TextMatchers.hasText(controller.user.getHistory(history.getName(), history.getDate()).getDate()));
+    // might be wrong:
+    FxAssert.verifyThat("#title", TextMatchers.hasText(history1.getName()));
+    FxAssert.verifyThat("#date", TextMatchers.hasText(history1.getDate()));
   }
 
   @Test
   void testDeleteHistory(){
-  //  assertEquals(2, controller.user.getHistories().size());
-    controller.getHistoryOverview().getColumns().get(1).setId("historyName");
+    Map<String,String> historyMap = controller.service.getHistoryMap();
+    String historyLine = controller.getHistoryOverview().getItems().get(0);
+    String serviceH1 = null;
+    Optional<String> firstKey = historyMap.keySet().stream().findFirst();
+    if (firstKey.isPresent()) {
+      serviceH1 = historyMap.get(firstKey);
+    }
+    Assertions.assertEquals(historyLine, serviceH1);
+
+    assertEquals(2, controller.service.getWorkoutMap().values().size());
+    controller.getHistoryOverview().getColumns().get(0).setId("historyName");
     Node node = lookup("#historyName").nth(1).query();
     clickOn(node);
     clickOn("#deleteButton");
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("History entry deleted!"));
-  //  assertEquals(controller.getHistoryOverview().getItems(), controller.user.getHistories());
-  //  assertEquals(1, controller.user.getHistories().size());
+    assertEquals(controller.getHistoryOverview().getItems(), controller.service.getWorkoutMap().values());
+    assertEquals(1, controller.service.getWorkoutMap().values().size());
 
     controller.getHistoryOverview().getColumns().get(1).setId("historyName");
     Node node2 = lookup("#historyName").nth(1).query();

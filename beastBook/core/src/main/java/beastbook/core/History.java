@@ -15,10 +15,10 @@ public class History extends Workout implements IdClasses {
   /**
    * Constructor for History object.
    *
-   * @param workout The Workout to be saved.
+   * @param exercises The Exercises to be saved.
    * @param date The date it was saved.
    */
-  public History(String name, List<Exercise> workout, String date) {
+  public History(String name, List<Exercise> exercises, String date) {
     this.name = name;
     this.date = date;
     this.savedExercises = workout;

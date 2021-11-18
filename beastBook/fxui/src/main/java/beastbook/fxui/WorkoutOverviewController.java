@@ -44,18 +44,10 @@ public class WorkoutOverviewController extends AbstractController {
   @FXML
   private TableView<String> workoutOverview = new TableView<>();
   private TableColumn<String, String> workoutNameColumn;
-  private List<String> workoutNames = new ArrayList<>();
-  private List<String> workoutIds = new ArrayList<>();
   private String selectedWorkoutId;
 
   public void initialize() throws IOException {
-    workoutIds = service.queryUser(getUsername()).getWorkoutIDs();
-    for (String id : workoutIds) {
-      String name = service.queryWorkoutName(id, getUsername());
-      if (name != null) {
-        workoutNames.add(name);
-      }
-    }
+    workoutMap = service.getWorkoutMap();
     loadTable();
   } 
     
@@ -75,8 +67,15 @@ public class WorkoutOverviewController extends AbstractController {
   @FXML
   private void workoutSelectedListener() throws Exception {
     try {
-      int i = workoutOverview.getSelectionModel().getFocusedIndex();
-      selectedWorkoutId = workoutIds.get(i);
+      String name = workoutOverview.getSelectionModel().getSelectedItem();
+      Iterator it = workoutMap.entrySet().iterator();
+      while (it.hasNext()) {
+        Map.Entry entry = (Map.Entry) it.next();
+        if (entry.getValue().equals(name)) {
+          selectedWorkoutId = entry.getKey().toString();
+          break;
+        }
+      }
       if (selectedWorkoutId != null) {
         exceptionFeedback.setText("");
         openButton.setDisable(false);

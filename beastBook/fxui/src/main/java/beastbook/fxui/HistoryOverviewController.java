@@ -44,8 +44,7 @@ public class HistoryOverviewController extends AbstractController {
   private TableColumn<String, String> historyNameColumn;
   private TableColumn<String, String> historyDateColumn;
   private String selectedHistoryId;
-  private List<String> historyNames = new ArrayList<>();
-  private List<String> historyIds = new ArrayList<>();
+  private Map<String,String> historyMap;
 
   @FXML
   public void initialize() throws IOException {
