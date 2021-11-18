@@ -70,7 +70,7 @@ public class ClientController {
     workoutMap = clientService.queryWorkoutMap(username);
   }
 
-  public void addWorkout(Workout workout, List<Exercise> exercises) {
+  public boolean addWorkout(Workout workout, List<Exercise> exercises) {
     deletionCheck();
     String name = workout.getName();
     if (workoutMap.containsValue(name)) {
@@ -83,6 +83,9 @@ public class ClientController {
     }
     workoutMap = clientService.queryWorkoutMap(username);
     exerciseMap = clientService.queryExerciseMap(username);
+    return true;
+
+    //TODO catch return false
   }
 
   public void updateExercise(Exercise exercise) {

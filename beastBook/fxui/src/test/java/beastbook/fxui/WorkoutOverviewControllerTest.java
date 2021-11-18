@@ -57,7 +57,7 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
     woc.getWorkoutOverview().getColumns().get(0).setId("workoutName");
     Node node = lookup("#workoutName").nth(1).query();
     clickOn(node);
-  //  Assertions.assertEquals("Pull workout", woc.getWorkoutOverview().getSelectionModel().getSelectedItem().getName());
+    Assertions.assertEquals("Pull workout", woc.getWorkoutOverview().getSelectionModel().getSelectedItem());
     clickOn("#openButton");
     FxAssert.verifyThat("#title", TextMatchers.hasText("Pull workout"));
   }
@@ -65,21 +65,32 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
   @Test
   void testDeleteWorkout() throws IOException {
     // 2 workouts left
-  //  Assertions.assertEquals(woc.getWorkoutOverview().getItems().get(0).getName(), woc.user.getWorkouts().get(0).getName());
+    Map<String,String> workoutMap = woc.service.getWorkoutMap();
+    String workout1 = woc.getWorkoutOverview().getItems().get(0);
+    String serviceW1 = null;
+    Optional<String> firstKey = workoutMap.keySet().stream().findFirst();
+    if (firstKey.isPresent()) {
+      serviceW1 = workoutMap.get(firstKey);
+    }
+    Assertions.assertEquals(workout1, serviceW1);
     woc.getWorkoutOverview().getColumns().get(0).setId("workoutName");
     Node node = lookup("#workoutName").nth(1).query();
     clickOn(node);
-  //  Assertions.assertEquals("Pull workout", woc.getWorkoutOverview().getSelectionModel().getSelectedItem().getName());
+    Assertions.assertEquals("Pull workout", woc.getWorkoutOverview().getSelectionModel().getSelectedItem());
     clickOn("#deleteButton");
 
     // 1 workout left
-  //  Assertions.assertEquals(1, woc.user.getWorkouts().size());
-  //  Assertions.assertEquals(1, woc.getWorkoutOverview().getItems().size());
-   // Assertions.assertEquals(woc.getWorkoutOverview().getItems().get(0).getName(), woc.user.getWorkouts().get(0).getName());
+    Assertions.assertEquals(1, woc.service.getWorkoutMap().values().size());
+    Assertions.assertEquals(1, woc.getWorkoutOverview().getItems().size());
+    Optional<String> newFirstKey = workoutMap.keySet().stream().findFirst();
+    if (newFirstKey.isPresent()) {
+      serviceW1 = workoutMap.get(newFirstKey);
+    }
+    Assertions.assertEquals(workout1, serviceW1);
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Workout deleted!"));
     // Tries to delete once again, without selecting a workout. Will not delete
     clickOn("#deleteButton");
-   // Assertions.assertEquals(woc.getWorkoutOverview().getItems().get(0).getName(), woc.user.getWorkouts().get(0).getName());
+    Assertions.assertEquals(woc.getWorkoutOverview().getItems().get(0), serviceW1);
   }
 
   @AfterAll

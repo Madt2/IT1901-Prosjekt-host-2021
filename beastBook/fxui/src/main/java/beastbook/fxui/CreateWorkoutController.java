@@ -347,7 +347,7 @@ public class CreateWorkoutController extends AbstractController {
       try {
         //hvis den er loadet
         if (workout.getId() != null) {
-          service.updateWorkout(workout, getUsername());
+          //service.updateWorkout(workout, getUsername());
           exceptionFeedback.setText("Workout overwritten!");
         } else {
           workout.setName(titleInput.getText());
@@ -380,8 +380,7 @@ public class CreateWorkoutController extends AbstractController {
 
   @FXML
   void deleteExercise() {
-    Exercise selectedExercise;
-    selectedExercise = workoutTable.getSelectionModel().getSelectedItem();
+    Exercise selectedExercise = workoutTable.getSelectionModel().getSelectedItem();
     try {
       if (workout.getId() != null) {
         service.removeExercise(selectedExercise, workout);

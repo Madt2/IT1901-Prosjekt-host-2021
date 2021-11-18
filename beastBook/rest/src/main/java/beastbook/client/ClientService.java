@@ -175,7 +175,6 @@ public class ClientService {
   public ResponseEntity<String> updateWorkout(Workout workout, String username) {
     URI uri = null;
     try {
-      System.out.println("sending workout");
       uri = new URI(baseURL + "updateWorkout/" + username);
     } catch (URISyntaxException e) {
       e.printStackTrace();
@@ -190,7 +189,6 @@ public class ClientService {
 
   public ResponseEntity<String> updateExercise(Exercise exercise, String username) {
     URI uri = null;
-    System.out.println("sending exercise");
     try {
       uri = new URI(baseURL + "updateExercise/" + username);
     } catch (URISyntaxException e) {

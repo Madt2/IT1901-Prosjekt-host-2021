@@ -42,11 +42,9 @@ public class ServerController {
   @PostMapping("addWorkout/{username}")
   public ResponseEntity<String> addWorkout(@RequestBody String jsonString, @PathVariable String username) {
     try {
-      System.out.println("user gotten");
-
       Workout workout = (Workout) serverService.jsonToObject(jsonString, Workout.class);
-      System.out.println(workout.getName());
-      serverService.addIdObject(workout, username, null);
+      String workoutId = serverService.addIdObject(workout, username, null);
+      return new ResponseEntity<>(workoutId, HttpStatus.OK);
     } catch (JsonProcessingException e) {
       //Send could not deserialize user send again, bad package?
     } catch (IllegalArgumentException e) {
@@ -62,7 +60,6 @@ public class ServerController {
                           @PathVariable String workoutId,
                           @PathVariable String username) {
     try {
-      System.out.println("exercise gotten");
       Exercise exercise = (Exercise) serverService.jsonToObject(jsonString, Exercise.class);
       serverService.addIdObject((IdClasses) exercise, username, workoutId);
     } catch (NullPointerException e ) {

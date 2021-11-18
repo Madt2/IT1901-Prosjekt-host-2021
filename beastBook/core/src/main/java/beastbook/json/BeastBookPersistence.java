@@ -393,7 +393,7 @@ public class BeastBookPersistence {
     validateUsername(username);
     String filepath = userPath + "/IDs";
     try {
-      System.out.println("det virket");
+      System.out.println("BeastBookPersistence Line 397. getIds() virket");
       return (Id) readObjectFromFile(getFile(filepath), Id.class);
     } catch (IOException e) {
       throw new IOException("could not read IDs");

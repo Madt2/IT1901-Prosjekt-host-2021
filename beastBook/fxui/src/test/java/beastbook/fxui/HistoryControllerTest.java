@@ -60,7 +60,23 @@ public class HistoryControllerTest extends ApplicationTest {
     Node node = lookup("#exerciseName").nth(1).query();
     clickOn(node);
 
+    /*Map<String,String> historyMap = controller.service.getHistoryMap();
+    String serviceH1 = null;
+    Optional<String> firstKey = historyMap.keySet().stream().findFirst();
+    if (firstKey.isPresent()) {
+      serviceH1 = historyMap.get(firstKey);
+    }
+    Assertions.assertEquals(historyLine, serviceH1);
+    */
+
+    List<String> exerciseIDs = controller.service.getHistory(history.getId()).getExerciseIDs();
+    List<Exercise> exercises = new ArrayList<>();
+    for (String id :exerciseIDs) {
+      exercises.add(controller.service.getExercise(id));
+    }
+
     //assertEquals(controller.user.getHistories().get(0).getSavedWorkout().getExercises(), controller.getHistoryTable().getSelectionModel().getSelectedItems());
+    assertEquals(exercises, controller.getHistoryTable().getItems());
   }
 
   @AfterAll

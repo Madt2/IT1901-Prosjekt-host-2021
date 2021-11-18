@@ -60,7 +60,15 @@ public class WorkoutControllerTest extends ApplicationTest{
 
   @Test
   void testEditSelectedCell() {
- //   Assertions.assertEquals("Benchpress", wc.user.getWorkout("Pull workout").getExercises().get(0).       getExerciseName());
+    Map<String,String> exerciseMap = wc.service.getExerciseMap();
+    //String exercise1 = wc.getWorkoutTable().getItems().get(0).getName();
+    String serviceE1 = null;
+    Optional<String> firstKey = exerciseMap.keySet().stream().findFirst();
+    if (firstKey.isPresent()) {
+      serviceE1 = exerciseMap.get(firstKey);
+    }
+
+    Assertions.assertEquals("Benchpress",  wc.getWorkoutTable().getItems().get(0).getName());     //wc.user.getWorkout("Pull workout").getExercises().get(0).getExerciseName());
     wc.getWorkoutTable().getColumns().get(0).setId("exerciseName");
     Node node = lookup("#exerciseName").nth(1).query();
     doubleClickOn(node, MouseButton.PRIMARY).write("Pull ups");
@@ -86,10 +94,14 @@ public class WorkoutControllerTest extends ApplicationTest{
     doubleClickOn(node, MouseButton.PRIMARY).write("-50");
     press(KeyCode.ENTER).release(KeyCode.ENTER);
     Assertions.assertNotEquals(-50, wc.getWorkoutTable().getSelectionModel().getSelectedItem().getRepGoal());
-  //  Assertions.assertNotEquals(-50, user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());
+
+    String workout1Id = wc.service.getWorkout(workout1.getId()).getExerciseIDs().get(0);
+    int repGoalExercise1 = wc.service.getExercise(workout1Id).getRepGoal();
+
+    Assertions.assertNotEquals(-50, repGoalExercise1);
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Rep Goal must be more than 0! Value was not changed!"));
 
-  //  Assertions.assertEquals(20, wc.user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());
+    Assertions.assertEquals(20, repGoalExercise1);
     Assertions.assertEquals(20, wc.getWorkoutTable().getSelectionModel().getSelectedItem().getRepGoal());
 
     wc.getWorkoutTable().getColumns().get(1).setId("repGoal");
@@ -97,11 +109,11 @@ public class WorkoutControllerTest extends ApplicationTest{
     doubleClickOn(node, MouseButton.PRIMARY).write("50");
     press(KeyCode.ENTER).release(KeyCode.ENTER);
 
-  //  Assertions.assertNotEquals(-20, wc.user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());
+    Assertions.assertNotEquals(-20, repGoalExercise1);
     Assertions.assertNotEquals(-20, wc.getWorkoutTable().getSelectionModel().getSelectedItem().getRepGoal());
 
     Assertions.assertEquals(50, wc.getWorkoutTable().getSelectionModel().getSelectedItem().getRepGoal());
- //   Assertions.assertEquals(50, wc.user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());
+    Assertions.assertEquals(50, repGoalExercise1);
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText(""));
 
     wc.getWorkoutTable().getColumns().get(1).setId("repGoal");
@@ -112,16 +124,16 @@ public class WorkoutControllerTest extends ApplicationTest{
     
     sleep(1000);
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Rep Goal must be a number. Value was not changed!"));
-   // Assertions.assertEquals(50, wc.user.getWorkout("Pull workout").getExercises().get(0).getRepGoal());
-   // Assertions.assertEquals(50, wc.getWorkoutTable().getSelectionModel().getSelectedItem().getRepGoal());
+    Assertions.assertEquals(50, repGoalExercise1);
+    Assertions.assertEquals(50, wc.getWorkoutTable().getSelectionModel().getSelectedItem().getRepGoal());
   }
 
   @Test
   void testAddToHistory(){
-  //  Assertions.assertEquals(0, wc.user.getHistories().size());
+    Assertions.assertEquals(0, wc.service.getHistoryMap().size());
     clickOn("#saveButton");
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("Workout was successfully added to history!"));
-  //  Assertions.assertEquals(1, wc.user.getHistories().size());
+    Assertions.assertEquals(1, wc.service.getHistoryMap().size());
 
     wc.getWorkoutTable().getColumns().get(4).setId("repsPerSet");
     Node node = lookup("#repsPerSet").nth(1).query();
@@ -129,7 +141,7 @@ public class WorkoutControllerTest extends ApplicationTest{
     press(KeyCode.ENTER).release(KeyCode.ENTER);
     clickOn("#saveButton");
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("History overwritten!"));
-  //  Assertions.assertEquals(1, wc.user.getHistories().size());
+    Assertions.assertEquals(1, wc.service.getHistoryMap().size());
   }
 
   @AfterAll

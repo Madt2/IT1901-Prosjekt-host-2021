@@ -239,10 +239,10 @@ public class WorkoutController extends AbstractController {
   TableView<Exercise> getWorkoutTable() {
     return workoutTable;
   }
-
+  /*
   Exercise getTable(int row) {
     return workoutTable.getItems().get(row);
-  }
+  }*/
 
   private void emptyExceptionFeedback() {
     this.exceptionFeedback.setText("");
