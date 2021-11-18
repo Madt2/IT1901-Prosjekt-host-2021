@@ -9,9 +9,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -25,7 +26,7 @@ public class ClientService {
     baseURL = "http://" + ipAddress + ":8080/";
   }
 
-  private ResponseEntity<String> sendPackage (Object object, URI uri) throws JsonProcessingException {
+  private ResponseEntity<String> sendPackage (Object object, URI uri) throws JsonProcessingException, IOException {
     try {
       String jsonString = beastBookPersistence.objectToJson(object);
       HttpHeaders headers = new HttpHeaders();
@@ -33,26 +34,32 @@ public class ClientService {
       HttpEntity<String> httpEntity = new HttpEntity<>(jsonString, headers);
       RestTemplate restTemplate = new RestTemplate();
       ResponseEntity<String> data = restTemplate.postForEntity(uri, httpEntity, String.class);
+      if (data.getStatusCode() != HttpStatus.OK) {
+        exceptionHandler(data.getBody());
+      }
       return data;
-    } catch (Exception e) {
-      throw  e;
+    } catch (JsonProcessingException e) {
+      throw e;
     }
   }
 
-  private void exceptionHandler(String exception) {
+  private void exceptionHandler(String exception) throws IOException, IllegalArgumentException, IllegalStateException, NullPointerException {
     String[] exceptionPack = exception.split(":");
     String exceptionType = exceptionPack[0];
-    String exceptionMessage = exceptionPack[0];
+    String exceptionMessage = exceptionPack[1];
 
-    if (exception.equals("IOException")) {
-
-    } else if (exception.equals("IllegalArgumentException")) {
-
-    } else if (exception.equals("IllegalStateException")) {
-
+    if (exceptionType.equals(IOException.class.getSimpleName())) {
+      throw new IOException(exceptionMessage);
+    } else if (exceptionType.equals(IllegalArgumentException.class.getSimpleName())) {
+      throw new IllegalArgumentException(exceptionMessage);
+    } else if (exceptionType.equals(IllegalStateException.class.getSimpleName())) {
+      throw new IllegalStateException(exceptionMessage);
+    } else if (exceptionType.equals(NullPointerException.class.getSimpleName())) {
+      throw new NullPointerException(exceptionMessage);
+    } else if (exceptionType.equals(JsonProcessingException.class.getSimpleName())) {
+      throw new IOException(exceptionMessage);
     }
   }
-
 
   public ResponseEntity<String> deleteWorkout(String workoutId, String username) {
     URI uri = null;
