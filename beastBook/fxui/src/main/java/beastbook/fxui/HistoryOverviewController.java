@@ -1,11 +1,10 @@
 package beastbook.fxui;
 
-import beastbook.core.History;
-import beastbook.core.User;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Iterator;
+import java.util.Map;
 
+import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -42,39 +41,34 @@ public class HistoryOverviewController extends AbstractController {
   @FXML
   private TableView<String> historyOverview = new TableView<>();
   private TableColumn<String, String> historyNameColumn;
-  private TableColumn<String, String> historyDateColumn;
+ // private TableColumn<String, String> historyDateColumn;
   private String selectedHistoryId;
   private Map<String,String> historyMap;
 
   @FXML
   public void initialize() throws IOException {
-    historyIds = service.queryUser(getUsername()).getHistoryIDs();
-    for (String id : historyIds) {
-      String name = service.queryHistoryName(id, getUsername());
-      if (name != null) {
-        historyNames.add(name);
-      }
-    }
+    historyMap = service.getHistoryMap();
     loadTable();
   }
 
   private void loadTable() {
     historyOverview.getColumns().clear();
     historyNameColumn = new TableColumn<>("Workout name:");
-    historyNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-    historyDateColumn = new TableColumn<>("Date:");
-    historyDateColumn.setCellValueFactory((new PropertyValueFactory<>("date")));
-    historyOverview.getColumns().add(historyDateColumn);
+    historyNameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()));
+/*    historyDateColumn = new TableColumn<>("Date:");
+    historyDateColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()));*/
+ //   historyOverview.getColumns().add(historyDateColumn);
     historyOverview.getColumns().add(historyNameColumn);
-    historyOverview.getItems().setAll(historyNames);
+    historyOverview.getItems().setAll(historyMap.values());
     setColumnsSize();
   }
+
 
   private void setColumnsSize() {
     historyNameColumn.setPrefWidth(129);
     historyNameColumn.setResizable(false);
-    historyDateColumn.setPrefWidth(129);
-    historyDateColumn.setResizable(false);
+   /* historyDateColumn.setPrefWidth(129);
+    historyDateColumn.setResizable(false);*/
   }
 
   @FXML
@@ -101,8 +95,15 @@ public class HistoryOverviewController extends AbstractController {
   @FXML
   private void historySelectedListener() {
     try {
-      int i = historyOverview.getSelectionModel().getFocusedIndex();
-      selectedHistoryId = historyIds.get(i);
+      String name =  historyOverview.getSelectionModel().getSelectedItem();
+      Iterator it = historyMap.entrySet().iterator();
+      while (it.hasNext()) {
+        Map.Entry entry = (Map.Entry) it.next();
+        if (entry.getValue().equals(name)) {
+          selectedHistoryId = entry.getKey().toString();
+          break;
+        }
+      }
       if (selectedHistoryId != null) {
         exceptionFeedback.setText("");
         openButton.setDisable(false);
@@ -116,10 +117,8 @@ public class HistoryOverviewController extends AbstractController {
   
   @FXML
   void deleteHistory() throws IllegalStateException, IOException {
-    int i = historyOverview.getSelectionModel().getFocusedIndex();
-    service.deleteWorkout(historyIds.get(i),getUsername());
-    historyNames.remove(historyNames.get(i));
-    historyIds.remove(i);
+    service.removeHistory(selectedHistoryId);
+    historyMap = service.getHistoryMap();
     loadTable();
     exceptionFeedback.setText("History entry deleted!");
     openButton.setDisable(true);

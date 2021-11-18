@@ -1,5 +1,6 @@
 package beastbook.fxui;
 
+import beastbook.client.ClientController;
 import beastbook.core.Exercise;
 import beastbook.core.User;
 import beastbook.core.Workout;
@@ -19,21 +20,42 @@ import org.testfx.matcher.control.TextMatchers;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public class WorkoutControllerTest extends ApplicationTest{
   private WorkoutController wc;
-  private User user = new User("Test", "123");
+  private Workout workout1;
+  private Workout workout2;
 
   @Override
   public void start(Stage stage) throws IOException {
     FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/beastbook.fxui/Workout.fxml"));
     wc = new WorkoutController();
     loader.setController(wc);
-//    wc.setWorkoutName("Pull workout");
+    wc.setService(new ClientController("Test", "Test"));
     addWorkoutsToUser();
     Parent root = loader.load();
     stage.setScene(new Scene(root));
     stage.show();
+  }
+
+  private void addWorkoutsToUser(){
+    workout1 = new Workout("Pull workout");
+    workout2 = new Workout("LEGS");
+    List<Exercise> exerciseList1 = new ArrayList<>();
+    List<Exercise> exerciseList2 = new ArrayList<>();
+
+    exerciseList1.add(new Exercise("Benchpress", 20, 30, 40, 0, 50));
+    exerciseList1.add(new Exercise("Biceps curl", 20, 20, 20, 0, 20));
+
+    exerciseList2.add(new Exercise("Leg press", 25, 50, 75, 0,  100));
+    exerciseList2.add(new Exercise("Deadlift", 20, 20, 20, 0, 20));
+
+    wc.service.addWorkout(workout1, exerciseList1);
+    wc.service.addWorkout(workout2, exerciseList2);
   }
 
   @Test
@@ -44,9 +66,17 @@ public class WorkoutControllerTest extends ApplicationTest{
     doubleClickOn(node, MouseButton.PRIMARY).write("Pull ups");
     press(KeyCode.ENTER).release(KeyCode.ENTER);
     
- //   Assertions.assertNotEquals("Benchpress", wc.getWorkoutTable().getSelectionModel().getSelectedItem().getExerciseName());
-   // Assertions.assertEquals("Pull ups", wc.getWorkoutTable().getSelectionModel().getSelectedItem().getExerciseName());
-  //  Assertions.assertEquals("Pull ups", wc.user.getWorkout("Pull workout").getExercises().get(0).getExerciseName());
+    Assertions.assertNotEquals("Benchpress", wc.getWorkoutTable().getSelectionModel().getSelectedItem().getName());
+    Assertions.assertEquals("Pull ups", wc.getWorkoutTable().getSelectionModel().getSelectedItem().getName());
+    Map<String,String> workoutMap = wc.service.getWorkoutMap();
+    String eId = null;
+    for (String id: workoutMap.keySet()) {
+      if (workoutMap.get(id).equals("Pull ups")) {
+        eId = id;
+      }
+    }
+    wc.service.getExercise(eId);
+    Assertions.assertEquals("Pull ups",wc.service.getExercise(eId).getName());
   }
 
   @Test
@@ -100,16 +130,6 @@ public class WorkoutControllerTest extends ApplicationTest{
     clickOn("#saveButton");
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("History overwritten!"));
   //  Assertions.assertEquals(1, wc.user.getHistories().size());
-  }
-
-  private void addWorkoutsToUser(){
-    Workout workout1 = new Workout("Pull workout");
-    //workout1.addExercise(new Exercise("Benchpress", 20, 30, 40, 0, 50));
-    //workout1.addExercise(new Exercise("Leg press", 25, 50, 75, 0, 100));
-    //workout1.addExercise(new Exercise("Deadlift", 20, 20, 20, 0, 20));
-    //workout1.addExercise(new Exercise("Biceps curl", 20, 20, 20, 0, 20));
-    //wc.user.addWorkout(workout1);
-
   }
 
   @AfterAll

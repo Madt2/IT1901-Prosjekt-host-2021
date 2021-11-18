@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
 import java.util.Map;
 
@@ -26,14 +25,19 @@ public class ServerController {
     try {
       User user = (User) serverService.jsonToObject(jsonString, User.class);
       serverService.createUser(user);
-    } catch (JsonProcessingException e) {
-      //Send could not deserialize user send again, bad package?
-    } catch (IllegalArgumentException e) {
-      //send user already exists exception
-    } catch (IOException e) {
-      //send could not save user, IO error, send package again.
-    }
+      return new ResponseEntity<>("success", HttpStatus.OK);
+    } catch (JsonProcessingException e) { //Error in json
+      return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
+    } catch (IllegalArgumentException e) { //Send could not deserialize user send again, bad package?
+      System.out.println(e.getMessage() + " : Dette var tor som gjorde");
+      return new ResponseEntity<>(e.getLocalizedMessage(), HttpStatus.NOT_FOUND);
+    }  catch( IOException e) { //send user already exists exception
+    return new ResponseEntity<>(e, HttpStatus.BAD_REQUEST);
+    //send could not save user, IO error, send package again.
   }
+
+}
+
 
   @PostMapping("addWorkout/{username}")
   public ResponseEntity<String> addWorkout(@RequestBody String jsonString, @PathVariable String username) {
@@ -239,7 +243,7 @@ public class ServerController {
   @GetMapping("getExerciseMap/{username}")
   public ResponseEntity<String> sendExerciseMap(@PathVariable String username) {
     try {
-      HashMap<String, String> map = serverService.getMapping(username, Exercise.class);
+      Map<String, String> map = serverService.getMapping(username, Exercise.class);
       String packageString = serverService.objectToJson(map);
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (IllegalArgumentException e) {
@@ -253,7 +257,7 @@ public class ServerController {
   @GetMapping("getWorkoutMap/{username}")
   public ResponseEntity<String> sendWorkoutMap(@PathVariable String username) {
     try {
-      HashMap<String, String> map = serverService.getMapping(username, Workout.class);
+      Map<String, String> map = serverService.getMapping(username, Workout.class);
       String packageString = serverService.objectToJson(map);
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (IllegalArgumentException e) {
@@ -267,7 +271,7 @@ public class ServerController {
   @GetMapping("getHistoryMap/{username}")
   public ResponseEntity<String> sendHistoryMap(@PathVariable String username) {
     try {
-      HashMap<String, String> map = serverService.getMapping(username, HashMap.class);
+      Map<String, String> map = serverService.getMapping(username, History.class);
       String packageString = serverService.objectToJson(map);
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (IllegalArgumentException e) {

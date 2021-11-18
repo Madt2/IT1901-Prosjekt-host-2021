@@ -1,9 +1,7 @@
 package beastbook.fxui;
 
 import beastbook.core.Exercise;
-import beastbook.core.User;
 import beastbook.core.Workout;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -102,7 +100,7 @@ public class CreateWorkoutController extends AbstractController {
       if (name != null) {
         workoutNames.add(name);
       }
-    }
+    }*/
     updateTable();
     exerciseNameInput.setOnKeyTyped(event ->
             new StringValidator(exerciseTitle, exerciseNameInput, exceptionFeedback));
@@ -315,17 +313,21 @@ public class CreateWorkoutController extends AbstractController {
       return;
     }
     String name = titleInput.getText();
-    int i = workoutNames.indexOf(name);
-    if (i != -1) {
-      workout = service.queryWorkout(workoutIds.get(i), getUsername());
+    try {
+      String id = service.getWorkoutMap().get(name);
+      workout = service.getWorkout(id);
       exercises = new ArrayList<>();
-      for (String id : workout.getExerciseIDs()) {
-        Exercise e = service.queryExercise(id, getUsername());
+      for (String eId : workout.getExerciseIDs()) {
+        Exercise e = service.getExercise(eId);
         if (e != null) {
           exercises.add(e);
         }
       }
-    } else {
+      createButton.setVisible(false);
+      //titleInput.setVisible(false);
+      titleInput.setDisable(true);
+
+    } catch (Exception e) {
       exceptionFeedback.setText("Workout not found!");
     }
     updateTable();
@@ -335,11 +337,9 @@ public class CreateWorkoutController extends AbstractController {
   * Creates a workout and saves it as a file with input given in GUI.
   * If no title input is given, an error message is displayed in GUI.
   * If an error occurs in saveWorkout, an error message is displayed in GUI.
-  *
-  * @param event When Create Workout button is clicked in GUI, createWorkout() is fired
   */
   @FXML
-  void createWorkout(ActionEvent event) {
+  void createWorkout() {
     if (titleInput.getText() == null || titleInput.getText().equals("")) {
       exceptionFeedback.setText("Input title is empty, please enter name of workout");
     }
@@ -384,8 +384,8 @@ public class CreateWorkoutController extends AbstractController {
     selectedExercise = workoutTable.getSelectionModel().getSelectedItem();
     try {
       if (workout.getId() != null) {
+        service.removeExercise(selectedExercise, workout);
         exercises.remove(selectedExercise);
-        service.deleteExercise(selectedExercise.getId(), getUsername());
       } else {
         exercises.remove(selectedExercise);
       }

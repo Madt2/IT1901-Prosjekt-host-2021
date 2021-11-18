@@ -5,7 +5,7 @@ import beastbook.json.BeastBookPersistence;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Service class for server. Contains core methods to execute rest servers requests.
@@ -25,18 +25,19 @@ ServerService {
    *                     Deletes all files generated if this process fails.
    */
   public void createUser(User user) throws IllegalArgumentException, IOException {
-    try {
+    persistence.createUser(user);
+/*    try {
       persistence.createUser(user);
     } catch (IOException e) {
       //deleteUser(user.getUsername());
       throw e;
-    }
+    }*/
   }
 
   /**
-   * Adds IId object to user in server's register.
+   * Adds Id object to user in server's register.
    *
-   * @param obj IIdClass object to add.
+   * @param obj IdClass object to add.
    * @param username of user to add workout to.
    * @param workoutId to add exercise to (only use if obj is Exercise object).
    * @throws IllegalArgumentException if user with username does not exist.
@@ -45,10 +46,7 @@ ServerService {
    */
   public String addIdObject(IdClasses obj, String username, String workoutId) throws NullPointerException, IllegalStateException, IOException {
     User user = persistence.getUser(username);
-    System.out.println("2");
-    System.out.println(username);
     Id ids = persistence.getIds(username);
-    System.out.println("3");
     obj = ids.giveId(obj);
 //    if (obj instanceof Workout) {
 //      user.addWorkout(obj.getId());
@@ -216,7 +214,7 @@ ServerService {
 //    return ids.getName(id, cls);
 //  }
 
-  public HashMap<String, String> getMapping (String username, Class cls) throws IOException {
+  public Map<String, String> getMapping (String username, Class cls) throws IOException {
     Id ids = persistence.getIds(username);
     return ids.getMap(cls);
   }

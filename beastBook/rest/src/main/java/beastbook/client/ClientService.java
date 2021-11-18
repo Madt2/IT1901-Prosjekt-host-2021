@@ -122,7 +122,7 @@ public class ClientService {
     } catch (JsonProcessingException e) {
       e.printStackTrace();
     }
-    return null;
+    return null;*/
   }
 
   public ResponseEntity<String> addWorkout(Workout workout, String username) {
@@ -260,36 +260,36 @@ public class ClientService {
     return null;
   }
 
-  public HashMap<String, String> queryExerciseMap(String username) {
+  public Map<String, String> queryExerciseMap(String username) {
     final RestTemplate restTemplate = new RestTemplateBuilder().build();
     String url = baseURL + "getExerciseMap/" + username;
     String jsonString = restTemplate.getForObject(url, String.class);
     try {
-      return (HashMap<String, String>) beastBookPersistence.jsonToObject(jsonString, HashMap.class);
+      return (Map<String, String>) beastBookPersistence.jsonToObject(jsonString, LinkedHashMap.class);
     } catch (JsonProcessingException e) {
       e.printStackTrace();
     }
     return null;
   }
 
-  public HashMap<String, String> queryWorkoutMap(String username) {
+  public Map<String, String> queryWorkoutMap(String username) {
     final RestTemplate restTemplate = new RestTemplateBuilder().build();
     String url = baseURL + "getWorkoutMap/" + username;
     String jsonString = restTemplate.getForObject(url, String.class);
     try {
-      return (HashMap<String, String>) beastBookPersistence.jsonToObject(jsonString, HashMap.class);
+      return (Map<String, String>) beastBookPersistence.jsonToObject(jsonString, LinkedHashMap.class);
     } catch (JsonProcessingException e) {
       e.printStackTrace();
     }
     return null;
   }
 
-  public HashMap<String, String> queryHistoryMap(String username) {
+  public Map<String, String> queryHistoryMap(String username) {
     final RestTemplate restTemplate = new RestTemplateBuilder().build();
     String url = baseURL + "/getHistoryMap/" + username;
     String jsonString = restTemplate.getForObject(url, String.class);
     try {
-      return (HashMap<String, String>) beastBookPersistence.jsonToObject(jsonString, HashMap.class);
+      return (Map<String, String>) beastBookPersistence.jsonToObject(jsonString, LinkedHashMap.class);
     } catch (JsonProcessingException e) {
       e.printStackTrace();
     }

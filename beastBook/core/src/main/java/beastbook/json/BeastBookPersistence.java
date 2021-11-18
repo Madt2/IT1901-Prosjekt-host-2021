@@ -178,7 +178,6 @@ public class BeastBookPersistence {
     } catch (IOException e) {
       throw new IOException("Could not create all core classes. Failed at: " + e.getMessage());
     }
-
   }
 
   /**
@@ -409,7 +408,7 @@ public class BeastBookPersistence {
    * @throws JsonProcessingException if serialization fails.
    */
   public String objectToJson(Object object) throws JsonProcessingException {
-      return mapper.writeValueAsString(object);
+      return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
   }
 
   /**

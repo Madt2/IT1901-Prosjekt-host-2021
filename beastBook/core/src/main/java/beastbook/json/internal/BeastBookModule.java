@@ -21,14 +21,11 @@ public class BeastBookModule extends SimpleModule {
     addSerializer(Workout.class, new WorkoutSerializer());
     addSerializer(User.class, new UserSerializer());
     addSerializer(History.class, new HistorySerializer());
-    addDeserializer(Exercise.class, new ExerciseDeserializer());
-    addDeserializer(Workout.class, new WorkoutDeserializer());
-    addDeserializer(User.class, new UserDeserializer());
-    addDeserializer(History.class, new HistoryDeserializer());
     addSerializer(Id.class, new IdSerializer());
     addDeserializer(Exercise.class, new ExerciseDeserializer());
     addDeserializer(Workout.class, new WorkoutDeserializer());
     addDeserializer(User.class, new UserDeserializer());
+    addDeserializer(History.class, new HistoryDeserializer());
     addDeserializer(Id.class, new IdDeserializer());
   }
 

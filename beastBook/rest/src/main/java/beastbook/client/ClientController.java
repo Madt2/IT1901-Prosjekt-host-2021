@@ -31,16 +31,16 @@ public class ClientController {
     clientService.setIpAddress(ipAddress);
   }
 
-  public HashMap<String, String> getExerciseMap() {
-    return new HashMap<>(exerciseMap);
+  public Map<String, String> getExerciseMap() {
+    return exerciseMap;
   }
 
-  public HashMap<String, String> getWorkoutMap() {
-    return new HashMap<>(workoutMap);
+  public Map<String, String> getWorkoutMap() {
+    return workoutMap;
   }
 
-  public HashMap<String, String> getHistoryMap() {
-    return new HashMap<>(historyMap);
+  public Map<String, String> getHistoryMap() {
+    return historyMap;
   }
 
   private void deletionCheck() {
