@@ -13,8 +13,8 @@ public class User {
   public static final int MIN_CHAR_USERNAME = 3;
   public static final int MIN_CHAR_PASSWORD = 3;
 
-  private String username;
-  private String password;
+  private final String username;
+  private final String password;
 
   /*
   private List<String> historyIDs = new ArrayList<>();
@@ -28,11 +28,11 @@ public class User {
   * @param password password for user.
   */
   public User(String username, String password) {
-    setUsername(username);
-    setPassword(password);
+    validateUsername(username);
+    this.username = username;
+    validatePassword(password);
+    this.password = password;
   }
-
-  public User() {}
 
   /**
    * Validation method for setUsername. Checks for username length, has to be 3 or more characters.
@@ -74,41 +74,6 @@ public class User {
 //      throw new IllegalArgumentException("No such history found!");
 //    }
 //  }
-
-  /**
-   * Help method to get the current date without time.
-   *
-   * @return current date without timestamp.
-   */
-  // Todo move to History class? have it set date in constructor?
-  public String getDate() {
-    Date d = new Date();
-    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-    return sdf.format(d);
-  }
-
-
-  /**
-   * Sets username.
-   *
-   * @param username for user.
-   * @throws IllegalArgumentException if validation fails.
-   */
-  public void setUsername(String username) throws IllegalArgumentException {
-    validateUsername(username);
-    this.username = username;
-  }
-
-  /**
-   * Sets password.
-   *
-   * @param password to set
-   * @throws IllegalArgumentException if validation fails.
-   */
-  public void setPassword(String password) throws IllegalArgumentException {
-    validatePassword(password);
-    this.password = password;
-  }
 
   public String getUsername() {
     return username;

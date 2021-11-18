@@ -8,7 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 public class ServerController {
@@ -20,8 +20,9 @@ public class ServerController {
     this.serverService = serverService;
   }
 
+
   @PostMapping("createUser/")
-  public void createUser(@RequestBody String jsonString) {
+  public ResponseEntity createUser(@RequestBody String jsonString) {
     try {
       User user = (User) serverService.jsonToObject(jsonString, User.class);
       serverService.createUser(user);
@@ -35,7 +36,7 @@ public class ServerController {
   }
 
   @PostMapping("addWorkout/{username}")
-  public void addWorkout(@RequestBody String jsonString, @PathVariable String username) {
+  public ResponseEntity<String> addWorkout(@RequestBody String jsonString, @PathVariable String username) {
     try {
       System.out.println("user gotten");
 
@@ -49,6 +50,7 @@ public class ServerController {
     } catch (IOException e) {
       //Send could not save workout, IO error, send package again.
     }
+    return new ResponseEntity<>("failed", HttpStatus.BAD_REQUEST);
   }
 
   @PostMapping("addExercise/{workoutId}/{username}")

@@ -12,6 +12,8 @@ import org.springframework.web.client.RestTemplate;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class ClientService {
   private BeastBookPersistence beastBookPersistence = new BeastBookPersistence();
@@ -24,15 +26,33 @@ public class ClientService {
   }
 
   private ResponseEntity<String> sendPackage (Object object, URI uri) throws JsonProcessingException {
-    String jsonString = "";
-    jsonString = beastBookPersistence.objectToJson(object);
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-    HttpEntity<String> httpEntity = new HttpEntity<>(jsonString, headers);
-    RestTemplate restTemplate = new RestTemplate();
-    ResponseEntity<String> data = restTemplate.postForEntity(uri, httpEntity, String.class);
-    return data;
+    try {
+      String jsonString = beastBookPersistence.objectToJson(object);
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentType(MediaType.APPLICATION_JSON);
+      HttpEntity<String> httpEntity = new HttpEntity<>(jsonString, headers);
+      RestTemplate restTemplate = new RestTemplate();
+      ResponseEntity<String> data = restTemplate.postForEntity(uri, httpEntity, String.class);
+      return data;
+    } catch (Exception e) {
+      throw  e;
+    }
   }
+
+  private void exceptionHandler(String exception) {
+    String[] exceptionPack = exception.split(":");
+    String exceptionType = exceptionPack[0];
+    String exceptionMessage = exceptionPack[0];
+
+    if (exception.equals("IOException")) {
+
+    } else if (exception.equals("IllegalArgumentException")) {
+
+    } else if (exception.equals("IllegalStateException")) {
+
+    }
+  }
+
 
   public ResponseEntity<String> deleteWorkout(String workoutId, String username) {
     URI uri = null;
@@ -94,15 +114,11 @@ public class ClientService {
     return null;
   }
 
-  public ResponseEntity<String> createUser (User user) {
-    URI uri = null;
-    try {
-      uri = new URI(baseURL + "createUser/");
-    } catch (URISyntaxException e) {
-      e.printStackTrace();
-    }
-    try {
+  public ResponseEntity<String> createUser (User user) throws URISyntaxException, JsonProcessingException{
+//    try {
+      URI uri = new URI(baseURL + "createUser/");
       return sendPackage(user, uri);
+/*    } catch (URISyntaxException e) {
     } catch (JsonProcessingException e) {
       e.printStackTrace();
     }
@@ -112,13 +128,11 @@ public class ClientService {
   public ResponseEntity<String> addWorkout(Workout workout, String username) {
     URI uri = null;
     try {
-
       uri = new URI(baseURL + "addWorkout/" + username);
     } catch (URISyntaxException e) {
       e.printStackTrace();
     }
     try {
-
       return sendPackage(workout, uri);
     } catch (JsonProcessingException e) {
       e.printStackTrace();
@@ -202,6 +216,13 @@ public class ClientService {
     }
     return null;
   }*/
+
+  public User queryUser(String username)  throws JsonProcessingException {
+    final RestTemplate restTemplate = new RestTemplateBuilder().build();
+    String url = baseURL + "getUser/" + username;
+    String jsonString = restTemplate.getForObject(url, String.class);
+    return (User) beastBookPersistence.jsonToObject(jsonString, User.class);
+  }
 
   public Workout queryWorkout(String workoutID, String username)  {
     final RestTemplate restTemplate = new RestTemplateBuilder().build();

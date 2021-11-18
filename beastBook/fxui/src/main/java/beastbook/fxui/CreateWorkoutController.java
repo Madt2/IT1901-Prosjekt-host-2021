@@ -81,10 +81,12 @@ public class CreateWorkoutController extends AbstractController {
   private TableColumn<Exercise, Double> weightColumn;
   private TableColumn<Exercise, Integer> setsColumn;
   private TableColumn<Exercise, Integer> restTimeColumn;
-  private List<String> workoutIds = new ArrayList<>();
-  private List<String> workoutNames = new ArrayList<>();
+//  private List<String> workoutIds = new ArrayList<>();
+//  private List<String> workoutNames = new ArrayList<>();
   private List<Exercise> exercises = new ArrayList<>();
   private Workout workout = new Workout();
+  //TODO use loadedWorkout boolean
+//  private boolean loadedWorkout = (workout.getId() != null);
 
   public static final String WRONG_INPUT_BORDER_COLOR = "-fx-text-box-border: #B22222;"
           + "-fx-focus-color: #B22222";
@@ -93,9 +95,8 @@ public class CreateWorkoutController extends AbstractController {
   /**
    * Initializes the CreateWorkout scene with the listeners for validation of input fields.
    */
-  public void initialize() throws IOException {
-    System.out.println(getUsername());
-    workoutIds = service.queryUser(getUsername()).getWorkoutIDs();
+  public void initialize() {
+/*    workoutIds = service.queryUser(getUsername()).getWorkoutIDs();
     for (String id : workoutIds) {
       String name = service.queryWorkoutName(id, getUsername());
       if (name != null) {
@@ -235,7 +236,7 @@ public class CreateWorkoutController extends AbstractController {
               exceptionFeedback.setText("Exercise overwritten!");
             }
           }
-          service.addExercise(exercise, workout.getId(), getUsername());
+          service.addExercise(exercise, workout.getId());
         } else {
           for (Exercise e : exercises) {
             if (e.getName().equals(exercise.getName())) {
@@ -340,23 +341,29 @@ public class CreateWorkoutController extends AbstractController {
   @FXML
   void createWorkout(ActionEvent event) {
     if (titleInput.getText() == null || titleInput.getText().equals("")) {
-      exceptionFeedback.setText("Input title is empty, please enter name to workout");
-    } else {
+      exceptionFeedback.setText("Input title is empty, please enter name of workout");
+    }
+    else {
       try {
+        //hvis den er loadet
         if (workout.getId() != null) {
           service.updateWorkout(workout, getUsername());
           exceptionFeedback.setText("Workout overwritten!");
         } else {
           workout.setName(titleInput.getText());
-          service.addWorkout(workout, getUsername());
-          exceptionFeedback.setText("Workout saved!");
+          if (!service.addWorkout(workout, exercises)) {
+            exceptionFeedback.setText("Workout with name " + workout.getName() + " already exists. Please choose another name or delete: " + workout.getName());
+          } else {
+            service.addWorkout(workout, exercises);
+            exceptionFeedback.setText("Workout saved!");
+            emptyInputFields();
+            titleInput.setText("");
+            createButton.setDisable(true);
+            workout = new Workout();
+            exercises = new ArrayList<>();
+            updateTable();
+          }
         }
-        emptyInputFields();
-        titleInput.setText("");
-        createButton.setDisable(true);
-        workout = new Workout();
-        exercises = new ArrayList<>();
-        updateTable();
       } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage());
       } catch (Exception e) {

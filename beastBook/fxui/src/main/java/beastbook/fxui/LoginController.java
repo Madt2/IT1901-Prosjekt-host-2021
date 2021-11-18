@@ -64,7 +64,7 @@ public class LoginController extends AbstractController {
       setUsername(userName);
       super.loadHome(event);
     } catch (Exception e) {
-      loginError.setText(e.getMessage());
+      loginError.setText(e.getMessage() + "det var except");
     }
   }
 

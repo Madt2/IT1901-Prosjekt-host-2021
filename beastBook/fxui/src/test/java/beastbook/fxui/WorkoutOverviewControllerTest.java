@@ -52,7 +52,7 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
     clickOn(node);
   //  Assertions.assertEquals("Pull workout", woc.getWorkoutOverview().getSelectionModel().getSelectedItem().getName());
     clickOn("#deleteButton");
-    
+
     // 1 workout left
   //  Assertions.assertEquals(1, woc.user.getWorkouts().size());
   //  Assertions.assertEquals(1, woc.getWorkoutOverview().getItems().size());

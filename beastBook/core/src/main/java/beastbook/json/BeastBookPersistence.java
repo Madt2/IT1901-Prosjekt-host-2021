@@ -164,9 +164,7 @@ public class BeastBookPersistence {
    * @throws IOException if writing to file fails or if it fails to create folder.
    */
   public void createUser(User user) throws IllegalArgumentException, NullPointerException, IOException {
-    if (user.getUsername() == null) {
-      throw new NullPointerException("User must have username");
-    }
+    //Todo remove null pointer
     if(userExists(user.getUsername())) {
       throw new IllegalArgumentException("User already exists, delete " + user.getUsername() + " or use another username!");
     }
@@ -427,20 +425,24 @@ public class BeastBookPersistence {
   }
 
 
-/*  public static void main(String[] args) {
-    User user = new User("username", "password");
-    BeastBookPersistence beastBookPersistence = new BeastBookPersistence();
-    Workout workout = new Workout("emiltullinbg");
-    try {
-      *//*Id id = beastBookPersistence.getIds(user.getUsername());
-      id.giveId(workout);
-      System.out.println(workout.getId());
-      System.out.println(id.getIds(Workout.class));
-      beastBookPersistence.saveIds(id, user.getUsername());
-      System.out.println();*//*
-      beastBookPersistence.createUser(user);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }*/
+  public static void main(String[] args) {
+//    User user = new User("username", "password");
+//    BeastBookPersistence beastBookPersistence = new BeastBookPersistence();
+//    //Workout workout = new Workout("test");
+//    try {
+//      //*Id id = beastBookPersistence.getIds(user.getUsername());
+//      //id.giveId(workout);
+//      //System.out.println(workout.getId());
+//      //System.out.println(id.getIds(Workout.class));
+//      //beastBookPersistence.saveIds(id, user.getUsername());
+//      //System.out.println();*//*
+//      //beastBookPersistence.createUser(user);
+//      String json = beastBookPersistence.objectToJson(user);
+//      System.out.println(json);
+//      User user1 = (User) beastBookPersistence.jsonToObject(json, User.class);
+//      System.out.println(user1.getUsername() + " : " + user1.getPassword());
+//    } catch (IOException e) {
+//      e.printStackTrace();
+//    }
+  }
 }

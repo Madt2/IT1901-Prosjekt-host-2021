@@ -81,7 +81,13 @@ public class Id {
     if (hasId(id, cls)) {
       throw new IllegalArgumentException(cls.getName() + " already have ID " + id + " stored");
     }
-    map.put(id, name);
+    if (cls == Exercise.class) {
+      exerciseMap.put(id, name);
+    } else if (cls == Workout.class) {
+      workoutMap.put(id, name);
+    } else if (cls == History.class) {
+      historyMap.put(id, name);
+    }
   }
 
   /**
@@ -193,9 +199,9 @@ public class Id {
     final String legalChars = setLegalChars(cls);
     final int legalLength = setLegalLength(cls);
     int possibilities = (int) Math.pow(legalChars.length(), legalLength);
-    if (getIds(cls).size() < possibilities / 2) {
+ //   if (getIds(cls).size() < possibilities / 2) {
       id = generateIdWhileLoop(cls, possibilities);
-    }
+//    }
     //TODO FIX this
     /*else {
       id = generateIdForLoop(cls, possibilities);

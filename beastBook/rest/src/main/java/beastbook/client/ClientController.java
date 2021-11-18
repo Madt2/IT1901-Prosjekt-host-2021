@@ -2,9 +2,10 @@ package beastbook.client;
 
 import beastbook.core.Exercise;
 import beastbook.core.History;
+import beastbook.core.User;
 import beastbook.core.Workout;
-import java.util.HashMap;
-import java.util.List;
+
+import java.util.*;
 
 public class ClientController {
   private ClientService clientService = new ClientService();
@@ -15,16 +16,15 @@ public class ClientController {
   private HashMap<String, String> historyMap;
 
   public ClientController(String username, String password) {
-    if (clientService.queryPassword(username) == null) {
-      throw new IllegalArgumentException("User does not exist!");
-    }
     if (!password.equals(clientService.queryPassword(username))) {
       throw new IllegalArgumentException("Password not correct");
     }
     this.username = username;
-    exerciseMap = clientService.queryExerciseMap(username);
-    workoutMap = clientService.queryWorkoutMap(username);
-    historyMap = clientService.queryHistoryMap(username);
+    System.out.println("dette er før map query");
+    System.out.println(exerciseMap = clientService.queryExerciseMap(username));
+    System.out.println(workoutMap = clientService.queryWorkoutMap(username));
+    System.out.println(historyMap = clientService.queryHistoryMap(username));
+    System.out.println("kom ut her");
   }
 
   public void setIpAddress(String ipAddress) {
@@ -64,28 +64,25 @@ public class ClientController {
     return clientService.queryHistory(historyId, username);
   }
 
-  public String addExercise(Exercise exercise, String workoutId) {
+  public void addExercise(Exercise exercise, String workoutId) {
     deletionCheck();
     clientService.addExercise(exercise, workoutId, username);
-    exerciseMap = clientService.queryExerciseMap(username);
-    return "exerciseID";
+    workoutMap = clientService.queryWorkoutMap(username);
   }
 
   public void addWorkout(Workout workout, List<Exercise> exercises) {
     deletionCheck();
-    String workoutId = clientService.addWorkout(workout, username);
+    String name = workout.getName();
+    if (workoutMap.containsValue(name)) {
+      return false;
+    }
+    String workoutId = clientService.addWorkout(workout, username).getBody();
+    System.out.println("Dette er workoutId den får av html package: " + workoutId);
     for (Exercise e : exercises) {
-      clientService.addExercise(e, workoutId, username);
+      addExercise(e, workoutId);
     }
     workoutMap = clientService.queryWorkoutMap(username);
     exerciseMap = clientService.queryExerciseMap(username);
-  }
-
-  public String addHistory(History history) {
-    deletionCheck();
-    clientService.addHistory(history, username);
-    historyMap = clientService.queryHistoryMap(username);
-    return "historyID";
   }
 
   public void updateExercise(Exercise exercise) {
@@ -93,15 +90,17 @@ public class ClientController {
     clientService.updateExercise(exercise, username);
   }
 
-  public void updateWorkout(Workout workout) {
+  public void addHistory(History history) {
     deletionCheck();
-    clientService.updateWorkout(workout, username);
+    clientService.addHistory(history, username);
+    historyMap = clientService.queryHistoryMap(username);
   }
 
-  public void removeExercise(String exerciseId) {
+  public void removeExercise(Exercise exercise, Workout workout) {
     deletionCheck();
-    clientService.deleteExercise(exerciseId, username);
+    clientService.deleteExercise(exercise.getId(), username);
     exerciseMap = clientService.queryExerciseMap(username);
+    workoutMap = clientService.queryWorkoutMap(username);
   }
 
   public void removeWorkout(String workoutId) {
@@ -121,4 +120,15 @@ public class ClientController {
     clientService.deleteUser(username);
     isDeleted = true;
   }
+
+  public static void main(String[] args) {
+    ClientController controller = new ClientController("test", "test");
+
+    Workout workout = new Workout("test");
+    Exercise exercise = new Exercise("Chestpress", 90, 35, 22, 33, 94);
+    List<Exercise> exercises = new ArrayList<>();
+   // String s = controller.addWorkout(workout, exercises);
+    //controller.addExercise(exercise, "UC");
+  }
+
 }
