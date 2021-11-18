@@ -15,8 +15,11 @@ public class User {
 
   private String username;
   private String password;
+
+  /*
   private List<String> historyIDs = new ArrayList<>();
   private List<String> workoutIDs = new ArrayList<>();
+  */
 
   /**
   * User object for application.
@@ -60,28 +63,30 @@ public class User {
     }
   }
 
-  /**
-   * Method to remove History object from histories list.
-   *
-   * @param id The id of the history to be removed.
-   * @throws IllegalArgumentException if no History found.
-   */
-  public void removeHistory(String id) throws IllegalArgumentException {
-    if (!historyIDs.remove(id)) {
-      throw new IllegalArgumentException("No such history found!");
-    }
-  }
+//  /**
+//   * Method to remove History object from histories list.
+//   *
+//   * @param id The id of the history to be removed.
+//   * @throws IllegalArgumentException if no History found.
+//   */
+//  public void removeHistory(String id) throws IllegalArgumentException {
+//    if (!historyIDs.remove(id)) {
+//      throw new IllegalArgumentException("No such history found!");
+//    }
+//  }
 
   /**
    * Help method to get the current date without time.
    *
    * @return current date without timestamp.
    */
+  // Todo move to History class? have it set date in constructor?
   public String getDate() {
     Date d = new Date();
     SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
     return sdf.format(d);
   }
+
 
   /**
    * Sets username.
@@ -113,59 +118,59 @@ public class User {
     return password;
   }
 
-  /**
-   * Getter to fetch workoutIDs List from user.
-   *
-   * @return List of IDs
-   */
-  public List<String> getWorkoutIDs() {
-    return new ArrayList<>(workoutIDs);
-  }
+//  /**
+//   * Getter to fetch workoutIDs List from user.
+//   *
+//   * @return List of IDs
+//   */
+//  public List<String> getWorkoutIDs() {
+//    return new ArrayList<>(workoutIDs);
+//  }
 
-  /**
-   * This method adds a workoutID reference to workoutIDs list.
-   *
-   * @param id workoutID to add to user.
-   * @throws IllegalArgumentException when workoutID is already a reference in workoutIDs list,
-   *                                  or if validation fails.
-   */
-  public void addWorkout(String id) throws IllegalArgumentException {
-    if (workoutIDs.contains(id)) {
-      throw new IllegalArgumentException("Workout is already added!");
-    }
-    Id.validateID(id, Workout.class);
-    workoutIDs.add(id);
-  }
+//  /**
+//   * This method adds a workoutID reference to workoutIDs list.
+//   *
+//   * @param id workoutID to add to user.
+//   * @throws IllegalArgumentException when workoutID is already a reference in workoutIDs list,
+//   *                                  or if validation fails.
+//   */
+//  public void addWorkout(String id) throws IllegalArgumentException {
+//    if (workoutIDs.contains(id)) {
+//      throw new IllegalArgumentException("Workout is already added!");
+//    }
+//    Id.validateID(id, Workout.class);
+//    workoutIDs.add(id);
+//  }
 
-  /**
-  * Removes workout object from users workouts List.
-  *
-  * @throws IllegalArgumentException when workout reference is not in user's workoutIDs list.
-  * @param id workoutID to remove from User.
-  */
-  public void removeWorkout(String id) throws IllegalArgumentException {
-    if (!workoutIDs.remove(id)) {
-      throw new IllegalArgumentException("User does not have workout saved!");
-    }
-  }
+//  /**
+//  * Removes workout object from users workouts List.
+//  *
+//  * @throws IllegalArgumentException when workout reference is not in user's workoutIDs list.
+//  * @param id workoutID to remove from User.
+//  */
+//  public void removeWorkout(String id) throws IllegalArgumentException {
+//    if (!workoutIDs.remove(id)) {
+//      throw new IllegalArgumentException("User does not have workout saved!");
+//    }
+//  }
 
-  public List<String> getHistoryIDs() {
-    return new ArrayList<>(historyIDs);
-  }
+//  public List<String> getHistoryIDs() {
+//    return new ArrayList<>(historyIDs);
+//  }
 
-  /**
-   * This method adds a historyID reference to historyIDs list.
-   *
-   * @param id of history object to add.
-   * @throws IllegalArgumentException when historyID is already a reference in historyIDs list,
-   *                                  or if validation fails.
-   */
-  public void addHistory(String id) throws IllegalArgumentException {
-    if (historyIDs.contains(id)) {
-      throw new IllegalArgumentException("User already has history saved!");
-    }
-    Id.validateID(id, History.class);
-    historyIDs.add(id);
-  }
+//  /**
+//   * This method adds a historyID reference to historyIDs list.
+//   *
+//   * @param id of history object to add.
+//   * @throws IllegalArgumentException when historyID is already a reference in historyIDs list,
+//   *                                  or if validation fails.
+//   */
+//  public void addHistory(String id) throws IllegalArgumentException {
+//    if (historyIDs.contains(id)) {
+//      throw new IllegalArgumentException("User already has history saved!");
+//    }
+//    Id.validateID(id, History.class);
+//    historyIDs.add(id);
+//  }
 }
 

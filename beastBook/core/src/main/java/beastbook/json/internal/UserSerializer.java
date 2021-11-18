@@ -37,16 +37,16 @@ public class UserSerializer extends JsonSerializer<User> {
     if (user.getPassword() != null) {
       jsonGenerator.writeStringField("password", user.getPassword());
     }
-    jsonGenerator.writeArrayFieldStart("workoutIDs");
-    for (String id : user.getWorkoutIDs()) {
-      jsonGenerator.writeObject(id);
-    }
-    jsonGenerator.writeEndArray();
-    jsonGenerator.writeArrayFieldStart("historyIDs");
-    for (String id : user.getHistoryIDs()) {
-      jsonGenerator.writeObject(id);
-    }
-    jsonGenerator.writeEndArray();
+//    jsonGenerator.writeArrayFieldStart("workoutIDs");
+//    for (String id : user.getWorkoutIDs()) {
+//      jsonGenerator.writeObject(id);
+//    }
+//    jsonGenerator.writeEndArray();
+//    jsonGenerator.writeArrayFieldStart("historyIDs");
+//    for (String id : user.getHistoryIDs()) {
+//      jsonGenerator.writeObject(id);
+//    }
+//    jsonGenerator.writeEndArray();
     jsonGenerator.writeEndObject();
   }
 }
