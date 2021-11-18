@@ -4,6 +4,7 @@ import beastbook.core.Exercise;
 import beastbook.core.History;
 import beastbook.core.Workout;
 import java.util.HashMap;
+import java.util.List;
 
 public class ClientController {
   private ClientService clientService = new ClientService();
@@ -70,11 +71,14 @@ public class ClientController {
     return "exerciseID";
   }
 
-  public String addWorkout(Workout workout) {
+  public void addWorkout(Workout workout, List<Exercise> exercises) {
     deletionCheck();
-    clientService.addWorkout(workout, username);
+    String workoutId = clientService.addWorkout(workout, username);
+    for (Exercise e : exercises) {
+      clientService.addExercise(e, workoutId, username);
+    }
+    workoutMap = clientService.queryWorkoutMap(username);
     exerciseMap = clientService.queryExerciseMap(username);
-    return "workoutID";
   }
 
   public String addHistory(History history) {
