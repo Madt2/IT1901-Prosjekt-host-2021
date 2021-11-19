@@ -99,7 +99,7 @@ public class ClientController {
     historyMap = clientService.queryHistoryMap(username);
   }
 
-  public void removeExercise(Exercise exercise, Workout workout) {
+  public void removeExercise(Exercise exercise) {
     deletionCheck();
     clientService.deleteExercise(exercise, username);
     exerciseMap = clientService.queryExerciseMap(username);

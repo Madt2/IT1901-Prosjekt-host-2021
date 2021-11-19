@@ -3,7 +3,9 @@ package beastbook.fxui;
 import beastbook.core.Exercise;
 import beastbook.core.Workout;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -335,6 +337,7 @@ public class CreateWorkoutController extends AbstractController {
       createButton.setVisible(false);
       //titleInput.setVisible(false);
       titleInput.setDisable(true);
+      loadButton.setDisable(true);
 
     } catch (Exception e) {
       exceptionFeedback.setText("Workout not found!");
@@ -407,6 +410,7 @@ public class CreateWorkoutController extends AbstractController {
       } else {
         exercises.remove(selectedExercise);
       }
+
       exceptionFeedback.setText("The exercise '"
               + selectedExercise.getName() + "' was deleted!");
       updateTable();

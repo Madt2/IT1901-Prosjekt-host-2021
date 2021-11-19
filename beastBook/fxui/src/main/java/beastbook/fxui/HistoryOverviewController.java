@@ -43,7 +43,7 @@ public class HistoryOverviewController extends AbstractController {
   @FXML
   private TableView<String> historyOverview = new TableView<>();
   private TableColumn<String, String> historyNameColumn;
- // private TableColumn<String, String> historyDateColumn;
+  private TableColumn<String, String> historyDateColumn;
   private String selectedHistoryId;
   private Map<String,String> historyMap;
 
@@ -56,10 +56,10 @@ public class HistoryOverviewController extends AbstractController {
   private void loadTable() {
     historyOverview.getColumns().clear();
     historyNameColumn = new TableColumn<>("Workout name:");
-    historyNameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()));
-/*    historyDateColumn = new TableColumn<>("Date:");
-    historyDateColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()));*/
- //   historyOverview.getColumns().add(historyDateColumn);
+    historyNameColumn.setCellValueFactory(name -> new SimpleStringProperty(name.getValue()));
+    historyDateColumn = new TableColumn<>("Date:");
+    historyDateColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()));
+    historyOverview.getColumns().add(historyDateColumn);
     historyOverview.getColumns().add(historyNameColumn);
 ////    List<List<String>> body = new ArrayList<>();
 ////    List<String> name = new ArrayList<>();
@@ -96,7 +96,6 @@ public class HistoryOverviewController extends AbstractController {
       setColumnsSize();
 
   }
-
 
   private void setColumnsSize() {
     historyNameColumn.setPrefWidth(129);

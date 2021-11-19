@@ -11,11 +11,7 @@ public class RegisterController {
       clientService.createUser(user).getBody();
       return "Success";
     } catch (Exception e) {
-      //System.out.println(e.getStackTrace());
-      System.out.println(e.getLocalizedMessage());
       System.out.println(e.getMessage());
-      System.out.println(e.getSuppressed());
-
       return "Failure";
     }
 

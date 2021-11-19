@@ -8,8 +8,8 @@ import java.util.List;
  * and a list of IDs to reference exercise objects.
  */
 public class Workout implements IdClasses {
-  private String name;
   private String id;
+  private String name;
   private List<String> exerciseIDs = new ArrayList<>();
     
   /**

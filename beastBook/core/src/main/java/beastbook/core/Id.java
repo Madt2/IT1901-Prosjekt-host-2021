@@ -81,9 +81,9 @@ public class Id {
     if (cls == Exercise.class) {
       exerciseMap.put(id, displayData);
     } else if (cls == Workout.class) {
-      workoutMap.put(id, name);
+      workoutMap.put(id, displayData);
     } else if (cls == History.class) {
-      historyMap.put(id, name);
+      historyMap.put(id, displayData);
     }
   }
 

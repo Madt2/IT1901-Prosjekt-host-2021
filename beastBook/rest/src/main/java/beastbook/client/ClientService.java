@@ -89,12 +89,7 @@ public class ClientService {
     } catch (URISyntaxException e) {
       e.printStackTrace();
     }
-    try {
-      return sendPackage("deleteHistory", uri);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-    }
-    return null;
+    return sendPackage(historyId, uri);
   }
 
   public ResponseEntity<String> deleteUser(String username) {
@@ -104,12 +99,7 @@ public class ClientService {
     } catch (URISyntaxException e) {
       e.printStackTrace();
     }
-    try {
-      return sendPackage("deleteUser", uri);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-    }
-    return null;
+    return sendPackage(username, uri);
   }
 
   public ResponseEntity<String> createUser (User user) {
@@ -129,12 +119,7 @@ public class ClientService {
     } catch (URISyntaxException e) {
       e.printStackTrace();
     }
-    try {
-      return sendPackage(workout, uri);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-    }
-    return null;
+    return sendPackage(workout, uri);
   }
 
   public ResponseEntity<String> addExercise(Exercise exercise, String workoutId, String username) {
@@ -145,13 +130,7 @@ public class ClientService {
     } catch (URISyntaxException e) {
       e.printStackTrace();
     }
-    try {
-
       return sendPackage(exercise, uri);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-    }
-    return null;
   }
 
   public ResponseEntity<String> addHistory(History history, String username) {
@@ -161,12 +140,7 @@ public class ClientService {
     } catch (URISyntaxException e) {
       e.printStackTrace();
     }
-    try {
       return sendPackage(history, uri);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-    }
-    return null;
   }
 
   public ResponseEntity<String> updateWorkout(Workout workout, String username) {
@@ -176,12 +150,7 @@ public class ClientService {
     } catch (URISyntaxException e) {
       e.printStackTrace();
     }
-    try {
-      return sendPackage(workout, uri);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-    }
-    return null;
+    return sendPackage(workout, uri);
   }
 
   public ResponseEntity<String> updateExercise(Exercise exercise, String username) {
@@ -191,12 +160,7 @@ public class ClientService {
     } catch (URISyntaxException e) {
       e.printStackTrace();
     }
-    try {
-      return sendPackage(exercise, uri);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-    }
-    return null;
+    return sendPackage(exercise, uri);
   }
 
   public User queryUser(String username)  throws JsonProcessingException {

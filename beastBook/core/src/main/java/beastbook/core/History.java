@@ -11,9 +11,9 @@ import java.util.List;
  */
 // Todo should extend workout?
 public class History extends Workout implements IdClasses {
-  private final String date;
-  private final String name;
   private String id;
+  private final String name;
+  private final String date;
   private final List<Exercise> savedExercises;
 
   /**
@@ -24,7 +24,7 @@ public class History extends Workout implements IdClasses {
    */
   public History(String name, List<Exercise> exercises, String date) {
     this.name = name;
-    this.savedExercises = exercises;
+    this.savedExercises = Collections.unmodifiableList(exercises);
     this.date = date;
   }
 
@@ -51,7 +51,7 @@ public class History extends Workout implements IdClasses {
   public String getId() {
     return id;
   }
-
+  // TODO Correct to not return copy because it is final, right?
   public List<Exercise> getSavedExercises() {
     return savedExercises;
   }
