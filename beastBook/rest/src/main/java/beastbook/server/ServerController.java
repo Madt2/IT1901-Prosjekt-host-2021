@@ -154,10 +154,11 @@ public class ServerController {
     }
   }
 
-  @PostMapping("deleteExercise/{username}/")
+  @PostMapping("deleteExercise/{username}")
   public ResponseEntity<String> deleteExercise(@RequestBody String jsonString, @PathVariable String username) {
     try {
       Exercise exercise = (Exercise) serverService.jsonToObject(jsonString, Exercise.class);
+      System.out.println(exercise.getId());
       serverService.deleteIdObject(exercise, username);
       return new ResponseEntity<>("Success in deleting Exercise", HttpStatus.OK);
     } catch (JsonProcessingException e) { //Error in json

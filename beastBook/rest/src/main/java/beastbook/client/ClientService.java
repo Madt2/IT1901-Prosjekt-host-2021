@@ -26,7 +26,7 @@ public class ClientService {
     baseURL = "http://" + ipAddress + ":8080/";
   }
 
-  private ResponseEntity<String> sendPackage (Object object, URI uri) throws JsonProcessingException, IOException {
+  private ResponseEntity<String> sendPackage (Object object, URI uri) {
     try {
       String jsonString = beastBookPersistence.objectToJson(object);
       HttpHeaders headers = new HttpHeaders();
@@ -35,11 +35,12 @@ public class ClientService {
       RestTemplate restTemplate = new RestTemplate();
       ResponseEntity<String> data = restTemplate.postForEntity(uri, httpEntity, String.class);
       if (data.getStatusCode() != HttpStatus.OK) {
-        exceptionHandler(data.getBody());
+        //exceptionHandler(data.getBody());
       }
       return data;
     } catch (JsonProcessingException e) {
-      throw e;
+      //throw e;
+      return null;
     }
   }
 
@@ -68,27 +69,17 @@ public class ClientService {
     } catch (URISyntaxException e) {
       e.printStackTrace();
     }
-    try {
-      return sendPackage("deleteWorkout", uri);
-    } catch (JsonProcessingException e) {
-
-      return null;
-    }
+    return sendPackage(workoutId, uri);
   }
 
-  public ResponseEntity<String> deleteExercise(String exerciseId, String username) {
+  public ResponseEntity<String> deleteExercise(Exercise exercise, String username) {
     URI uri = null;
     try {
       uri = new URI(baseURL + "deleteExercise/" + username);
     } catch (URISyntaxException e) {
       e.printStackTrace();
     }
-    try {
-      return sendPackage("deleteExercise", uri);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-      return null;
-    }
+    return sendPackage(exercise, uri);
   }
 
   public ResponseEntity<String> deleteHistory(String historyId, String username) {
@@ -121,15 +112,14 @@ public class ClientService {
     return null;
   }
 
-  public ResponseEntity<String> createUser (User user) throws URISyntaxException, JsonProcessingException{
-//    try {
+  public ResponseEntity<String> createUser (User user) {
+    try {
       URI uri = new URI(baseURL + "createUser/");
       return sendPackage(user, uri);
-/*    } catch (URISyntaxException e) {
-    } catch (JsonProcessingException e) {
+    } catch (URISyntaxException e) {
       e.printStackTrace();
     }
-    return null;*/
+    return null;
   }
 
   public ResponseEntity<String> addWorkout(Workout workout, String username) {
@@ -208,19 +198,6 @@ public class ClientService {
     }
     return null;
   }
-
-  //Todo right use of name?
-  /*public User queryUser(String username)  {
-    final RestTemplate restTemplate = new RestTemplateBuilder().build();
-    String url = baseURL + "getUser/" + username;
-    String jsonString = restTemplate.getForObject(url, String.class);
-    try {
-      return (User) beastBookPersistence.jsonToObject(jsonString, User.class);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
-    }
-    return null;
-  }*/
 
   public User queryUser(String username)  throws JsonProcessingException {
     final RestTemplate restTemplate = new RestTemplateBuilder().build();
@@ -307,26 +284,4 @@ public class ClientService {
     String password = restTemplate.getForObject(url, String.class);
     return password;
   }
-
-
-//  public String queryExerciseName(String exerciseID, String username) {
-//    final RestTemplate restTemplate = new RestTemplateBuilder().build();
-//    String url = baseURL + "/getExerciseName/" + username + "/" + exerciseID;
-//    String exerciseName = restTemplate.getForObject(url, String.class);
-//    return exerciseName;
-//  }
-//
-//  public String queryWorkoutName(String workoutID, String username) {
-//    final RestTemplate restTemplate = new RestTemplateBuilder().build();
-//    String url = baseURL + "/getWorkoutName/" + username + "/" + workoutID;
-//    String workoutName = restTemplate.getForObject(url, String.class);
-//    return workoutName;
-//  }
-//
-//  public String queryHistoryName(String historyID, String username) {
-//    final RestTemplate restTemplate = new RestTemplateBuilder().build();
-//    String url = baseURL + "/getHistoryName/" + username + "/" + historyID;
-//    String workoutName = restTemplate.getForObject(url, String.class);
-//    return workoutName;
-//  }
 }

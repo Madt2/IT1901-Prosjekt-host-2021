@@ -314,7 +314,16 @@ public class CreateWorkoutController extends AbstractController {
     }
     String name = titleInput.getText();
     try {
-      String id = service.getWorkoutMap().get(name);
+      String id = null;
+      Map<String, String> workoutMap = service.getWorkoutMap();
+      Iterator it = workoutMap.entrySet().iterator();
+      while (it.hasNext()) {
+        Map.Entry entry = (Map.Entry) it.next();
+        if (entry.getValue().equals(name)) {
+          id = entry.getKey().toString();
+          break;
+        }
+      }
       workout = service.getWorkout(id);
       exercises = new ArrayList<>();
       for (String eId : workout.getExerciseIDs()) {
@@ -383,8 +392,18 @@ public class CreateWorkoutController extends AbstractController {
     Exercise selectedExercise = workoutTable.getSelectionModel().getSelectedItem();
     try {
       if (workout.getId() != null) {
-        service.removeExercise(selectedExercise, workout);
+        System.out.println("Exercise id = " + selectedExercise.getId());
+        System.out.println("Exercises IDs til workout" + workout.getExerciseIDs());
+        if (selectedExercise.getId() != null){
+          service.removeExercise(selectedExercise);
+        }
         exercises.remove(selectedExercise);
+        System.out.println("ID" + workout.getId());
+        System.out.println("Exercise id = " + selectedExercise.getId());
+
+        System.out.println("Name" + workout.getName());
+        System.out.println("Workouten henta fra service: " +service.getWorkout(workout.getId()));
+
       } else {
         exercises.remove(selectedExercise);
       }

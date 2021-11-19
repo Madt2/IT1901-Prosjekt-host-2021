@@ -74,12 +74,12 @@ public class Id {
     return getMap(cls).get(id);
   }
 
-  public void addId(String id, String name, Class cls) throws IllegalArgumentException {
+  public void addId(String id, String displayData, Class cls) throws IllegalArgumentException {
     if (hasId(id, cls)) {
       throw new IllegalArgumentException(cls.getName() + " already have ID " + id + " stored");
     }
     if (cls == Exercise.class) {
-      exerciseMap.put(id, name);
+      exerciseMap.put(id, displayData);
     } else if (cls == Workout.class) {
       workoutMap.put(id, name);
     } else if (cls == History.class) {
@@ -204,7 +204,13 @@ public class Id {
       id = generateIdForLoop(cls, possibilities);
     }*/
     obj.setId(id);
-    addId(obj.getId(), obj.getName() ,obj.getClass());
+    if (obj.getClass() == History.class) {
+      History history = (History) obj;
+      addId(history.getId(), history.getName() + "§" + history.getDate(), history.getClass());
+      obj = history;
+    } else {
+      addId(obj.getId(), obj.getName() ,obj.getClass());
+    }
     return obj;
   }
 }

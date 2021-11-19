@@ -142,7 +142,7 @@
                     </executions>
                 </plugin>
                 <!-- Run the spotbugs code quality tool -->
-                <plugin>
+               <!-- <plugin>
                     <groupId>com.github.spotbugs</groupId>
                     <artifactId>spotbugs-maven-plugin</artifactId>
                     <version>4.4.1</version>
@@ -160,7 +160,7 @@
                             </goals>
                         </execution>
                     </executions>
-                </plugin>
+                </plugin>-->
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>

@@ -1,7 +1,9 @@
 package beastbook.fxui;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javafx.beans.property.SimpleStringProperty;
@@ -59,8 +61,40 @@ public class HistoryOverviewController extends AbstractController {
     historyDateColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()));*/
  //   historyOverview.getColumns().add(historyDateColumn);
     historyOverview.getColumns().add(historyNameColumn);
-    historyOverview.getItems().setAll(historyMap.values());
-    setColumnsSize();
+////    List<List<String>> body = new ArrayList<>();
+////    List<String> name = new ArrayList<>();
+////    List<String> date = new ArrayList<>();
+///
+    List<List<String>> historyData = new ArrayList<>();
+//
+//    //String[][] =
+//    // H-d4D = {"minøkt2", "12.12.2021"};
+//    // TODO Bannlyse muligheten til å skrive '§' siden denne brukes til å splitte!
+//    //"historyName§23.01.2000"
+//  /*
+    for (String s : historyMap.values()) {
+      //String[] splittedItems = s.split("§");
+      List<String> split = List.of(s.split("§"));
+      //name.add(splittedItems[0]);
+      //date.add(splittedItems[1]);
+      historyData.add(split);
+      }
+//    }
+//    body.add(name);
+//    body.add(date);
+//    newArray[0][0] = "element 1";
+//    newArray[0][1] = "verdi 1";
+//    newArray[1][0] = "element 2";
+//    newArray[1][1] = "verdi 2";*/
+//
+//    //System.out.println(historyData);
+//    //System.out.println(historyData.iterator().next());
+//    //historyOverview.getItems().setAll(body.iterator().next());
+//    historyOverview.getItems().addAll(historyData.iterator().
+//    //historyOverview.getItems().setAll(historyData.iterator().next().get(0), historyData.iterator().next().get(1));
+
+      setColumnsSize();
+
   }
 
 

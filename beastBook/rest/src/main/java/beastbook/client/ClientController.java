@@ -101,7 +101,7 @@ public class ClientController {
 
   public void removeExercise(Exercise exercise, Workout workout) {
     deletionCheck();
-    clientService.deleteExercise(exercise.getId(), username);
+    clientService.deleteExercise(exercise, username);
     exerciseMap = clientService.queryExerciseMap(username);
     workoutMap = clientService.queryWorkoutMap(username);
   }

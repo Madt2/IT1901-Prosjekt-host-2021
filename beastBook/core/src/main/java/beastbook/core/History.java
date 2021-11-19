@@ -1,6 +1,8 @@
 package beastbook.core;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -28,8 +30,9 @@ public class History extends Workout implements IdClasses {
 
   public History(String name, List<Exercise> exercises) {
     this.name = name;
-    this.savedExercises = exercises;
-    this.date = getCurrentDate();
+    this.savedExercises = Collections.unmodifiableList(exercises);
+    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+    date = sdf.format(new Date());
   }
 
   public void setId(String id) {
@@ -52,18 +55,6 @@ public class History extends Workout implements IdClasses {
   public List<Exercise> getSavedExercises() {
     return savedExercises;
   }
-
-  /**
-   * Help method to get the current date without time.
-   *
-   * @return current date without timestamp.
-   */
-  public String getCurrentDate() {
-    Date d = new Date();
-    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
-    return sdf.format(d);
-  }
-
 
   @Override
   public String toString() {

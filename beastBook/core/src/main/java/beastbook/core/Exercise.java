@@ -13,7 +13,6 @@ public class Exercise implements IdClasses {
 
   private String id;
   private String workoutID;
-
   private String name;
   private int repGoal;
   private double weight;

@@ -23,8 +23,8 @@ public class RegisterController {
     // on server fails and throw exception
   }
 
-  public static void main(String[] args) {
-    RegisterController reg = new RegisterController();
-    reg.registerUser("test", "test");
-  }
+//  public static void main(String[] args) {
+//    RegisterController reg = new RegisterController();
+//    reg.registerUser("test", "test");
+//  }
 }
