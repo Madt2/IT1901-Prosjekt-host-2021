@@ -2,13 +2,13 @@ package beastbook.fxui;
 
 import beastbook.core.Exercise;
 import beastbook.core.History;
-import beastbook.core.User;
 import beastbook.core.Workout;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Iterator;
+import java.util.Map;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
@@ -60,9 +60,9 @@ public class WorkoutController extends AbstractController {
    */
   @FXML
   public void initialize() throws IOException {
-    Workout workout = service.queryWorkout(workoutId, getUsername());
+    Workout workout = service.getWorkout(workoutId);
     for (String id : workout.getExerciseIDs()) {
-      Exercise e = service.queryExercise(id, getUsername());
+      Exercise e = service.getExercise(id);
       if (e != null) {
         exercises.add(e);
       }
@@ -80,7 +80,7 @@ public class WorkoutController extends AbstractController {
     
     exerciseNameColumn = new TableColumn<>("Exercise name:");
     exerciseNameColumn.setCellValueFactory(
-      new PropertyValueFactory<>("exerciseName")
+      new PropertyValueFactory<>("name")
     );
     
     repGoalColumn = new TableColumn<>("Rep goal:");
@@ -133,7 +133,7 @@ public class WorkoutController extends AbstractController {
       try {
         Exercise exercise = event.getRowValue();
         exercise.setName(event.getNewValue());
-        service.updateExercise(exercise, getUsername());
+        service.updateExercise(exercise);
         emptyExceptionFeedback();
         saveButton.setDisable(false);
       } catch (IllegalArgumentException i) {
@@ -165,7 +165,7 @@ public class WorkoutController extends AbstractController {
         if (column.equals(restTimeColumn)) {
           exercise.setRestTime(event.getNewValue());
         }
-        service.updateExercise(exercise, getUsername());
+        service.updateExercise(exercise);
         emptyExceptionFeedback();
         saveButton.setDisable(false);
       } catch (IllegalArgumentException i) {
@@ -186,7 +186,7 @@ public class WorkoutController extends AbstractController {
       try {
         Exercise exercise = event.getRowValue();
         exercise.setWeight(event.getNewValue());
-        service.updateExercise(exercise, getUsername());
+        service.updateExercise(exercise);
         emptyExceptionFeedback();
         saveButton.setDisable(false);
       } catch (IllegalArgumentException i) {
@@ -202,23 +202,21 @@ public class WorkoutController extends AbstractController {
   @FXML
   void saveHistory() throws IOException {
     boolean overwritten = false;
-    User user = service.queryUser(username);
-    Workout workout = service.queryWorkout(workoutId, username);
-
-    List<String> historyIds = user.getHistoryIDs();
-    List<History> historyObjs = new ArrayList<>();
-    History history = new History(workout.getName(), exercises, user.getDate());
-    for (String id : historyIds) {
-      historyObjs.add(service.queryHistory(id, getUsername()));
-    }
-    for (History h : historyObjs) {
-      if (h.getName().equals(workout.getName()) && h.getDate().equals(user.getDate())) {
-        service.deleteHistory(h.getId(), getUsername());
-        overwritten = !overwritten;
-        break;
+    Workout workout = service.getWorkout(workoutId);
+    History history = new History(workout.getName(), exercises);
+    Iterator it = service.getHistoryMap().entrySet().iterator();
+    while (it.hasNext()) {
+      Map.Entry entry = (Map.Entry) it.next();
+      if (entry.getValue().equals(history.getName())) {
+        History h = service.getHistory(entry.getKey().toString());
+        if (h.getName().equals(history.getName()) && h.getDate().equals(history.getDate())) {
+          service.removeHistory(h.getId());
+          overwritten = !overwritten;
+          break;
+        }
       }
     }
-    service.addHistory(history, getUsername());
+    service.addHistory(history);
     saveButton.setDisable(true);
     if (overwritten) {
       exceptionFeedback.setText("History overwritten!");
@@ -241,10 +239,10 @@ public class WorkoutController extends AbstractController {
   TableView<Exercise> getWorkoutTable() {
     return workoutTable;
   }
-
+  /*
   Exercise getTable(int row) {
     return workoutTable.getItems().get(row);
-  }
+  }*/
 
   private void emptyExceptionFeedback() {
     this.exceptionFeedback.setText("");

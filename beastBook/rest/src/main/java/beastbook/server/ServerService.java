@@ -5,13 +5,14 @@ import beastbook.json.BeastBookPersistence;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
-import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Service class for server. Contains core methods to execute rest servers requests.
  */
 @Service
-public class ServerService {
+public class
+ServerService {
   BeastBookPersistence persistence = new BeastBookPersistence();
 
   /**
@@ -24,54 +25,50 @@ public class ServerService {
    *                     Deletes all files generated if this process fails.
    */
   public void createUser(User user) throws IllegalArgumentException, IOException {
-    try {
+    persistence.createUser(user);
+/*    try {
       persistence.createUser(user);
     } catch (IOException e) {
       //deleteUser(user.getUsername());
       throw e;
-    }
+    }*/
   }
 
   /**
-   * Adds IId object to user in server's register.
+   * Adds Id object to user in server's register.
    *
-   * @param obj IIdClass object to add.
+   * @param obj IdClass object to add.
    * @param username of user to add workout to.
    * @param workoutId to add exercise to (only use if obj is Exercise object).
    * @throws IllegalArgumentException if user with username does not exist.
    * @throws NullPointerException if obj is instance of Exercise and workoutId is null.
    * @throws IOException if persistence fails to read from or write to file.
    */
-  public void addIdObject(IdClasses obj, String username, String workoutId) throws NullPointerException, IllegalStateException, IOException {
-    System.out.println("1");
+  public String addIdObject(IdClasses obj, String username, String workoutId) throws NullPointerException, IllegalStateException, IOException {
     User user = persistence.getUser(username);
-    System.out.println("2");
-    System.out.println(username);
     Id ids = persistence.getIds(username);
-    System.out.println("3");
     obj = ids.giveId(obj);
-    System.out.println("4");
-    if (obj instanceof Workout) {
-      System.out.println("5");
-      user.addWorkout(obj.getId());
-    }
-    if (obj instanceof Exercise) {
+//    if (obj instanceof Workout) {
+//      user.addWorkout(obj.getId());
+//    }
+    if (obj.getClass() == Exercise.class) {
       if (workoutId == null) {
         throw new IllegalArgumentException("WorkoutId cannot be null");
       }
       Workout workout = persistence.getWorkout(workoutId, username);
       workout.addExercise(obj.getId());
-      persistence.saveIdObject((IdClasses) workout, username);
+      persistence.saveIdObject(workout, username);
       Exercise exercise = (Exercise) obj;
       exercise.setWorkoutID(workout.getId());
       obj = (IdClasses) exercise;
     }
-    if (obj instanceof History) {
-      user.addHistory(obj.getId());
-    }
+//    if (obj instanceof History) {
+//      user.addHistory(obj.getId());
+//    }
     persistence.saveIds(ids, username);
     persistence.saveUser(user);
     persistence.saveIdObject(obj, username);
+    return obj.getId();
   }
 
   /**
@@ -108,14 +105,17 @@ public class ServerService {
    * @throws IOException if persistence fails to read or write to file.
    */
   public void deleteUser(String username) throws IllegalArgumentException, IOException {
-    User user = persistence.getUser(username);
-    for (String id : user.getWorkoutIDs()) {
+    /*
+    Id ids = persistence.getIds(username);
+    for (String id : ids.) {
       deleteIdObject((IdClasses) persistence.getWorkout(id, username), username);
     }
     for (String id : user.getHistoryIDs()) {
       deleteIdObject((IdClasses) persistence.getHistory(id, username), username);
     }
       persistence.deleteUserDir(username);
+
+     */
   }
 
   /**
@@ -127,7 +127,6 @@ public class ServerService {
    * @throws IOException if persistence fails to read frim or write to file.
    */
   public void deleteIdObject(IdClasses obj, String username) throws IOException {
-    User user = persistence.getUser(username);
     Id ids = persistence.getIds(username);
     if (obj instanceof Exercise) {
       Exercise exercise = (Exercise) obj;
@@ -136,18 +135,18 @@ public class ServerService {
       persistence.saveIdObject((IdClasses) workout, username);
       obj = (IdClasses) exercise;
     }
-    if (obj instanceof Workout) {
-      Workout workout = (Workout) obj;
-      for (String id : workout.getExerciseIDs()) {
-        deleteIdObject((IdClasses) persistence.getExercise(id, username), username);
-      }
-      user.removeWorkout(workout.getId());
-    }
-    if (obj instanceof History) {
-      user.removeHistory(obj.getId());
-    }
+//    if (obj instanceof Workout) {
+//      Workout workout = (Workout) obj;
+//      for (String id : workout.getExerciseIDs()) {
+//        deleteIdObject((IdClasses) persistence.getExercise(id, username), username);
+//      }
+//      ids.removeId(obj.getId(), obj.getClass());
+//    }
+//    if (obj instanceof History) {
+//      user.removeHistory(obj.getId());
+//    }
+    ids.removeId(obj.getId(), obj.getClass());
     persistence.saveIdObject(obj, username);
-    persistence.saveUser(user);
     persistence.saveIds(ids, username);
   }
 
@@ -210,12 +209,12 @@ public class ServerService {
    * @return object's name
    * @throws IOException if persistence fails to read from file.
    */
-  public String getName(String id, String username, Class cls) throws IOException {
-    Id ids = persistence.getIds(username);
-    return ids.getName(id, cls);
-  }
+//  public String getName(String id, String username, Class cls) throws IOException {
+//    Id ids = persistence.getIds(username);
+//    return ids.getName(id, cls);
+//  }
 
-  public HashMap<String, String> getMapping (String username, Class cls) throws IOException {
+  public Map<String, String> getMapping (String username, Class cls) throws IOException {
     Id ids = persistence.getIds(username);
     return ids.getMap(cls);
   }
@@ -241,5 +240,14 @@ public class ServerService {
    */
   public Object jsonToObject(String jsonString, Class cls) throws JsonProcessingException {
     return persistence.jsonToObject(jsonString, cls);
+  }
+
+  public static void main(String[] args) throws IOException {
+    String username = "test";
+    ServerService service = new ServerService();
+    service.createUser(new User(username, "password"));
+    //Workout workout = new Workout("testW");
+    //Exercise exercise = new Exercise("testE", 90, 35, 22, 33, 94);
+    //service.addIdObject(exercise, username, "OS");
   }
 }

@@ -164,9 +164,7 @@ public class BeastBookPersistence {
    * @throws IOException if writing to file fails or if it fails to create folder.
    */
   public void createUser(User user) throws IllegalArgumentException, NullPointerException, IOException {
-    if (user.getUsername() == null) {
-      throw new NullPointerException("User must have username");
-    }
+    //Todo remove null pointer
     if(userExists(user.getUsername())) {
       throw new IllegalArgumentException("User already exists, delete " + user.getUsername() + " or use another username!");
     }
@@ -180,7 +178,6 @@ public class BeastBookPersistence {
     } catch (IOException e) {
       throw new IOException("Could not create all core classes. Failed at: " + e.getMessage());
     }
-
   }
 
   /**
@@ -396,7 +393,6 @@ public class BeastBookPersistence {
     validateUsername(username);
     String filepath = userPath + "/IDs";
     try {
-      System.out.println("det virket");
       return (Id) readObjectFromFile(getFile(filepath), Id.class);
     } catch (IOException e) {
       throw new IOException("could not read IDs");
@@ -411,7 +407,7 @@ public class BeastBookPersistence {
    * @throws JsonProcessingException if serialization fails.
    */
   public String objectToJson(Object object) throws JsonProcessingException {
-      return mapper.writeValueAsString(object);
+      return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
   }
 
   /**
@@ -425,22 +421,4 @@ public class BeastBookPersistence {
   public Object jsonToObject(String jsonString, Class cls) throws JsonProcessingException {
     return mapper.readValue(jsonString, cls);
   }
-
-
-/*  public static void main(String[] args) {
-    User user = new User("username", "password");
-    BeastBookPersistence beastBookPersistence = new BeastBookPersistence();
-    Workout workout = new Workout("emiltullinbg");
-    try {
-      *//*Id id = beastBookPersistence.getIds(user.getUsername());
-      id.giveId(workout);
-      System.out.println(workout.getId());
-      System.out.println(id.getIds(Workout.class));
-      beastBookPersistence.saveIds(id, user.getUsername());
-      System.out.println();*//*
-      beastBookPersistence.createUser(user);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-  }*/
 }

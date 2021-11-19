@@ -9,9 +9,12 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
+
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 public class ClientService {
   private BeastBookPersistence beastBookPersistence = new BeastBookPersistence();
@@ -23,15 +26,39 @@ public class ClientService {
     baseURL = "http://" + ipAddress + ":8080/";
   }
 
-  private ResponseEntity<String> sendPackage (Object object, URI uri) throws JsonProcessingException {
-    String jsonString = "";
-    jsonString = beastBookPersistence.objectToJson(object);
-    HttpHeaders headers = new HttpHeaders();
-    headers.setContentType(MediaType.APPLICATION_JSON);
-    HttpEntity<String> httpEntity = new HttpEntity<>(jsonString, headers);
-    RestTemplate restTemplate = new RestTemplate();
-    ResponseEntity<String> data = restTemplate.postForEntity(uri, httpEntity, String.class);
-    return data;
+  private ResponseEntity<String> sendPackage (Object object, URI uri) throws JsonProcessingException, IOException {
+    try {
+      String jsonString = beastBookPersistence.objectToJson(object);
+      HttpHeaders headers = new HttpHeaders();
+      headers.setContentType(MediaType.APPLICATION_JSON);
+      HttpEntity<String> httpEntity = new HttpEntity<>(jsonString, headers);
+      RestTemplate restTemplate = new RestTemplate();
+      ResponseEntity<String> data = restTemplate.postForEntity(uri, httpEntity, String.class);
+      if (data.getStatusCode() != HttpStatus.OK) {
+        exceptionHandler(data.getBody());
+      }
+      return data;
+    } catch (JsonProcessingException e) {
+      throw e;
+    }
+  }
+
+  private void exceptionHandler(String exception) throws IOException, IllegalArgumentException, IllegalStateException, NullPointerException {
+    String[] exceptionPack = exception.split(":");
+    String exceptionType = exceptionPack[0];
+    String exceptionMessage = exceptionPack[1];
+
+    if (exceptionType.equals(IOException.class.getSimpleName())) {
+      throw new IOException(exceptionMessage);
+    } else if (exceptionType.equals(IllegalArgumentException.class.getSimpleName())) {
+      throw new IllegalArgumentException(exceptionMessage);
+    } else if (exceptionType.equals(IllegalStateException.class.getSimpleName())) {
+      throw new IllegalStateException(exceptionMessage);
+    } else if (exceptionType.equals(NullPointerException.class.getSimpleName())) {
+      throw new NullPointerException(exceptionMessage);
+    } else if (exceptionType.equals(JsonProcessingException.class.getSimpleName())) {
+      throw new IOException(exceptionMessage);
+    }
   }
 
   public ResponseEntity<String> deleteWorkout(String workoutId, String username) {
@@ -94,31 +121,25 @@ public class ClientService {
     return null;
   }
 
-  public ResponseEntity<String> createUser (User user) {
-    URI uri = null;
-    try {
-      uri = new URI(baseURL + "createUser/");
-    } catch (URISyntaxException e) {
-      e.printStackTrace();
-    }
-    try {
+  public ResponseEntity<String> createUser (User user) throws URISyntaxException, JsonProcessingException{
+//    try {
+      URI uri = new URI(baseURL + "createUser/");
       return sendPackage(user, uri);
+/*    } catch (URISyntaxException e) {
     } catch (JsonProcessingException e) {
       e.printStackTrace();
     }
-    return null;
+    return null;*/
   }
 
   public ResponseEntity<String> addWorkout(Workout workout, String username) {
     URI uri = null;
     try {
-
       uri = new URI(baseURL + "addWorkout/" + username);
     } catch (URISyntaxException e) {
       e.printStackTrace();
     }
     try {
-
       return sendPackage(workout, uri);
     } catch (JsonProcessingException e) {
       e.printStackTrace();
@@ -161,7 +182,6 @@ public class ClientService {
   public ResponseEntity<String> updateWorkout(Workout workout, String username) {
     URI uri = null;
     try {
-      System.out.println("sending workout");
       uri = new URI(baseURL + "updateWorkout/" + username);
     } catch (URISyntaxException e) {
       e.printStackTrace();
@@ -176,7 +196,6 @@ public class ClientService {
 
   public ResponseEntity<String> updateExercise(Exercise exercise, String username) {
     URI uri = null;
-    System.out.println("sending exercise");
     try {
       uri = new URI(baseURL + "updateExercise/" + username);
     } catch (URISyntaxException e) {
@@ -202,6 +221,13 @@ public class ClientService {
     }
     return null;
   }*/
+
+  public User queryUser(String username)  throws JsonProcessingException {
+    final RestTemplate restTemplate = new RestTemplateBuilder().build();
+    String url = baseURL + "getUser/" + username;
+    String jsonString = restTemplate.getForObject(url, String.class);
+    return (User) beastBookPersistence.jsonToObject(jsonString, User.class);
+  }
 
   public Workout queryWorkout(String workoutID, String username)  {
     final RestTemplate restTemplate = new RestTemplateBuilder().build();
@@ -239,36 +265,36 @@ public class ClientService {
     return null;
   }
 
-  public HashMap<String, String> queryExerciseMap(String username) {
+  public Map<String, String> queryExerciseMap(String username) {
     final RestTemplate restTemplate = new RestTemplateBuilder().build();
     String url = baseURL + "getExerciseMap/" + username;
     String jsonString = restTemplate.getForObject(url, String.class);
     try {
-      return (HashMap<String, String>) beastBookPersistence.jsonToObject(jsonString, HashMap.class);
+      return (Map<String, String>) beastBookPersistence.jsonToObject(jsonString, LinkedHashMap.class);
     } catch (JsonProcessingException e) {
       e.printStackTrace();
     }
     return null;
   }
 
-  public HashMap<String, String> queryWorkoutMap(String username) {
+  public Map<String, String> queryWorkoutMap(String username) {
     final RestTemplate restTemplate = new RestTemplateBuilder().build();
     String url = baseURL + "getWorkoutMap/" + username;
     String jsonString = restTemplate.getForObject(url, String.class);
     try {
-      return (HashMap<String, String>) beastBookPersistence.jsonToObject(jsonString, HashMap.class);
+      return (Map<String, String>) beastBookPersistence.jsonToObject(jsonString, LinkedHashMap.class);
     } catch (JsonProcessingException e) {
       e.printStackTrace();
     }
     return null;
   }
 
-  public HashMap<String, String> queryHistoryMap(String username) {
+  public Map<String, String> queryHistoryMap(String username) {
     final RestTemplate restTemplate = new RestTemplateBuilder().build();
     String url = baseURL + "/getHistoryMap/" + username;
     String jsonString = restTemplate.getForObject(url, String.class);
     try {
-      return (HashMap<String, String>) beastBookPersistence.jsonToObject(jsonString, HashMap.class);
+      return (Map<String, String>) beastBookPersistence.jsonToObject(jsonString, LinkedHashMap.class);
     } catch (JsonProcessingException e) {
       e.printStackTrace();
     }

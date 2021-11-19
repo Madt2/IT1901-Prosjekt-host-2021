@@ -4,7 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import beastbook.client.ClientController;
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.testfx.api.FxAssert;
 import org.testfx.framework.junit5.ApplicationTest;
@@ -29,7 +36,7 @@ public class HistoryControllerTest extends ApplicationTest {
     final FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/beastbook.fxui/History.fxml"));
     controller = new HistoryController();
     loader.setController(controller);
-    User user = new User("Test", "123");
+    controller.setService(new ClientController("Test", "Test"));
     addHistoryToUser();
     final Parent root = loader.load();
     stage.setScene(new Scene(root));
@@ -37,23 +44,39 @@ public class HistoryControllerTest extends ApplicationTest {
   } 
 
   private void addHistoryToUser(){
-    Workout workout = new Workout("testWorkout");
-  //  workout.addExercise(new Exercise("Benchpress", 20, 30, 40, 50, 50));
-   // history = new History(workout, "12.11.2021");
-    //controller.user.addWorkout(workout);
-   // controller.user.addHistory(history);
+    List<Exercise> exercises1 = new ArrayList<>();
+    exercises1.add(new Exercise("Benchpress", 20, 30, 40, 50, 50));
+    history = new History("myHistory1", exercises1);
+    //controller.service.addWorkout(history);
+    controller.service.addHistory(history);
   }
 
   @Test
   void testCorrectHistoryIsShown(){
-    //FxAssert.verifyThat("#title", TextMatchers.hasText(controller.user.getHistory(history.getName(), history.getDate()).getName()));
-    //FxAssert.verifyThat("#date", TextMatchers.hasText(controller.user.getHistory(history.getName(), history.getDate()).getDate()));
+    FxAssert.verifyThat("#title", TextMatchers.hasText(history.getName()));
+    FxAssert.verifyThat("#date", TextMatchers.hasText(history.getDate()));
 
     controller.getHistoryTable().getColumns().get(0).setId("exerciseName");
     Node node = lookup("#exerciseName").nth(1).query();
     clickOn(node);
 
+    /*Map<String,String> historyMap = controller.service.getHistoryMap();
+    String serviceH1 = null;
+    Optional<String> firstKey = historyMap.keySet().stream().findFirst();
+    if (firstKey.isPresent()) {
+      serviceH1 = historyMap.get(firstKey);
+    }
+    Assertions.assertEquals(historyLine, serviceH1);
+    */
+
+    List<String> exerciseIDs = controller.service.getHistory(history.getId()).getExerciseIDs();
+    List<Exercise> exercises = new ArrayList<>();
+    for (String id :exerciseIDs) {
+      exercises.add(controller.service.getExercise(id));
+    }
+
     //assertEquals(controller.user.getHistories().get(0).getSavedWorkout().getExercises(), controller.getHistoryTable().getSelectionModel().getSelectedItems());
+    assertEquals(exercises, controller.getHistoryTable().getItems());
   }
 
   @AfterAll

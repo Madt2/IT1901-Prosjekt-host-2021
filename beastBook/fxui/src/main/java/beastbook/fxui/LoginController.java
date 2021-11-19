@@ -1,7 +1,7 @@
 package beastbook.fxui;
 
-import beastbook.core.User;
-import java.io.IOException;
+import beastbook.client.ClientController;
+import beastbook.client.RegisterController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -39,8 +39,8 @@ public class LoginController extends AbstractController {
     String password = passwordInput.getText();
     if (!userName.equals("") && !password.equals("")) {
       try {
-        User user = new User(userName, password);
-        service.createUser(user);
+        RegisterController registerController = new RegisterController();
+        loginError.setText(registerController.registerUser(userName, password));
         loginUser(event);
       } catch (Exception e) {
         loginError.setText(e.getMessage());
@@ -61,32 +61,26 @@ public class LoginController extends AbstractController {
     String password = passwordInput.getText();
     try {
       validateLogin(userName, password);
-      setUsername(userName);
+      System.out.println(userName);
+      System.out.println(password);
+      ClientController controller = new ClientController(userName, password);
+      System.out.println("controller");
+      setService(controller);
+      System.out.println("my ass");
       super.loadHome(event);
     } catch (Exception e) {
-      loginError.setText(e.getMessage());
+      loginError.setText(e.getMessage() + "det var except");
     }
   }
 
   private void validateLogin(
-      String userName, String password)
-      throws IOException, IllegalArgumentException {
+          String userName, String password)
+      throws IllegalArgumentException {
     if (userName.equals("")) {
       throw new IllegalArgumentException("No username given");
     }
     if (password.equals("")) {
       throw new IllegalArgumentException("No Password given!");
-    }
-    try {
-      User login = service.queryUser(userName);
-      if (!login.getPassword().equals(password)) {
-        throw new IllegalArgumentException("Wrong Password");
-      }
-      //TODO fix handling not found user
-    } /*catch (IOException e) {
-      throw new IOException("No user found!");
-    }*/ catch (IllegalArgumentException e) {
-      throw e;
     }
   }
 }

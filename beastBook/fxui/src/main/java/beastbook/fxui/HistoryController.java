@@ -40,7 +40,7 @@ public class HistoryController extends AbstractController {
    */
   @FXML
   public void initialize() throws IOException {
-    History history = service.queryHistory(historyId, getUsername());
+    History history = service.getHistory(historyId);
     setTable(history);
     title.setText(history.getName());
     date.setText(history.getDate());

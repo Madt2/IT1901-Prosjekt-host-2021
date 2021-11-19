@@ -1,8 +1,6 @@
 package beastbook.core;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -17,22 +15,22 @@ public class Id {
   public static final String LEGAL_CHARS_EXERCISE_ID = "abcdefghijklmnopqrstuvwxyz0123456789";
   public static final String LEGAL_CHARS_WORKOUT_ID = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-  private HashMap<String, String> exerciseMap = new HashMap<>();
-  private HashMap<String, String> workoutMap = new HashMap<>();
-  private HashMap<String, String> historyMap = new HashMap<>();
+  private Map<String, String> exerciseMap = new LinkedHashMap<>();
+  private Map<String, String> workoutMap = new LinkedHashMap<>();
+  private Map<String, String> historyMap = new LinkedHashMap<>();
 
-  public HashMap<String, String> getMap(Class cls) throws IllegalArgumentException {
-    HashMap<String, String> map;
+  public Map<String, String> getMap(Class cls) throws IllegalArgumentException {
+    Map<String, String> map;
     if (cls == Exercise.class) {
-      map = exerciseMap;
+      map = Collections.synchronizedMap(exerciseMap);
     } else if (cls == Workout.class) {
-      map = workoutMap;
+      map = Collections.synchronizedMap(workoutMap);
     } else if (cls == History.class) {
-      map = historyMap;
+      map = Collections.synchronizedMap(historyMap);
     } else {
       throw new IllegalArgumentException("Class must be type Exercise, Workout or History!");
     }
-    return new HashMap<String, String>(map);
+    return new LinkedHashMap<>(map);
   }
 
   private static String setLegalChars(Class cls) throws IllegalArgumentException {
@@ -69,7 +67,7 @@ public class Id {
   }
 
   public List<String> getIds(Class cls) throws IllegalArgumentException {
-    return new ArrayList<String>(getMap(cls).keySet());
+    return new ArrayList<>(getMap(cls).keySet());
   }
 
   public String getName(String id, Class cls) throws IllegalArgumentException {
@@ -77,11 +75,16 @@ public class Id {
   }
 
   public void addId(String id, String name, Class cls) throws IllegalArgumentException {
-    HashMap<String, String> map = getMap(cls);
     if (hasId(id, cls)) {
       throw new IllegalArgumentException(cls.getName() + " already have ID " + id + " stored");
     }
-    map.put(id, name);
+    if (cls == Exercise.class) {
+      exerciseMap.put(id, name);
+    } else if (cls == Workout.class) {
+      workoutMap.put(id, name);
+    } else if (cls == History.class) {
+      historyMap.put(id, name);
+    }
   }
 
   /**
@@ -92,7 +95,7 @@ public class Id {
    * @throws IllegalArgumentException if ID is not stored in file.
    */
   public void removeId(String id, Class cls) throws IllegalArgumentException {
-    HashMap<String, String> map = getMap(cls);
+    Map<String, String> map = getMap(cls);
     if (!hasId(id, cls)) {
       throw new IllegalArgumentException(cls.getName() + " does not have ID " + id + " stored in file.");
     }
@@ -180,10 +183,10 @@ public class Id {
   }*/
 
   /**
-   * Gives id to IIdObject.
+   * Gives id to IdObject.
    *
    * @param obj object to give id.
-   * @return IIdClass with set id
+   * @return IdClass with set id
    * @throws IllegalArgumentException if object already has an id.
    * @throws IllegalStateException If no more ids are available.
    */
@@ -193,9 +196,9 @@ public class Id {
     final String legalChars = setLegalChars(cls);
     final int legalLength = setLegalLength(cls);
     int possibilities = (int) Math.pow(legalChars.length(), legalLength);
-    if (getIds(cls).size() < possibilities / 2) {
+ //   if (getIds(cls).size() < possibilities / 2) {
       id = generateIdWhileLoop(cls, possibilities);
-    }
+//    }
     //TODO FIX this
     /*else {
       id = generateIdForLoop(cls, possibilities);

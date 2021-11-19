@@ -1,5 +1,6 @@
 package beastbook.fxui;
 
+import beastbook.client.ClientController;
 import beastbook.client.ClientService;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,8 +17,9 @@ import java.io.IOException;
  * Used for loading scenes.
  */
 public abstract class AbstractController {
-  protected String username;
-  protected ClientService service = new ClientService();
+  private String username;
+  private String password;
+  protected ClientController service;
 
   @FXML
   void loadHome(ActionEvent event) throws IOException {
@@ -26,7 +28,7 @@ public abstract class AbstractController {
         this.getClass().getResource("/beastbook.fxui/HomeScreen.fxml")
     );
     fxmlLoader.setController(homeScreenController);
-    homeScreenController.setUsername(getUsername());
+    homeScreenController.setService(service);
     Parent root = fxmlLoader.load();
     Scene scene = new Scene(root, 600, 500);
     Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -53,7 +55,7 @@ public abstract class AbstractController {
             this.getClass().getResource("/beastbook.fxui/Create.fxml")
     );
     fxmlLoader.setController(createController);
-    createController.setUsername(getUsername());
+    createController.setService(service);
     Parent root = fxmlLoader.load();
     Scene scene = new Scene(root, 600, 500);
     Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -67,7 +69,7 @@ public abstract class AbstractController {
             this.getClass().getResource("/beastbook.fxui/WorkoutOverview.fxml")
     );
     fxmlLoader.setController(workoutOverviewController);
-    workoutOverviewController.setUsername(getUsername());
+    workoutOverviewController.setService(service);
     Parent root = fxmlLoader.load();
     Scene scene = new Scene(root, 600, 500);
     Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -81,18 +83,30 @@ public abstract class AbstractController {
             this.getClass().getResource("/beastbook.fxui/HistoryOverview.fxml")
     );
     fxmlLoader.setController(historyOverviewController);
-    historyOverviewController.setUsername(getUsername());
+    historyOverviewController.setService(service);
     Parent root = fxmlLoader.load();
     Scene scene = new Scene(root, 600, 500);
     Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
     stage.setScene(scene);
   }
 
+  void setService(ClientController service) {
+    this.service = service;
+  }
+
   void setUsername(String username) {
     this.username = username;
   }
 
+  void setPassword(String password) {
+    this.password = password;
+  }
+
   String getUsername() {
     return this.username;
+  }
+
+  String getPassword() {
+    return this.password;
   }
 }
