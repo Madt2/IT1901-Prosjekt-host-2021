@@ -41,9 +41,9 @@ public class HistoryOverviewController extends AbstractController {
   private Text exceptionFeedback;
 
   @FXML
-  private TableView<String> historyOverview = new TableView<>();
-  private TableColumn<String, String> historyNameColumn;
-  private TableColumn<String, String> historyDateColumn;
+  private TableView<HistoryData> historyOverview = new TableView<>();
+  private TableColumn<HistoryData, String> historyNameColumn;
+  private TableColumn<HistoryData, String> historyDateColumn;
   private String selectedHistoryId;
   private Map<String,String> historyMap;
 
@@ -55,10 +55,15 @@ public class HistoryOverviewController extends AbstractController {
 
   private void loadTable() {
     historyOverview.getColumns().clear();
-    historyNameColumn = new TableColumn<>("Workout name:");
-    historyNameColumn.setCellValueFactory(name -> new SimpleStringProperty(name.getValue()));
+    List<HistoryData> historyData = new ArrayList<>();
+    for (String s : historyMap.values()) {
+      String[] strings = s.split(";");
+      historyData.add(new HistoryData(strings[0], strings[1]));
+    }
+    historyNameColumn = new TableColumn<>("Name:");
+    historyNameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getName()));
     historyDateColumn = new TableColumn<>("Date:");
-    historyDateColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()));
+    historyDateColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue().getDate()));
     historyOverview.getColumns().add(historyDateColumn);
     historyOverview.getColumns().add(historyNameColumn);
 ////    List<List<String>> body = new ArrayList<>();
@@ -100,8 +105,8 @@ public class HistoryOverviewController extends AbstractController {
   private void setColumnsSize() {
     historyNameColumn.setPrefWidth(129);
     historyNameColumn.setResizable(false);
-   /* historyDateColumn.setPrefWidth(129);
-    historyDateColumn.setResizable(false);*/
+    historyDateColumn.setPrefWidth(129);
+    historyDateColumn.setResizable(false);
   }
 
   @FXML
@@ -113,12 +118,14 @@ public class HistoryOverviewController extends AbstractController {
           this.getClass().getResource("/beastbook.fxui/History.fxml")
       );
       fxmlLoader.setController(historyController);
+      historyController.setService(service);
       historyController.setHistoryId(getSelectedHistoryId());
       Parent root = fxmlLoader.load();
       Scene scene = new Scene(root, 600, 500);
       Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
       stage.setScene(scene);
     } catch (Exception e) {
+      e.printStackTrace();
       openButton.setDisable(true);
       deleteButton.setDisable(true);
       exceptionFeedback.setText("No history entry is selected!");
@@ -128,11 +135,14 @@ public class HistoryOverviewController extends AbstractController {
   @FXML
   private void historySelectedListener() {
     try {
-      String name =  historyOverview.getSelectionModel().getSelectedItem();
+      HistoryData selected =  historyOverview.getSelectionModel().getSelectedItem();
+      String name = selected.getName();
+      String date = selected.getDate();
+      String data = name + ";" + date;
       Iterator it = historyMap.entrySet().iterator();
       while (it.hasNext()) {
         Map.Entry entry = (Map.Entry) it.next();
-        if (entry.getValue().equals(name)) {
+        if (entry.getValue().equals(data)) {
           selectedHistoryId = entry.getKey().toString();
           break;
         }
@@ -158,7 +168,7 @@ public class HistoryOverviewController extends AbstractController {
     deleteButton.setDisable(true);
   }
 
-  TableView<String> getHistoryOverview() {
+  TableView<HistoryData> getHistoryOverview() {
     return historyOverview;
   }
 
@@ -166,4 +176,20 @@ public class HistoryOverviewController extends AbstractController {
     return selectedHistoryId;
   }
 
+  public class HistoryData {
+    private final String name;
+    private final String date;
+
+    public HistoryData(String name, String date){
+      this.name = name;
+      this.date = date;
+    }
+
+    public String getName() {
+      return name;
+    }
+    public String getDate() {
+      return date;
+    }
+  }
 }

@@ -95,6 +95,7 @@ public class Id {
    * @throws IllegalArgumentException if ID is not stored in file.
    */
   public void removeId(String id, Class cls) throws IllegalArgumentException {
+    //TODO fix this method
     Map<String, String> map = getMap(cls);
     if (!hasId(id, cls)) {
       throw new IllegalArgumentException(cls.getName() + " does not have ID " + id + " stored in file.");
