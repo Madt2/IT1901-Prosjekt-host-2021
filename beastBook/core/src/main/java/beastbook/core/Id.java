@@ -207,7 +207,7 @@ public class Id {
     obj.setId(id);
     if (obj.getClass() == History.class) {
       History history = (History) obj;
-      addId(history.getId(), history.getName() + "§" + history.getDate(), history.getClass());
+      addId(history.getId(), history.getName() + ";" + history.getDate(), history.getClass());
       obj = history;
     } else {
       addId(obj.getId(), obj.getName() ,obj.getClass());

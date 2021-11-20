@@ -122,11 +122,10 @@ public class ServerController {
     }
   }
 
-  @PostMapping("deleteUser/")
-  public ResponseEntity<String> deleteUser(@RequestBody String jsonString) {
+  @PostMapping("deleteUser/{username}")
+  public ResponseEntity<String> deleteUser(@PathVariable String username) {
     try {
-      User user = (User) serverService.jsonToObject(jsonString, User.class);
-      serverService.deleteUser(user.getUsername());
+      serverService.deleteUser(username);
       return new ResponseEntity<>("Success in deleting User", HttpStatus.OK);
     } catch (JsonProcessingException e) { //Error in json
       return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -141,8 +140,7 @@ public class ServerController {
   @PostMapping("deleteWorkout/{username}/{workoutId}")
   public ResponseEntity<String> deleteWorkout(@PathVariable String workoutId, @PathVariable String username) {
     try {
-      Workout workout = serverService.getWorkout(workoutId, username);
-      serverService.deleteIdObject(workout, username);
+      serverService.deleteIdObject(workoutId, username, Workout.class);
       return new ResponseEntity<>("Success in deleting Workout", HttpStatus.OK);
     } catch (JsonProcessingException e) { //Error in json
       return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -172,10 +170,9 @@ public class ServerController {
   }
 
   @PostMapping("deleteHistory/{username}/{historyID}")
-  public ResponseEntity<String> deleteHistory(@RequestBody String jsonString, @PathVariable String username) {
+  public ResponseEntity<String> deleteHistory(@PathVariable String username, @PathVariable String id) {
     try {
-      History history = (History) serverService.jsonToObject(jsonString, History.class);
-      serverService.deleteIdObject(history, username);
+      serverService.deleteIdObject(id, username, History.class);
       return new ResponseEntity<>("Success in deleting Workout", HttpStatus.OK);
     }  catch (JsonProcessingException e) { //Error in json
       return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
@@ -186,8 +183,6 @@ public class ServerController {
       //send could not save user, IO error, send package again.
     }
   }
-
-
 
   @GetMapping("getUser/{username}")
   public ResponseEntity<String> sendUser(@PathVariable String username) {

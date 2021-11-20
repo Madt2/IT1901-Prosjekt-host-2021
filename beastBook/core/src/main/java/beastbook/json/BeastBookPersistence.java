@@ -254,25 +254,23 @@ public class BeastBookPersistence {
   /**
    * Deletes file for given object.
    *
-   * @param object to delete file for.
+   * @param objectId to delete file for.
    * @param username for user.
+   * @param cls class to delete object for.
    * @throws NullPointerException if username is null, or if objects id is null.
    * @throws IOException if deletion of file fails.
    */
-  public void deleteIdObject(IdClasses object, String username) throws NullPointerException, IOException {
+  public void deleteIdObject(String objectId, String username, Class cls) throws NullPointerException, IOException {
     validateUsername(username);
     String filepath = "";
-    if (object.getId() == null) {
-      throw new NullPointerException(object.getClass() + " must have ID (dont set manually, use getID from serverService!)");
+    if (objectId == null) {
+      throw new NullPointerException(cls + " must have ID (dont set manually, use getID from serverService!)");
     }
-    if (object instanceof Exercise) {
-      filepath = exerciseFolderPath + "/" + object.getId();
+    if (cls == Workout.class) {
+      filepath = workoutFolderPath + "/" + objectId;
     }
-    if (object instanceof Workout) {
-      filepath = workoutFolderPath + "/" + object.getId();
-    }
-    if (object instanceof History) {
-      filepath = historyFolderPath + "/" + object.getId();
+    if (cls == History.class) {
+      filepath = historyFolderPath + "/" +objectId;
     }
     File file = new File(filepath);
     deleteFile(file);
@@ -298,6 +296,8 @@ public class BeastBookPersistence {
       file = new File(userPath + "/UserData");
       deleteFile(file);
       file = new File(userPath + "/IDs");
+      deleteFile(file);
+      file = new File(userPath);
       deleteFile(file);
     } catch (IOException e) {
       throw new IOException("Could not delete base userdata files!");

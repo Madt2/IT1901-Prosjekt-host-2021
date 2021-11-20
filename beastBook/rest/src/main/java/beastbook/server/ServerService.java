@@ -106,49 +106,46 @@ ServerService {
    * @throws IOException if persistence fails to read or write to file.
    */
   public void deleteUser(String username) throws IllegalArgumentException, IOException {
-    /*
     Id ids = persistence.getIds(username);
-    for (String id : ids.) {
-      deleteIdObject((IdClasses) persistence.getWorkout(id, username), username);
+    List<String> exerciseIds = (List<String>) ids.getMap(Exercise.class).keySet();
+    List<String> workoutIds = (List<String>) ids.getMap(Workout.class).keySet();
+    List<String> historyIds = (List<String>) ids.getMap(History.class).keySet();
+    for (String id : exerciseIds) {
+      deleteIdObject(id, username, Exercise.class);
     }
-    for (String id : user.getHistoryIDs()) {
-      deleteIdObject((IdClasses) persistence.getHistory(id, username), username);
+    for (String id : workoutIds) {
+      deleteIdObject(id, username, Workout.class);
     }
-      persistence.deleteUserDir(username);
-
-     */
+    for (String id : historyIds) {
+      deleteIdObject(id, username, History.class);
+    }
+    persistence.deleteUserDir(username);
   }
 
   /**
    * Deletes workout in server's register.
    *
-   * @param obj IdClass object to delete.
+   * @param id IdClass object to delete.
    * @param username of user to delete workout.
    * @throws IllegalArgumentException if user with username does not exist.
    * @throws IOException if persistence fails to read frim or write to file.
    */
-  public void deleteIdObject(IdClasses obj, String username) throws IOException {
+  public void deleteIdObject(String id, String username, Class cls) throws IOException {
     Id ids = persistence.getIds(username);
-    if (obj instanceof Exercise) {
-      Exercise exercise = (Exercise) obj;
-      Workout workout = persistence.getWorkout(exercise.getWorkoutID(), username);
-      workout.removeExercise(exercise.getId());
-      persistence.saveIdObject((IdClasses) workout, username);
-      obj = (IdClasses) exercise;
-    }
-//    if (obj instanceof Workout) {
-//      Workout workout = (Workout) obj;
-//      for (String id : workout.getExerciseIDs()) {
-//        deleteIdObject((IdClasses) persistence.getExercise(id, username), username);
-//      }
-//      ids.removeId(obj.getId(), obj.getClass());
-//    }
-//    if (obj instanceof History) {
-//      user.removeHistory(obj.getId());
-//    }
-    ids.removeId(obj.getId(), obj.getClass());
-    persistence.saveIdObject(obj, username);
+    ids.removeId(id, cls);
     persistence.saveIds(ids, username);
+    persistence.deleteIdObject(id, username, cls);
+  }
+
+  //TODO Fix that throws IOException
+  public void deleteExercise(Exercise exercise, String username) throws IOException {
+    Id ids = persistence.getIds(username);
+    Workout workout = persistence.getWorkout(exercise.getWorkoutID(), username);
+    workout.removeExercise(exercise.getId());
+    persistence.saveIdObject(workout, username);
+    ids.removeId(exercise.getId(), exercise.getClass());
+    persistence.saveIds(ids, username);
+    persistence.deleteIdObject(exercise.getId(), username, Exercise.class);
   }
 
   /**
@@ -202,14 +199,14 @@ ServerService {
     return persistence.getHistory(historyID, username);
   }
 
-  /**
-   * Getter for workout's name from server's register.
-   *
-   * @param id of object to get name off.
-   * @param username of user to get workout's name from.
-   * @return object's name
-   * @throws IOException if persistence fails to read from file.
-   */
+//  /**
+//   * Getter for workout's name from server's register.
+//   *
+//   * @param  of object to get name off.
+//   * @param username of user to get workout's name from.
+//   * @return object's name
+//   * @throws IOException if persistence fails to read from file.
+//   */
 //  public String getName(String id, String username, Class cls) throws IOException {
 //    Id ids = persistence.getIds(username);
 //    return ids.getName(id, cls);
