@@ -8,7 +8,7 @@
 
 <AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TableView fx:id="workoutTable" layoutX="41.0" layoutY="84.0" minHeight="200.0" minWidth="525.0" prefHeight="60.0" prefWidth="525.0" />
+      <TableView fx:id="workoutTable" layoutX="18.0" layoutY="85.0" minHeight="200.0" minWidth="565.0" prefHeight="60.0" prefWidth="565.0" />
       <Button fx:id="backButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#loadOverview" text="&lt;- Back" />
       <Text fx:id="title" layoutX="288.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title">
          <font>

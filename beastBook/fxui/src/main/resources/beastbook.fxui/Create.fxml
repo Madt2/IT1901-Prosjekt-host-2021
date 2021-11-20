@@ -1,21 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-<?import javafx.scene.text.*?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Text?>
 
-<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
    <Button fx:id="backButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#loadHome" text="&lt;- Back" />
-      <TableView fx:id="workoutTable" layoutX="84.0" layoutY="83.0" minHeight="200.0" minWidth="434.0" onMouseClicked="#exerciseSelectedListener" prefHeight="200.0" prefWidth="434.0" />
+      <TableView fx:id="workoutTable" layoutX="57.0" layoutY="83.0" minHeight="200.0" minWidth="500.0" onMouseClicked="#exerciseSelectedListener" prefHeight="200.0" prefWidth="500.0" />
       <TextField fx:id="exerciseNameInput" layoutX="150.0" layoutY="310.0" />
-      <Text fx:id="exerciseTitle" layoutX="61.0" layoutY="327.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Exercise Name:" wrappingWidth="84.0" />
+      <Text fx:id="exerciseTitle" layoutX="59.0" layoutY="328.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Exercise Name:" wrappingWidth="89.0" />
       <TextField fx:id="repGoalInput" layoutX="150.0" layoutY="340.0" />
       <TextField fx:id="weightInput" layoutX="150.0" layoutY="370.0" />
       <TextField fx:id="setsInput" layoutX="150.0" layoutY="400.0" />
@@ -30,6 +26,6 @@
       <Button fx:id="addButton" layoutX="134.0" layoutY="460.0" mnemonicParsing="false" onAction="#addExercise" text="Add exercise" />
       <Button fx:id="loadButton" layoutX="393.0" layoutY="52.0" mnemonicParsing="false" onAction="#loadWorkout" text="Load Workout" />
       <Text fx:id="exceptionFeedback" fill="RED" layoutX="400.0" layoutY="356.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="142.0" />
-      <Button fx:id="deleteButton" disable="true" layoutX="422.0" layoutY="289.0" mnemonicParsing="false" onAction="#deleteExercise" text="Delete  exercise" />
+      <Button fx:id="deleteButton" disable="true" layoutX="452.0" layoutY="297.0" mnemonicParsing="false" onAction="#deleteExercise" text="Delete  exercise" />
    </children>
 </AnchorPane>

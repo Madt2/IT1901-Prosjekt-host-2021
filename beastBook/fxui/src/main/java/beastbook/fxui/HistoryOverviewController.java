@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -16,8 +15,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -25,11 +22,6 @@ import javafx.stage.Stage;
  * Controller for the HistoryOverview screen.
  */
 public class HistoryOverviewController extends AbstractController {
-  @FXML
-  private AnchorPane rootPane;
-
-  @FXML
-  private Button backButton;
 
   @FXML
   private Button openButton;
@@ -67,14 +59,22 @@ public class HistoryOverviewController extends AbstractController {
     historyOverview.getColumns().add(historyDateColumn);
     historyOverview.getColumns().add(historyNameColumn);
     historyOverview.getItems().setAll(historyData);
-    setColumnsSize();
+    setColumnProperties();
   }
 
-  private void setColumnsSize() {
-    historyNameColumn.setPrefWidth(129);
-    historyNameColumn.setResizable(false);
-    historyDateColumn.setPrefWidth(129);
+  /**
+  * Sets differents properties of the columns.
+  * Width, not reorderable and not resizable is set. 
+  */
+  private void setColumnProperties() {
+    historyDateColumn.setPrefWidth(83);
+    historyNameColumn.setPrefWidth(165);
+
     historyDateColumn.setResizable(false);
+    historyNameColumn.setResizable(false);
+    
+    historyDateColumn.setReorderable(false);
+    historyNameColumn.setReorderable(false);
   }
 
   @FXML

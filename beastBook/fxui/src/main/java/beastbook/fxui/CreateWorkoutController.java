@@ -29,9 +29,6 @@ public class CreateWorkoutController extends AbstractController {
   private Text exceptionFeedback;
 
   @FXML
-  private Button backButton;
-
-  @FXML
   private TextField exerciseNameInput;
 
   @FXML
@@ -81,8 +78,6 @@ public class CreateWorkoutController extends AbstractController {
   private TableColumn<Exercise, Double> weightColumn;
   private TableColumn<Exercise, Integer> setsColumn;
   private TableColumn<Exercise, Integer> restTimeColumn;
-//  private List<String> workoutIds = new ArrayList<>();
-//  private List<String> workoutNames = new ArrayList<>();
   private List<Exercise> exercises = new ArrayList<>();
   private Workout workout = new Workout();
   //TODO use loadedWorkout boolean
@@ -96,13 +91,6 @@ public class CreateWorkoutController extends AbstractController {
    * Initializes the CreateWorkout scene with the listeners for validation of input fields.
    */
   public void initialize() {
-/*    workoutIds = service.queryUser(getUsername()).getWorkoutIDs();
-    for (String id : workoutIds) {
-      String name = service.queryWorkoutName(id, getUsername());
-      if (name != null) {
-        workoutNames.add(name);
-      }
-    }*/
     updateTable();
     exerciseNameInput.setOnKeyTyped(event ->
             new StringValidator(exerciseTitle, exerciseNameInput, exceptionFeedback));
@@ -138,7 +126,7 @@ public class CreateWorkoutController extends AbstractController {
     setsColumn.setCellValueFactory(
             new PropertyValueFactory<>("sets")
     );
-    restTimeColumn = new TableColumn<>("Rest time in sec");
+    restTimeColumn = new TableColumn<>("Rest time (sec)");
     restTimeColumn.setCellValueFactory(
             new PropertyValueFactory<>("restTime")
     );
@@ -147,20 +135,31 @@ public class CreateWorkoutController extends AbstractController {
     workoutTable.getColumns().add(weightColumn);
     workoutTable.getColumns().add(setsColumn);
     workoutTable.getColumns().add(restTimeColumn);
-    setColumnsSize();
-
+    setColumnProperties();
     workoutTable.getItems().setAll(exercises);
   }
 
   /**
-  * Resizes the width of the columns.
+  * Sets differents properties of the columns.
+  * Width, not reorderable and not resizable is set. 
   */
-  private void setColumnsSize() {
-    exerciseNameColumn.setPrefWidth(100);        
-    repGoalColumn.setPrefWidth(75);
-    weightColumn.setPrefWidth(75);
-    setsColumn.setPrefWidth(80);
-    restTimeColumn.setPrefWidth(100);
+  private void setColumnProperties() {
+    exerciseNameColumn.setPrefWidth(210);        
+    repGoalColumn.setPrefWidth(65);
+    weightColumn.setPrefWidth(65);
+    setsColumn.setPrefWidth(64);
+    restTimeColumn.setPrefWidth(94);
+  
+    exerciseNameColumn.setReorderable(false);
+    repGoalColumn.setReorderable(false);
+    weightColumn.setReorderable(false);
+    setsColumn.setReorderable(false);
+    restTimeColumn.setReorderable(false);
+
+    repGoalColumn.setResizable(false);
+    weightColumn.setResizable(false);
+    setsColumn.setResizable(false);
+    restTimeColumn.setResizable(false);
   }
 
   /**
@@ -197,13 +196,13 @@ public class CreateWorkoutController extends AbstractController {
   */
   @FXML
   void addExercise() throws IllegalArgumentException {
+    boolean duplicate = false;
     if (exceptionFeedback.getText().equals("") && !checkForEmptyInputFields()) {
       try {
         int repGoal;
         double weight;
         int sets;
         int rest;
-
         try {
           repGoal = Integer.parseInt(repGoalInput.getText());
         } catch (NumberFormatException a) {
@@ -227,38 +226,38 @@ public class CreateWorkoutController extends AbstractController {
         String name = exerciseNameInput.getText();
         int repsPerSet = 0;
         Exercise exercise = new Exercise(name, repGoal, weight, sets, repsPerSet, rest);
-        //TODO fix this entire block underneath
         if (workout.getId() != null) {
           for (Exercise e : exercises) {
             if (e.getName().equals(exercise.getName())) {
-              exercises.remove(e);
-              exercises.add(exercise);
-              exceptionFeedback.setText("Exercise overwritten!");
+     
+              exceptionFeedback.setText("Could not add exercise '" + e.getName() + "' because it is all ready added!");
+              duplicate = true;
+              return;
             }
           }
           service.addExercise(exercise, workout.getId());
         } else {
           for (Exercise e : exercises) {
             if (e.getName().equals(exercise.getName())) {
-              exercises.remove(e);
-              exercises.add(exercise);
-              exceptionFeedback.setText("Exercise overwritten!");
+              duplicate = true;
+              exceptionFeedback.setText("Could not add exercise '" + e.getName() + "' because it is all ready added!");
+              return;
             }
           }
         }
-        if (!exceptionFeedback.getText().equals("Exercise overwritten!")) {
-          exercises.add(exercise);
-          exceptionFeedback.setText("Exercise added!");
-        }
+        exercises.add(exercise);
+        exceptionFeedback.setText("Exercise added and saved to the workout!");
+        duplicate = false;
         updateTable();
-        exceptionFeedback.setText("");
         createButton.setDisable(false);
         emptyInputFields();
       } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage());
       }
     } else if (checkForEmptyInputFields()) {
-      exceptionFeedback.setText("Input missing in a field");
+      exceptionFeedback.setText("Input missing in one or more fields");
+    } else if(duplicate == false){
+      return;
     } else {
       exceptionFeedback.setText("Wrong input, exercise was not created");
     }
