@@ -159,7 +159,7 @@ public class ServerController {
     try {
       Exercise exercise = (Exercise) serverService.jsonToObject(jsonString, Exercise.class);
       System.out.println(exercise.getId());
-      serverService.deleteIdObject(exercise, username);
+      serverService.deleteExercise(exercise, username);
       return new ResponseEntity<>("Success in deleting Exercise", HttpStatus.OK);
     } catch (JsonProcessingException e) { //Error in json
       return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);

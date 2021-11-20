@@ -395,22 +395,13 @@ public class CreateWorkoutController extends AbstractController {
     Exercise selectedExercise = workoutTable.getSelectionModel().getSelectedItem();
     try {
       if (workout.getId() != null) {
-        System.out.println("Exercise id = " + selectedExercise.getId());
-        System.out.println("Exercises IDs til workout" + workout.getExerciseIDs());
         if (selectedExercise.getId() != null){
           service.removeExercise(selectedExercise);
         }
         exercises.remove(selectedExercise);
-        System.out.println("ID" + workout.getId());
-        System.out.println("Exercise id = " + selectedExercise.getId());
-
-        System.out.println("Name" + workout.getName());
-        System.out.println("Workouten henta fra service: " +service.getWorkout(workout.getId()));
-
       } else {
         exercises.remove(selectedExercise);
       }
-
       exceptionFeedback.setText("The exercise '"
               + selectedExercise.getName() + "' was deleted!");
       updateTable();

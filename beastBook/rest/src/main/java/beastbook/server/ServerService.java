@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.Map;
+import java.util.List;
 
 /**
  * Service class for server. Contains core methods to execute rest servers requests.

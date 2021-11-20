@@ -59,7 +59,6 @@ public class WorkoutOverviewController extends AbstractController {
     workoutNameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()));
     workoutOverview.getColumns().add(workoutNameColumn);
     workoutOverview.getItems().setAll(workoutMap.values());
-    //System.out.println(workoutMap.values());
     setColumnsSize();
   }
 

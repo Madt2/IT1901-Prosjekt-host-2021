@@ -54,7 +54,7 @@ public class HistoryController extends AbstractController {
     historyTable.getColumns().clear();
     exerciseNameColumn = new TableColumn<>("Exercise name:");
     exerciseNameColumn.setCellValueFactory(
-            new PropertyValueFactory<>("exerciseName")
+            new PropertyValueFactory<>("name")
     );
     repGoalColumn = new TableColumn<>("Rep goal:");
     repGoalColumn.setCellValueFactory(

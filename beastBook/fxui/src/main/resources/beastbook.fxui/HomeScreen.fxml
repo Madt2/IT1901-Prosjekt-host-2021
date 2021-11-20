@@ -8,6 +8,7 @@
       <Button fx:id="createButton" layoutX="250.0" layoutY="98.0" mnemonicParsing="false" onAction="#loadCreate" text="Create Workout" />
       <Button fx:id="workoutsButton" layoutX="250.0" layoutY="143.0" mnemonicParsing="false" onAction="#loadOverview" prefHeight="26.0" prefWidth="100.0" text="My Workouts" />
       <Button fx:id="logoutButton" layoutX="14.0" layoutY="361.0" mnemonicParsing="false" onAction="#loadLogin" text="Log out" textFill="RED" />
+      <Button fx:id="deleteUserButton" layoutX="254.0" layoutY="361.0" mnemonicParsing="false" onAction="#deleteUser" text="Delete user" textFill="RED" />
       <Button fx:id="historyButton" layoutX="250.0" layoutY="187.0" mnemonicParsing="false" onAction="#loadHistoryOverview" prefHeight="26.0" prefWidth="100.0" text="History" />
    </children>
 </AnchorPane>
