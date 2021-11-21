@@ -8,7 +8,6 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
-
 /**
  * Class for saving and loading objects to and from file.
  */
