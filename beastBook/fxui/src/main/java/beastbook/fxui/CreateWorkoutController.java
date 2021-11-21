@@ -434,7 +434,7 @@ public class CreateWorkoutController extends AbstractController {
         if (num <= 0) {
           exception.setText(title.getText().replace(":", "") + " must be more than 0");
           field.setStyle(WRONG_INPUT_BORDER_COLOR);
-        } else if (String.valueOf(num).length() >= Exercise.maxIntLength) {
+        } else if (String.valueOf(num).length() > Exercise.maxIntLength) {
           exception.setText(
                 title.getText().replace(":", "") + " can not be longer than "
                 + Exercise.maxIntLength + " characters!"
@@ -448,7 +448,7 @@ public class CreateWorkoutController extends AbstractController {
         exception.setText(
             title.getText().replace(":", "")
             + " must be a number and can not exceed "
-            + Exercise.maxIntLength
+            + Exercise.maxIntLength + " characters!"
         );
         field.setStyle(WRONG_INPUT_BORDER_COLOR);
       }
@@ -474,10 +474,10 @@ public class CreateWorkoutController extends AbstractController {
         if (num <= 0) {
           exception.setText(title.getText().replace(":", "") + " must be more than 0");
           field.setStyle(WRONG_INPUT_BORDER_COLOR);
-        } else if (String.valueOf(num).length() >= Exercise.maxDoubleLength) {
+        } else if (String.valueOf(num).length() > Exercise.maxDoubleLength) {
           exception.setText(
                 title.getText().replace(":", "") + " can not be longer than "
-                + Exercise.maxDoubleLength + " characters!"
+                + Exercise.maxDoubleLength + " characters! (including the '.' and decimals)!"
           );
           field.setStyle(WRONG_INPUT_BORDER_COLOR);
         } else {
@@ -488,7 +488,7 @@ public class CreateWorkoutController extends AbstractController {
         exception.setText(
                 title.getText().replace(":", "")
                 + " must be a number and can not exceed "
-                + Exercise.maxDoubleLength
+                + Exercise.maxDoubleLength + " characters (including the '.' and decimals)!"
         );
         field.setStyle(WRONG_INPUT_BORDER_COLOR);
       }
@@ -516,7 +516,7 @@ public class CreateWorkoutController extends AbstractController {
                 + " can not be blank"
         );
         field.setStyle(WRONG_INPUT_BORDER_COLOR);
-      } else if (text.length() >= Exercise.maxStringLength) {
+      } else if (text.length() > Exercise.maxStringLength) {
         exception.setText(
                 title.getText().replace(":", "")
                 + " must be less than "

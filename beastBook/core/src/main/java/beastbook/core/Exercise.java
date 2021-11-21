@@ -9,7 +9,7 @@ public class Exercise implements IdClasses {
   //Todo enum?
   public static final int maxStringLength = 50;
   public static final int maxIntLength = 5;
-  public static final int maxDoubleLength = 7;
+  public static final int maxDoubleLength = 7;  
 
   private String id;
   private String workoutID;
@@ -91,10 +91,10 @@ public class Exercise implements IdClasses {
     if (isTooLow) {
       throw new IllegalArgumentException("Working Weight must be more than 0!");
     }
-    boolean isTooLong = String.valueOf(weight).length() > maxDoubleLength;
+    boolean isTooLong = String.valueOf(weight).length() > maxDoubleLength;  
     if (isTooLong) {
       throw new IllegalArgumentException(
-              "Working Weight can not be longer than " + maxDoubleLength + " characters!"
+              "Working Weight can not be longer than " + maxDoubleLength + " characters (including the '.' and decimals)!"
       );
     }
   }
@@ -112,7 +112,7 @@ public class Exercise implements IdClasses {
       );
     }
     boolean isTooLong = String.valueOf(sets)
-            .length() >= maxIntLength;
+            .length() > maxIntLength;
     if (isTooLong) {
       throw new IllegalArgumentException(
               "Sets can not be longer than " + maxIntLength + " characters!"
@@ -126,7 +126,7 @@ public class Exercise implements IdClasses {
       throw new IllegalArgumentException("Reps Per Set must be more than or equal to 0!");
     }
     boolean isTooLong = String.valueOf(repsPerSet)
-            .length() >= maxIntLength;
+            .length() > maxIntLength;
     if (isTooLong) {
       throw new IllegalArgumentException(
               "Reps Per Set can not be longer than " + maxIntLength + " characters!"
@@ -144,7 +144,7 @@ public class Exercise implements IdClasses {
     if (isTooLow) {
       throw new IllegalArgumentException("Rest Time must be more than 0!");
     }
-    boolean isTooLong = (String.valueOf(restTime).length() >= maxIntLength);
+    boolean isTooLong = (String.valueOf(restTime).length() > maxIntLength);
     if (isTooLong) {
       throw new IllegalArgumentException("Rest Time can not be longer than " 
       + maxIntLength + " characters!");
