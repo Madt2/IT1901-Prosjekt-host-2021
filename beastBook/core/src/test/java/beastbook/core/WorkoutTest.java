@@ -17,7 +17,7 @@ public class WorkoutTest {
   }
 
   @Test
-  void setCorrectIdToWorkoutTest() throws IllegalIdException{
+  void testSetCorrectIdToWorkout() throws IllegalIdException{
     testWorkout.setId("TK");
     assertEquals("TK", testWorkout.getId());    
 
@@ -26,7 +26,7 @@ public class WorkoutTest {
   }
 
   @Test
-  void incorrectWorkoutIdFailsTest(){
+  void testIncorrectWorkoutIdFails(){
     Assertions.assertThrows(IllegalIdException.class, () -> {
       testWorkout.setId("k3");
     });
@@ -51,7 +51,7 @@ public class WorkoutTest {
   }
 
   @Test
-  void addAndRemoveExerciseTest() throws IllegalIdException {
+  void testAddAndRemoveExercise() throws IllegalIdException {
     testWorkout.addExercise(exercise.getId());
    
     assertEquals(1, testWorkout.getExerciseIDs().size());

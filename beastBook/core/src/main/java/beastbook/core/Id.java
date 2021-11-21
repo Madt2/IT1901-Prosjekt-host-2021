@@ -10,8 +10,8 @@ import static beastbook.core.Properties.*;
  * and contains a map of (exerciseID : exerciseName) and (workoutID : workoutName).
  */
 public class Id {
-  private static int legalLength;
-  private static String legalChars;
+  public static int legalLength;
+  public static String legalChars;
   private Map<String, String> exerciseMap = new LinkedHashMap<>();
   private Map<String, String> workoutMap = new LinkedHashMap<>();
   private Map<String, String> historyMap = new LinkedHashMap<>();

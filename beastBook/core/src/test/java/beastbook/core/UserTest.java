@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 public class UserTest {
   
 @Test
-void createUserTest(){
+void testCreateUser(){
   User user = new User("TestUser", "MyPassword123");
   assertEquals("TestUser", user.getUsername());
   assertEquals("MyPassword123", user.getPassword());
@@ -18,7 +18,7 @@ void createUserTest(){
 }
 
 @Test
-void constructorTest() {
+void testConstructor() {
   assertThrows(IllegalArgumentException.class, () -> {
     User user = new User("", "");
   });

@@ -14,7 +14,7 @@ public class ExerciseTest {
   }
 
   @Test
-  void constructorTest() {
+  void testConstructor() {
     assertEquals("Bench press", exercise.getName());
     assertEquals(25, exercise.getRepGoal());
     assertEquals(100, exercise.getWeight());
@@ -23,7 +23,7 @@ public class ExerciseTest {
   }
 
   @Test
-  void invalidInputsThrowsTest() {
+  void testInvalidInputsThrows() {
     assertThrows(IllegalArgumentException.class, () -> {
       exercise.setRepGoal(-1);
     });

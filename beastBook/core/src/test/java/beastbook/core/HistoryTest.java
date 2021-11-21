@@ -27,14 +27,15 @@ public class HistoryTest {
   }
 
   @Test
-  void correctDateOnHistoryTest(){
+  void testCorrectDateOnHistory(){
     String todaysDate;
     SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
     todaysDate = sdf.format(new Date());
     assertEquals(todaysDate, testHistory.getDate());
+    assertNotEquals("12.02.1920", testHistory.getDate());
   }
   @Test
-  void addExercisesToHistory(){
+  void testAddExercisesToHistory(){
     Exercise ex3 = new Exercise ("Deadlift", 50, 50, 50, 50, 50);
     exerciseList.add(ex3);
     testHistory = new History("historyTest", exerciseList);
@@ -45,7 +46,7 @@ public class HistoryTest {
   }
 
   @Test
-  void incorrectHistoryIdFailsTest(){
+  void testIncorrectHistoryIdFails(){
     assertThrows(IllegalIdException.class, () -> {
       testHistory.setId("Kk3");
     });
