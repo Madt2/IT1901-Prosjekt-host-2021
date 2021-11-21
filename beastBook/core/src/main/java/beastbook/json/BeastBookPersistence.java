@@ -2,7 +2,6 @@ package beastbook.json;
 
 import beastbook.core.*;
 import beastbook.json.internal.BeastBookModule;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -141,7 +140,7 @@ public class BeastBookPersistence {
   public void saveIdObject(IdClasses object) throws IOException, Exceptions.IdNotFoundException {
     String filepath = null;
     if (object.getId() == null) {
-      throw new Exceptions.IdNotFoundException(object.getClass(), object.getId(), user.getUsername());
+      throw new Exceptions.IdNotFoundException(object.getClass(), object.getId());
     }
     if (object instanceof Exercise) {
       filepath = exerciseFolderPath + "/" + object.getId();

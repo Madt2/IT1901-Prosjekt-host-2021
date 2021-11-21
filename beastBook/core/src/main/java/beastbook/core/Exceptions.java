@@ -23,8 +23,8 @@ public class Exceptions {
   }
 
   public static class IdNotFoundException extends Exception {
-    public IdNotFoundException(Class cls, String id, String username) {
-      super("Id: " + id + " not found for " + cls.getSimpleName() + " on user: " + username);
+    public IdNotFoundException(Class cls, String id) {
+      super("Id: " + id + " not found for " + cls.getSimpleName());
     }
   }
 

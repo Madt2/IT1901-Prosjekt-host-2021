@@ -46,7 +46,7 @@ public class HistoryDeserializer extends JsonDeserializer<History> {
    * @param jsonNode jsonNode to convert.
    * @return Deserialized History or null if there is an error.
    */
-  History deserialize(JsonNode jsonNode) {
+  History deserialize(JsonNode jsonNode) throws IOException {
     if (jsonNode instanceof ObjectNode objectNode) {
       JsonNode nameNode = objectNode.get("name");
       String name = "";
