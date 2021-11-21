@@ -5,8 +5,6 @@ import beastbook.json.internal.BeastBookModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Class for saving and loading objects to and from file.
@@ -78,13 +76,12 @@ public class BeastBookPersistence {
       throw new FileNotFoundException("Did not find file: " + file);
     }
     Reader reader = new FileReader(file, StandardCharsets.UTF_8);
-    try {
-      Object obj = mapper.readValue(reader, cls);
-      reader.close();
+    Object obj = mapper.readValue(reader, cls);
+    reader.close();
+    if (obj != null) {
       return obj;
-    } catch (IOException e) {
-      reader.close();
-      throw e;
+    } else {
+      throw new IOException("Object not properly deserialized!");
     }
   }
 
@@ -202,10 +199,12 @@ public class BeastBookPersistence {
     if (objectId == null) {
       throw new NullPointerException(cls + " must have ID (dont set manually, use getID from serverService!)");
     }
-    if (cls == Workout.class) {
+    if (cls == Exercise.class) {
+      filepath = exerciseFolderPath + "/" + objectId;
+    } else if (cls == Workout.class) {
       filepath = workoutFolderPath + "/" + objectId;
     } else if (cls == History.class) {
-      filepath = historyFolderPath + "/" +objectId;
+      filepath = historyFolderPath + "/" + objectId;
     } else {
       throw new IllegalArgumentException("Class must be Workout or History");
     }
@@ -216,22 +215,6 @@ public class BeastBookPersistence {
 
   public void deleteUserDir() throws IOException {
     deleteFile(new File(userPath));
-//    List<File> userFolder = new ArrayList<>();
-//    userFolder.add(new File(exerciseFolderPath));
-//    userFolder.add(new File(workoutFolderPath));
-//    userFolder.add(new File(historyFolderPath));
-//    userFolder.add(new File(userPath + "/UserData"));
-//    userFolder.add(new File(userPath + "/IDs"));
-//    userFolder.add(new File(userPath));
-//
-//    for (File f : userFolder) {
-//      try {
-//        deleteFile(f);
-//      } catch (IOException e) {
-//        System.err.println("WARNING: Tried to delete folder that does not exist: " + f);
-//      }
-//    }
-//
   }
 
   private User getUser() throws IOException {
@@ -243,7 +226,7 @@ public class BeastBookPersistence {
     if (!userExists()) {
       throw new Exceptions.UserNotFoundException(user.getUsername());
     }
-    if (user.getPassword().equals(getUser().getPassword())) {
+    if (!user.getPassword().equals(getUser().getPassword())) {
       throw new Exceptions.PasswordIncorrectException();
     }
   }

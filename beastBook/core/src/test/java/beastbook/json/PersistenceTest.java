@@ -89,15 +89,13 @@ public class PersistenceTest {
     Workout workoutWithId = (Workout) ids.giveId(workout);
     ids.giveId(exerciseWithId);
     exerciseWithId.setWorkoutID(workoutWithId.getId());
-    System.out.println(exerciseWithId.getId());
     beastBookPersistence.saveIdObject(exerciseWithId);
-    System.out.println(exerciseWithId.getId());
     Exercise loadedExercise = beastBookPersistence.getExercise(exerciseWithId.getId());
     assertEqualExercise(loadedExercise, exerciseWithId);
-
     File file = new File(System.getProperty("user.home") + "/" + username + "/Exercises/" + exerciseWithId.getId());
     assertTrue(file.exists());
-    beastBookPersistence.deleteIdObject(exerciseWithId.getId(),Exercise.class);
+    System.out.println(exerciseWithId.getId());
+    beastBookPersistence.deleteIdObject(exerciseWithId.getId(), Exercise.class);
     assertFalse(file.exists());
   }
 
@@ -122,10 +120,15 @@ public class PersistenceTest {
   }
 
   @Test
-  void testSaveLoadDeleteHistory() throws Exceptions.HistoryNotFoundException, IOException, Exceptions.IdNotFoundException {
+  void testSaveLoadDeleteHistory() throws Exceptions.HistoryNotFoundException, IOException, Exceptions.IdNotFoundException, Exceptions.IllegalIdException {
     assertDoesNotThrow(() -> beastBookPersistence.createUser());
     Id ids = new Id();
-    History historyTemplate = new History("testHistory", List.of(new Exercise("Benchpress", 20, 20, 20, 20, 20)));
+    Exercise exercise = new Exercise("Benchpress", 20, 20, 20, 20, 20);
+    Workout workout = new Workout("testWorkout");
+    ids.giveId(exercise);
+    ids.giveId(workout);
+    exercise.setWorkoutID(workout.getId());
+    History historyTemplate = new History("testHistory", List.of(exercise));
     final History historyNoId = historyTemplate;
     assertThrows(Exceptions.IdNotFoundException.class, () -> beastBookPersistence.saveIdObject(historyNoId));
 
@@ -134,9 +137,9 @@ public class PersistenceTest {
     History loadedHistory = beastBookPersistence.getHistory(historyWithId.getId());
     assertEqualHistory(loadedHistory, historyWithId);
 
-    File file = new File(System.getProperty("user.home") + "/" + username + "/Exercises/" + historyNoId.getId());
+    File file = new File(System.getProperty("user.home") + "/" + username + "/Histories/" + historyWithId.getId());
     assertTrue(file.exists());
-    beastBookPersistence.deleteIdObject(historyNoId.getId(),Exercise.class);
+    beastBookPersistence.deleteIdObject(historyNoId.getId(),History.class);
     assertFalse(file.exists());
   }
 

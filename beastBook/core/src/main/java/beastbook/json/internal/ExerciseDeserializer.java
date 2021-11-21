@@ -84,9 +84,7 @@ public class ExerciseDeserializer extends JsonDeserializer<Exercise> {
         if (restTimeNode instanceof TextNode) {
           restTime = restTimeNode.asInt();
         }
-      System.out.println("EXERCISE GET ID HER : " + id);
-      System.out.println("WORKOUT GET ID HER: " + workoutId);
-        if (id != null) {
+        if (id != null && workoutId != null) {
           try {
             exercise = new Exercise(name, repGoal, weight, sets, repsPerSet, restTime);
             exercise.setId(id);
@@ -99,6 +97,6 @@ public class ExerciseDeserializer extends JsonDeserializer<Exercise> {
           }
         }
     }
-    return null;
+    throw new IOException("something when wrong when loading exercise! ");
   }
 }

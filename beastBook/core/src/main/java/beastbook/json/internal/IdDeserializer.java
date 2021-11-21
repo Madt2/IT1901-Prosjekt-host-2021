@@ -89,6 +89,6 @@ public class IdDeserializer extends JsonDeserializer<Id> {
         }
         return id;
     }
-    return null;
+    throw new IOException("Something went wrong with loading IdHandler!");
   }
 }

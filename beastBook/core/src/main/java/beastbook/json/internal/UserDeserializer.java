@@ -38,13 +38,13 @@ public class UserDeserializer extends JsonDeserializer<User> {
   * @param jsonNode jsonNode to convert.
   * @return Deserialized user, or null deserialization fails.
   */
-  User deserialize(JsonNode jsonNode) {
+  User deserialize(JsonNode jsonNode) throws IOException {
     if (jsonNode instanceof ObjectNode objectNode) {
       JsonNode usernameNode = objectNode.get("username");
       JsonNode passwordNode = objectNode.get("password");
       User user = new User(usernameNode.asText(), passwordNode.asText());
       return user;
     }
-    return null;
+    throw new IOException("Something went wrong with loading User!");
   }
 }

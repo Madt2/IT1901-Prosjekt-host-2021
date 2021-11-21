@@ -82,6 +82,6 @@ public class HistoryDeserializer extends JsonDeserializer<History> {
         throw new IOException("Something wrong with loading id in history!");
       }
     }
-    return null;
+    throw new IOException("Something wrong with loading history!");
   }
 }
