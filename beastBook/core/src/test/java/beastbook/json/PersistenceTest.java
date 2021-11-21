@@ -1,59 +1,167 @@
 package beastbook.json;
 
-import beastbook.core.Exercise;
-import beastbook.core.User;
-import beastbook.core.Workout;
-
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-
+import beastbook.core.*;
+import org.junit.jupiter.api.*;
 import java.io.File;
 import java.io.IOException;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import java.util.List;
 
-public class PersistenceTest {/*
-  private BeastBookPersistence beastBookPersistence = new BeastBookPersistence();
+import static org.junit.jupiter.api.Assertions.*;
 
-  @Test
-  public void testSerializersAndDeserializers() {
-    User user = new User("utest", "utest");
-    Workout w = new Workout("wtest");
-    Exercise e1 = new Exercise("etest1", 1, 1, 1, 0, 1);
-    Exercise e2 = new Exercise("etest2", 2, 2, 2, 0, 2);
-    Exercise e3 = new Exercise("etest3", 3, 3, 3, 0, 3);
+public class PersistenceTest {
 
-    w.addExercise(e1);
-    w.addExercise(e2);
-    w.addExercise(e3);
-    user.addWorkout(w);
+  private BeastBookPersistence beastBookPersistence;
+  private final String username = "test";
+  private final String password = "test";
 
-    try{
-      beastBookPersistence.setSaveFilePath(user.getUserName());
-      beastBookPersistence.saveUser(user);
-      User user2 = beastBookPersistence.loadUser();
-
-      Assertions.assertEquals(user.getUserName(), user2.getUserName());
-      Assertions.assertEquals(user.getPassword(), user2.getPassword());
-      assertTrue(user2.getWorkouts().size()==1);
-
-      Workout w2 = user2.getWorkouts().get(0);
-      for (int i = 0; i < w2.getExercises().size(); i++) {
-        assertEquals(w.getExercises().get(i).getExerciseName(), w2.getExercises().get(i).getExerciseName());
-        assertEquals(w.getExercises().get(i).getRepGoal(), w2.getExercises().get(i).getRepGoal());
-        assertEquals(w.getExercises().get(i).getWeight(), w2.getExercises().get(i).getWeight());
-        assertEquals(w.getExercises().get(i).getSets(), w2.getExercises().get(i).getSets());
-        assertEquals(w.getExercises().get(i).getRestTime(), w2.getExercises().get(i).getRestTime());
-      }
-    } catch (IOException e) {
-        Assertions.fail();
+  @BeforeEach
+  void setup() throws IOException {
+    User user = new User(username, password);
+    beastBookPersistence = new BeastBookPersistence(user);
+    File file = new File(System.getProperty("user.home") + "/" + user.getUsername());
+    if (file.exists()) {
+      beastBookPersistence.deleteUserDir();
     }
   }
 
-  @AfterAll
-  static void cleanUp() {
-    File file = new File(System.getProperty("user.home") + "/utest");
-    file.delete();
-  }*/
+  @Test
+  void testCreateUser() throws Exceptions.UserAlreadyExistException, IOException {
+    beastBookPersistence.createUser();
+    assertThrows(Exceptions.UserAlreadyExistException.class, () -> beastBookPersistence.createUser());
+  }
+
+  @Test
+  void testSaveUser() throws Exceptions.UserAlreadyExistException, IOException {
+    assertThrows(Exceptions.UserNotFoundException.class, () -> beastBookPersistence.saveUser());
+    beastBookPersistence.createUser();
+    assertDoesNotThrow(() -> beastBookPersistence.saveUser());
+  }
+
+  @Test
+  void testValidateUser() throws Exceptions.UserAlreadyExistException, IOException, Exceptions.UserNotFoundException, Exceptions.PasswordIncorrectException {
+    beastBookPersistence.createUser();
+    beastBookPersistence.validateUser();
+    User user = new User("doesNotExist", "test");
+    beastBookPersistence = new BeastBookPersistence(user);
+    assertThrows(Exceptions.UserNotFoundException.class, () -> beastBookPersistence.validateUser());
+    user = new User("test", "wrongPassword");
+    beastBookPersistence = new BeastBookPersistence(user);
+    assertThrows(Exceptions.PasswordIncorrectException.class, () -> beastBookPersistence.validateUser());
+  }
+
+  private void assertEqualExercise(Exercise exercise1, Exercise exercise2) {
+    assertTrue(exercise1.getId().equals(exercise2.getId()));
+    assertTrue(exercise1.getWorkoutID().equals(exercise2.getWorkoutID()));
+    assertTrue(exercise1.getWeight() == exercise2.getWeight());
+    assertTrue(exercise1.getRepGoal() == exercise2.getRepGoal());
+    assertTrue(exercise1.getSets() == exercise2.getSets());
+    assertTrue(exercise1.getRepsPerSet() == exercise2.getRepsPerSet());
+    assertTrue(exercise1.getRestTime() == exercise2.getRestTime());
+  }
+
+  private void assertEqualWorkout(Workout workout1, Workout workout2) {
+    assertTrue(workout1.getId().equals(workout2.getId()));
+    assertTrue(workout1.getName().equals(workout2.getName()));
+    assertTrue(workout1.getExerciseIDs().equals(workout2.getExerciseIDs()));
+  }
+
+  private void assertEqualHistory(History history1, History history2) {
+    assertTrue(history1.getId().equals(history2.getId()));
+    assertTrue(history1.getName().equals(history2.getName()));
+    assertTrue(history1.getDate().equals(history2.getDate()));
+    assertTrue(history1.getSavedExercises().size() == history2.getSavedExercises().size());
+    for (int i = 0; i < history1.getSavedExercises().size(); i++) {
+      Exercise exercise1 = history1.getSavedExercises().get(i);
+      Exercise exercise2 = history1.getSavedExercises().get(i);
+      assertEqualExercise(exercise1, exercise2);
+    }
+  }
+
+  @Test
+  void testSaveLoadDeleteExercise() throws IOException, Exceptions.ExerciseNotFoundException, Exceptions.UserAlreadyExistException, Exceptions.IdNotFoundException {
+    beastBookPersistence.createUser();
+    Id ids = new Id();
+    Exercise exerciseNoId = new Exercise("testExercise", 1 ,1, 1, 1, 1);
+    Exercise exerciseWithId = new Exercise("testExercise", 1 ,1, 1, 1, 1);
+    assertThrows(Exceptions.IdNotFoundException.class, () -> beastBookPersistence.saveIdObject(exerciseNoId));
+
+    ids.giveId(exerciseWithId);
+    System.out.println(exerciseWithId.getId());
+    beastBookPersistence.saveIdObject(exerciseWithId);
+    System.out.println(exerciseWithId.getId());
+    Exercise loadedExercise = beastBookPersistence.getExercise(exerciseWithId.getId());
+    assertEqualExercise(loadedExercise, exerciseWithId);
+
+    File file = new File(System.getProperty("user.home") + "/" + username + "/Exercises/" + exerciseWithId.getId());
+    assertTrue(file.exists());
+    beastBookPersistence.deleteIdObject(exerciseWithId.getId(),Exercise.class);
+    assertFalse(file.exists());
+  }
+
+  @Test
+  void testSaveLoadDeleteWorkout() throws Exceptions.WorkoutNotFoundException, IOException, Exceptions.UserAlreadyExistException, Exceptions.IdNotFoundException {
+    beastBookPersistence.createUser();
+    Id ids = new Id();
+    Workout workoutTemplate = new Workout("testWorkout");
+    final Workout workoutNoId = workoutTemplate;
+    assertThrows(Exceptions.IdNotFoundException.class, () -> beastBookPersistence.saveIdObject(workoutNoId));
+
+    final Workout workoutWithId = (Workout) ids.giveId(workoutTemplate);
+    beastBookPersistence.saveIdObject(workoutWithId);
+    beastBookPersistence.getWorkout(workoutWithId.getId());
+    Workout loadedWorkout = beastBookPersistence.getWorkout(workoutNoId.getId());
+    assertEqualWorkout(loadedWorkout, workoutWithId);
+
+    File file = new File(System.getProperty("user.home") + "/" + username + "/Workouts/" + workoutWithId.getId());
+    assertTrue(file.exists());
+    beastBookPersistence.deleteIdObject(workoutWithId.getId(),Workout.class);
+    assertFalse(file.exists());
+  }
+
+  @Test
+  void testSaveLoadDeleteHistory() throws Exceptions.HistoryNotFoundException, IOException, Exceptions.IdNotFoundException {
+    assertDoesNotThrow(() -> beastBookPersistence.createUser());
+    Id ids = new Id();
+    History historyTemplate = new History("testHistory", List.of(new Exercise("Benchpress", 20, 20, 20, 20, 20)));
+    final History historyNoId = historyTemplate;
+    assertThrows(Exceptions.IdNotFoundException.class, () -> beastBookPersistence.saveIdObject(historyNoId));
+
+    final History historyWithId = (History) ids.giveId(historyTemplate);
+    beastBookPersistence.saveIdObject(historyWithId);
+    History loadedHistory = beastBookPersistence.getHistory(historyWithId.getId());
+    assertEqualHistory(loadedHistory, historyWithId);
+
+    File file = new File(System.getProperty("user.home") + "/" + username + "/Exercises/" + historyNoId.getId());
+    assertTrue(file.exists());
+    beastBookPersistence.deleteIdObject(historyNoId.getId(),Exercise.class);
+    assertFalse(file.exists());
+  }
+
+  @Test
+  void testSaveAndGetIds() throws Exceptions.IdHandlerNotFoundException, IOException, Exceptions.UserAlreadyExistException {
+    beastBookPersistence.createUser();
+    final Id ids = new Id();
+    Workout workout = new Workout("testWorkout");
+    Exercise exercise = new Exercise("testExercise", 1 ,1, 1, 1, 1);
+    History history = new History("testHistory", List.of(exercise));
+    ids.giveId(exercise);
+    ids.giveId(workout);
+    ids.giveId(history);
+    beastBookPersistence.saveIds(ids);
+    Id idsLoad = beastBookPersistence.getIds();
+    for (String s : ids.getMap(Exercise.class).keySet()) {
+      ids.getMap(Exercise.class).get(s).equals(idsLoad.getMap(Exercise.class).get(s));
+    }
+    for (String s : ids.getMap(Workout.class).keySet()) {
+      ids.getMap(Workout.class).get(s).equals(idsLoad.getMap(Workout.class).get(s));
+    }
+    for (String s : ids.getMap(History.class).keySet()) {
+      ids.getMap(History.class).get(s).equals(idsLoad.getMap(History.class).get(s));
+    }
+  }
+
+  @AfterEach
+  void cleanUp() throws IOException {
+    beastBookPersistence.deleteUserDir();
+  }
 }

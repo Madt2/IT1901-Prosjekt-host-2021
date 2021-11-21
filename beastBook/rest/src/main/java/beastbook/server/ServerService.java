@@ -97,23 +97,28 @@ ServerService {
   }
 
   public void deleteUser() throws Exceptions.ServerException {
+//    try {
+//      Id ids = persistence.getIds();
+//      List<String> exerciseIds = (List<String>) ids.getMap(Exercise.class).keySet();
+//      List<String> workoutIds = (List<String>) ids.getMap(Workout.class).keySet();
+//      List<String> historyIds = (List<String>) ids.getMap(History.class).keySet();
+//      for (String id : exerciseIds) {
+//        deleteExercise(id);
+//      }
+//      for (String id : workoutIds) {
+//        deleteWorkout(id);
+//      }
+//      for (String id : historyIds) {
+//        deleteHistory(id);
+//      }
+//      persistence.deleteUserDir();
+//    } catch (IOException | Exceptions.IdHandlerNotFoundException e) {
+//      e.printStackTrace();
+//      throw new Exceptions.ServerException(e.getMessage());
+//    }
     try {
-      Id ids = persistence.getIds();
-      List<String> exerciseIds = (List<String>) ids.getMap(Exercise.class).keySet();
-      List<String> workoutIds = (List<String>) ids.getMap(Workout.class).keySet();
-      List<String> historyIds = (List<String>) ids.getMap(History.class).keySet();
-      for (String id : exerciseIds) {
-        deleteExercise(id);
-      }
-      for (String id : workoutIds) {
-        deleteWorkout(id);
-      }
-      for (String id : historyIds) {
-        deleteHistory(id);
-      }
       persistence.deleteUserDir();
-    } catch (IOException | Exceptions.IdHandlerNotFoundException e) {
-      e.printStackTrace();
+    } catch (IOException e) {
       throw new Exceptions.ServerException(e.getMessage());
     }
   }

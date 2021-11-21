@@ -84,15 +84,20 @@ public class ExerciseDeserializer extends JsonDeserializer<Exercise> {
         if (restTimeNode instanceof TextNode) {
           restTime = restTimeNode.asInt();
         }
-        exercise = new Exercise(name, repGoal, weight, sets, repsPerSet, restTime);
-        try {
-          exercise.setId(id);
-          exercise.setWorkoutID(workoutId);
-        } catch (Exceptions.IllegalIdException e) {
-          throw new IOException("Id not found when loading file, "
-                       + "something is wrong with writing object to file");
+      System.out.println("EXERCISE GET ID HER : " + id);
+      System.out.println("WORKOUT GET ID HER: " + workoutId);
+        if (id != null) {
+          try {
+            exercise = new Exercise(name, repGoal, weight, sets, repsPerSet, restTime);
+            exercise.setId(id);
+            exercise.setWorkoutID(workoutId);
+
+            return exercise;
+          } catch (Exceptions.IllegalIdException e) {
+            throw new IOException("Id not found when loading file, "
+              + "something is wrong with writing object to file");
+          }
         }
-        return exercise;
     }
     return null;
   }

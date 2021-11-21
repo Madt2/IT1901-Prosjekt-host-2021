@@ -37,6 +37,7 @@
             <artifactId>spring-boot-starter-web</artifactId>
             <version>2.5.6</version>
         </dependency>
+
         <dependency>
             <groupId>it1901</groupId>
             <artifactId>beastBook-core</artifactId>

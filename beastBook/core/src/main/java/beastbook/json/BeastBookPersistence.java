@@ -27,10 +27,10 @@ public class BeastBookPersistence {
     this.user = user;
     mapper = new ObjectMapper();
     mapper.registerModule(new BeastBookModule());
-    userPath = System.getProperty("user.home") + "/" + user.getUsername();
-    workoutFolderPath = userPath + "/Workouts";
-    exerciseFolderPath = userPath + "/Exercises";
-    historyFolderPath = userPath + "/Histories";
+    userPath = System.getProperty("user.home") + "/" + user.getUsername() + "/";
+    workoutFolderPath = userPath + "Workouts";
+    exerciseFolderPath = userPath + "Exercises";
+    historyFolderPath = userPath + "Histories";
   }
 
   private boolean userExists() {
@@ -96,10 +96,22 @@ public class BeastBookPersistence {
    * @throws IOException when file deletion fails.
    */
   private void deleteFile(File file) throws IOException {
+    System.out.println(file.getPath());
     if (!file.exists()) {
       System.err.println("WARNING: Tried to delete a file that did not exist");
-    } else if (file.delete()) {
+    } else if (file.isFile()) {
+      file.delete();
       System.out.println("File: " + file.getName() + " deleted");
+    } else if (file.isDirectory()) {
+      if (file.list().length == 0) {
+        file.delete();
+        System.out.println("Folder: " + file.getName() + " deleted");
+      } else {
+        for (String s : file.list()) {
+          deleteFile(new File(file.getPath() + "/" + s));
+        }
+        file.delete();
+      }
     } else {
       throw new IOException("Could not delete file!");
     }
@@ -203,20 +215,24 @@ public class BeastBookPersistence {
     System.out.println("Deleted file: " + filepath);
   }
 
-  public void deleteUserDir() {
-    List<File> userFolder = new ArrayList<>();
-    userFolder.add(new File(exerciseFolderPath));
-    userFolder.add(new File(exerciseFolderPath));
-    userFolder.add(new File(historyFolderPath));
-    userFolder.add(new File(userPath + "/IDs"));
-    userFolder.add(new File(userPath));
-    for (File f : userFolder) {
-      try {
-        deleteFile(f);
-      } catch (IOException e) {
-        System.err.println("WARNING: Tried to delete folder that does not exist: " + f);
-      }
-    }
+  public void deleteUserDir() throws IOException {
+    deleteFile(new File(userPath));
+//    List<File> userFolder = new ArrayList<>();
+//    userFolder.add(new File(exerciseFolderPath));
+//    userFolder.add(new File(workoutFolderPath));
+//    userFolder.add(new File(historyFolderPath));
+//    userFolder.add(new File(userPath + "/UserData"));
+//    userFolder.add(new File(userPath + "/IDs"));
+//    userFolder.add(new File(userPath));
+//
+//    for (File f : userFolder) {
+//      try {
+//        deleteFile(f);
+//      } catch (IOException e) {
+//        System.err.println("WARNING: Tried to delete folder that does not exist: " + f);
+//      }
+//    }
+//
   }
 
   private User getUser() throws IOException {
@@ -228,7 +244,7 @@ public class BeastBookPersistence {
     if (!userExists()) {
       throw new Exceptions.UserNotFoundException(user.getUsername());
     }
-    if (user.getPassword() != getUser().getPassword()) {
+    if (user.getPassword().equals(getUser().getPassword())) {
       throw new Exceptions.PasswordIncorrectException();
     }
   }

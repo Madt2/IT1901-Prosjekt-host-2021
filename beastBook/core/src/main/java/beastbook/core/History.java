@@ -9,7 +9,7 @@ import java.util.List;
  * History class saves a workout with a final workout object and date it was saved.
  */
 // Todo should extend workout?
-public class History extends Workout implements IdClasses {
+public class History implements IdClasses {
   private String id;
   private final String name;
   private final String date;

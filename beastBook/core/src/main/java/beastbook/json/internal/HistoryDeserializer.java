@@ -1,5 +1,6 @@
 package beastbook.json.internal;
 
+import beastbook.core.Exceptions;
 import beastbook.core.Exercise;
 import beastbook.core.History;
 import beastbook.core.Workout;
@@ -48,6 +49,11 @@ public class HistoryDeserializer extends JsonDeserializer<History> {
    */
   History deserialize(JsonNode jsonNode) throws IOException {
     if (jsonNode instanceof ObjectNode objectNode) {
+      JsonNode idNode = objectNode.get("id");
+      String id = null;
+      if (idNode instanceof TextNode) {
+        id = idNode.asText();
+      }
       JsonNode nameNode = objectNode.get("name");
       String name = "";
       if (nameNode instanceof TextNode) {
@@ -66,8 +72,14 @@ public class HistoryDeserializer extends JsonDeserializer<History> {
           savedExercises.add(deserializer.deserialize(node));
         }
       }
-      if (!date.equals("") && !name.equals("")) {
-        return new History(name, savedExercises, date);
+      try {
+        if (!date.equals("") && !name.equals("") && id != null) {
+          History history = new History(name, savedExercises, date);
+          history.setId(id);
+          return history;
+        }
+      } catch (Exceptions.IllegalIdException e) {
+        throw new IOException("Something wrong with loading id in history!");
       }
     }
     return null;
