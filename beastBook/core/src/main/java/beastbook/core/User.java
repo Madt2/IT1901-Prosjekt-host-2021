@@ -1,25 +1,14 @@
 package beastbook.core;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import static beastbook.core.Properties.MIN_CHAR_PASSWORD;
+import static beastbook.core.Properties.MIN_CHAR_USERNAME;
 
 /**
  * User class for application. Creates a user with username, password and a list of references to workouts.
  */
 public class User {
-  //Todo enum?
-  public static final int MIN_CHAR_USERNAME = 3;
-  public static final int MIN_CHAR_PASSWORD = 3;
-
   private final String username;
   private final String password;
-
-  /*
-  private List<String> historyIDs = new ArrayList<>();
-  private List<String> workoutIDs = new ArrayList<>();
-  */
 
   /**
   * User object for application.
@@ -63,18 +52,6 @@ public class User {
     }
   }
 
-//  /**
-//   * Method to remove History object from histories list.
-//   *
-//   * @param id The id of the history to be removed.
-//   * @throws IllegalArgumentException if no History found.
-//   */
-//  public void removeHistory(String id) throws IllegalArgumentException {
-//    if (!historyIDs.remove(id)) {
-//      throw new IllegalArgumentException("No such history found!");
-//    }
-//  }
-
   public String getUsername() {
     return username;
   }
@@ -83,59 +60,5 @@ public class User {
     return password;
   }
 
-//  /**
-//   * Getter to fetch workoutIDs List from user.
-//   *
-//   * @return List of IDs
-//   */
-//  public List<String> getWorkoutIDs() {
-//    return new ArrayList<>(workoutIDs);
-//  }
-
-//  /**
-//   * This method adds a workoutID reference to workoutIDs list.
-//   *
-//   * @param id workoutID to add to user.
-//   * @throws IllegalArgumentException when workoutID is already a reference in workoutIDs list,
-//   *                                  or if validation fails.
-//   */
-//  public void addWorkout(String id) throws IllegalArgumentException {
-//    if (workoutIDs.contains(id)) {
-//      throw new IllegalArgumentException("Workout is already added!");
-//    }
-//    Id.validateID(id, Workout.class);
-//    workoutIDs.add(id);
-//  }
-
-//  /**
-//  * Removes workout object from users workouts List.
-//  *
-//  * @throws IllegalArgumentException when workout reference is not in user's workoutIDs list.
-//  * @param id workoutID to remove from User.
-//  */
-//  public void removeWorkout(String id) throws IllegalArgumentException {
-//    if (!workoutIDs.remove(id)) {
-//      throw new IllegalArgumentException("User does not have workout saved!");
-//    }
-//  }
-
-//  public List<String> getHistoryIDs() {
-//    return new ArrayList<>(historyIDs);
-//  }
-
-//  /**
-//   * This method adds a historyID reference to historyIDs list.
-//   *
-//   * @param id of history object to add.
-//   * @throws IllegalArgumentException when historyID is already a reference in historyIDs list,
-//   *                                  or if validation fails.
-//   */
-//  public void addHistory(String id) throws IllegalArgumentException {
-//    if (historyIDs.contains(id)) {
-//      throw new IllegalArgumentException("User already has history saved!");
-//    }
-//    Id.validateID(id, History.class);
-//    historyIDs.add(id);
-//  }
 }
 

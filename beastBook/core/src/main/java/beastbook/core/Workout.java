@@ -36,8 +36,8 @@ public class Workout implements IdClasses {
    * @param id to set
    * @throws IllegalArgumentException if id is in wrong format.
    */
-  public void setId(String id) throws IllegalArgumentException {
-    Id.validateID(id, Workout.class);
+  public void setId(String id) throws Exceptions.IllegalIdException {
+    Id.validateId(id, Workout.class);
     this.id = id;
   }
 
@@ -60,11 +60,11 @@ public class Workout implements IdClasses {
   * @throws IllegalArgumentException when workout already have reference to exercise,
   *                                  or if ID is wrong formatted.
   */
-  public void addExercise(String exerciseID) throws IllegalArgumentException {
+  public void addExercise(String exerciseID) throws Exceptions.IllegalIdException {
     if (exerciseIDs.contains(exerciseID)) {
       throw new IllegalArgumentException("Exercise is already added!");
     }
-    Id.validateID(exerciseID, Exercise.class);
+    Id.validateId(exerciseID, Exercise.class);
     exerciseIDs.add(exerciseID);
   }
 

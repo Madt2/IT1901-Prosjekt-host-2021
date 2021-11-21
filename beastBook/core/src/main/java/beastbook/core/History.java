@@ -1,7 +1,6 @@
 package beastbook.core;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -16,18 +15,12 @@ public class History extends Workout implements IdClasses {
   private final String date;
   private final List<Exercise> savedExercises;
 
-  /**
+    /**
    * Constructor for History object.
    *
+     * @param name name of workout to log.
    * @param exercises The Exercises to be saved.
-   * @param date The date it was saved.
    */
-  public History(String name, List<Exercise> exercises, String date) {
-    this.name = name;
-    this.savedExercises = Collections.unmodifiableList(exercises);
-    this.date = date;
-  }
-
   public History(String name, List<Exercise> exercises) {
     this.name = name;
     this.savedExercises = Collections.unmodifiableList(exercises);
@@ -35,8 +28,15 @@ public class History extends Workout implements IdClasses {
     date = sdf.format(new Date());
   }
 
-  public void setId(String id) {
-    Id.validateID(id, this.getClass());
+  public History(String name, List<Exercise> exercises, String date) {
+    this.name = name;
+    this.savedExercises = Collections.unmodifiableList(exercises);
+    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
+    this.date = date;
+  }
+
+  public void setId(String id) throws Exceptions.IllegalIdException {
+    Id.validateId(id, this.getClass());
     this.id = id;
   }
 

@@ -5,5 +5,5 @@ public interface IdClasses {
 
     String getId();
 
-    void setId(String id);
+    void setId(String id) throws Exceptions.IllegalIdException;
 }

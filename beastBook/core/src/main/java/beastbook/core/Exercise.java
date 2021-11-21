@@ -1,16 +1,14 @@
 package beastbook.core;
 
+import static beastbook.core.Properties.maxDoubleLength;
+import static beastbook.core.Properties.maxIntLength;
+
 /**
  * Exercise class used in Workout class. Creates an Exercise object containing name, rep goal,
  * weight used, amount of sets, reps per set and rest time for exercise. It also has a unique ID
  * to identify it, as well as an ID to reference the workout object it belongs to.
  */
 public class Exercise implements IdClasses {
-  //Todo enum?
-  public static final int maxStringLength = 50;
-  public static final int maxIntLength = 5;
-  public static final int maxDoubleLength = 7;
-
   private String id;
   private String workoutID;
   private String name;
@@ -28,8 +26,9 @@ public class Exercise implements IdClasses {
   * @param weight Weight to be used for the exercise
   * @param sets Number of sets to be performed
   * @param restTime How much rest between sets in seconds
+   * @throws IllegalArgumentException when params are illegal.
   */
-  public Exercise(String name, int repGoal, double weight, int sets, int repsPerSet, int restTime) {
+  public Exercise(String name, int repGoal, double weight, int sets, int repsPerSet, int restTime) throws IllegalArgumentException {
     setName(name);
     setRepGoal(repGoal);
     setWeight(weight);
@@ -39,20 +38,15 @@ public class Exercise implements IdClasses {
   }
 
   /**
-   * Exercise constructor for empty Exercise object.
-   */
-  public Exercise() {}
-
-  /**
   * Checks if name is valid, valid is not blank.
   *
   * @param name Name of the exercise
   */
   private void validateName(String name) throws IllegalArgumentException {
-    boolean isTooLong = name.length() >= maxStringLength;
+    boolean isTooLong = name.length() >= Properties.maxStringLength;
     if (isTooLong) {
       throw new IllegalArgumentException(
-              "Exercise Name can not be longer than " + maxStringLength + " characters!"
+              "Exercise Name can not be longer than " + Properties.maxStringLength + " characters!"
       );
     }
     name = name.trim();
@@ -151,13 +145,13 @@ public class Exercise implements IdClasses {
     }
   }
 
-  public void setId(String id) throws IllegalArgumentException {
-    Id.validateID(id, Exercise.class);
+  public void setId(String id) throws Exceptions.IllegalIdException {
+    Id.validateId(id, Exercise.class);
     this.id = id;
   }
 
-  public void setWorkoutID(String id) throws IllegalArgumentException {
-    Id.validateID(id, Workout.class);
+  public void setWorkoutID(String id) throws Exceptions.IllegalIdException {
+    Id.validateId(id, Workout.class);
     this.workoutID = id;
   }
 
