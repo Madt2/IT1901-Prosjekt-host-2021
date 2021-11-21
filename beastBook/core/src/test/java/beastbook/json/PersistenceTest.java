@@ -78,14 +78,17 @@ public class PersistenceTest {
   }
 
   @Test
-  void testSaveLoadDeleteExercise() throws IOException, Exceptions.ExerciseNotFoundException, Exceptions.UserAlreadyExistException, Exceptions.IdNotFoundException {
+  void testSaveLoadDeleteExercise() throws IOException, Exceptions.ExerciseNotFoundException, Exceptions.UserAlreadyExistException, Exceptions.IdNotFoundException, Exceptions.IllegalIdException {
     beastBookPersistence.createUser();
     Id ids = new Id();
     Exercise exerciseNoId = new Exercise("testExercise", 1 ,1, 1, 1, 1);
+    Workout workout = new Workout("workoutTest");
     Exercise exerciseWithId = new Exercise("testExercise", 1 ,1, 1, 1, 1);
     assertThrows(Exceptions.IdNotFoundException.class, () -> beastBookPersistence.saveIdObject(exerciseNoId));
 
+    Workout workoutWithId = (Workout) ids.giveId(workout);
     ids.giveId(exerciseWithId);
+    exerciseWithId.setWorkoutID(workoutWithId.getId());
     System.out.println(exerciseWithId.getId());
     beastBookPersistence.saveIdObject(exerciseWithId);
     System.out.println(exerciseWithId.getId());
