@@ -2,10 +2,12 @@
 scale 1
 rest -- client
 rest -- server
-
 rest -- ServerApplication
+
 client -- ClientService
+client -- ClientController
+client -- RegisterController
 server -- ServerService
 server -- ServerController
-
+server -- Rules
 @enduml

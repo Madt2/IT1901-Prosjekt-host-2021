@@ -1,0 +1,16 @@
+@startuml Core Diagram
+scale 1
+json -- internal
+internal -- ExerciseDeserializer
+internal -- ExerciseSerializer
+internal -- UserDeserializer
+internal -- UserSerializer
+internal -- WorkoutDeserializer
+internal -- WorkoutSerializer
+internal -- HistoryDeserializer
+internal -- HistorySerializer
+internal -- IdDeserializer
+internal -- IdSerializer
+internal -- BeastBookModule
+json -- BeastBookPersistence
+@enduml

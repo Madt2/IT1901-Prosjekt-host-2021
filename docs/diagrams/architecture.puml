@@ -1,31 +1,36 @@
 @startuml architecture
 
-component beastbook {
-   component beastbook.core {
-       package core
-       package json
-   }
-
-   component beastbook.fxui {
-       package fxui
-   }
-
+component core {
+  package beastbook.core
+  package beastbook.json
 }
 
+component fxui {
+  package beastbook.fxui
+}
+
+component rest {
+  package beastbook.server
+  package beastbook.client
+}
 
 component jackson
+
 component javafx {
-    component fxml
+  component fxml
 }
 
-fxui ..> jackson
-fxui ..> javafx
-fxui ..> fxml
-
+beastbook.fxui ..> javafx
+beastbook.fxui ..> fxml
 beastbook.fxui ..> beastbook.core
+beastbook.fxui ..> beastbook.json
 
-core ..> json
+beastbook.core ..> beastbook.json
+beastbook.json ..> jackson
 
+beastbook.server ..> beastbook.core
+beastbook.server ..> beastbook.json
 
+beastbook.client ..> beastbook.core
 
 @enduml
