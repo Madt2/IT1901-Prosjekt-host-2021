@@ -2,13 +2,13 @@
 
 # BeastBook
 
-For in-depth description of documentation se `beastBook/README.md`
+For in-depth description of documentation see `beastBook/README.md`
 
-The core components are stored under `beastBook/core/main/src/java/core`
+The core components are stored under `beastBook/core/src/main/java/beastbook`
 
-The UI components are found under `beastBook/fxui/main/java/fxui`
+The UI components are found under `beastBook/fxui/src/main/java/beastbook`
 
-Documentation for the different releases are found under `docs`
+Documentation for the different releases are found in the `docs` folder
 
 # Developer installation
 To install the project, type `git clone https://gitlab.stud.idi.ntnu.no/it1901/groups-2021/gr2132/gr2132.git`
