@@ -4,7 +4,6 @@ import beastbook.core.*;
 import beastbook.json.BeastBookPersistence;
 import java.io.IOException;
 import java.util.Map;
-import java.util.List;
 
 import static beastbook.core.Validation.validateId;
 
@@ -29,6 +28,7 @@ ServerService {
     } catch (IOException ec) {
       ec.printStackTrace();
       deleteUser();
+      throw new Exceptions.ServerException();
     }
   }
 
@@ -37,7 +37,7 @@ ServerService {
       persistence.validateUser();
     } catch (IOException e) {
       e.printStackTrace();
-      throw new Exceptions.ServerException(e.getMessage());
+      throw new Exceptions.ServerException();
     }
   }
 
@@ -50,7 +50,7 @@ ServerService {
       return obj.getId();
     } catch (IOException | Exceptions.IdHandlerNotFoundException | Exceptions.IdNotFoundException e) {
       e.printStackTrace();
-      throw new Exceptions.ServerException(e.getMessage());
+      throw new Exceptions.ServerException();
     }
   }
 
@@ -70,7 +70,7 @@ ServerService {
       persistence.saveIdObject(exercise);
     } catch (IOException | Exceptions.IllegalIdException | Exceptions.IdHandlerNotFoundException | Exceptions.IdNotFoundException e) {
       e.printStackTrace();
-      throw new Exceptions.ServerException(e.getMessage());
+      throw new Exceptions.ServerException();
     }
   }
 
@@ -78,7 +78,7 @@ ServerService {
     try {
       Rules.WorkoutRules(workout, persistence.getIds());
     } catch (Exceptions.IdHandlerNotFoundException | IOException e) {
-      throw new Exceptions.ServerException("");
+      throw new Exceptions.ServerException();
     }
     if (workout.getId() != null) {
       throw new Exceptions.WorkoutAlreadyExistsException(workout.getName());
@@ -91,7 +91,7 @@ ServerService {
       Rules.HistoryRules(history, persistence.getIds());
     } catch (IOException | Exceptions.IdHandlerNotFoundException e) {
       e.printStackTrace();
-      throw new Exceptions.ServerException("");
+      throw new Exceptions.ServerException();
     }
     if (history.getId() != null) {
       throw new Exceptions.HistoryAlreadyExistsException(history.getName() + " : " + history.getDate());
@@ -108,7 +108,7 @@ ServerService {
       persistence.saveIdObject(workout);
     } catch (IOException | Exceptions.IdNotFoundException e) {
       e.printStackTrace();
-      throw new Exceptions.ServerException(e.getMessage());
+      throw new Exceptions.ServerException();
     }
   }
 
@@ -121,7 +121,7 @@ ServerService {
       persistence.saveIdObject(exercise);
     } catch (IOException | Exceptions.IdNotFoundException e) {
       e.printStackTrace();
-      throw new Exceptions.ServerException(e.getMessage());
+      throw new Exceptions.ServerException();
     }
   }
 
@@ -129,7 +129,7 @@ ServerService {
     try {
       persistence.deleteUserDir();
     } catch (IOException e) {
-      throw new Exceptions.ServerException(e.getMessage());
+      throw new Exceptions.ServerException();
     }
   }
 
@@ -141,7 +141,7 @@ ServerService {
       persistence.deleteIdObject(id, cls);
     } catch (IOException | Exceptions.IdHandlerNotFoundException | Exceptions.IdNotFoundException e) {
       e.printStackTrace();
-      throw new Exceptions.ServerException(e.getMessage());
+      throw new Exceptions.ServerException();
     }
   }
 
@@ -162,7 +162,7 @@ ServerService {
       System.err.println("WARNING: Tried to delete a workout that does not exist for user " + user.getUsername());
     } catch (IOException e) {
       e.printStackTrace();
-      throw new Exceptions.ServerException(e.getMessage());
+      throw new Exceptions.ServerException();
     }
   }
 
@@ -177,7 +177,7 @@ ServerService {
       return persistence.getWorkout(workoutId);
     } catch (IOException e) {
       e.printStackTrace();
-      throw new Exceptions.ServerException(e.getMessage());
+      throw new Exceptions.ServerException();
     }
   }
 
@@ -187,7 +187,7 @@ ServerService {
       return persistence.getExercise(exerciseID);
     } catch (IOException e) {
       e.printStackTrace();
-      throw new Exceptions.ServerException(e.getMessage());
+      throw new Exceptions.ServerException();
     }
   }
 
@@ -197,7 +197,7 @@ ServerService {
       return persistence.getHistory(historyID);
     } catch (IOException e) {
       e.printStackTrace();
-      throw new Exceptions.ServerException(e.getMessage());
+      throw new Exceptions.ServerException();
     }
   }
 
@@ -207,7 +207,7 @@ ServerService {
       return ids.getMap(cls);
     } catch (Exceptions.IdHandlerNotFoundException | IOException e) {
       e.printStackTrace();
-      throw new Exceptions.ServerException(e.getMessage());
+      throw new Exceptions.ServerException();
     }
   }
 }

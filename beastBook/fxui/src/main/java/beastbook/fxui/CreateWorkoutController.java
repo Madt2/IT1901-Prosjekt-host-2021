@@ -396,7 +396,7 @@ public class CreateWorkoutController extends AbstractController {
     try {
       if (workout.getId() != null) {
         if (selectedExercise.getId() != null){
-          service.removeExercise(selectedExercise);
+          service.removeExercise(selectedExercise.getId());
         }
         exercises.remove(selectedExercise);
       } else {

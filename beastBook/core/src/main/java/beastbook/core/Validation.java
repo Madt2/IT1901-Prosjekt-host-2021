@@ -152,7 +152,7 @@ public class Validation {
   public static void validateId(String id, Class cls) throws Exceptions.IllegalIdException {
     setLegals(cls);
     if (id.length() != legalLength) {
-      throw new Exceptions.IllegalIdException("ID does not contain right amount of characters!");
+      throw new Exceptions.IllegalIdException(id, cls);
     }
     for (int i = 0; i < legalChars.length(); i++) {
       for (int j = 0; j < id.length(); j++) {
@@ -164,7 +164,6 @@ public class Validation {
         }
       }
     }
-    throw new Exceptions.IllegalIdException("ID does not use correct characters!");
+    throw new Exceptions.IllegalIdException(id, cls);
   }
-
 }

@@ -37,12 +37,12 @@ public class Exercise implements IdClasses {
   }
 
   public void setId(String id) throws Exceptions.IllegalIdException {
-    Id.validateId(id, Exercise.class);
+    validateId(id, Exercise.class);
     this.id = id;
   }
 
   public void setWorkoutID(String id) throws Exceptions.IllegalIdException {
-    Id.validateId(id, Workout.class);
+    validateId(id, Workout.class);
     this.workoutID = id;
   }
 

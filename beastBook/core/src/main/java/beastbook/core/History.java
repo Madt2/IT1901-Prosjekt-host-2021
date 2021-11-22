@@ -5,6 +5,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import static beastbook.core.Validation.validateId;
+
 /**
  * History class saves a workout with a final workout object and date it was saved.
  */
@@ -35,7 +37,7 @@ public class History implements IdClasses {
   }
 
   public void setId(String id) throws Exceptions.IllegalIdException {
-    Id.validateId(id, this.getClass());
+    validateId(id, this.getClass());
     this.id = id;
   }
 
