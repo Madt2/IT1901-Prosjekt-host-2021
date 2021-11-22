@@ -180,7 +180,7 @@ public class ServerController {
   @PostMapping("updateExercise/{userString}/{exerciseString}")
   public ResponseEntity<String> updateExercise(@PathVariable String userString, @PathVariable String exerciseString) {
     userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
-    userString = URLDecoder.decode(exerciseString, StandardCharsets.UTF_8);
+    exerciseString = URLDecoder.decode(exerciseString, StandardCharsets.UTF_8);
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);

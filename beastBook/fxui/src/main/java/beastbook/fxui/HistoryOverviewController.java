@@ -1,6 +1,8 @@
 package beastbook.fxui;
 
-import java.io.IOException;
+import beastbook.core.Exceptions;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +38,7 @@ public class HistoryOverviewController extends AbstractController {
   private TableColumn<HistoryData, String> historyNameColumn;
   private TableColumn<HistoryData, String> historyDateColumn;
   private String selectedHistoryId;
-  private Map<String,String> historyMap;
+  private Map<String, String> historyMap;
 
   @FXML
   public void initialize() {
@@ -44,6 +46,9 @@ public class HistoryOverviewController extends AbstractController {
     loadTable();
   }
 
+  /**
+   * Sets the column for the tableview and fills the history data from the user into the table view.
+   */
   private void loadTable() {
     historyOverview.getColumns().clear();
     List<HistoryData> historyData = new ArrayList<>();
@@ -76,6 +81,11 @@ public class HistoryOverviewController extends AbstractController {
     historyNameColumn.setReorderable(false);
   }
 
+  /**
+   * Loads the history which has been selected after Open button is clicked.
+   *
+   * @param event the event when open button is clicked
+   */
   @FXML
   void loadHistory(ActionEvent event) {
     try {
@@ -99,6 +109,9 @@ public class HistoryOverviewController extends AbstractController {
     }
   }
 
+  /**
+   * Listener which registers if a history is clicked on in the table view.
+   */
   @FXML
   private void historySelectedListener() {
     try {
@@ -123,15 +136,24 @@ public class HistoryOverviewController extends AbstractController {
       deleteButton.setDisable(true);
     }
   }
-  
+
+  /**
+   * Deletes the selected history from the tableview and the user when Delete button is clicked.
+   */
   @FXML
-  void deleteHistory() throws IllegalStateException, IOException {
-    service.removeHistory(selectedHistoryId);
-    historyMap = service.getHistoryMap();
-    loadTable();
-    exceptionFeedback.setText("History entry deleted!");
-    openButton.setDisable(true);
-    deleteButton.setDisable(true);
+  void deleteHistory() {
+    try {
+      service.removeHistory(selectedHistoryId);
+      historyMap = service.getHistoryMap();
+      loadTable();
+      exceptionFeedback.setText("History entry deleted!");
+      openButton.setDisable(true);
+      deleteButton.setDisable(true);
+    } catch (Exceptions.BadPackageException | Exceptions.ServerException
+        | URISyntaxException | JsonProcessingException
+        | Exceptions.IllegalIdException e) {
+      exceptionFeedback.setText(e.getMessage());
+    }
   }
 
   TableView<HistoryData> getHistoryOverview() {
@@ -150,7 +172,7 @@ public class HistoryOverviewController extends AbstractController {
     private final String name;
     private final String date;
 
-    public HistoryData(String name, String date){
+    public HistoryData(String name, String date) {
       this.name = name;
       this.date = date;
     }

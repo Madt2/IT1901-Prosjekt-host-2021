@@ -67,7 +67,8 @@ public class ClientService {
     }
   }
 
-  private void exerciseNotFoundExceptionHandler(String errorMessage, String exerciseId) throws Exceptions.ExerciseNotFoundException {
+  private void exerciseNotFoundExceptionHandler(String errorMessage, String exerciseId)
+      throws Exceptions.ExerciseNotFoundException {
     if (errorMessage.equals(Exceptions.ExerciseNotFoundException.class.getSimpleName())) {
       throw new Exceptions.ExerciseNotFoundException(exerciseId);
     }
@@ -80,7 +81,8 @@ public class ClientService {
     }
   }
 
-  private void historyNotFoundExceptionHandler(String errorMessage, String historyId) throws Exceptions.HistoryNotFoundException {
+  private void historyNotFoundExceptionHandler(String errorMessage, String historyId)
+      throws Exceptions.HistoryNotFoundException {
     if (errorMessage.equals(Exceptions.HistoryNotFoundException.class.getSimpleName())) {
       throw new Exceptions.HistoryNotFoundException(historyId);
     }
@@ -107,7 +109,8 @@ public class ClientService {
     }
   }
 
-  private void historyAlreadyExistsExceptionHandler(String errorMessage, History history) throws Exceptions.HistoryAlreadyExistsException {
+  private void historyAlreadyExistsExceptionHandler(String errorMessage, History history)
+      throws Exceptions.HistoryAlreadyExistsException {
     if (errorMessage.equals(Exceptions.HistoryAlreadyExistsException.class.getSimpleName())) {
       throw new Exceptions.HistoryAlreadyExistsException(history.getName() + ";" + history.getDate());
     }

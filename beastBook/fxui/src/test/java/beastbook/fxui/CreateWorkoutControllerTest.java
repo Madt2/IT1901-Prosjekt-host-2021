@@ -181,7 +181,7 @@ public class CreateWorkoutControllerTest extends ApplicationTest{
     clickOn("#deleteButton");
 
     controller.getWorkoutTable().getColumns().get(0).setId("exerciseName");
-  //  Assertions.assertEquals(1, controller.user.getWorkout("testWorkout").getExercises().size());
+    //Assertions.assertEquals(1, controller.user.getWorkout("testWorkout").getExercises().size());
   }
  
   @AfterAll

@@ -1,9 +1,8 @@
 package beastbook.fxui;
 
-import beastbook.core.Exercise;
-import beastbook.core.History;
-import beastbook.core.Workout;
+import beastbook.core.*;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -119,13 +118,12 @@ public class WorkoutController extends AbstractController {
   }
 
   /**
-  * Makes the cells in workout table editable.
-  * If a cell is edited, the new value will overwrite
-  * the old value in both the GUI and the user database.
-  * If the value is in wrong format, an exception will be thrown
-  * and a red text will appear in the GUI with feedback.
-  * Sets the exercises from the workout to the table view.
-  */
+   * Makes the column with string format editable and saves the updated data to the user/GUI.
+   * Also prints a message to the GUI if an input is in wrong format.
+   *
+   * @param column the column which have data in string format
+   * @param errorMessage the message which the user will receive if input is wrong
+   */
   private void tableWithString(TableColumn<Exercise, String> column, String errorMessage) {
     column.setCellFactory(TextFieldTableCell.forTableColumn());
     column.setOnEditCommit(event -> {
@@ -145,6 +143,13 @@ public class WorkoutController extends AbstractController {
     });
   }
 
+  /**
+   * Makes the column with integer format editable and saves the updated data to the user/GUI.
+   * Also prints a message to the GUI if an input is in wrong format.
+   *
+   * @param column the column which have data in string format
+   * @param errorMessage the message which the user will receive if input is wrong
+   */
   private void tableWithInteger(TableColumn<Exercise, Integer> column, String errorMessage) {
     column.setCellFactory(TextFieldTableCell.forTableColumn(
             new CustomIntegerStringConverter())
@@ -177,6 +182,13 @@ public class WorkoutController extends AbstractController {
     });
   }
 
+  /**
+   * Makes the column with double format editable and saves the updated data to the user/GUI.
+   * Also prints a message to the GUI if an input is in wrong format.
+   *
+   * @param column the column which have data in string format
+   * @param errorMessage the message which the user will receive if input is wrong
+   */
   private void tableWithDouble(TableColumn<Exercise, Double> column, String errorMessage) {
     column.setCellFactory(TextFieldTableCell.forTableColumn(
             new CustomDoubleStringConverter())
@@ -198,20 +210,26 @@ public class WorkoutController extends AbstractController {
     });
   }
 
+  /**
+   * Saves the workout to the history overview.
+   * If the user already have saved the workout to history the same day,
+   * the history will be overwritten with current data from the table view.
+   */
   @FXML
   void saveHistory() throws IOException {
-    boolean overwritten = false;
-    Workout workout = service.getWorkout(workoutId);
-    History history = new History(workout.getName(), exercises);
-    Iterator it = service.getHistoryMap().entrySet().iterator();
-    while (it.hasNext()) {
-      Map.Entry entry = (Map.Entry) it.next();
-      if (entry.getValue().equals(history.getName())) {
-        History h = service.getHistory(entry.getKey().toString());
-        if (h.getName().equals(history.getName()) && h.getDate().equals(history.getDate())) {
-          service.removeHistory(h.getId());
-          overwritten = !overwritten;
-          break;
+    try {
+      boolean overwritten = false;
+      Workout workout = service.getWorkout(workoutId);
+      History history = new History(workout.getName(), exercises);
+      Iterator it = service.getHistoryMap().entrySet().iterator();
+      while (it.hasNext()) {
+        Map.Entry entry = (Map.Entry) it.next();
+        if (entry.getValue().equals(history.getName())) {
+          History h = service.getHistory(entry.getKey().toString());
+          if (h.getName().equals(history.getName()) && h.getDate().equals(history.getDate())) {
+            service.removeHistory(h.getId());
+            overwritten = !overwritten;
+          }
         }
         service.addHistory(history);
         saveButton.setDisable(true);
@@ -229,6 +247,10 @@ public class WorkoutController extends AbstractController {
     }
   }
 
+  /**
+   * Loads the workout data from the user in to the tableview.
+   * Also sets up the methods to listen after edited cells.
+   */
   private void editTable() {
     tableWithString(exerciseNameColumn, "Wrong input, please try again. Value was not changed!");
     tableWithInteger(repGoalColumn, "Rep Goal must be a number. Value was not changed!");
@@ -243,10 +265,6 @@ public class WorkoutController extends AbstractController {
   TableView<Exercise> getWorkoutTable() {
     return workoutTable;
   }
-  /*
-  Exercise getTable(int row) {
-    return workoutTable.getItems().get(row);
-  }*/
 
   private void emptyExceptionFeedback() {
     this.exceptionFeedback.setText("");
@@ -257,8 +275,8 @@ public class WorkoutController extends AbstractController {
   }
 
   /**
-  * Sets differents properties of the columns.
-  * Width, not reorderable and not resizable is set. 
+  * Sets different properties to the columns.
+  * Width, not reorderable and not resizable functionality is set.
   */
   private void setColumnProperties() {
     exerciseNameColumn.setPrefWidth(198);        
@@ -315,7 +333,7 @@ public class WorkoutController extends AbstractController {
   /**
   * Extended version of DoubleStringConverter. Used to catch NumberFormatException, as 
   * the DoubleStringConverter do not handle the NumberFormatException by default.
-  * Returns null which is caught by editTable()
+  * Returns null which is caught by updateTable()
   */
   public static class CustomDoubleStringConverter extends DoubleStringConverter {
     private final DoubleStringConverter converter = new DoubleStringConverter();

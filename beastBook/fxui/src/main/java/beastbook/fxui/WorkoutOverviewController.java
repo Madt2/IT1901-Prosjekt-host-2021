@@ -41,12 +41,12 @@ public class WorkoutOverviewController extends AbstractController {
   public void initialize() {
     workoutMap = service.getWorkoutMap();
     loadTable();
-  } 
-    
+  }
+
   /**
-  * Creates a table view with a column for workout name and
-  * adds the users workouts to the table view.
-  */
+   * Sets the table view with a column for workout name.
+   * Adds the users workouts to the table view.
+   */
   private void loadTable() {
     workoutOverview.getColumns().clear();
     workoutNameColumn = new TableColumn<>("Workout name:");
@@ -56,9 +56,11 @@ public class WorkoutOverviewController extends AbstractController {
     setColumnProperties();
   }
 
+  /**
+   * Listener which registers if a workout is clicked on in the table view.
+   */
   @FXML
-  private void workoutSelectedListener() throws Exception {
-    //TODO is try/catch needed?
+  private void workoutSelectedListener() {
     try {
       String name = workoutOverview.getSelectionModel().getSelectedItem();
       Iterator<Map.Entry<String, String>> it = workoutMap.entrySet().iterator();
@@ -94,8 +96,13 @@ public class WorkoutOverviewController extends AbstractController {
     workoutNameColumn.setResizable(false);
   }
 
+  /**
+   * Loads the workout which has been selected after Open button is clicked.
+   *
+   * @param event the event when open button is clicked.
+   */
   @FXML
-  void loadWorkout(ActionEvent event) throws IOException {
+  void loadWorkout(ActionEvent event) {
     try {
       exceptionFeedback.setText("");
       WorkoutController workoutController = new WorkoutController();
@@ -116,6 +123,10 @@ public class WorkoutOverviewController extends AbstractController {
     }
   }
 
+  /**
+   * Deletes the selected workout from the tableview and the user after Delete button is clicked.
+   *
+   */
   @FXML
   void deleteWorkout() {
     try {

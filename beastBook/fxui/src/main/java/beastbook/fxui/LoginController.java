@@ -69,12 +69,10 @@ public class LoginController extends AbstractController {
       System.out.println(userName);
       System.out.println(password);
       ClientController controller = new ClientController(userName, password);
-      System.out.println("controller");
       setService(controller);
-      System.out.println("my ass");
       super.loadHome(event);
     } catch (Exception e) {
-      loginError.setText(e.getMessage() + "det var except");
+      loginError.setText(e.getMessage());
     }
   }
 

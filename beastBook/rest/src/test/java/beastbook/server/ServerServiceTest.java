@@ -186,5 +186,4 @@ public class ServerServiceTest {
   static void cleanUp() throws Exceptions.ServerException {
     serverService.deleteUser();
   }
-
 }

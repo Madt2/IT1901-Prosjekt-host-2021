@@ -59,7 +59,7 @@ public class CreateWorkoutController extends AbstractController {
   private Button deleteButton;
 
   @FXML
-  private Button addExercise;
+  private Button addExerciseButton;
 
   @FXML
   private Text exerciseTitle;
@@ -224,7 +224,6 @@ public class CreateWorkoutController extends AbstractController {
         }
         exercises.add(exercise);
         exceptionFeedback.setText("Exercise added and saved to the workout!");
-        duplicate = false;
         updateTable();
         createButton.setDisable(false);
         emptyInputFields();
@@ -315,7 +314,6 @@ public class CreateWorkoutController extends AbstractController {
         }
       }
       createButton.setVisible(false);
-      //titleInput.setVisible(false);
       titleInput.setDisable(true);
       loadButton.setDisable(true);
       updateTable();

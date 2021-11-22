@@ -23,7 +23,7 @@
       <Text layoutX="287.0" layoutY="48.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title:" />
       <TextField fx:id="titleInput" layoutX="225.0" layoutY="52.0" />
       <Button fx:id="createButton" disable="true" layoutX="249.0" layoutY="460.0" mnemonicParsing="false" onAction="#createWorkout" text="Create workout" />
-      <Button fx:id="addButton" layoutX="134.0" layoutY="460.0" mnemonicParsing="false" onAction="#addExercise" text="Add exercise" />
+      <Button fx:id="addExerciseButton" layoutX="134.0" layoutY="460.0" mnemonicParsing="false" onAction="#addExercise" text="Add exercise" />
       <Button fx:id="loadButton" layoutX="393.0" layoutY="52.0" mnemonicParsing="false" onAction="#loadWorkout" text="Load Workout" />
       <Text fx:id="exceptionFeedback" fill="RED" layoutX="400.0" layoutY="356.0" strokeType="OUTSIDE" strokeWidth="0.0" wrappingWidth="142.0" />
       <Button fx:id="deleteButton" disable="true" layoutX="452.0" layoutY="297.0" mnemonicParsing="false" onAction="#deleteExercise" text="Delete  exercise" />

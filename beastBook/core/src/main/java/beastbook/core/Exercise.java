@@ -27,7 +27,8 @@ public class Exercise implements IdClasses {
   * @param restTime How much rest between sets in seconds
    * @throws IllegalArgumentException when params are illegal.
   */
-  public Exercise(String name, int repGoal, double weight, int sets, int repsPerSet, int restTime) throws IllegalArgumentException {
+  public Exercise(String name, int repGoal, double weight, int sets, int repsPerSet, int restTime)
+      throws IllegalArgumentException {
     setName(name);
     setRepGoal(repGoal);
     setWeight(weight);
