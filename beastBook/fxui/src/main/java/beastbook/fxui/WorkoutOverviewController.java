@@ -3,7 +3,6 @@ package beastbook.fxui;
 import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
-
 import javafx.beans.property.SimpleStringProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -14,8 +13,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
@@ -23,11 +20,6 @@ import javafx.stage.Stage;
  * Controller for the WorkoutOverview screen.
  */
 public class WorkoutOverviewController extends AbstractController {
-  @FXML
-  private AnchorPane rootPane;
-
-  @FXML
-  private Button backButton;
 
   @FXML
   private Button openButton;
@@ -59,7 +51,7 @@ public class WorkoutOverviewController extends AbstractController {
     workoutNameColumn.setCellValueFactory(data -> new SimpleStringProperty(data.getValue()));
     workoutOverview.getColumns().add(workoutNameColumn);
     workoutOverview.getItems().setAll(workoutMap.values());
-    setColumnsSize();
+    setColumnProperties();
   }
 
   @FXML
@@ -90,8 +82,14 @@ public class WorkoutOverviewController extends AbstractController {
     return workoutOverview;
   }
 
-  private void setColumnsSize() {
-    workoutNameColumn.setPrefWidth(150);    
+  /**
+  * Sets differents properties of the columns.
+  * Width, not reorderable and not resizable is set. 
+  */
+  private void setColumnProperties() {
+    workoutNameColumn.setPrefWidth(230);        
+    workoutNameColumn.setReorderable(false);
+    workoutNameColumn.setResizable(false);
   }
 
   @FXML

@@ -31,9 +31,6 @@ public class WorkoutController extends AbstractController {
   private Text title;
 
   @FXML
-  private TextField dateInput;
-
-  @FXML
   private Text exceptionFeedback;
 
   @FXML
@@ -116,7 +113,7 @@ public class WorkoutController extends AbstractController {
     workoutTable.getColumns().add(restTimeColumn);
 
     editTable();
-    setColumnsSize();
+    setColumnProperties();
   }
 
   /**
@@ -235,7 +232,7 @@ public class WorkoutController extends AbstractController {
 
     workoutTable.getItems().setAll(exercises);
   }
-    
+  
   TableView<Exercise> getWorkoutTable() {
     return workoutTable;
   }
@@ -252,13 +249,30 @@ public class WorkoutController extends AbstractController {
     this.workoutId = id;
   }
 
-  private void setColumnsSize() {
-    exerciseNameColumn.setPrefWidth(100);
-    repGoalColumn.setPrefWidth(75);
-    weightColumn.setPrefWidth(75);
-    setsColumn.setPrefWidth(75);
-    repsPerSetColumn.setPrefWidth(80);
-    restTimeColumn.setPrefWidth(106);
+  /**
+  * Sets differents properties of the columns.
+  * Width, not reorderable and not resizable is set. 
+  */
+  private void setColumnProperties() {
+    exerciseNameColumn.setPrefWidth(198);        
+    repGoalColumn.setPrefWidth(65);
+    weightColumn.setPrefWidth(65);
+    setsColumn.setPrefWidth(65);
+    repsPerSetColumn.setPrefWidth(76);
+    restTimeColumn.setPrefWidth(94);
+  
+    exerciseNameColumn.setReorderable(false);
+    repGoalColumn.setReorderable(false);
+    weightColumn.setReorderable(false);
+    setsColumn.setReorderable(false);
+    repsPerSetColumn.setReorderable(false);
+    restTimeColumn.setReorderable(false);
+
+    repGoalColumn.setResizable(false);
+    weightColumn.setResizable(false);
+    setsColumn.setResizable(false);
+    repsPerSetColumn.setReorderable(false);
+    restTimeColumn.setResizable(false);
   }
 
   // SOURCE for the following two static classes: 
