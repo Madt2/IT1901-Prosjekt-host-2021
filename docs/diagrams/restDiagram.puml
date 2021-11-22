@@ -1,5 +1,65 @@
-@startuml Core Diagram
-scale 1
+@startuml Rest Diagram
+
+class ClientController {
+  -ClientService clientService
+  -final User user
+  -Map<String, String> exerciseMap
+  -Map<String, String> workoutMap
+  -Map<String, String> historyMap
+  +Exercise getExercise(String)
+  +void addExercise(Exercise, String)
+  +void updateExercise(Exercise)
+  +void removeExercise(String)
+  +void deleteUser()
+}
+
+class ClientService {
+  -String ipAddress
+  -String baseUrl
+  -ObjectMapper mapper
+  -String sendPackage(URI)
+  +String addWorkout(Workout, User)
+  +void updateWorkout(Workout, User)
+  +void deleteWorkout(String, User)
+  +Workout queryWorkout(String, User)
+  +Map<String, String> queryWorkoutMap(User)
+}
+
+class RegisterController {
+  +void registerUser(String, String)
+}
+
+class ServerService {
+  ~BeastBookPersistence persistence
+  ~User user
+  +void createUser()
+  +void deleteUser()
+  +void addExercise(Exercise, String)
+  +void updateExercise(Exercise)
+  +void deleteExercise(String)
+  +Exercise getExercise(String)
+  +Map<String, String> getMapping(Class)
+}
+
+class ServerController {
+  -ServerService serverService
+  ~ObjectMapper mapper
+  -void setService(User)
+  +ResponseEntity createUser(String)
+  +ResponseEntity login (String)
+  +ResponseEntity<String> addHistory(String, String)
+  +ResponseEntity<String> deleteHistory(String, String)
+  +ResponseEntity<String> sendHistory(String, String)
+  +ResponseEntity<String> sendHistoryMap(String)
+}
+
+class ServerApplication {
+
+}
+
+class Rules {
+}
+
 rest -- client
 rest -- server
 rest -- ServerApplication

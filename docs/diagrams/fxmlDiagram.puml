@@ -1,9 +1,5 @@
-@startuml Class Diagram
-scale 1
+@startuml FXML Diagram
 /' Not Classes, but fxml files  '/
-
-fxui -- resources
-resources -- Login
 
 Login -- Homescreen
 Homescreen -- Create

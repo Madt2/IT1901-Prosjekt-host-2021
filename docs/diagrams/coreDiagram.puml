@@ -1,7 +1,62 @@
 @startuml Core Diagram
-scale 1
 
-interface IdClasses
+interface IdClasses {
+  String: getName()
+  String: getId()
+  void: setId(String)
+}
+
+class Exercise {
+  -String id
+  -String name
+  -int repGoal
+  -double weight
+  -int sets
+  -int repsPerSet
+  -int restTime
+}
+
+class Exceptions {
+
+}
+
+class User {
+  -final String username
+  -final String password
+}
+
+class Workout {
+  -String id
+  -String name
+  -List<String> exerciseIds
+}
+
+class History {
+  -String id
+  -String name
+  -String date
+  -List<Exercise> savedExercises
+}
+
+class IdHandler {
+  - !! OPPDATER MED KORREKT !!
+  -Map<String, String> exerciseMap
+  -Map<String, String> workoutMap
+  -Map<String, String> historyMap
+  +void setLegalCharacters(Class)
+  +void addId(String, String, Class)
+  +void removeId(String, Class)
+  +IdClasses giveId(IdClasses)
+
+}
+
+class Properties {
+
+}
+
+class Validation {
+
+}
 
 core -- Exercise
 core -- User
