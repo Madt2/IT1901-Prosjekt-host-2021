@@ -135,6 +135,12 @@ public class ClientService {
     return null;
   }
 
+  private String getPackage(String url) {
+    RestTemplate restTemplate = new RestTemplate();
+    ResponseEntity<String> data = restTemplate.getForEntity(url,String.class);
+    return data.getBody();
+  }
+
   public void createUser(User user) throws URISyntaxException,
       Exceptions.BadPackageException,
       Exceptions.ServerException,
