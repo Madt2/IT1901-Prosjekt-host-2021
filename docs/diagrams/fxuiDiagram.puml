@@ -1,6 +1,61 @@
 @startuml Fxui Diagram
 scale 1
 
+class HistoryController {
+  +setTable(History)
+}
+
+class HistoryOverviewController {
+  -loadTable()
+  ~loadHistory(ActionEvent)
+  ~deleteHistory()
+}
+
+class CreateWorkoutController {
+  +updateTable()
+  ~addExercise()
+  ~loadWorkout(ActionEvent)
+  ~createWorkout()
+  ~deleteExercise()
+}
+
+abstract class AbstractController {
+  - String: username
+  - String: password
+  # ClientController: service 
+
+  ~void loadHome(ActionEvent)
+  ~void loadLogin(ActionEvent)
+  ~void loadCreate(ActionEvent)
+  ~void loadOverview(ActionEvent)
+  ~void loadHistoryOverview(ActionEvent)
+}
+
+class WorkoutController {
+  +updateTable()
+  ~saveHistory()
+  -editTable()
+}
+
+class WorkoutOverviewController {
+  -loadTable()
+  ~loadWorkout(ActionEvent)
+  ~deleteWorkout()
+}
+
+class LoginController {
+  ~registerUser()
+  ~loginUser()
+}
+
+class HomeScreenController {
+  ~deleteUser()
+}
+
+class App {
+  +start(Stage)
+}
+
 fxui -- HistoryOverviewController
 fxui -- HistoryController
 fxui -- WorkoutOverviewController

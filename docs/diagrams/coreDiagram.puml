@@ -1,5 +1,8 @@
 @startuml Core Diagram
 scale 1
+
+interface IdClasses
+
 core -- Exercise
 core -- User
 core -- History
