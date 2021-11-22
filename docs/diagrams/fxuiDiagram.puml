@@ -4,18 +4,20 @@ class HistoryController extends AbstractController{
   +void setTable(History)
 }
 
-class HistoryOverviewController {
-  -loadTable()
-  ~loadHistory(ActionEvent)
-  ~deleteHistory()
+class HistoryOverviewController extends AbstractController{
+  -TableView<HistoryData> historyOverview
+  -void loadTable()
+  ~void loadHistory(ActionEvent)
+  ~void deleteHistory()
 }
 
-class CreateWorkoutController {
-  +updateTable()
-  ~addExercise()
-  ~loadWorkout(ActionEvent)
-  ~createWorkout()
-  ~deleteExercise()
+class CreateWorkoutController extends AbstractController{
+  -TableView<Exercise> workoutTable
+  +void updateTable()
+  ~void addExercise()
+  ~void loadWorkout(ActionEvent)
+  ~void createWorkout()
+  ~void deleteExercise()
 }
 
 abstract class AbstractController {
@@ -30,16 +32,18 @@ abstract class AbstractController {
   ~void loadHistoryOverview(ActionEvent)
 }
 
-class WorkoutController {
-  +updateTable()
-  ~saveHistory()
-  -editTable()
+class WorkoutController extends AbstractController{
+  -TableView<Exercise> workoutTable
+  +void updateTable()
+  ~void saveHistory()
+  -void editTable()
 }
 
-class WorkoutOverviewController {
-  -loadTable()
-  ~loadWorkout(ActionEvent)
-  ~deleteWorkout()
+class WorkoutOverviewController extends AbstractController{
+  -TableView<Workout> workoutOverview
+  -void loadTable()
+  ~void loadWorkout(ActionEvent)
+  ~void deleteWorkout()
 }
 
 class LoginController extends AbstractController{

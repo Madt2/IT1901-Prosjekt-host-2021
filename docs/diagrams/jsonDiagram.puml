@@ -54,8 +54,8 @@ internal -- WorkoutDeserializer
 internal -- WorkoutSerializer
 internal -- HistoryDeserializer
 internal -- HistorySerializer
-internal -- IdDeserializer
-internal -- IdSerializer
+internal -- IdHandlerDeserializer
+internal -- IdHandlerSerializer
 internal -- BeastBookModule
 json -- BeastBookPersistence
 @enduml
