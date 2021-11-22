@@ -10,8 +10,6 @@ import static beastbook.core.Properties.mockUser;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PersistenceTest {
-  private static final String username = "test";
-  private static final String password = "test";
   private static BeastBookPersistence beastBookPersistence = new BeastBookPersistence(mockUser);;
 
 
@@ -40,10 +38,10 @@ public class PersistenceTest {
   void testValidateUser() throws Exceptions.UserAlreadyExistException, IOException, Exceptions.UserNotFoundException, Exceptions.PasswordIncorrectException {
     beastBookPersistence.createUser();
     beastBookPersistence.validateUser();
-    User user = new User("doesNotExist", "test");
+    User user = new User("doesNotExist", mockUser.getPassword());
     beastBookPersistence = new BeastBookPersistence(user);
     assertThrows(Exceptions.UserNotFoundException.class, () -> beastBookPersistence.validateUser());
-    user = new User("test", "wrongPassword");
+    user = new User(mockUser.getUsername(), "wrongPassword");
     beastBookPersistence = new BeastBookPersistence(user);
     assertThrows(Exceptions.PasswordIncorrectException.class, () -> beastBookPersistence.validateUser());
   }
@@ -91,7 +89,7 @@ public class PersistenceTest {
     beastBookPersistence.saveIdObject(exerciseWithId);
     Exercise loadedExercise = beastBookPersistence.getExercise(exerciseWithId.getId());
     assertEqualExercise(loadedExercise, exerciseWithId);
-    File file = new File(System.getProperty("user.home") + "/" + username + "/Exercises/" + exerciseWithId.getId());
+    File file = new File(System.getProperty("user.home") + "/" + mockUser.getUsername() + "/Exercises/" + exerciseWithId.getId());
     assertTrue(file.exists());
     System.out.println(exerciseWithId.getId());
     beastBookPersistence.deleteIdObject(exerciseWithId.getId(), Exercise.class);
@@ -113,7 +111,7 @@ public class PersistenceTest {
     Workout loadedWorkout = beastBookPersistence.getWorkout(workoutNoId.getId());
     assertEqualWorkout(loadedWorkout, workoutWithId);
 
-    File file = new File(System.getProperty("user.home") + "/" + username + "/Workouts/" + workoutWithId.getId());
+    File file = new File(System.getProperty("user.home") + "/" + mockUser.getUsername() + "/Workouts/" + workoutWithId.getId());
     assertTrue(file.exists());
     beastBookPersistence.deleteIdObject(workoutWithId.getId(),Workout.class);
     assertFalse(file.exists());
@@ -138,7 +136,7 @@ public class PersistenceTest {
     History loadedHistory = beastBookPersistence.getHistory(historyWithId.getId());
     assertEqualHistory(loadedHistory, historyWithId);
 
-    File file = new File(System.getProperty("user.home") + "/" + username + "/Histories/" + historyWithId.getId());
+    File file = new File(System.getProperty("user.home") + "/" + mockUser.getUsername() + "/Histories/" + historyWithId.getId());
     assertTrue(file.exists());
     beastBookPersistence.deleteIdObject(historyNoId.getId(),History.class);
     assertFalse(file.exists());
