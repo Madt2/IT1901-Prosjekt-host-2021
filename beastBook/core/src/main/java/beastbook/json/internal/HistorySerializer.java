@@ -29,7 +29,7 @@ public class HistorySerializer extends JsonSerializer<History> {
       SerializerProvider serializerProvider)
       throws IOException {
     jsonGenerator.writeStartObject();
-    if (history.getName() != null) {
+    if (history.getId() != null) {
       jsonGenerator.writeStringField("id", history.getId());
     }
     if (history.getName() != null) {

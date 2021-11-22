@@ -3,6 +3,8 @@ package beastbook.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import static beastbook.core.Validation.validateId;
+
 /**
  * Workout class that creates a workout. It has a name, a unique ID to identify it,
  * and a list of IDs to reference exercise objects.
@@ -37,7 +39,7 @@ public class Workout implements IdClasses {
    * @throws IllegalArgumentException if id is in wrong format.
    */
   public void setId(String id) throws Exceptions.IllegalIdException {
-    Id.validateId(id, Workout.class);
+    validateId(id, Workout.class);
     this.id = id;
   }
 
@@ -64,7 +66,7 @@ public class Workout implements IdClasses {
     if (exerciseIDs.contains(exerciseID)) {
       throw new IllegalArgumentException("Exercise is already added!");
     }
-    Id.validateId(exerciseID, Exercise.class);
+    validateId(exerciseID, Exercise.class);
     exerciseIDs.add(exerciseID);
   }
 

@@ -2,14 +2,14 @@ package beastbook.server;
 
 import beastbook.core.*;
 import beastbook.json.internal.BeastBookModule;
-import beastbook.json.internal.UserDeserializer;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.io.IOException;
+
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @RestController
@@ -32,7 +32,7 @@ public class ServerController {
       return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
     } catch (JsonProcessingException e) {
       e.printStackTrace();
-      throw new Exceptions.ServerException(e.getMessage());
+      throw new Exceptions.ServerException();
     }
   }
 
@@ -40,46 +40,66 @@ public class ServerController {
     try {
       return mapper.readValue(jsonString, cls);
     } catch (JsonProcessingException e) {
-      throw new Exceptions.BadPackageException(e.getMessage());
+      throw new Exceptions.BadPackageException();
     }
   }
 
-  @PostMapping("createUser/")
-  public ResponseEntity createUser(@RequestBody String userString) {
+  private ResponseEntity<String> sendNotFound(Exception e) {
+    return new ResponseEntity<String>(e.getClass().getSimpleName(), HttpStatus.NOT_FOUND);
+  }
+
+  private ResponseEntity<String> sendBadRequest(Exception e) {
+    return new ResponseEntity<String>(e.getClass().getSimpleName(), HttpStatus.BAD_REQUEST);
+  }
+
+  private ResponseEntity<String> sendExpectationFailed(Exception e) {
+    return new ResponseEntity<String>(e.getClass().getSimpleName(), HttpStatus.EXPECTATION_FAILED);
+  }
+
+  private ResponseEntity<String> sendNotAcceptable(Exception e) {
+    return new ResponseEntity<String>(e.getClass().getSimpleName(), HttpStatus.NOT_ACCEPTABLE);
+  }
+
+  @PostMapping("createUser/{userString}")
+  public ResponseEntity createUser(@PathVariable String userString) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
       serverService.createUser();
       return new ResponseEntity<>("", HttpStatus.OK);
     } catch (Exceptions.BadPackageException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
+      return sendBadRequest(e);
     } catch (Exceptions.UserAlreadyExistException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName(), HttpStatus.BAD_REQUEST);
+      return sendNotAcceptable(e);
     } catch (Exceptions.ServerException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+      return sendExpectationFailed(e);
     }
   }
 
   @PostMapping("login/{userString}")
-  public ResponseEntity login(@RequestBody String userString) {
+  public ResponseEntity login(@PathVariable String userString) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
       serverService.login();
       return new ResponseEntity<>("", HttpStatus.OK);
     } catch (Exceptions.UserNotFoundException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName(), HttpStatus.NOT_FOUND);
+      return sendNotFound(e);
     } catch (Exceptions.BadPackageException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
+      return sendBadRequest(e);
     } catch (Exceptions.ServerException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+      return sendExpectationFailed(e);
     } catch (Exceptions.PasswordIncorrectException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName(), HttpStatus.NOT_ACCEPTABLE);
+      return sendNotAcceptable(e);
     }
   }
 
   @PostMapping("addWorkout/{userString}/{workoutString}")
   public ResponseEntity<String> addWorkout(@PathVariable String workoutString, @PathVariable String userString) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
+    userString = URLDecoder.decode(workoutString, StandardCharsets.UTF_8);
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
@@ -87,138 +107,167 @@ public class ServerController {
       String workoutId = serverService.addWorkout(workout);
       return new ResponseEntity<String>(workoutId, HttpStatus.OK);
     } catch (Exceptions.BadPackageException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
+      return sendBadRequest(e);
     } catch (Exceptions.WorkoutAlreadyExistsException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName(), HttpStatus.BAD_REQUEST);
+      return sendNotAcceptable(e);
     } catch (Exceptions.ServerException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+      return sendExpectationFailed(e);
     }
   }
 
   @PostMapping("addExercise/{userString}/{workoutId}/{exerciseString}")
   public ResponseEntity<String> addExercise(@PathVariable String userString, @PathVariable String workoutId, @PathVariable String exerciseString) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
+    userString = URLDecoder.decode(workoutId, StandardCharsets.UTF_8);
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
       Exercise exercise = (Exercise) jsonToObject(exerciseString, Exercise.class);
       serverService.addExercise(exercise, workoutId);
-      return new ResponseEntity<String>("Succsese", HttpStatus.OK);
+      return new ResponseEntity<String>("", HttpStatus.OK);
     } catch (Exceptions.BadPackageException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
+      return sendBadRequest(e);
     } catch (Exceptions.WorkoutNotFoundException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName(), HttpStatus.NOT_FOUND);
+      return sendNotFound(e);
     } catch (Exceptions.ExerciseAlreadyExistsException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName(), HttpStatus.BAD_REQUEST);
+      return sendNotAcceptable(e);
     } catch (Exceptions.ServerException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+      return sendExpectationFailed(e);
+    } catch (Exceptions.IllegalIdException e) {
+      return sendNotAcceptable(e);
     }
   }
 
   @PostMapping("addHistory/{userString}/{historyString}")
   public ResponseEntity<String> addHistory(@PathVariable String userString, @PathVariable String historyString) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
+    userString = URLDecoder.decode(historyString, StandardCharsets.UTF_8);
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
       History history = (History) jsonToObject(historyString, History.class);
       serverService.addHistory(history);
-      return new ResponseEntity<String>("succsess", HttpStatus.OK);
+      return new ResponseEntity<String>("", HttpStatus.OK);
     } catch (Exceptions.BadPackageException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
+      return sendBadRequest(e);
     } catch (Exceptions.ServerException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+      return sendExpectationFailed(e);
     } catch (Exceptions.HistoryAlreadyExistsException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName(), HttpStatus.BAD_REQUEST);
+      return sendNotAcceptable(e);
     }
   }
 
   @PostMapping("updateWorkout/{userString}/{workoutString}")
   public ResponseEntity<String> updateWorkout(@PathVariable String workoutString, @PathVariable String userString) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
+    userString = URLDecoder.decode(workoutString, StandardCharsets.UTF_8);
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
       Workout workout = (Workout) jsonToObject(workoutString, Workout.class);
       serverService.updateWorkout(workout);
-      return new ResponseEntity<>("Success in updating workout", HttpStatus.OK);
+      return new ResponseEntity<>("", HttpStatus.OK);
     } catch (Exceptions.BadPackageException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
+      return sendBadRequest(e);
     } catch (Exceptions.ServerException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+      return sendExpectationFailed(e);
+    } catch (Exceptions.WorkoutNotFoundException e) {
+      return sendNotFound(e);
+    } catch (Exceptions.IllegalIdException e) {
+      return sendNotAcceptable(e);
     }
   }
 
   @PostMapping("updateExercise/{userString}/{exerciseString}")
   public ResponseEntity<String> updateExercise(@PathVariable String userString, @PathVariable String exerciseString) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
+    userString = URLDecoder.decode(exerciseString, StandardCharsets.UTF_8);
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
       Exercise exercise = (Exercise) jsonToObject(exerciseString, Exercise.class);
       serverService.updateExercise(exercise);
-      return new ResponseEntity<>("Success in updating Exercise",HttpStatus.OK);
+      return new ResponseEntity<>("",HttpStatus.OK);
     } catch (Exceptions.BadPackageException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
+      return sendBadRequest(e);
     } catch (Exceptions.ServerException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+      return sendExpectationFailed(e);
+    } catch (Exceptions.IllegalIdException e) {
+      return sendNotAcceptable(e);
+    } catch (Exceptions.ExerciseNotFoundException e) {
+      return sendNotFound(e);
     }
   }
 
   @PostMapping("deleteUser/{userString}")
   public ResponseEntity<String> deleteUser(@PathVariable String userString) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
       serverService.deleteUser();
-      return new ResponseEntity<>("Success in deleting User", HttpStatus.OK);
+      return new ResponseEntity<>("", HttpStatus.OK);
     } catch (Exceptions.BadPackageException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
+      return sendBadRequest(e);
     } catch (Exceptions.ServerException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+      return sendExpectationFailed(e);
     }
   }
 
   @PostMapping("deleteWorkout/{userString}/{workoutId}")
   public ResponseEntity<String> deleteWorkout(@PathVariable String workoutId, @PathVariable String userString) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
       serverService.deleteWorkout(workoutId);
-      return new ResponseEntity<>("Success in deleting Workout", HttpStatus.OK);
+      return new ResponseEntity<>("", HttpStatus.OK);
     } catch (Exceptions.BadPackageException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
+      return sendBadRequest(e);
     } catch (Exceptions.ServerException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+      return sendExpectationFailed(e);
+    } catch (Exceptions.IllegalIdException e) {
+      return sendNotAcceptable(e);
     }
   }
 
   @PostMapping("deleteExercise/{userString}/{exerciseId}")
   public ResponseEntity<String> deleteExercise(@PathVariable String userString, @PathVariable String exerciseId) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
       serverService.deleteExercise(exerciseId);
-      return new ResponseEntity<>("Success in deleting Exercise", HttpStatus.OK);
+      return new ResponseEntity<>("", HttpStatus.OK);
     } catch (Exceptions.BadPackageException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
+      return sendBadRequest(e);
     } catch (Exceptions.ServerException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+      return sendExpectationFailed(e);
+    } catch (Exceptions.IllegalIdException e) {
+      return sendNotAcceptable(e);
     }
   }
 
   @PostMapping("deleteHistory/{userString}/{historyId}")
   public ResponseEntity<String> deleteHistory(@PathVariable String userString, @PathVariable String historyId) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
       serverService.deleteHistory(historyId);
-      return new ResponseEntity<>("Success in deleting Workout", HttpStatus.OK);
+      return new ResponseEntity<>("", HttpStatus.OK);
     } catch (Exceptions.BadPackageException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
+      return sendBadRequest(e);
     } catch (Exceptions.ServerException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+      return sendExpectationFailed(e);
+    } catch (Exceptions.IllegalIdException e) {
+      return sendNotAcceptable(e);
     }
   }
 
   @GetMapping("getWorkout/{userString}/{workoutId}")
   public ResponseEntity<String> sendWorkout(@PathVariable String userString, @PathVariable String workoutId) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
@@ -226,16 +275,19 @@ public class ServerController {
       String packageString = objectToJson(workout);
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (Exceptions.WorkoutNotFoundException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName(), HttpStatus.NOT_FOUND);
+      return sendNotFound(e);
     } catch (Exceptions.BadPackageException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
+      return sendBadRequest(e);
     } catch (Exceptions.ServerException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+      return sendExpectationFailed(e);
+    } catch (Exceptions.IllegalIdException e) {
+      return sendNotAcceptable(e);
     }
   }
 
   @GetMapping("getExercise/{userString}/{exerciseId}")
   public ResponseEntity<String> sendExercise(@PathVariable String userString, @PathVariable String exerciseId) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
@@ -243,16 +295,19 @@ public class ServerController {
       String packageString = objectToJson(exercise);
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (Exceptions.BadPackageException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
+      return sendBadRequest(e);
     } catch (Exceptions.ServerException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+      return sendExpectationFailed(e);
     } catch (Exceptions.ExerciseNotFoundException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName(), HttpStatus.NOT_FOUND);
+      return sendNotFound(e);
+    } catch (Exceptions.IllegalIdException e) {
+      return sendNotAcceptable(e);
     }
   }
 
   @GetMapping("getHistory/{userString}/{historyId}")
   public ResponseEntity<String> sendHistory(@PathVariable String userString, @PathVariable String historyId) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
@@ -260,16 +315,19 @@ public class ServerController {
       String packageString = objectToJson(history);
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (Exceptions.ServerException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+      return sendExpectationFailed(e);
     } catch (Exceptions.HistoryNotFoundException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName(), HttpStatus.NOT_FOUND);
+      return sendNotFound(e);
     } catch (Exceptions.BadPackageException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
+      return sendBadRequest(e);
+    } catch (Exceptions.IllegalIdException e) {
+      return sendNotAcceptable(e);
     }
   }
 
   @GetMapping("getExerciseMap/{userString}")
   public ResponseEntity<String> sendExerciseMap(@PathVariable String userString) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
@@ -277,14 +335,15 @@ public class ServerController {
       String packageString = objectToJson(map);
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (Exceptions.BadPackageException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
+      return sendBadRequest(e);
     } catch (Exceptions.ServerException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+      return sendExpectationFailed(e);
     }
   }
 
   @GetMapping("getWorkoutMap/{userString}")
   public ResponseEntity<String> sendWorkoutMap(@PathVariable String userString) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
@@ -292,14 +351,15 @@ public class ServerController {
       String packageString = objectToJson(map);
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (Exceptions.BadPackageException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
+      return sendBadRequest(e);
     } catch (Exceptions.ServerException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+      return sendExpectationFailed(e);
     }
   }
 
   @GetMapping("getHistoryMap/{userString}")
   public ResponseEntity<String> sendHistoryMap(@PathVariable String userString) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
@@ -307,9 +367,9 @@ public class ServerController {
       String packageString = objectToJson(map);
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (Exceptions.BadPackageException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
+      return sendBadRequest(e);
     } catch (Exceptions.ServerException e) {
-      return new ResponseEntity<String>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.EXPECTATION_FAILED);
+      return sendExpectationFailed(e);
     }
   }
 }

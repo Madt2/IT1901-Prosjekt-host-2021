@@ -5,22 +5,23 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import static beastbook.core.Validation.validateId;
+
 /**
  * History class saves a workout with a final workout object and date it was saved.
  */
-// Todo should extend workout?
-public class History extends Workout implements IdClasses {
+public class History implements IdClasses {
   private String id;
   private final String name;
   private final String date;
   private final List<Exercise> savedExercises;
 
-    /**
-   * Constructor for History object.
-   *
-     * @param name name of workout to log.
-   * @param exercises The Exercises to be saved.
-   */
+  /**
+  * Constructor for History object.
+  *
+  * @param name name of workout to log.
+  * @param exercises The Exercises to be saved.
+  */
   public History(String name, List<Exercise> exercises) {
     this.name = name;
     this.savedExercises = Collections.unmodifiableList(exercises);
@@ -36,7 +37,7 @@ public class History extends Workout implements IdClasses {
   }
 
   public void setId(String id) throws Exceptions.IllegalIdException {
-    Id.validateId(id, this.getClass());
+    validateId(id, this.getClass());
     this.id = id;
   }
 
