@@ -52,10 +52,14 @@ ServerService {
     }
   }
 
-  public void addExercise(Exercise exercise, String workoutId) throws Exceptions.WorkoutNotFoundException, Exceptions.ServerException, Exceptions.ExerciseAlreadyExistsException {
+  public void addExercise(Exercise exercise, String workoutId) throws Exceptions.WorkoutNotFoundException, Exceptions.ServerException, Exceptions.ExerciseAlreadyExistsException, Exceptions.IllegalIdException {
+    Id.validateId(workoutId, Workout.class);
     try {
       Workout workout = persistence.getWorkout(workoutId);
       Rules.ExerciseRules(exercise, workout);
+      if (exercise.getId() != null) {
+        throw new Exceptions.ExerciseAlreadyExistsException(exercise.getName());
+      }
       Id ids = persistence.getIds();
       exercise = (Exercise) ids.giveId(exercise);
       workout.addExercise(exercise.getId());
@@ -70,15 +74,25 @@ ServerService {
 
   public String addWorkout(Workout workout) throws Exceptions.ServerException, Exceptions.WorkoutAlreadyExistsException {
     Rules.WorkoutRules(workout);
+    if (workout.getId() != null) {
+      throw new Exceptions.WorkoutAlreadyExistsException(workout.getName());
+    }
     return addIdObject(workout);
   }
 
   public void addHistory(History history) throws Exceptions.ServerException, Exceptions.HistoryAlreadyExistsException {
     Rules.HistoryRules(history);
+    if (history.getId() != null) {
+      throw new Exceptions.HistoryAlreadyExistsException(history.getName() + " : " + history.getDate());
+    }
     addIdObject(history);
   }
 
-  public void updateWorkout(Workout workout) throws Exceptions.ServerException {
+  public void updateWorkout(Workout workout) throws Exceptions.ServerException, Exceptions.IllegalIdException, Exceptions.WorkoutNotFoundException {
+    Id.validateId(workout.getId(), Workout.class);
+    if (!getMapping(Workout.class).containsKey(workout.getId())) {
+      throw new Exceptions.WorkoutNotFoundException(workout.getId());
+    }
     try {
       persistence.saveIdObject(workout);
     } catch (IOException | Exceptions.IdNotFoundException e) {
@@ -87,7 +101,11 @@ ServerService {
     }
   }
 
-  public void updateExercise(Exercise exercise) throws Exceptions.ServerException {
+  public void updateExercise(Exercise exercise) throws Exceptions.ServerException, Exceptions.IllegalIdException, Exceptions.ExerciseNotFoundException {
+    Id.validateId(exercise.getId(), Exercise.class);
+    if (!getMapping(Exercise.class).containsKey(exercise.getId())) {
+      throw new Exceptions.ExerciseNotFoundException(exercise.getId());
+    }
     try {
       persistence.saveIdObject(exercise);
     } catch (IOException | Exceptions.IdNotFoundException e) {
@@ -97,25 +115,6 @@ ServerService {
   }
 
   public void deleteUser() throws Exceptions.ServerException {
-//    try {
-//      Id ids = persistence.getIds();
-//      List<String> exerciseIds = (List<String>) ids.getMap(Exercise.class).keySet();
-//      List<String> workoutIds = (List<String>) ids.getMap(Workout.class).keySet();
-//      List<String> historyIds = (List<String>) ids.getMap(History.class).keySet();
-//      for (String id : exerciseIds) {
-//        deleteExercise(id);
-//      }
-//      for (String id : workoutIds) {
-//        deleteWorkout(id);
-//      }
-//      for (String id : historyIds) {
-//        deleteHistory(id);
-//      }
-//      persistence.deleteUserDir();
-//    } catch (IOException | Exceptions.IdHandlerNotFoundException e) {
-//      e.printStackTrace();
-//      throw new Exceptions.ServerException(e.getMessage());
-//    }
     try {
       persistence.deleteUserDir();
     } catch (IOException e) {
@@ -135,11 +134,13 @@ ServerService {
     }
   }
 
-  public void deleteExercise(String id) throws Exceptions.ServerException {
+  public void deleteExercise(String id) throws Exceptions.ServerException, Exceptions.IllegalIdException {
+    Id.validateId(id, Exercise.class);
     deleteIdObject(id, Exercise.class);
   }
 
-  public void deleteWorkout(String id) throws Exceptions.ServerException {
+  public void deleteWorkout(String id) throws Exceptions.ServerException, Exceptions.IllegalIdException {
+    Id.validateId(id, Workout.class);
     try {
       Workout workout = persistence.getWorkout(id);
       for (String s : workout.getExerciseIDs()) {
@@ -154,11 +155,13 @@ ServerService {
     }
   }
 
-  public void deleteHistory(String id) throws Exceptions.ServerException {
+  public void deleteHistory(String id) throws Exceptions.ServerException, Exceptions.IllegalIdException {
+    Id.validateId(id, History.class);
     deleteIdObject(id, History.class);
   }
 
-  public Workout getWorkout(String workoutId) throws Exceptions.WorkoutNotFoundException, Exceptions.ServerException {
+  public Workout getWorkout(String workoutId) throws Exceptions.WorkoutNotFoundException, Exceptions.ServerException, Exceptions.IllegalIdException {
+    Id.validateId(workoutId, Workout.class);
     try {
       return persistence.getWorkout(workoutId);
     } catch (IOException e) {
@@ -167,7 +170,8 @@ ServerService {
     }
   }
 
-  public Exercise getExercise(String exerciseID) throws Exceptions.ServerException, Exceptions.ExerciseNotFoundException {
+  public Exercise getExercise(String exerciseID) throws Exceptions.ServerException, Exceptions.ExerciseNotFoundException, Exceptions.IllegalIdException {
+    Id.validateId(exerciseID, Exercise.class);
     try {
       return persistence.getExercise(exerciseID);
     } catch (IOException e) {
@@ -176,7 +180,8 @@ ServerService {
     }
   }
 
-  public History getHistory(String historyID) throws Exceptions.HistoryNotFoundException, Exceptions.ServerException {
+  public History getHistory(String historyID) throws Exceptions.HistoryNotFoundException, Exceptions.ServerException, Exceptions.IllegalIdException {
+    Id.validateId(historyID, History.class);
     try {
       return persistence.getHistory(historyID);
     } catch (IOException e) {

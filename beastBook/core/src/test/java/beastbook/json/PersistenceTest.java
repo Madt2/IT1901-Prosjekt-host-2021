@@ -9,15 +9,14 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PersistenceTest {
+  private static final String username = "test";
+  private static final String password = "test";
+  private static final User user = new User(username, password);
+  private static BeastBookPersistence beastBookPersistence = new BeastBookPersistence(user);;
 
-  private BeastBookPersistence beastBookPersistence;
-  private final String username = "test";
-  private final String password = "test";
 
-  @BeforeEach
-  void setup() throws IOException {
-    User user = new User(username, password);
-    beastBookPersistence = new BeastBookPersistence(user);
+  @BeforeAll
+  static void setup() throws IOException {
     File file = new File(System.getProperty("user.home") + "/" + user.getUsername());
     if (file.exists()) {
       beastBookPersistence.deleteUserDir();
@@ -31,10 +30,10 @@ public class PersistenceTest {
   }
 
   @Test
-  void testSaveUser() throws Exceptions.UserAlreadyExistException, IOException {
+  void testSaveUser() throws Exceptions.UserAlreadyExistException, IOException, Exceptions.UserNotFoundException {
     assertThrows(Exceptions.UserNotFoundException.class, () -> beastBookPersistence.saveUser());
     beastBookPersistence.createUser();
-    assertDoesNotThrow(() -> beastBookPersistence.saveUser());
+    beastBookPersistence.saveUser();
   }
 
   @Test
@@ -97,6 +96,7 @@ public class PersistenceTest {
     System.out.println(exerciseWithId.getId());
     beastBookPersistence.deleteIdObject(exerciseWithId.getId(), Exercise.class);
     assertFalse(file.exists());
+    assertThrows(Exceptions.ExerciseNotFoundException.class, () -> beastBookPersistence.getExercise(exerciseWithId.getId()));
   }
 
   @Test
@@ -117,6 +117,7 @@ public class PersistenceTest {
     assertTrue(file.exists());
     beastBookPersistence.deleteIdObject(workoutWithId.getId(),Workout.class);
     assertFalse(file.exists());
+    assertThrows(Exceptions.WorkoutNotFoundException.class, () -> beastBookPersistence.getWorkout(workoutWithId.getId()));
   }
 
   @Test
@@ -141,6 +142,7 @@ public class PersistenceTest {
     assertTrue(file.exists());
     beastBookPersistence.deleteIdObject(historyNoId.getId(),History.class);
     assertFalse(file.exists());
+    assertThrows(Exceptions.HistoryNotFoundException.class, () -> beastBookPersistence.getHistory(historyWithId.getId()));
   }
 
   @Test

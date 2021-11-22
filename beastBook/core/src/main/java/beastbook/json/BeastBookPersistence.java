@@ -72,9 +72,6 @@ public class BeastBookPersistence {
    * @throws IOException if read fails.
    */
   private Object readObjectFromFile(File file, Class cls) throws IOException {
-    if (!file.exists()) {
-      throw new FileNotFoundException("Did not find file: " + file);
-    }
     Reader reader = new FileReader(file, StandardCharsets.UTF_8);
     Object obj = mapper.readValue(reader, cls);
     reader.close();
@@ -120,10 +117,10 @@ public class BeastBookPersistence {
    * @return File at path
    * @throws IOException if file at path does not exist.
    */
-  private File getFile(String path) throws IOException {
+  private File getFile(String path) throws FileNotFoundException {
     File file = new File(path);
     if (!file.isFile()) {
-      throw new IOException("File: " + path + " is missing!");
+      throw new FileNotFoundException("File: " + path + " is missing!");
     }
     return file;
   }
