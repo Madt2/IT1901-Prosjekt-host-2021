@@ -6,7 +6,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
-import java.io.File;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
@@ -29,17 +28,21 @@ public class ClientControllerTest {
   private History returnedHistory;
 
   @BeforeAll
-  static void setup() throws Exceptions.ServerException, Exceptions.UserNotFoundException, Exceptions.BadPackageException, URISyntaxException, Exceptions.PasswordIncorrectException, JsonProcessingException {
-    clientController = new ClientController(mockUser.getUsername(), mockUser.getPassword());
-    File file = new File(System.getProperty("user.home") + "/" + mockUser.getUsername());
-    if (file.exists()) {
+  static void setup() throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, Exceptions.PasswordIncorrectException, JsonProcessingException, Exceptions.UserAlreadyExistException, Exceptions.UserNotFoundException {
+    RegisterController registerController = new RegisterController();
+    try {
+      clientController = new ClientController(mockUser.getUsername(), mockUser.getPassword());
       clientController.deleteUser();
+      registerController.registerUser(mockUser.getUsername(), mockUser.getPassword());
+    } catch (Exceptions.UserNotFoundException e) {
+      registerController.registerUser(mockUser.getUsername(), mockUser.getPassword());
     }
+    clientController = new ClientController(mockUser.getUsername(), mockUser.getPassword());
   }
 
   @Test
-  @Order(2)
-  void testLogin() throws Exceptions.UserAlreadyExistException, Exceptions.ServerException, Exceptions.UserNotFoundException, Exceptions.PasswordIncorrectException, Exceptions.BadPackageException, URISyntaxException, JsonProcessingException {
+  @Order(1)
+  void testLogin() {
     assertThrows(Exceptions.UserNotFoundException.class, () -> new ClientController("doesNotExist", "test"));
     assertThrows(Exceptions.PasswordIncorrectException.class, () -> new ClientController("test", "incorrectPassword"));
   }
@@ -69,7 +72,7 @@ public class ClientControllerTest {
   }
 
   @Test
-  @Order(3)
+  @Order(2)
   void testGetters() throws Exceptions.ServerException {
     exerciseMap = clientController.getExerciseMap();
     workoutMap = clientController.getWorkoutMap();
@@ -88,7 +91,7 @@ public class ClientControllerTest {
   }
 
   @Test
-  @Order(4)
+  @Order(3)
   void testAddObjects() throws Exceptions.WorkoutNotFoundException, Exceptions.ServerException, Exceptions.ExerciseAlreadyExistsException, Exceptions.WorkoutAlreadyExistsException, Exceptions.HistoryAlreadyExistsException, Exceptions.ExerciseNotFoundException, Exceptions.HistoryNotFoundException, Exceptions.IllegalIdException, Exceptions.BadPackageException, URISyntaxException, JsonProcessingException {
     //add objects:
     assertThrows(Exceptions.IllegalIdException.class, () -> clientController.addExercise(mockExercise, notValidWorkoutId));
@@ -122,7 +125,7 @@ public class ClientControllerTest {
   }
 
   @Test
-  @Order(5)
+  @Order(4)
   void testUpdateObjects() throws Exceptions.ServerException, Exceptions.IllegalIdException, Exceptions.WorkoutNotFoundException, Exceptions.ExerciseNotFoundException, Exceptions.BadPackageException, URISyntaxException, JsonProcessingException {
     assertThrows(Exceptions.IllegalIdException.class, () -> clientController.updateExercise(mockExercise));
     assertThrows(Exceptions.IllegalIdException.class, () -> clientController.updateWorkout(mockWorkout));
@@ -156,7 +159,7 @@ public class ClientControllerTest {
   }
 
   @Test
-  @Order(6)
+  @Order(5)
   void testDeleteObjects() throws Exceptions.ServerException, Exceptions.IllegalIdException, Exceptions.WorkoutAlreadyExistsException, Exceptions.WorkoutNotFoundException, Exceptions.ExerciseAlreadyExistsException, Exceptions.BadPackageException, URISyntaxException, JsonProcessingException {
     clientController.removeHistory(returnedHistory.getId());
     assertTrue(clientController.getHistoryMap().size() == 0);
@@ -174,7 +177,7 @@ public class ClientControllerTest {
   }
 
   @Test
-  @Order(7)
+  @Order(6)
   void testSetIp() {
     clientController.setIpAddress("127.0.0.1");
     clientController.getExerciseMap();
