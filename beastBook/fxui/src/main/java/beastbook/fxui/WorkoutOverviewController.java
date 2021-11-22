@@ -85,11 +85,11 @@ public class WorkoutOverviewController extends AbstractController {
   }
 
   /**
-  * Sets differents properties of the columns.
-  * Width, not reorderable and not resizable is set. 
+  * Sets different properties to the columns.
+  * Width, not reorderable and not resizable functionality is set.
   */
   private void setColumnProperties() {
-    workoutNameColumn.setPrefWidth(230);        
+    workoutNameColumn.setPrefWidth(230);
     workoutNameColumn.setReorderable(false);
     workoutNameColumn.setResizable(false);
   }

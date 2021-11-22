@@ -3,7 +3,6 @@ package beastbook.client;
 import beastbook.core.Exceptions;
 import beastbook.core.User;
 import com.fasterxml.jackson.core.JsonProcessingException;
-
 import java.net.URISyntaxException;
 
 public class RegisterController {

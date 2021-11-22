@@ -24,7 +24,7 @@ public class ClientService {
   }
 
   private String objectToJson(Object object) throws JsonProcessingException {
-      return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+    return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
   }
 
   private Object jsonToObject(String jsonString, Class cls) throws Exceptions.BadPackageException {
@@ -37,8 +37,7 @@ public class ClientService {
 
   public void setIpAddress(String ipAddress) {
     this.ipAddress = ipAddress;
-    baseURL = "http://" + ipAddress + ":8080/";
-    mapper = new ObjectMapper();
+    baseUrl = "http://" + ipAddress + ":8080/";
     mapper.registerModule(new BeastBookModule());
   }
 
@@ -54,13 +53,15 @@ public class ClientService {
     }
   }
 
-  private void passwordIncorrectException(String errorMessage) throws Exceptions.PasswordIncorrectException {
+  private void passwordIncorrectException(String errorMessage)
+      throws Exceptions.PasswordIncorrectException {
     if (errorMessage.equals(Exceptions.PasswordIncorrectException.class.getSimpleName())) {
       throw new Exceptions.PasswordIncorrectException();
     }
   }
 
-  private void userNotFoundExceptionHandler(String errorMessage, User user) throws Exceptions.UserNotFoundException {
+  private void userNotFoundExceptionHandler(String errorMessage, User user)
+      throws Exceptions.UserNotFoundException {
     if (errorMessage.equals(Exceptions.UserNotFoundException.class.getSimpleName())) {
       throw new Exceptions.UserNotFoundException(user.getUsername());
     }
@@ -72,7 +73,8 @@ public class ClientService {
     }
   }
 
-  private void workoutNotFoundExceptionHandler(String errorMessage, String workoutId) throws Exceptions.WorkoutNotFoundException {
+  private void workoutNotFoundExceptionHandler(String errorMessage, String workoutId)
+      throws Exceptions.WorkoutNotFoundException {
     if (errorMessage.equals(Exceptions.WorkoutNotFoundException.class.getSimpleName())) {
       throw new Exceptions.WorkoutNotFoundException(workoutId);
     }
@@ -84,19 +86,22 @@ public class ClientService {
     }
   }
 
-  private void userAlreadyExistsException(String errorMessage, User user) throws Exceptions.UserAlreadyExistException {
+  private void userAlreadyExistsException(String errorMessage, User user)
+      throws Exceptions.UserAlreadyExistException {
     if (errorMessage.equals(Exceptions.UserAlreadyExistException.class.getSimpleName())) {
       throw new Exceptions.UserAlreadyExistException(user.getUsername());
     }
   }
 
-  private void exerciseAlreadyExistsExceptionHandler(String errorMessage, Exercise exercise) throws Exceptions.ExerciseAlreadyExistsException {
+  private void exerciseAlreadyExistsExceptionHandler(String errorMessage, Exercise exercise)
+      throws Exceptions.ExerciseAlreadyExistsException {
     if (errorMessage.equals(Exceptions.ExerciseNotFoundException.class.getSimpleName())) {
       throw new Exceptions.ExerciseAlreadyExistsException(exercise.getName());
     }
   }
 
-  private void workoutAlreadyExistsExceptionHandler(String errorMessage, Workout workout) throws Exceptions.WorkoutAlreadyExistsException {
+  private void workoutAlreadyExistsExceptionHandler(String errorMessage, Workout workout)
+      throws Exceptions.WorkoutAlreadyExistsException {
     if (errorMessage.equals(Exceptions.WorkoutAlreadyExistsException.class.getSimpleName())) {
       throw new Exceptions.WorkoutAlreadyExistsException(workout.getName());
     }
@@ -108,7 +113,8 @@ public class ClientService {
     }
   }
 
-  private void illegalIdException(String errorMessage, String id, Class cls) throws Exceptions.IllegalIdException {
+  private void illegalIdException(String errorMessage, String id, Class cls)
+      throws Exceptions.IllegalIdException {
     if (errorMessage.equals(Exceptions.HistoryAlreadyExistsException.class.getSimpleName())) {
       throw new Exceptions.IllegalIdException(id, cls);
     }
@@ -126,7 +132,11 @@ public class ClientService {
     return null;
   }
 
-  public void createUser(User user) throws URISyntaxException, Exceptions.BadPackageException, Exceptions.ServerException, Exceptions.UserAlreadyExistException, JsonProcessingException {
+  public void createUser(User user) throws URISyntaxException,
+      Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      Exceptions.UserAlreadyExistException,
+      JsonProcessingException {
     String userString = objectToJson(user);
     String url = baseUrl + "createUser/" + URLEncoder.encode(userString, StandardCharsets.UTF_8);
     boolean sentPackage = sendPackage(new URI(url));
@@ -138,7 +148,12 @@ public class ClientService {
     }
   }
 
-  public void login(User user) throws URISyntaxException, Exceptions.BadPackageException, Exceptions.ServerException, Exceptions.PasswordIncorrectException, Exceptions.UserNotFoundException, JsonProcessingException {
+  public void login(User user) throws URISyntaxException,
+      Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      Exceptions.PasswordIncorrectException,
+      Exceptions.UserNotFoundException,
+      JsonProcessingException {
     String userString = objectToJson(user);
     String url = baseUrl + "login/" + URLEncoder.encode(userString, StandardCharsets.UTF_8);
     boolean sentPackage = sendPackage(new URI(url));
@@ -151,7 +166,12 @@ public class ClientService {
     }
   }
 
-  public void addExercise(User user, String workoutId, Exercise exercise) throws URISyntaxException, Exceptions.BadPackageException, Exceptions.ServerException, Exceptions.ExerciseAlreadyExistsException, Exceptions.WorkoutNotFoundException, JsonProcessingException {
+  public void addExercise(User user, String workoutId, Exercise exercise) throws URISyntaxException,
+      Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      Exceptions.ExerciseAlreadyExistsException,
+      Exceptions.WorkoutNotFoundException,
+      JsonProcessingException {
     String userString = objectToJson(user);
     String exerciseString = objectToJson(exercise);
     String url = baseUrl + "addExercise/"
@@ -168,7 +188,11 @@ public class ClientService {
     }
   }
 
-  public String addWorkout(Workout workout, User user) throws URISyntaxException, Exceptions.BadPackageException, Exceptions.ServerException, Exceptions.WorkoutAlreadyExistsException, JsonProcessingException {
+  public String addWorkout(Workout workout, User user) throws URISyntaxException,
+      Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      Exceptions.WorkoutAlreadyExistsException,
+      JsonProcessingException {
     String workoutString = objectToJson(workout);
     String userString = objectToJson(user);
     String url = baseUrl + "addWorkout/"
@@ -181,10 +205,14 @@ public class ClientService {
       workoutAlreadyExistsExceptionHandler(dataString, workout);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
-  return message;
+    return dataString;
   }
 
-  public void addHistory(History history, User user) throws URISyntaxException, Exceptions.BadPackageException, Exceptions.ServerException, Exceptions.HistoryAlreadyExistsException, JsonProcessingException {
+  public void addHistory(History history, User user) throws URISyntaxException,
+      Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      Exceptions.HistoryAlreadyExistsException,
+      JsonProcessingException {
     String historyString = objectToJson(history);
     String userString = objectToJson(user);
     String url = baseUrl + "addHistory/"
@@ -199,7 +227,12 @@ public class ClientService {
     }
   }
 
-  public void updateExercise(Exercise exercise, User user) throws URISyntaxException, Exceptions.BadPackageException, Exceptions.ServerException, JsonProcessingException, Exceptions.IllegalIdException, Exceptions.ExerciseNotFoundException {
+  public void updateExercise(Exercise exercise, User user) throws URISyntaxException,
+      Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      JsonProcessingException,
+      Exceptions.IllegalIdException,
+      Exceptions.ExerciseNotFoundException {
     String exerciseString = objectToJson(exercise);
     String userString = objectToJson(user);
     String url = baseUrl + "updateExercise/"
@@ -215,7 +248,12 @@ public class ClientService {
     }
   }
 
-  public void updateWorkout(Workout workout, User user) throws URISyntaxException, Exceptions.BadPackageException, Exceptions.ServerException, JsonProcessingException, Exceptions.WorkoutNotFoundException, Exceptions.IllegalIdException {
+  public void updateWorkout(Workout workout, User user) throws URISyntaxException,
+      Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      JsonProcessingException,
+      Exceptions.WorkoutNotFoundException,
+      Exceptions.IllegalIdException {
     String workoutString = objectToJson(workout);
     String userString = objectToJson(user);
     String url = baseUrl + "updateWorkout/"
@@ -231,7 +269,11 @@ public class ClientService {
     }
   }
 
-  public void deleteExercise(String exerciseId, User user) throws URISyntaxException, Exceptions.BadPackageException, Exceptions.ServerException, JsonProcessingException, Exceptions.IllegalIdException {
+  public void deleteExercise(String exerciseId, User user) throws URISyntaxException,
+      Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      JsonProcessingException,
+      Exceptions.IllegalIdException {
     String userString = objectToJson(user);
     String url = baseUrl + "deleteExercise/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + exerciseId;
     boolean sentPackage = sendPackage(new URI(url));
@@ -243,7 +285,11 @@ public class ClientService {
     }
   }
 
-  public void deleteWorkout(String workoutId, User user) throws URISyntaxException, Exceptions.BadPackageException, Exceptions.ServerException, JsonProcessingException, Exceptions.IllegalIdException {
+  public void deleteWorkout(String workoutId, User user) throws URISyntaxException,
+      Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      JsonProcessingException,
+      Exceptions.IllegalIdException {
     String userString = objectToJson(user);
     String url = baseUrl + "deleteWorkout/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + workoutId;
     boolean sentPackage = sendPackage(new URI(url));
@@ -255,7 +301,11 @@ public class ClientService {
     }
   }
 
-  public void deleteHistory(String historyId, User user) throws URISyntaxException, Exceptions.BadPackageException, Exceptions.ServerException, JsonProcessingException, Exceptions.IllegalIdException {
+  public void deleteHistory(String historyId, User user) throws URISyntaxException,
+      Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      JsonProcessingException,
+      Exceptions.IllegalIdException {
     String userString = objectToJson(user);
     String url = baseUrl + "deleteHistory/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + historyId;
     boolean sentPackage = sendPackage(new URI(url));
@@ -267,7 +317,10 @@ public class ClientService {
     }
   }
 
-  public void deleteUser(User user) throws URISyntaxException, Exceptions.BadPackageException, Exceptions.ServerException, JsonProcessingException {
+  public void deleteUser(User user) throws URISyntaxException,
+      Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      JsonProcessingException {
     String userString = objectToJson(user);
     String url = baseUrl + "deleteUser/" + URLEncoder.encode(userString, StandardCharsets.UTF_8);
     boolean sentPackage = sendPackage(new URI(url));
@@ -278,35 +331,50 @@ public class ClientService {
     }
   }
 
-  public Workout queryWorkout(String workoutID, User user) throws Exceptions.BadPackageException, Exceptions.ServerException, Exceptions.WorkoutNotFoundException, URISyntaxException, JsonProcessingException, Exceptions.IllegalIdException {
+  public Workout queryWorkout(String workoutId, User user) throws Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      Exceptions.WorkoutNotFoundException,
+      URISyntaxException,
+      JsonProcessingException,
+      Exceptions.IllegalIdException {
     String userString = objectToJson(user);
-    String url = baseURL + "getWorkout/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + workoutID;
-    String message = sendPackage(new URI(url));
-    if (message == null) {
-      badPackageExceptionHandler(message);
-      serverExceptionHandler(message);
-      workoutNotFoundExceptionHandler(message, workoutID);
-      illegalIdException(message, workoutID, Workout.class);
+    String url = baseUrl + "getWorkout/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + workoutId;
+    boolean sentPackage = sendPackage(new URI(url));
+    if (!sentPackage) {
+      badPackageExceptionHandler(dataString);
+      serverExceptionHandler(dataString);
+      workoutNotFoundExceptionHandler(dataString, workoutId);
+      illegalIdException(dataString, workoutId, Workout.class);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
     return (Workout) jsonToObject(message, Workout.class);
   }
 
-  public Exercise queryExercise(String exerciseID, User user) throws Exceptions.BadPackageException, Exceptions.ServerException, Exceptions.ExerciseNotFoundException, URISyntaxException, JsonProcessingException, Exceptions.IllegalIdException {
+  public Exercise queryExercise(String exerciseId, User user) throws Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      Exceptions.ExerciseNotFoundException,
+      URISyntaxException,
+      JsonProcessingException,
+      Exceptions.IllegalIdException {
     String userString = objectToJson(user);
-    String url = baseURL + "getExercise/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + exerciseID;
-    String message = sendPackage(new URI(url));
-    if (message == null) {
-      badPackageExceptionHandler(message);
-      serverExceptionHandler(message);
-      exerciseNotFoundExceptionHandler(message, exerciseID);
-      illegalIdException(message, exerciseID, Exercise.class);
+    String url = baseUrl + "getExercise/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + exerciseId;
+    boolean message = sendPackage(new URI(url));
+    if (!message) {
+      badPackageExceptionHandler(dataString);
+      serverExceptionHandler(dataString);
+      exerciseNotFoundExceptionHandler(dataString, exerciseId);
+      illegalIdException(dataString, exerciseId, Exercise.class);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
     return (Exercise) jsonToObject(message, Exercise.class);
   }
 
-  public History queryHistory(String historyID, User user) throws Exceptions.BadPackageException, Exceptions.ServerException, Exceptions.HistoryNotFoundException, URISyntaxException, JsonProcessingException, Exceptions.IllegalIdException {
+  public History queryHistory(String historyId, User user) throws Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      Exceptions.HistoryNotFoundException,
+      URISyntaxException,
+      JsonProcessingException,
+      Exceptions.IllegalIdException {
     String userString = objectToJson(user);
     String url = baseUrl + "getHistory/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + historyId;
     boolean message = sendPackage(new URI(url));
@@ -320,7 +388,10 @@ public class ClientService {
     return (History) jsonToObject(message, History.class);
   }
 
-  public Map<String, String> queryExerciseMap(User user) throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, JsonProcessingException {
+  public Map<String, String> queryExerciseMap(User user) throws Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      URISyntaxException,
+      JsonProcessingException {
     String userString = objectToJson(user);
     String url = baseURL + "getExerciseMap/" + URLEncoder.encode(userString, StandardCharsets.UTF_8);
     String message = sendPackage(new URI(url));
@@ -332,7 +403,10 @@ public class ClientService {
     return (LinkedHashMap<String, String>) jsonToObject(message, LinkedHashMap.class);
   }
 
-  public Map<String, String> queryWorkoutMap(User user) throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, JsonProcessingException {
+  public Map<String, String> queryWorkoutMap(User user) throws Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      URISyntaxException,
+      JsonProcessingException {
     String userString = objectToJson(user);
     String url = baseURL + "getWorkoutMap/" + URLEncoder.encode(userString, StandardCharsets.UTF_8);
     String message = sendPackage(new URI(url));
@@ -344,7 +418,10 @@ public class ClientService {
     return (LinkedHashMap<String, String>) jsonToObject(message, LinkedHashMap.class);
   }
 
-  public Map<String, String> queryHistoryMap(User user) throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, JsonProcessingException {
+  public Map<String, String> queryHistoryMap(User user) throws Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      URISyntaxException,
+      JsonProcessingException {
     String userString = objectToJson(user);
     String url = baseURL + "/getHistoryMap/" + URLEncoder.encode(userString, StandardCharsets.UTF_8);
     String message = sendPackage(new URI(url));

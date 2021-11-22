@@ -4,13 +4,13 @@ import beastbook.core.*;
 import beastbook.json.internal.BeastBookModule;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.util.Map;
 
 @RestController
 public class ServerController {
@@ -116,7 +116,8 @@ public class ServerController {
   }
 
   @PostMapping("addExercise/{userString}/{workoutId}/{exerciseString}")
-  public ResponseEntity<String> addExercise(@PathVariable String userString, @PathVariable String workoutId, @PathVariable String exerciseString) {
+  public ResponseEntity<String> addExercise(
+      @PathVariable String userString, @PathVariable String workoutId, @PathVariable String exerciseString) {
     userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
     exerciseString = URLDecoder.decode(exerciseString, StandardCharsets.UTF_8);
     try {

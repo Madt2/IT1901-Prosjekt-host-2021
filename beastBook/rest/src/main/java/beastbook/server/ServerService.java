@@ -72,7 +72,8 @@ public class ServerService {
       persistence.saveIds(ids);
       persistence.saveIdObject(obj);
       return obj.getId();
-    } catch (IOException | Exceptions.IdHandlerNotFoundException | Exceptions.IdNotFoundException e) {
+    } catch (IOException | Exceptions.IdHandlerNotFoundException
+        | Exceptions.IdNotFoundException e) {
       e.printStackTrace();
       throw new Exceptions.ServerException();
     }
@@ -104,7 +105,9 @@ public class ServerService {
       persistence.saveIds(ids);
       persistence.saveIdObject(workout);
       persistence.saveIdObject(exercise);
-    } catch (IOException | Exceptions.IllegalIdException | Exceptions.IdHandlerNotFoundException | Exceptions.IdNotFoundException e) {
+    } catch (IOException | Exceptions.IllegalIdException
+        | Exceptions.IdHandlerNotFoundException
+        | Exceptions.IdNotFoundException e) {
       e.printStackTrace();
       throw new Exceptions.ServerException();
     }
@@ -339,7 +342,7 @@ public class ServerService {
       Exceptions.IllegalIdException {
     validateId(historyId, History.class);
     try {
-      return persistence.getHistory(historyID);
+      return persistence.getHistory(historyId);
     } catch (IOException e) {
       e.printStackTrace();
       throw new Exceptions.ServerException();

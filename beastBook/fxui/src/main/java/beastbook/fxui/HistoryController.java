@@ -1,8 +1,10 @@
 package beastbook.fxui;
 
+import beastbook.core.Exceptions;
 import beastbook.core.Exercise;
 import beastbook.core.History;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -42,10 +44,18 @@ public class HistoryController extends AbstractController {
    */
   @FXML
   public void initialize() throws IOException {
-    History history = service.getHistory(historyId);
-    setTable(history);
-    title.setText(history.getName());
-    date.setText(history.getDate());
+    try {
+      History history = service.getHistory(historyId);
+      if (history != null) {
+        setTable(history);
+        title.setText(history.getName());
+        date.setText(history.getDate());
+      }
+    } catch (Exceptions.BadPackageException | Exceptions.IllegalIdException
+        | Exceptions.HistoryNotFoundException | URISyntaxException
+        | Exceptions.ServerException e) {
+      exceptionFeedback.setText(e.getMessage());
+    }
   }
 
   /**
@@ -95,11 +105,11 @@ public class HistoryController extends AbstractController {
   }
 
   /**
-  * Sets differents properties of the columns.
-  * Width, not reorderable and not resizable is set. 
+  * Sets different properties to the columns.
+  * Width, not reorderable and not resizable functionality is set.
   */
   private void setColumnProperties() {
-    exerciseNameColumn.setPrefWidth(198);        
+    exerciseNameColumn.setPrefWidth(198);
     repGoalColumn.setPrefWidth(65);
     weightColumn.setPrefWidth(65);
     setsColumn.setPrefWidth(65);
