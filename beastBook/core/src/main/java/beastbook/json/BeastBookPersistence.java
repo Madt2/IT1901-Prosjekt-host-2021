@@ -43,8 +43,6 @@ public class BeastBookPersistence {
     }
   }
 
-  //Todo good enough catches? should show better that it could not write to file.
-
   /**
    * Object to write to file on filepath.
    *
@@ -73,40 +71,70 @@ public class BeastBookPersistence {
    */
   private Object readObjectFromFile(File file, Class cls) throws IOException {
     Reader reader = new FileReader(file, StandardCharsets.UTF_8);
-    Object obj = mapper.readValue(reader, cls);
-    reader.close();
-    if (obj != null) {
+    try {
+      Object obj = mapper.readValue(reader, cls);
+      reader.close();
       return obj;
-    } else {
+    } catch (IOException e) {
+      reader.close();
       throw new IOException("Object not properly deserialized!");
     }
   }
 
   /**
-   * Deletes file given
+   * Deletes file given.
    *
    * @param file to delete
    * @throws IOException when file deletion fails.
    */
-  private void deleteFile(File file) throws IOException {
+  private void deleteFile(File file) throws IOException, Exceptions.ServerException {
     System.out.println(file.getPath());
-    if (!file.exists()) {
-      System.err.println("WARNING: Tried to delete a file that did not exist");
-    } else if (file.isFile()) {
-      file.delete();
-      System.out.println("File: " + file.getName() + " deleted");
-    } else if (file.isDirectory()) {
-      if (file.list().length == 0) {
-        file.delete();
-        System.out.println("Folder: " + file.getName() + " deleted");
-      } else {
-        for (String s : file.list()) {
-          deleteFile(new File(file.getPath() + "/" + s));
+    try {
+      //This asks if a file or folder does not exist
+      if (!file.exists()) {
+        System.err.println("WARNING: Tried to delete a file that did not exist");
+        //This ask if it is a file
+      } else if (file.isFile()) {
+        //This deletes a file and prints if it is successful
+        if (file.delete()) {
+          System.out.println("File: " + file.getName() + " deleted");
+          //This throw if file was not deleted
+        } else {
+          throw new IOException("File: " + file.getName() + " could not be deleted");
         }
-        file.delete();
+        //This asks if it is a directory
+      } else if (file.isDirectory()) {
+        //This deletes directory if it contains 0 files.
+        if (file.list().length == 0) {
+          //print successful or throw IOException
+          if (file.delete()) {
+            System.out.println("File: " + file.getName() + " deleted");
+          } else {
+            throw new IOException("File: " + file.getName() + " could not be deleted");
+          }
+          //This is else, which means it has to delete all files or folder it contains.
+        } else {
+          //for all files or folders run deleteFiles recursive
+          for (String s : file.list()) {
+            if (new File(file.getPath() + "/" + s) != null) {
+              deleteFile(new File(file.getPath() + "/" + s));
+            }
+          }
+          //alfter it has deleted all sub files/folder it deletes itself.
+          if (file.delete()) {
+            System.out.println("File: " + file.getName() + " deleted");
+            //else throw IOException
+          } else {
+            throw new IOException("File: " + file.getName() + " could not be deleted");
+          }
+        }
+        //This happens if it could not delete anything
+      } else {
+        throw new IOException("Could not delete file!");
       }
-    } else {
-      throw new IOException("Could not delete file!");
+    } catch (NullPointerException e) {
+      e.printStackTrace();
+      throw new Exceptions.ServerException();
     }
   }
 
@@ -126,8 +154,7 @@ public class BeastBookPersistence {
   }
 
   public void createUser() throws IOException, Exceptions.UserAlreadyExistException {
-    //Todo remove null pointer
-    if(userExists()) {
+    if (userExists()) {
       throw new Exceptions.UserAlreadyExistException(user.getUsername());
     }
     try {
@@ -135,7 +162,7 @@ public class BeastBookPersistence {
       createFolder(new File(workoutFolderPath));
       createFolder(new File(exerciseFolderPath));
       createFolder(new File(historyFolderPath));
-      saveIds(new Id());
+      saveIds(new IdHandler());
       saveUser();
     } catch (IOException | Exceptions.UserNotFoundException e) {
       throw new IOException("Could not create all core classes. Failed at: " + e.getMessage());
@@ -178,7 +205,7 @@ public class BeastBookPersistence {
     try {
       writeObjectToFile(id, new File(filepath));
     } catch (IOException e) {
-      throw new IOException("Could not save Id object");
+      throw new IOException("Could not save IdHandler object");
     }
     System.out.println("Saved IDs to " + userPath);
   }
@@ -191,7 +218,9 @@ public class BeastBookPersistence {
    * @throws NullPointerException if username is null, or if objects id is null.
    * @throws IOException if deletion of file fails.
    */
-  public void deleteIdObject(String objectId, Class cls) throws NullPointerException, IOException {
+  public void deleteIdObject(String objectId, Class cls) throws NullPointerException,
+      IOException,
+      Exceptions.ServerException {
     String filepath = "";
     if (objectId == null) {
       throw new NullPointerException(cls + " must have ID (dont set manually, use getID from serverService!)");
@@ -210,7 +239,7 @@ public class BeastBookPersistence {
     System.out.println("Deleted file: " + filepath);
   }
 
-  public void deleteUserDir() throws IOException {
+  public void deleteUserDir() throws IOException, Exceptions.ServerException {
     deleteFile(new File(userPath));
   }
 
@@ -219,7 +248,9 @@ public class BeastBookPersistence {
     return (User) readObjectFromFile(getFile(filepath), User.class);
   }
 
-  public void validateUser() throws IOException, Exceptions.UserNotFoundException, Exceptions.PasswordIncorrectException {
+  public void validateUser() throws IOException,
+      Exceptions.UserNotFoundException,
+      Exceptions.PasswordIncorrectException {
     if (!userExists()) {
       throw new Exceptions.UserNotFoundException(user.getUsername());
     }
@@ -228,37 +259,40 @@ public class BeastBookPersistence {
     }
   }
 
-  public Workout getWorkout(String workoutID) throws IOException, Exceptions.WorkoutNotFoundException {
-    String filepath = workoutFolderPath + "/" + workoutID;
+  public Workout getWorkout(String workoutId) throws IOException,
+      Exceptions.WorkoutNotFoundException {
+    String filepath = workoutFolderPath + "/" + workoutId;
     try {
       return (Workout) readObjectFromFile(getFile(filepath), Workout.class);
     } catch (FileNotFoundException e) {
-      throw new Exceptions.WorkoutNotFoundException(workoutID);
+      throw new Exceptions.WorkoutNotFoundException(workoutId);
     }
   }
 
-  public Exercise getExercise(String exerciseID) throws Exceptions.ExerciseNotFoundException, IOException {
-    String filepath = exerciseFolderPath + "/" + exerciseID;
+  public Exercise getExercise(String exerciseId) throws Exceptions.ExerciseNotFoundException,
+      IOException {
+    String filepath = exerciseFolderPath + "/" + exerciseId;
     try {
       return (Exercise) readObjectFromFile(getFile(filepath), Exercise.class);
     } catch (FileNotFoundException e) {
-      throw new Exceptions.ExerciseNotFoundException(exerciseID);
+      throw new Exceptions.ExerciseNotFoundException(exerciseId);
     }
   }
 
-  public History getHistory(String historyID) throws IOException, Exceptions.HistoryNotFoundException {
-    String filepath = historyFolderPath + "/" + historyID;
+  public History getHistory(String historyId) throws IOException,
+      Exceptions.HistoryNotFoundException {
+    String filepath = historyFolderPath + "/" + historyId;
     try {
       return (History) readObjectFromFile(getFile(filepath), History.class);
     } catch (FileNotFoundException e) {
-      throw new Exceptions.HistoryNotFoundException(historyID);
+      throw new Exceptions.HistoryNotFoundException(historyId);
     }
   }
 
   public Id getIds() throws IOException, Exceptions.IdHandlerNotFoundException {
     String filepath = userPath + "/IDs";
     try {
-      return (Id) readObjectFromFile(getFile(filepath), Id.class);
+      return (IdHandler) readObjectFromFile(getFile(filepath), IdHandler.class);
     } catch (FileNotFoundException e) {
       throw new Exceptions.IdHandlerNotFoundException(user.getUsername());
     }

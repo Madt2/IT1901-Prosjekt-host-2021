@@ -2,7 +2,7 @@ package beastbook.json.internal;
 
 import beastbook.core.Exercise;
 import beastbook.core.History;
-import beastbook.core.Id;
+import beastbook.core.IdHandler;
 import beastbook.core.User;
 import beastbook.core.Workout;
 import com.fasterxml.jackson.core.Version;
@@ -21,12 +21,12 @@ public class BeastBookModule extends SimpleModule {
     addSerializer(Workout.class, new WorkoutSerializer());
     addSerializer(User.class, new UserSerializer());
     addSerializer(History.class, new HistorySerializer());
-    addSerializer(Id.class, new IdSerializer());
+    addSerializer(IdHandler.class, new IdSerializer());
     addDeserializer(Exercise.class, new ExerciseDeserializer());
     addDeserializer(Workout.class, new WorkoutDeserializer());
     addDeserializer(User.class, new UserDeserializer());
     addDeserializer(History.class, new HistoryDeserializer());
-    addDeserializer(Id.class, new IdDeserializer());
+    addDeserializer(IdHandler.class, new IdDeserializer());
   }
 
 }

@@ -2,11 +2,11 @@ package beastbook.core;
 
 public class Exceptions {
 
-  //Id exceptions:
+  //IdHandler exceptions:
 
   public static class IllegalIdException extends Exception {
     public IllegalIdException(String id, Class cls) {
-      super("Id " + id + " not legal for class " + cls.getSimpleName() );
+      super("IdHandler " + id + " not legal for class " + cls.getSimpleName());
     }
   }
 
@@ -18,13 +18,13 @@ public class Exceptions {
 
   public static class IdAlreadyInUseException extends Exception {
     public IdAlreadyInUseException(Class cls, String id) {
-      super("Id: " + id + " is already in use for " + cls.getSimpleName());
+      super("IdHandler: " + id + " is already in use for " + cls.getSimpleName());
     }
   }
 
   public static class IdNotFoundException extends Exception {
     public IdNotFoundException(Class cls, String id) {
-      super("Id: " + id + " not found for " + cls.getSimpleName());
+      super("IdHandler: " + id + " not found for " + cls.getSimpleName());
     }
   }
 

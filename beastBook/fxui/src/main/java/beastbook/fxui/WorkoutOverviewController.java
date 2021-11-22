@@ -1,6 +1,8 @@
 package beastbook.fxui;
 
-import java.io.IOException;
+import beastbook.core.Exceptions;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import java.net.URISyntaxException;
 import java.util.Iterator;
 import java.util.Map;
 import javafx.beans.property.SimpleStringProperty;
@@ -34,9 +36,9 @@ public class WorkoutOverviewController extends AbstractController {
   private TableView<String> workoutOverview = new TableView<>();
   private TableColumn<String, String> workoutNameColumn;
   private String selectedWorkoutId;
-  private Map<String,String> workoutMap;
+  private Map<String, String> workoutMap;
 
-  public void initialize() throws IOException {
+  public void initialize() {
     workoutMap = service.getWorkoutMap();
     loadTable();
   } 
@@ -59,7 +61,7 @@ public class WorkoutOverviewController extends AbstractController {
     //TODO is try/catch needed?
     try {
       String name = workoutOverview.getSelectionModel().getSelectedItem();
-      Iterator it = workoutMap.entrySet().iterator();
+      Iterator<Map.Entry<String, String>> it = workoutMap.entrySet().iterator();
       while (it.hasNext()) {
         Map.Entry entry = (Map.Entry) it.next();
         if (entry.getValue().equals(name)) {
@@ -115,18 +117,18 @@ public class WorkoutOverviewController extends AbstractController {
   }
 
   @FXML
-  void deleteWorkout() throws IllegalStateException {
-    //TODO handle eventual deletion error
-    if (selectedWorkoutId != null) {
+  void deleteWorkout() {
+    try {
       service.removeWorkout(selectedWorkoutId);
       workoutMap = service.getWorkoutMap();
       exceptionFeedback.setText("Workout deleted!");
       openButton.setDisable(true);
       deleteButton.setDisable(true);
-    } else {
-      exceptionFeedback.setText("Workout not deleted, could not find workout!");
+      loadTable();
+    } catch (Exceptions.BadPackageException | Exceptions.ServerException
+        | Exceptions.IllegalIdException | URISyntaxException
+        | JsonProcessingException e) {
+      exceptionFeedback.setText(e.getMessage());
     }
-    loadTable();
-
   }
 }

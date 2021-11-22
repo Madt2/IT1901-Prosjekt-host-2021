@@ -2,7 +2,6 @@ package beastbook.fxui;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javafx.beans.property.SimpleStringProperty;
@@ -40,7 +39,7 @@ public class HistoryOverviewController extends AbstractController {
   private Map<String,String> historyMap;
 
   @FXML
-  public void initialize() throws IOException {
+  public void initialize() {
     historyMap = service.getHistoryMap();
     loadTable();
   }
@@ -107,11 +106,10 @@ public class HistoryOverviewController extends AbstractController {
       String name = selected.getName();
       String date = selected.getDate();
       String data = name + ";" + date;
-      Iterator it = historyMap.entrySet().iterator();
-      while (it.hasNext()) {
-        Map.Entry entry = (Map.Entry) it.next();
+      for (Map.Entry<String, String> stringStringEntry : historyMap.entrySet()) {
+        Map.Entry<String, String> entry = stringStringEntry;
         if (entry.getValue().equals(data)) {
-          selectedHistoryId = entry.getKey().toString();
+          selectedHistoryId = entry.getKey();
           break;
         }
       }
@@ -144,7 +142,11 @@ public class HistoryOverviewController extends AbstractController {
     return selectedHistoryId;
   }
 
-  public class HistoryData {
+  /**
+   * Class for handling history map values inside an own object.
+   * Used to insert values into table view with the HistoryData fields.
+   */
+  public static class HistoryData {
     private final String name;
     private final String date;
 
@@ -156,6 +158,7 @@ public class HistoryOverviewController extends AbstractController {
     public String getName() {
       return name;
     }
+
     public String getDate() {
       return date;
     }

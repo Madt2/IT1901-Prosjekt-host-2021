@@ -36,7 +36,7 @@ public class ServerController {
     }
   }
 
-  private Object jsonToObject(String jsonString, Class cls) throws Exceptions.BadPackageException {
+  private Object jsonToObject(String jsonString, Class<?> cls) throws Exceptions.BadPackageException {
     try {
       return mapper.readValue(jsonString, cls);
     } catch (JsonProcessingException e) {
@@ -45,23 +45,23 @@ public class ServerController {
   }
 
   private ResponseEntity<String> sendNotFound(Exception e) {
-    return new ResponseEntity<String>(e.getClass().getSimpleName(), HttpStatus.NOT_FOUND);
+    return new ResponseEntity<>(e.getClass().getSimpleName(), HttpStatus.NOT_FOUND);
   }
 
   private ResponseEntity<String> sendBadRequest(Exception e) {
-    return new ResponseEntity<String>(e.getClass().getSimpleName(), HttpStatus.BAD_REQUEST);
+    return new ResponseEntity<>(e.getClass().getSimpleName(), HttpStatus.BAD_REQUEST);
   }
 
   private ResponseEntity<String> sendExpectationFailed(Exception e) {
-    return new ResponseEntity<String>(e.getClass().getSimpleName(), HttpStatus.EXPECTATION_FAILED);
+    return new ResponseEntity<>(e.getClass().getSimpleName(), HttpStatus.EXPECTATION_FAILED);
   }
 
   private ResponseEntity<String> sendNotAcceptable(Exception e) {
-    return new ResponseEntity<String>(e.getClass().getSimpleName(), HttpStatus.NOT_ACCEPTABLE);
+    return new ResponseEntity<>(e.getClass().getSimpleName(), HttpStatus.NOT_ACCEPTABLE);
   }
 
   @PostMapping("createUser/{userString}")
-  public ResponseEntity createUser(@PathVariable String userString) {
+  public ResponseEntity<String> createUser(@PathVariable String userString) {
     userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
     try {
       User user = (User) jsonToObject(userString, User.class);
@@ -78,7 +78,7 @@ public class ServerController {
   }
 
   @PostMapping("login/{userString}")
-  public ResponseEntity login(@PathVariable String userString) {
+  public ResponseEntity<String> login(@PathVariable String userString) {
     userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
     try {
       User user = (User) jsonToObject(userString, User.class);
@@ -105,7 +105,7 @@ public class ServerController {
       setService(user);
       Workout workout = (Workout) jsonToObject(workoutString, Workout.class);
       String workoutId = serverService.addWorkout(workout);
-      return new ResponseEntity<String>(workoutId, HttpStatus.OK);
+      return new ResponseEntity<>(workoutId, HttpStatus.OK);
     } catch (Exceptions.BadPackageException e) {
       return sendBadRequest(e);
     } catch (Exceptions.WorkoutAlreadyExistsException e) {
@@ -118,36 +118,34 @@ public class ServerController {
   @PostMapping("addExercise/{userString}/{workoutId}/{exerciseString}")
   public ResponseEntity<String> addExercise(@PathVariable String userString, @PathVariable String workoutId, @PathVariable String exerciseString) {
     userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
-    userString = URLDecoder.decode(workoutId, StandardCharsets.UTF_8);
+    exerciseString = URLDecoder.decode(exerciseString, StandardCharsets.UTF_8);
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
       Exercise exercise = (Exercise) jsonToObject(exerciseString, Exercise.class);
       serverService.addExercise(exercise, workoutId);
-      return new ResponseEntity<String>("", HttpStatus.OK);
+      return new ResponseEntity<>("", HttpStatus.OK);
     } catch (Exceptions.BadPackageException e) {
       return sendBadRequest(e);
     } catch (Exceptions.WorkoutNotFoundException e) {
       return sendNotFound(e);
-    } catch (Exceptions.ExerciseAlreadyExistsException e) {
+    } catch (Exceptions.ExerciseAlreadyExistsException | Exceptions.IllegalIdException e) {
       return sendNotAcceptable(e);
     } catch (Exceptions.ServerException e) {
       return sendExpectationFailed(e);
-    } catch (Exceptions.IllegalIdException e) {
-      return sendNotAcceptable(e);
     }
   }
 
   @PostMapping("addHistory/{userString}/{historyString}")
   public ResponseEntity<String> addHistory(@PathVariable String userString, @PathVariable String historyString) {
     userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
-    userString = URLDecoder.decode(historyString, StandardCharsets.UTF_8);
+    historyString = URLDecoder.decode(historyString, StandardCharsets.UTF_8);
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
       History history = (History) jsonToObject(historyString, History.class);
       serverService.addHistory(history);
-      return new ResponseEntity<String>("", HttpStatus.OK);
+      return new ResponseEntity<>("", HttpStatus.OK);
     } catch (Exceptions.BadPackageException e) {
       return sendBadRequest(e);
     } catch (Exceptions.ServerException e) {
@@ -187,7 +185,7 @@ public class ServerController {
       setService(user);
       Exercise exercise = (Exercise) jsonToObject(exerciseString, Exercise.class);
       serverService.updateExercise(exercise);
-      return new ResponseEntity<>("",HttpStatus.OK);
+      return new ResponseEntity<>("", HttpStatus.OK);
     } catch (Exceptions.BadPackageException e) {
       return sendBadRequest(e);
     } catch (Exceptions.ServerException e) {
@@ -332,7 +330,7 @@ public class ServerController {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
       Map<String, String> map = serverService.getMapping(Exercise.class);
-      String packageString = objectToJson(map);
+      String packageString = URLEncoder.encode(objectToJson(map), StandardCharsets.UTF_8);
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (Exceptions.BadPackageException e) {
       return sendBadRequest(e);

@@ -9,7 +9,7 @@ import static beastbook.core.Validation.*;
  */
 public class Exercise implements IdClasses {
   private String id;
-  private String workoutID;
+  private String workoutId;
   private String name;
   private int repGoal;
   private double weight;
@@ -41,9 +41,9 @@ public class Exercise implements IdClasses {
     this.id = id;
   }
 
-  public void setWorkoutID(String id) throws Exceptions.IllegalIdException {
+  public void setWorkoutId(String id) throws Exceptions.IllegalIdException {
     validateId(id, Workout.class);
-    this.workoutID = id;
+    this.workoutId = id;
   }
 
   public void setName(String name) throws IllegalArgumentException {
@@ -80,8 +80,8 @@ public class Exercise implements IdClasses {
     return id;
   }
 
-  public String getWorkoutID() {
-    return workoutID;
+  public String getWorkoutId() {
+    return workoutId;
   }
 
   public String getName() {

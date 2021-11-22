@@ -1,9 +1,9 @@
 package beastbook.core;
 
 public interface IdClasses {
-    String getName();
+  String getName();
 
-    String getId();
+  String getId();
 
-    void setId(String id) throws Exceptions.IllegalIdException;
+  void setId(String id) throws Exceptions.IllegalIdException;
 }

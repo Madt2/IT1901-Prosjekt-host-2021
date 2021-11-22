@@ -1,8 +1,10 @@
 package beastbook.fxui;
 
 import beastbook.client.ClientController;
+import beastbook.core.Exceptions;
 import beastbook.core.Exercise;
 import beastbook.core.Workout;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -16,6 +18,7 @@ import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.matcher.control.TextMatchers;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Map;
@@ -25,7 +28,15 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
   private WorkoutOverviewController woc;
     
   @Override
-  public void start(final Stage stage) throws IOException {
+  public void start(final Stage stage) throws IOException,
+      Exceptions.UserNotFoundException,
+      Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      URISyntaxException,
+      Exceptions.PasswordIncorrectException,
+      Exceptions.WorkoutAlreadyExistsException,
+      Exceptions.WorkoutNotFoundException,
+      Exceptions.ExerciseAlreadyExistsException {
     FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/beastbook.fxui/WorkoutOverview.fxml"));
     woc = new WorkoutOverviewController();
     loader.setController(woc);
@@ -36,7 +47,7 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
     stage.show();
   }
 
-  private void addWorkoutsToUser() {
+  private void addWorkoutsToUser() throws Exceptions.WorkoutAlreadyExistsException, Exceptions.WorkoutNotFoundException, Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, JsonProcessingException, Exceptions.ExerciseAlreadyExistsException {
     Workout workout1 = new Workout("Pull workout");
     Workout workout2 = new Workout("LEGS");
     List<Exercise> exerciseList1 = new ArrayList<>();

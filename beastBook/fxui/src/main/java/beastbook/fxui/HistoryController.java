@@ -22,6 +22,9 @@ public class HistoryController extends AbstractController {
   private Text title;
 
   @FXML
+  private Text exceptionFeedback;
+
+  @FXML
   private Text date;
 
   private TableColumn<Exercise, String> exerciseNameColumn;

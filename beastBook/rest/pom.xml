@@ -56,6 +56,17 @@
                 <target>16</target>
             </configuration>
         </plugin>
+        <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+                <argLine>
+                     --add-opens beastbook.rest/beastbook.server=ALL-UNNAMED
+                    --add-opens beastbook.rest/beastbook.client=ALL-UNNAMED
+                </argLine>
+            </configuration>
+        </plugin>
+
         <!-- Configure jacoco code coverage -->
         <plugin>
             <groupId>org.jacoco</groupId>
@@ -66,10 +77,10 @@
         </plugin>
 
         <!-- Run the spotbugs code quality tool -->
-        <!--            <plugin>
-                        <groupId>com.github.spotbugs</groupId>
-                        <artifactId>spotbugs-maven-plugin</artifactId>
-                    </plugin>-->
+        <plugin>
+            <groupId>com.github.spotbugs</groupId>
+            <artifactId>spotbugs-maven-plugin</artifactId>
+        </plugin>
 
         <!-- Run the checkstyle code quality tool -->
         <plugin>

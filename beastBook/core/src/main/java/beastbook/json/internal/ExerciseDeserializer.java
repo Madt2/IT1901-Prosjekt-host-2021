@@ -44,58 +44,57 @@ public class ExerciseDeserializer extends JsonDeserializer<Exercise> {
   Exercise deserialize(JsonNode jsonNode) throws IOException {
     if (jsonNode instanceof ObjectNode objectNode) {
       Exercise exercise;
-        JsonNode idNode = objectNode.get("id");
-        String id = null;
-        if (idNode instanceof TextNode) {
-          id = idNode.asText();
+      JsonNode idNode = objectNode.get("id");
+      String id = null;
+      if (idNode instanceof TextNode) {
+        id = idNode.asText();
+      }
+      JsonNode workoutIdNode = objectNode.get("workoutId");
+      String workoutId = null;
+      if (workoutIdNode instanceof TextNode) {
+        workoutId = workoutIdNode.asText();
+      }
+      JsonNode nameNode = objectNode.get("name");
+      String name = null;
+      if (nameNode instanceof TextNode) {
+        name = nameNode.asText();
+      }
+      JsonNode repGoalNode = objectNode.get("repGoal");
+      int repGoal = 0;
+      if (repGoalNode instanceof TextNode) {
+        repGoal = repGoalNode.asInt();
+      }
+      JsonNode weightNode = objectNode.get("weight");
+      double weight = 0;
+      if (weightNode instanceof TextNode) {
+        weight = weightNode.asDouble();
+      }
+      JsonNode setsNode = objectNode.get("sets");
+      int sets = 0;
+      if (setsNode instanceof TextNode) {
+        sets  = setsNode.asInt();
+      }
+      JsonNode repsPerSetNode = objectNode.get("repsPerSet");
+      int repsPerSet = 0;
+      if (repsPerSetNode instanceof TextNode) {
+        repsPerSet = repsPerSetNode.asInt();
+      }
+      JsonNode restTimeNode = objectNode.get("restTime");
+      int restTime = 0;
+      if (restTimeNode instanceof TextNode) {
+        restTime = restTimeNode.asInt();
+      }
+      if (id != null && workoutId != null) {
+        try {
+          exercise = new Exercise(name, repGoal, weight, sets, repsPerSet, restTime);
+          exercise.setId(id);
+          exercise.setWorkoutId(workoutId);
+          return exercise;
+        } catch (Exceptions.IllegalIdException e) {
+          throw new IOException("IdHandler not found when loading file, "
+            + "something is wrong with writing object to file");
         }
-        JsonNode workoutIdNode = objectNode.get("workoutID");
-        String workoutId = null;
-        if (workoutIdNode instanceof TextNode) {
-          workoutId = workoutIdNode.asText();
-        }
-        JsonNode nameNode = objectNode.get("name");
-        String name = null;
-        if (nameNode instanceof TextNode) {
-          name = nameNode.asText();
-        }
-        JsonNode repGoalNode = objectNode.get("repGoal");
-        int repGoal = 0;
-        if (repGoalNode instanceof TextNode) {
-          repGoal = repGoalNode.asInt();
-        }
-        JsonNode weightNode = objectNode.get("weight");
-        double weight = 0;
-        if (weightNode instanceof TextNode) {
-          weight = weightNode.asDouble();
-        }
-        JsonNode setsNode = objectNode.get("sets");
-        int sets = 0;
-        if (setsNode instanceof TextNode) {
-          sets  = setsNode.asInt();
-        }
-        JsonNode repsPerSetNode = objectNode.get("repsPerSet");
-        int repsPerSet = 0;
-        if (repsPerSetNode instanceof TextNode) {
-          repsPerSet = repsPerSetNode.asInt();
-        }
-        JsonNode restTimeNode = objectNode.get("restTime");
-        int restTime = 0;
-        if (restTimeNode instanceof TextNode) {
-          restTime = restTimeNode.asInt();
-        }
-        if (id != null && workoutId != null) {
-          try {
-            exercise = new Exercise(name, repGoal, weight, sets, repsPerSet, restTime);
-            exercise.setId(id);
-            exercise.setWorkoutID(workoutId);
-
-            return exercise;
-          } catch (Exceptions.IllegalIdException e) {
-            throw new IOException("Id not found when loading file, "
-              + "something is wrong with writing object to file");
-          }
-        }
+      }
     }
     throw new IOException("something when wrong when loading exercise! ");
   }

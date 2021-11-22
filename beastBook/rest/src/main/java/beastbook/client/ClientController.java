@@ -2,10 +2,12 @@ package beastbook.client;
 
 import beastbook.core.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
-
 import java.net.URISyntaxException;
 import java.util.*;
 
+/**
+ * Controller to handle ClientRequests to the REST server.
+ */
 public class ClientController {
   private ClientService clientService = new ClientService();
   private final User user;
@@ -14,12 +16,36 @@ public class ClientController {
   private Map<String, String> workoutMap;
   private Map<String, String> historyMap;
 
-  public ClientController(String username, String password) throws Exceptions.UserNotFoundException, Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, Exceptions.PasswordIncorrectException, JsonProcessingException {
+  /**
+   * Constructor for ClientController.
+   *
+   * @param username The username for the corresponding User to log in.
+   * @param password The password for the corresponding User to log in
+   * @throws Exceptions.UserNotFoundException if the User the client is trying to log in does not exist.
+   * @throws Exceptions.BadPackageException if an error occurs in parsing json in the REST server.
+   * @throws Exceptions.ServerException if an unknown error occurs in the REST server.
+   * @throws URISyntaxException if an error occurs while parsing URI in ClientService.
+   * @throws Exceptions.PasswordIncorrectException if the password given by the client
+   *     is not correct for the requested User.
+   * @throws JsonProcessingException if an error occurs while parsing a Json string.
+   */
+  public ClientController(String username, String password) throws Exceptions.UserNotFoundException,
+      Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      URISyntaxException,
+      Exceptions.PasswordIncorrectException,
+      JsonProcessingException {
     user = new User(username, password);
     clientService.login(user);
     exerciseMap = clientService.queryExerciseMap(user);
     workoutMap = clientService.queryWorkoutMap(user);
     historyMap = clientService.queryHistoryMap(user);
+  }
+
+  public static void main(String[] args) throws Exceptions.UserNotFoundException, Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, Exceptions.PasswordIncorrectException, JsonProcessingException, Exceptions.UserAlreadyExistException {
+    RegisterController registerController = new RegisterController();
+    registerController.registerUser("Emil","Emil");
+    ClientController clientController = new ClientController("Emil", "Emil");
   }
 
   public void setIpAddress(String ipAddress) {
@@ -44,33 +70,81 @@ public class ClientController {
     }
   }
 
-  public Exercise getExercise(String exerciseID) throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, Exceptions.ExerciseNotFoundException, Exceptions.IllegalIdException, JsonProcessingException {
+  public Exercise getExercise(String exerciseId) throws Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      URISyntaxException,
+      Exceptions.ExerciseNotFoundException,
+      Exceptions.IllegalIdException,
+      JsonProcessingException {
     deletionCheck();
-    return clientService.queryExercise(exerciseID, user);
+    return clientService.queryExercise(exerciseId, user);
   }
 
-  public Workout getWorkout(String workoutId) throws Exceptions.WorkoutNotFoundException, Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, Exceptions.IllegalIdException, JsonProcessingException {
+  public Workout getWorkout(String workoutId) throws Exceptions.WorkoutNotFoundException,
+      Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      URISyntaxException,
+      Exceptions.IllegalIdException,
+      JsonProcessingException {
     deletionCheck();
     return clientService.queryWorkout(workoutId, user);
   }
 
-  public History getHistory(String historyId) throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, Exceptions.HistoryNotFoundException, Exceptions.IllegalIdException, JsonProcessingException {
+  public History getHistory(String historyId) throws Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      URISyntaxException,
+      Exceptions.HistoryNotFoundException,
+      Exceptions.IllegalIdException,
+      JsonProcessingException {
     deletionCheck();
     return clientService.queryHistory(historyId, user);
   }
 
-  public void addExercise(Exercise exercise, String workoutId) throws Exceptions.WorkoutNotFoundException, Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, Exceptions.ExerciseAlreadyExistsException, JsonProcessingException {
+  /**
+   * Sends a request to add the given Exercise object to the Workout belonging to the workoutId.
+   *
+   * @param exercise The Exercise to be added
+   * @param workoutId The corresponding Workout's id
+   * @throws Exceptions.WorkoutNotFoundException if the Workout does not exist
+   * @throws Exceptions.BadPackageException if an error occurs in parsing json in the REST server.
+   * @throws Exceptions.ServerException if an unknown error occurs in the REST server.
+   * @throws URISyntaxException if an error occurs while parsing URI in ClientService.
+   * @throws Exceptions.ExerciseAlreadyExistsException if the Exercise already exists in the REST server
+   * @throws JsonProcessingException if an error occurs while parsing a Json string.
+   */
+  public void addExercise(Exercise exercise, String workoutId) throws Exceptions.WorkoutNotFoundException,
+      Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      URISyntaxException,
+      Exceptions.ExerciseAlreadyExistsException,
+      JsonProcessingException {
     deletionCheck();
     clientService.addExercise(user, workoutId, exercise);
     workoutMap = clientService.queryWorkoutMap(user);
   }
 
-  public boolean addWorkout(Workout workout, List<Exercise> exercises) throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, Exceptions.WorkoutAlreadyExistsException, Exceptions.WorkoutNotFoundException, Exceptions.ExerciseAlreadyExistsException, JsonProcessingException {
+  /**
+   * Sends a request to add the given Workout object to the logged-in User.
+   *
+   * @param workout the Workout to be added.
+   * @param exercises the exercises that belong to that workout.
+   * @return true if the workout is saved successfully to the server, false if something fails.
+   * @throws Exceptions.BadPackageException if an error occurs in parsing json in the REST server.
+   * @throws Exceptions.ServerException if an unknown error occurs in the REST server.
+   * @throws URISyntaxException if an error occurs while parsing URI in ClientService.
+   * @throws Exceptions.WorkoutAlreadyExistsException if the Workout already exists in the REST server
+   * @throws Exceptions.WorkoutNotFoundException if an error occurs in saving the workout and then tries to add exercises
+   * @throws Exceptions.ExerciseAlreadyExistsException if one of the Exercise-objects already exists in the REST server
+   * @throws JsonProcessingException if an error occurs while parsing a Json string.
+   */
+  public void addWorkout(Workout workout, List<Exercise> exercises) throws Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      URISyntaxException,
+      Exceptions.WorkoutAlreadyExistsException,
+      Exceptions.ExerciseAlreadyExistsException,
+      JsonProcessingException, Exceptions.WorkoutNotFoundException {
     deletionCheck();
     String name = workout.getName();
-    if (workoutMap.containsValue(name)) {
-      return false;
-    }
     String workoutId = clientService.addWorkout(workout, user);
     System.out.println("Dette er workoutId den får av html package: " + workoutId);
     for (Exercise e : exercises) {
@@ -78,47 +152,143 @@ public class ClientController {
     }
     workoutMap = clientService.queryWorkoutMap(user);
     exerciseMap = clientService.queryExerciseMap(user);
-    return true;
-
-    //TODO catch return false
   }
 
-  public void updateExercise(Exercise exercise) throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, JsonProcessingException, Exceptions.IllegalIdException, Exceptions.ExerciseNotFoundException {
-    deletionCheck();
-    clientService.updateExercise(exercise, user);
-  }
-
-  public void updateWorkout(Workout workout) throws Exceptions.WorkoutNotFoundException, Exceptions.BadPackageException, Exceptions.ServerException, Exceptions.IllegalIdException, URISyntaxException, JsonProcessingException {
-    deletionCheck();
-    clientService.updateWorkout(workout, user);
-  }
-
-  public void addHistory(History history) throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, Exceptions.HistoryAlreadyExistsException, JsonProcessingException {
+  /**
+   * Sends a request to add the given History object to the logged-in User.
+   *
+   * @param history the History to be added
+   * @throws Exceptions.BadPackageException if an error occurs in parsing json in the REST server.
+   * @throws Exceptions.ServerException if an unknown error occurs in the REST server.
+   * @throws URISyntaxException if an error occurs while parsing URI in ClientService.
+   * @throws Exceptions.HistoryAlreadyExistsException if the History already exists in the server
+   * @throws JsonProcessingException if an error occurs while parsing a Json string.
+   */
+  public void addHistory(History history) throws Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      URISyntaxException,
+      Exceptions.HistoryAlreadyExistsException,
+      JsonProcessingException {
     deletionCheck();
     clientService.addHistory(history, user);
     historyMap = clientService.queryHistoryMap(user);
   }
 
-  public void removeExercise(String exerciseId) throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, JsonProcessingException, Exceptions.IllegalIdException {
+  /**
+   * Sends a request to overwrite the corresponding Exercise in the REST server with the given Exercise.
+   *
+   * @param exercise the Exercise to overwrite
+   * @throws Exceptions.BadPackageException if an error occurs in parsing json in the REST server.
+   * @throws Exceptions.ServerException if an unknown error occurs in the REST server.
+   * @throws URISyntaxException if an error occurs while parsing URI in ClientService.
+   * @throws JsonProcessingException if an error occurs while parsing a Json string.
+   * @throws Exceptions.IllegalIdException if the Exercise object has an illegal ID
+   * @throws Exceptions.ExerciseNotFoundException if the Exercise object does not exist in the REST server
+   */
+  public void updateExercise(Exercise exercise) throws Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      URISyntaxException,
+      JsonProcessingException,
+      Exceptions.IllegalIdException,
+      Exceptions.ExerciseNotFoundException {
+    deletionCheck();
+    clientService.updateExercise(exercise, user);
+  }
+
+  /**
+   * Sends a request to overwrite the corresponding Workout in the REST server with the given Workout.
+   *
+   * @param workout the Workout to overwrite
+   * @throws Exceptions.WorkoutNotFoundException if the Workout object does not exist in the REST server
+   * @throws Exceptions.BadPackageException if an error occurs in parsing json in the REST server.
+   * @throws Exceptions.ServerException if an unknown error occurs in the REST server.
+   * @throws Exceptions.IllegalIdException if the Workout object has an illegal ID
+   * @throws URISyntaxException if an error occurs while parsing URI in ClientService.
+   * @throws JsonProcessingException if an error occurs while parsing a Json string.
+   */
+  public void updateWorkout(Workout workout) throws Exceptions.WorkoutNotFoundException,
+      Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      Exceptions.IllegalIdException,
+      URISyntaxException,
+      JsonProcessingException {
+    deletionCheck();
+    clientService.updateWorkout(workout, user);
+  }
+
+  /**
+   * Sends a request to remove the Exercise object with the corresponding ID in the REST server
+   *
+   * @param exerciseId for the Exercise object in the REST server
+   * @throws Exceptions.BadPackageException if an error occurs in parsing json in the REST server.
+   * @throws Exceptions.ServerException if an unknown error occurs in the REST server.
+   * @throws URISyntaxException if an error occurs while parsing URI in ClientService.
+   * @throws JsonProcessingException if an error occurs while parsing a Json string.
+   * @throws Exceptions.IllegalIdException if the Exercise object has an illegal ID
+   */
+  public void removeExercise(String exerciseId) throws Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      URISyntaxException,
+      JsonProcessingException,
+      Exceptions.IllegalIdException {
     deletionCheck();
     clientService.deleteExercise(exerciseId, user);
     exerciseMap = clientService.queryExerciseMap(user);
     workoutMap = clientService.queryWorkoutMap(user);
   }
 
-  public void removeWorkout(String workoutId) throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, JsonProcessingException, Exceptions.IllegalIdException {
+  /**
+   * Sends a request to remove the Workout object with the corresponding ID in the REST server
+   *
+   * @param workoutId for the Workout object in the REST server
+   * @throws Exceptions.BadPackageException if an error occurs in parsing json in the REST server.
+   * @throws Exceptions.ServerException if an unknown error occurs in the REST server.
+   * @throws URISyntaxException if an error occurs while parsing URI in ClientService.
+   * @throws JsonProcessingException if an error occurs while parsing a Json string.
+   * @throws Exceptions.IllegalIdException if the Workout object has an illegal ID
+   */
+  public void removeWorkout(String workoutId) throws Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      URISyntaxException,
+      JsonProcessingException,
+      Exceptions.IllegalIdException {
     deletionCheck();
     clientService.deleteWorkout(workoutId, user);
     workoutMap = clientService.queryWorkoutMap(user);
   }
 
-  public void removeHistory(String historyId) throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, JsonProcessingException, Exceptions.IllegalIdException {
+  /**
+   * Sends a request to remove the History object with the corresponding ID in the REST server
+   *
+   * @param historyId
+   * @throws Exceptions.BadPackageException if an error occurs in parsing json in the REST server.
+   * @throws Exceptions.ServerException if an unknown error occurs in the REST server.
+   * @throws URISyntaxException if an error occurs while parsing URI in ClientService.
+   * @throws JsonProcessingException if an error occurs while parsing a Json string.
+   * @throws Exceptions.IllegalIdException if the History object has an illegal ID
+   */
+  public void removeHistory(String historyId) throws Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      URISyntaxException,
+      JsonProcessingException,
+      Exceptions.IllegalIdException {
     deletionCheck();
     clientService.deleteHistory(historyId, user);
     historyMap = clientService.queryHistoryMap(user);
   }
 
-  public void deleteUser() throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, JsonProcessingException {
+  /**
+   * Sends a request to delete the User and all data belong to the User.
+   *
+   * @throws Exceptions.BadPackageException if an error occurs in parsing json in the REST server.
+   * @throws Exceptions.ServerException if an unknown error occurs in the REST server.
+   * @throws URISyntaxException if an error occurs while parsing URI in ClientService.
+   * @throws JsonProcessingException if an error occurs while parsing a Json string.
+   */
+  public void deleteUser() throws Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      URISyntaxException,
+      JsonProcessingException {
     deletionCheck();
     clientService.deleteUser(user);
     isDeleted = true;

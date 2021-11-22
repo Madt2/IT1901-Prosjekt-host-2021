@@ -1,11 +1,11 @@
 package beastbook.core;
 
+import static beastbook.core.Validation.validateId;
+
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
-
-import static beastbook.core.Validation.validateId;
 
 /**
  * History class saves a workout with a final workout object and date it was saved.
@@ -52,7 +52,7 @@ public class History implements IdClasses {
   public String getId() {
     return id;
   }
-  // TODO Correct to not return copy because it is final, right?
+
   public List<Exercise> getSavedExercises() {
     return savedExercises;
   }

@@ -3,8 +3,6 @@ package beastbook.server;
 import beastbook.core.*;
 import com.fasterxml.jackson.databind.annotation.NoClass;
 import org.junit.jupiter.api.*;
-
-import java.io.File;
 import java.util.List;
 import java.util.Map;
 
@@ -62,7 +60,9 @@ public class ServerServiceTest {
 
   private void assertEqualWithoutIdWorkout(Workout workout1, Workout workout2) {
     assertTrue(workout1.getName().equals(workout2.getName()));
-    assertTrue(workout1.getExerciseIDs().equals(workout2.getExerciseIDs()));
+    for (int i = 0; i < workout1.getExerciseIds().size(); i++) {
+      assertEquals(workout1.getExerciseIds().get(i) , workout2.getExerciseIds().get(i));
+    }
   }
 
   private void assertEqualWithoutIdHistory(History history1, History history2) {
@@ -126,7 +126,7 @@ public class ServerServiceTest {
     //add with id:
     assertThrows(Exceptions.ExerciseAlreadyExistsException.class, () -> serverService.addExercise(returnedExercise, returnedWorkoutId));
     assertThrows(Exceptions.WorkoutAlreadyExistsException.class, () -> serverService.addWorkout(returnedWorkout));
-    assertThrows(Exceptions.HistoryNotFoundException.class, () -> serverService.addHistory(returnedHistory));
+    assertThrows(Exceptions.HistoryAlreadyExistsException.class, () -> serverService.addHistory(returnedHistory));
   }
 
   @Test
@@ -161,7 +161,7 @@ public class ServerServiceTest {
     Exercise loadedExercise = serverService.getExercise(updatedExercise.getId());
     assertEqualWithoutIdExercise(loadedExercise, updatedExercise);
     assertTrue(loadedExercise.getId().equals(returnedExercise.getId()));
-    assertTrue(loadedExercise.getWorkoutID().equals(returnedExercise.getWorkoutID()));
+    assertTrue(loadedExercise.getWorkoutId().equals(returnedExercise.getWorkoutId()));
   }
 
   @Test
@@ -175,7 +175,7 @@ public class ServerServiceTest {
     assertTrue(serverService.getMapping(Exercise.class).size() == 0);
     serverService.deleteExercise(returnedExercise.getId());
 
-    serverService.addExercise(mockExercise, returnedWorkout.getId());
+    serverService.addExercise(new Exercise("Bench press", 20, 30, 40, 50, 60), returnedWorkout.getId());
     serverService.deleteWorkout(returnedWorkout.getId());
     assertTrue(serverService.getMapping(Exercise.class).size() == 0);
     assertTrue(serverService.getMapping(Workout.class).size() == 0);

@@ -1,9 +1,11 @@
 package beastbook.fxui;
 
 import beastbook.client.ClientController;
+import beastbook.core.Exceptions;
 import beastbook.core.Exercise;
 import beastbook.core.User;
 import beastbook.core.Workout;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -20,6 +22,7 @@ import org.testfx.matcher.control.TextMatchers;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +34,15 @@ public class WorkoutControllerTest extends ApplicationTest{
   private Workout workout2;
 
   @Override
-  public void start(Stage stage) throws IOException {
+  public void start(Stage stage) throws IOException,
+      Exceptions.UserNotFoundException,
+      Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      URISyntaxException,
+      Exceptions.PasswordIncorrectException,
+      Exceptions.WorkoutAlreadyExistsException,
+      Exceptions.WorkoutNotFoundException,
+      Exceptions.ExerciseAlreadyExistsException {
     FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/beastbook.fxui/Workout.fxml"));
     wc = new WorkoutController();
     loader.setController(wc);
@@ -42,7 +53,13 @@ public class WorkoutControllerTest extends ApplicationTest{
     stage.show();
   }
 
-  private void addWorkoutsToUser(){
+  private void addWorkoutsToUser() throws Exceptions.WorkoutAlreadyExistsException,
+      Exceptions.WorkoutNotFoundException,
+      Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      URISyntaxException,
+      JsonProcessingException,
+      Exceptions.ExerciseAlreadyExistsException {
     workout1 = new Workout("Pull workout");
     workout2 = new Workout("LEGS");
     List<Exercise> exerciseList1 = new ArrayList<>();
@@ -59,7 +76,12 @@ public class WorkoutControllerTest extends ApplicationTest{
   }
 
   @Test
-  void testEditSelectedCell() {
+  void testEditSelectedCell() throws Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      Exceptions.IllegalIdException,
+      URISyntaxException,
+      JsonProcessingException,
+      Exceptions.ExerciseNotFoundException {
     Map<String,String> exerciseMap = wc.service.getExerciseMap();
     //String exercise1 = wc.getWorkoutTable().getItems().get(0).getName();
     String serviceE1 = null;
@@ -88,14 +110,20 @@ public class WorkoutControllerTest extends ApplicationTest{
   }
 
   @Test
-  void testExceptionFeedback() {
+  void testExceptionFeedback() throws Exceptions.WorkoutNotFoundException,
+      Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      Exceptions.IllegalIdException,
+      URISyntaxException,
+      JsonProcessingException,
+      Exceptions.ExerciseNotFoundException {
     wc.getWorkoutTable().getColumns().get(1).setId("repGoal");
     Node node = lookup("#repGoal").nth(1).query();
     doubleClickOn(node, MouseButton.PRIMARY).write("-50");
     press(KeyCode.ENTER).release(KeyCode.ENTER);
     Assertions.assertNotEquals(-50, wc.getWorkoutTable().getSelectionModel().getSelectedItem().getRepGoal());
 
-    String workout1Id = wc.service.getWorkout(workout1.getId()).getExerciseIDs().get(0);
+    String workout1Id = wc.service.getWorkout(workout1.getId()).getExerciseIds().get(0);
     int repGoalExercise1 = wc.service.getExercise(workout1Id).getRepGoal();
 
     Assertions.assertNotEquals(-50, repGoalExercise1);

@@ -1,10 +1,10 @@
 package beastbook.fxui;
 
-import javafx.fxml.FXML;
+import beastbook.core.Exceptions;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import javafx.event.ActionEvent;
 import javafx.scene.text.Text;
-
-import java.io.IOException;
 
 /**
  * Controller for the Home screen.
@@ -19,9 +19,9 @@ public class HomeScreenController extends AbstractController {
     try{
       service.deleteUser();
       super.loadLogin(event);
-    } catch (IOException e) {
-      //TODO ExceptionFeedback?
-      exceptionFeedback.setText("Could not delete user!");
+    } catch (IOException | Exceptions.BadPackageException
+        | Exceptions.ServerException | URISyntaxException e) {
+      exceptionFeedback.setText(e.getMessage());
     }
   }
 }

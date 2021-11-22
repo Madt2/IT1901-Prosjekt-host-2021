@@ -12,12 +12,12 @@ import org.junit.jupiter.api.Test;
 import beastbook.core.Exceptions.IdNotFoundException;
 import beastbook.core.Exceptions.IllegalIdException;
 
-public class IdTest {
+public class IdHandlerTest {
 
     private Workout workout;
     private History history;
     private Exercise exercise;
-    private Id id = new Id();
+    private IdHandler id = new IdHandler();
 
     @BeforeEach
     void setup(){
@@ -72,17 +72,17 @@ public class IdTest {
 
     @Test
     void testLegals(){
-      Id.setLegals(Exercise.class);
-      assertEquals(Properties.LEGAL_CHARS_EXERCISE_ID, Id.legalChars);
-      assertEquals(Properties.EXERCISE_ID_LENGTH, Id.legalLength);
+      IdHandler.setLegals(Exercise.class);
+      assertEquals(Properties.LEGAL_CHARS_EXERCISE_ID, IdHandler.legalChars);
+      assertEquals(Properties.EXERCISE_ID_LENGTH, IdHandler.legalLength);
 
-      Id.setLegals(Workout.class);
-      assertEquals(Properties.LEGAL_CHARS_WORKOUT_ID, Id.legalChars);
-      assertEquals(Properties.WORKOUT_ID_LENGTH, Id.legalLength);
+      IdHandler.setLegals(Workout.class);
+      assertEquals(Properties.LEGAL_CHARS_WORKOUT_ID, IdHandler.legalChars);
+      assertEquals(Properties.WORKOUT_ID_LENGTH, IdHandler.legalLength);
 
-      Id.setLegals(History.class);
-      assertEquals(Properties.LEGAL_CHARS_HISTORY_ID, Id.legalChars);
-      assertEquals(Properties.HISTORY_ID_LENGTH, Id.legalLength);
+      IdHandler.setLegals(History.class);
+      assertEquals(Properties.LEGAL_CHARS_HISTORY_ID, IdHandler.legalChars);
+      assertEquals(Properties.HISTORY_ID_LENGTH, IdHandler.legalLength);
     }
     // (!) addId() is tested in PersistenceTest.
 }

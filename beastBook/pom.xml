@@ -125,7 +125,7 @@
                         </dependency>
                     </dependencies>
                     <configuration>
-                        <configLocation>google_checks.xml</configLocation>
+                        <configLocation>config/checkstyle/google_checks.xml</configLocation>
                         <encoding>UTF-8</encoding>
                         <consoleOutput>true</consoleOutput>
                         <failsOnError>true</failsOnError>
@@ -141,8 +141,8 @@
                         </execution>
                     </executions>
                 </plugin>
-                <!-- Run the spotbugs code quality tool -->
-               <!-- <plugin>
+                 <!--Run the spotbugs code quality tool -->
+                <plugin>
                     <groupId>com.github.spotbugs</groupId>
                     <artifactId>spotbugs-maven-plugin</artifactId>
                     <version>4.4.1</version>
@@ -160,7 +160,7 @@
                             </goals>
                         </execution>
                     </executions>
-                </plugin>-->
+                </plugin>
                 <plugin>
                     <groupId>org.springframework.boot</groupId>
                     <artifactId>spring-boot-maven-plugin</artifactId>

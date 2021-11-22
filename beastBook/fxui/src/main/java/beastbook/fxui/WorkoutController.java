@@ -5,15 +5,13 @@ import beastbook.core.History;
 import beastbook.core.Workout;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.text.Text;
@@ -57,15 +55,19 @@ public class WorkoutController extends AbstractController {
    */
   @FXML
   public void initialize() throws IOException {
-    Workout workout = service.getWorkout(workoutId);
-    for (String id : workout.getExerciseIDs()) {
-      Exercise e = service.getExercise(id);
-      if (e != null) {
+    try {
+      Workout workout = service.getWorkout(workoutId);
+      for (String id : workout.getExerciseIds()) {
+        Exercise e = service.getExercise(id);
         exercises.add(e);
       }
+      updateTable();
+      title.setText(workout.getName());
+    } catch (Exceptions.WorkoutNotFoundException | URISyntaxException
+        | Exceptions.IllegalIdException | Exceptions.ServerException
+        | Exceptions.BadPackageException | Exceptions.ExerciseNotFoundException e) {
+      exceptionFeedback.setText(e.getMessage());
     }
-    updateTable();
-    title.setText(workout.getName());
   }
 
   /**
@@ -211,14 +213,19 @@ public class WorkoutController extends AbstractController {
           overwritten = !overwritten;
           break;
         }
+        service.addHistory(history);
+        saveButton.setDisable(true);
+        if (overwritten) {
+          exceptionFeedback.setText("History overwritten!");
+        } else {
+          exceptionFeedback.setText("Workout was successfully added to history!");
+        }
       }
-    }
-    service.addHistory(history);
-    saveButton.setDisable(true);
-    if (overwritten) {
-      exceptionFeedback.setText("History overwritten!");
-    } else {
-      exceptionFeedback.setText("Workout was successfully added to history!");
+    } catch (Exceptions.WorkoutNotFoundException | Exceptions.IllegalIdException
+        | URISyntaxException | Exceptions.ServerException
+        | Exceptions.BadPackageException | Exceptions.HistoryNotFoundException
+        | Exceptions.HistoryAlreadyExistsException e) {
+      exceptionFeedback.setText(e.getMessage());
     }
   }
 

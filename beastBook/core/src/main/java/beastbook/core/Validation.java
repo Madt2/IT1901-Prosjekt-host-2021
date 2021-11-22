@@ -1,8 +1,7 @@
 package beastbook.core;
 
-import static beastbook.core.Id.*;
+import static beastbook.core.IdHandler.*;
 import static beastbook.core.Properties.*;
-import static beastbook.core.Properties.maxStringLength;
 
 public class Validation {
 
@@ -65,7 +64,7 @@ public class Validation {
       throw new IllegalArgumentException("Rep Goal must be more than 0!");
     }
     boolean isTooLong = String.valueOf(repGoal)
-      .length() > maxIntLength;
+        .length() > maxIntLength;
     if (isTooLong) {
       throw new IllegalArgumentException(
         "Rep Goal can not be longer than " + maxIntLength + " characters!"
@@ -104,7 +103,7 @@ public class Validation {
       );
     }
     boolean isTooLong = String.valueOf(sets)
-      .length() >= maxIntLength;
+        .length() >= maxIntLength;
     if (isTooLong) {
       throw new IllegalArgumentException(
         "Sets can not be longer than " + maxIntLength + " characters!"
@@ -124,7 +123,7 @@ public class Validation {
       throw new IllegalArgumentException("Reps Per Set must be more than or equal to 0!");
     }
     boolean isTooLong = String.valueOf(repsPerSet)
-      .length() >= maxIntLength;
+        .length() >= maxIntLength;
     if (isTooLong) {
       throw new IllegalArgumentException(
         "Reps Per Set can not be longer than " + maxIntLength + " characters!"

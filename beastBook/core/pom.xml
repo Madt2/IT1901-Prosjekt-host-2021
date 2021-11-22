@@ -76,10 +76,10 @@
             </plugin>
 
             <!-- Run the spotbugs code quality tool -->
-<!--            <plugin>
+            <plugin>
                 <groupId>com.github.spotbugs</groupId>
                 <artifactId>spotbugs-maven-plugin</artifactId>
-            </plugin> -->
+            </plugin>
 
             <!-- Run the checkstyle code quality tool -->
             <plugin>

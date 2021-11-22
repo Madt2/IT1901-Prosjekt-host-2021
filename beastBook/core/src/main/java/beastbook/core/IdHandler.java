@@ -1,18 +1,20 @@
 package beastbook.core;
 
-import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
 import static beastbook.core.Properties.*;
 import static beastbook.core.Validation.validateId;
 
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Id class. This class keeps track of what IDs are in use for workout and exercise objects,
+ * IdHandler class. This class keeps track of what IDs are in use for workout and exercise objects,
  * and contains a map of (exerciseID : exerciseName) and (workoutID : workoutName).
  */
-public class Id {
-  public static int legalLength;
-  public static String legalChars;
+public class IdHandler {
+  static int legalLength;
+  static String legalChars;
   private Map<String, String> exerciseMap = new LinkedHashMap<>();
   private Map<String, String> workoutMap = new LinkedHashMap<>();
   private Map<String, String> historyMap = new LinkedHashMap<>();
@@ -21,7 +23,7 @@ public class Id {
     return new LinkedHashMap<>(Collections.synchronizedMap(getEditableMap(cls)));
   }
 
-  private Map<String, String> getEditableMap(Class cls) throws IllegalArgumentException {
+  private Map<String, String> getEditableMap(Class<?> cls) throws IllegalArgumentException {
     Map<String, String> map;
     if (cls == Exercise.class) {
       return exerciseMap;
@@ -34,7 +36,7 @@ public class Id {
     }
   }
 
-  public static void setLegals(Class cls) throws IllegalArgumentException {
+  public static void setLegals(Class<?> cls) throws IllegalArgumentException {
     if (cls == Exercise.class) {
       legalChars = LEGAL_CHARS_EXERCISE_ID;
       legalLength = EXERCISE_ID_LENGTH;
@@ -49,7 +51,7 @@ public class Id {
     }
   }
 
-  private boolean hasId(String id, Class cls) {
+  private boolean hasId(String id, Class<?> cls) {
     return getMap(cls).containsKey(id);
   }
 
@@ -67,7 +69,7 @@ public class Id {
     getEditableMap(cls).remove(id);
   }
 
-  private String generateIdWhileLoop(Class cls) throws IllegalStateException, StackOverflowError {
+  private String generateIdWhileLoop(Class<?> cls) throws IllegalStateException, StackOverflowError {
     setLegals(cls);
     int possibilities = (int) Math.pow(legalChars.length(), legalLength);
     if (getMap(cls).size() == possibilities) {
@@ -94,8 +96,8 @@ public class Id {
       genTries--;
     }
     if (genTries == 0) {
-      throw new StackOverflowError("Id generator tried to generate id 1000 times, " +
-              "might be error with generator, or small ids available left!");
+      throw new StackOverflowError("IdHandler generator tried to generate id 1000 times, "
+          + "might be error with generator, or small ids available left!");
     }
     return id;
   }
@@ -110,7 +112,7 @@ public class Id {
         addId(history.getId(), history.getName() + ";" + history.getDate(), History.class);
         obj = history;
       } else {
-        addId(obj.getId(), obj.getName() ,obj.getClass());
+        addId(obj.getId(), obj.getName(), obj.getClass());
       }
     } catch (Exceptions.IdAlreadyInUseException | Exceptions.IllegalIdException e) {
       throw new IllegalStateException("Failed to give id to object! Error: " + obj.getClass().getSimpleName());

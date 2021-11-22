@@ -4,12 +4,15 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import beastbook.client.ClientController;
+import beastbook.core.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -17,10 +20,6 @@ import org.testfx.api.FxAssert;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.matcher.control.TextMatchers;
 
-import beastbook.core.Exercise;
-import beastbook.core.History;
-import beastbook.core.User;
-import beastbook.core.Workout;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -34,7 +33,13 @@ public class HistoryOverviewControllerTest extends ApplicationTest {
   private History history2;
   
   @Override
-  public void start(final Stage stage) throws IOException {
+  public void start(final Stage stage) throws IOException,
+      Exceptions.BadPackageException,
+      Exceptions.ServerException,
+      Exceptions.HistoryAlreadyExistsException,
+      URISyntaxException,
+      Exceptions.UserNotFoundException,
+      Exceptions.PasswordIncorrectException {
     final FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/beastbook.fxui/HistoryOverview.fxml"));
     controller = new HistoryOverviewController();
     loader.setController(controller);
@@ -45,7 +50,7 @@ public class HistoryOverviewControllerTest extends ApplicationTest {
     stage.show();
   } 
 
-  private void addHistoryToUser(){
+  private void addHistoryToUser() throws Exceptions.BadPackageException, Exceptions.ServerException, Exceptions.HistoryAlreadyExistsException, URISyntaxException, JsonProcessingException {
     List<Exercise> exercises1 = new ArrayList<>();
     exercises1.add(new Exercise("Benchpress", 20, 30, 40, 50, 50));
     exercises1.add(new Exercise("Chestpress", 90, 35, 22, 33, 94));

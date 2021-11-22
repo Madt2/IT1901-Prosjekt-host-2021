@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 
-public class IdDeserializer extends JsonDeserializer<Id> {
+public class IdDeserializer extends JsonDeserializer<IdHandler> {
   /**
    * Deserializes User data from json file.
    * Format for User in json: { exerciseIDs: "[...,...]", workoutIDs: "[...,...]",
@@ -18,11 +18,11 @@ public class IdDeserializer extends JsonDeserializer<Id> {
    *
    * @param parser defines how JSON-file should be parsed.
    * @param deserializer defines context for deserialization.
-   * @return deserialized Id.
+   * @return deserialized IdHandler.
    * @throws IOException for low-level read issues or decoding problems for JsonParser.
    */
   @Override
-  public Id deserialize(
+  public IdHandler deserialize(
           JsonParser parser,
           DeserializationContext deserializer
   ) throws IOException {
@@ -31,63 +31,60 @@ public class IdDeserializer extends JsonDeserializer<Id> {
   }
 
   /**
-   * Converts info from jsonNode to Id.
+   * Converts info from jsonNode to IdHandler.
    *
    * @param jsonNode jsonNode to convert.
-   * @return Deserialized Id or null deserialization fails.
+   * @return Deserialized IdHandler or null deserialization fails.
    */
-  Id deserialize(JsonNode jsonNode) throws IOException {
+  IdHandler deserialize(JsonNode jsonNode) throws IOException {
     if (jsonNode instanceof ObjectNode objectNode) {
-        Id id = new Id();
-        JsonNode exerciseMapNode = objectNode.get("exerciseMap");
-        if (exerciseMapNode instanceof ArrayNode) {
-          for (JsonNode elementNode : exerciseMapNode) {
-            String ID = elementNode.asText();
-            if (ID != null) {
-              //Todo make storage here more secure
-              String[] strings = ID.split(":");
-              try {
-                id.addId(strings[0], strings[1], Exercise.class);
-              } catch (Exceptions.IdAlreadyInUseException e) {
-                throw new IOException("Id not found when loading file, " +
-                        "something is wrong with writing object to file");
-              }
+      IdHandler idHandler = new IdHandler();
+      JsonNode exerciseMapNode = objectNode.get("exerciseMap");
+      if (exerciseMapNode instanceof ArrayNode) {
+        for (JsonNode elementNode : exerciseMapNode) {
+          String id = elementNode.asText();
+          if (id != null) {
+            String[] strings = id.split(":");
+            try {
+              idHandler.addId(strings[0], strings[1], Exercise.class);
+            } catch (Exceptions.IdAlreadyInUseException e) {
+              throw new IOException("IdHandler not found when loading file, "
+                  + "something is wrong with writing object to file");
             }
           }
         }
-        JsonNode workoutMapNode = objectNode.get("workoutMap");
-        if (workoutMapNode instanceof ArrayNode) {
-          for (JsonNode elementNode : workoutMapNode) {
-            String ID = elementNode.asText();
-            if (ID != null) {
-              //Todo make storage here more secure
-              String[] strings = ID.split(":");
-              try {
-                id.addId(strings[0], strings[1], Workout.class);
-              } catch (Exceptions.IdAlreadyInUseException e) {
-                throw new IOException("Id not found when loading file, " +
-                        "something is wrong with writing object to file");
-              }
+      }
+      JsonNode workoutMapNode = objectNode.get("workoutMap");
+      if (workoutMapNode instanceof ArrayNode) {
+        for (JsonNode elementNode : workoutMapNode) {
+          String id = elementNode.asText();
+          if (id != null) {
+            String[] strings = id.split(":");
+            try {
+              idHandler.addId(strings[0], strings[1], Workout.class);
+            } catch (Exceptions.IdAlreadyInUseException e) {
+               throw new IOException("IdHandler not found when loading file, "
+                   + "something is wrong with writing object to file");
             }
           }
         }
-        JsonNode historyMapNode = objectNode.get("historyMap");
-        if (historyMapNode instanceof ArrayNode) {
-          for (JsonNode elementNode : historyMapNode) {
-            String ID = elementNode.asText();
-            if (ID != null) {
-              //Todo make storage here more secure
-              String[] strings = ID.split(":");
-              try {
-                id.addId(strings[0], strings[1], History.class);
-              } catch (Exceptions.IdAlreadyInUseException e) {
-                throw new IOException("Id not found when loading file, " +
-                        "something is wrong with writing object to file");
-              }
+      }
+      JsonNode historyMapNode = objectNode.get("historyMap");
+      if (historyMapNode instanceof ArrayNode) {
+        for (JsonNode elementNode : historyMapNode) {
+          String id = elementNode.asText();
+          if (id != null) {
+            String[] strings = id.split(":");
+            try {
+              idHandler.addId(strings[0], strings[1], History.class);
+            } catch (Exceptions.IdAlreadyInUseException e) {
+              throw new IOException("IdHandler not found when loading file, "
+                  + "something is wrong with writing object to file");
             }
           }
         }
-        return id;
+      }
+      return idHandler;
     }
     throw new IOException("Something went wrong with loading IdHandler!");
   }

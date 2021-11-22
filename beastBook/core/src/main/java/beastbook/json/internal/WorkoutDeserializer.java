@@ -43,35 +43,35 @@ public class WorkoutDeserializer extends JsonDeserializer<Workout> {
   */
   Workout deserialize(JsonNode jsonNode) throws IOException {
     if (jsonNode instanceof ObjectNode objectNode) {
-        Workout workout = new Workout();
-        JsonNode nameNode = objectNode.get("name");
-        if (nameNode instanceof TextNode) {
-          workout.setName(nameNode.asText());
+      Workout workout = new Workout();
+      JsonNode nameNode = objectNode.get("name");
+      if (nameNode instanceof TextNode) {
+        workout.setName(nameNode.asText());
+      }
+      JsonNode idNode = objectNode.get("id");
+      if (idNode instanceof TextNode) {
+        try {
+          workout.setId(idNode.asText());
+        } catch (Exceptions.IllegalIdException e) {
+          throw new IOException("IdHandler not found when loading file, "
+              + "something is wrong with writing object to file");
         }
-        JsonNode idNode = objectNode.get("id");
-        if (idNode instanceof TextNode) {
-          try {
-            workout.setId(idNode.asText());
-          } catch (Exceptions.IllegalIdException e) {
-            throw new IOException("Id not found when loading file, " +
-                    "something is wrong with writing object to file");
-          }
-        }
-        JsonNode exerciseIDsNode = objectNode.get("exerciseIDs");
-        if (exerciseIDsNode instanceof ArrayNode) {
-          for (JsonNode elementNode : exerciseIDsNode) {
-            String id = elementNode.asText();
-            if (id != null) {
-              try {
-                workout.addExercise(id);
-              } catch (Exceptions.IllegalIdException e) {
-                throw new IOException("Id not found when loading file, " +
-                        "something is wrong with writing object to file");
-              }
+      }
+      JsonNode exerciseIdsNode = objectNode.get("exerciseIds");
+      if (exerciseIdsNode instanceof ArrayNode) {
+        for (JsonNode elementNode : exerciseIdsNode) {
+          String id = elementNode.asText();
+          if (id != null) {
+            try {
+              workout.addExercise(id);
+            } catch (Exceptions.IllegalIdException e) {
+              throw new IOException("IdHandler not found when loading file, "
+                  + "something is wrong with writing object to file");
             }
           }
         }
-        return workout;
+      }
+      return workout;
     }
     throw new IOException("Something went wrong with loading workout!");
   }
