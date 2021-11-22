@@ -13,10 +13,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class ServerServiceTest {
-
-  private static final String username = "mock";
-  private static final String password = "mock";
-  private static final User mockUser = new User(username, password);
   private static ServerService serverService = new ServerService(mockUser);
   private final Exercise mockExercise = new Exercise("mockExercise", 1, 1, 1, 1, 1);
   private final Workout mockWorkout = new Workout("mockWorkout");
@@ -46,7 +42,6 @@ public class ServerServiceTest {
   @Test
   @Order(2)
   void testLogin() throws Exceptions.UserAlreadyExistException, Exceptions.ServerException, Exceptions.UserNotFoundException, Exceptions.PasswordIncorrectException {
-    serverService.createUser();
     serverService.login();
     User user = new User("doesNotExist", "test");
     serverService = new ServerService(user);

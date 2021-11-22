@@ -5,8 +5,8 @@ public class Exceptions {
   //Id exceptions:
 
   public static class IllegalIdException extends Exception {
-    public IllegalIdException(String exceptionMessage) {
-      super(exceptionMessage);
+    public IllegalIdException(String id, Class cls) {
+      super("Id " + id + " not legal for class " + cls.getSimpleName() );
     }
   }
 
@@ -85,14 +85,14 @@ public class Exceptions {
   }
 
   public static class ServerException extends Exception {
-    public ServerException(String errorMessage) {
-      super(errorMessage);
+    public ServerException() {
+      super("Something wrong happened on the server, check server terminal for debugging!");
     }
   }
 
   public static class BadPackageException extends Exception {
-    public BadPackageException(String errorMessage) {
-      super("Could not read package gotten from client, Error: " + errorMessage);
+    public BadPackageException() {
+      super("Json package was incorrectly send or received");
     }
   }
 }

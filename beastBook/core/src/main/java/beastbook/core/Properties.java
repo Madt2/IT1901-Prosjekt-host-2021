@@ -20,7 +20,7 @@ public class Properties {
   public static final String notValidHistoryId = "not valid";
   public static final String notValidExerciseId = "not valid";
   public static final String notValidWorkoutId = "not valid";
-
+  public static final User mockUser = new User("mock", "mock");
 
   public static String mockIdGenerator(Class cls, Map map) throws Exceptions.ServerException {
     int legalLength;

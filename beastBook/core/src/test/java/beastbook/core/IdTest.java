@@ -1,5 +1,6 @@
 package beastbook.core;
 
+import static beastbook.core.Validation.validateId;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -30,19 +31,19 @@ public class IdTest {
     @Test
     void testValidateId(){
       id.giveId(workout);
-      assertDoesNotThrow(() -> Id.validateId(workout.getId(), Workout.class));
+      assertDoesNotThrow(() -> validateId(workout.getId(), Workout.class));
       assertThrows(IllegalIdException.class, () -> {
         workout.setId("rubbish");
       });
 
       id.giveId(exercise);
-      assertDoesNotThrow(() -> Id.validateId(exercise.getId(), Exercise.class));
+      assertDoesNotThrow(() -> validateId(exercise.getId(), Exercise.class));
       assertThrows(IllegalIdException.class, () -> {
         exercise.setId("rubbish");
       });
 
       id.giveId(history);
-      assertDoesNotThrow(() -> Id.validateId(history.getId(), History.class));
+      assertDoesNotThrow(() -> validateId(history.getId(), History.class));
       assertThrows(IllegalIdException.class, () -> {
         history.setId("rubbish");
       });

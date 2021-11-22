@@ -6,18 +6,18 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
+import static beastbook.core.Properties.mockUser;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PersistenceTest {
   private static final String username = "test";
   private static final String password = "test";
-  private static final User user = new User(username, password);
-  private static BeastBookPersistence beastBookPersistence = new BeastBookPersistence(user);;
+  private static BeastBookPersistence beastBookPersistence = new BeastBookPersistence(mockUser);;
 
 
   @BeforeAll
   static void setup() throws IOException {
-    File file = new File(System.getProperty("user.home") + "/" + user.getUsername());
+    File file = new File(System.getProperty("user.home") + "/" + mockUser.getUsername());
     if (file.exists()) {
       beastBookPersistence.deleteUserDir();
     }

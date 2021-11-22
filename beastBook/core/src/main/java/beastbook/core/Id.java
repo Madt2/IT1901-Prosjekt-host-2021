@@ -3,6 +3,7 @@ package beastbook.core;
 import java.util.*;
 import java.util.concurrent.ThreadLocalRandom;
 import static beastbook.core.Properties.*;
+import static beastbook.core.Validation.validateId;
 
 
 /**
@@ -64,24 +65,6 @@ public class Id {
       throw new Exceptions.IdNotFoundException(cls, id);
     }
     getEditableMap(cls).remove(id);
-  }
-
-  public static void validateId(String id, Class cls) throws Exceptions.IllegalIdException {
-    setLegals(cls);
-    if (id.length() != legalLength) {
-      throw new Exceptions.IllegalIdException("ID does not contain right amount of characters!");
-    }
-    for (int i = 0; i < legalChars.length(); i++) {
-      for (int j = 0; j < id.length(); j++) {
-        if (id.charAt(j) == legalChars.charAt(i)) {
-          id = id.replace(id.substring(j, j + 1), "");
-        }
-        if (id.length() == 0) {
-          return;
-        }
-      }
-    }
-    throw new Exceptions.IllegalIdException("ID does not use correct characters!");
   }
 
   private String generateIdWhileLoop(Class cls) throws IllegalStateException, StackOverflowError {

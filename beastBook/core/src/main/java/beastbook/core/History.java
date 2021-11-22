@@ -8,19 +8,18 @@ import java.util.List;
 /**
  * History class saves a workout with a final workout object and date it was saved.
  */
-// Todo should extend workout?
 public class History implements IdClasses {
   private String id;
   private final String name;
   private final String date;
   private final List<Exercise> savedExercises;
 
-    /**
-   * Constructor for History object.
-   *
-     * @param name name of workout to log.
-   * @param exercises The Exercises to be saved.
-   */
+  /**
+  * Constructor for History object.
+  *
+  * @param name name of workout to log.
+  * @param exercises The Exercises to be saved.
+  */
   public History(String name, List<Exercise> exercises) {
     this.name = name;
     this.savedExercises = Collections.unmodifiableList(exercises);
