@@ -54,11 +54,11 @@ public class WorkoutTest {
   void testAddAndRemoveExercise() throws IllegalIdException {
     testWorkout.addExercise(exercise.getId());
    
-    assertEquals(1, testWorkout.getExerciseIDs().size());
-    assertEquals(exercise.getId(), testWorkout.getExerciseIDs().get(0));
+    assertEquals(1, testWorkout.getExerciseIds().size());
+    assertEquals(exercise.getId(), testWorkout.getExerciseIds().get(0));
 
     testWorkout.removeExercise(exercise.getId());
-    assertEquals(0, testWorkout.getExerciseIDs().size());
+    assertEquals(0, testWorkout.getExerciseIds().size());
   }
 
   @Test

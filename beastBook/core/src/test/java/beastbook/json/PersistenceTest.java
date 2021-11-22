@@ -59,7 +59,7 @@ public class PersistenceTest {
   private void assertEqualWorkout(Workout workout1, Workout workout2) {
     assertTrue(workout1.getId().equals(workout2.getId()));
     assertTrue(workout1.getName().equals(workout2.getName()));
-    assertTrue(workout1.getExerciseIDs().equals(workout2.getExerciseIDs()));
+    assertTrue(workout1.getExerciseIds().equals(workout2.getExerciseIds()));
   }
 
   private void assertEqualHistory(History history1, History history2) {

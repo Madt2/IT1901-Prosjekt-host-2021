@@ -123,16 +123,17 @@ public class ClientService {
     }
   }
 
-  private String sendPackage(URI uri) {
+  private boolean sendPackage(URI uri) {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     HttpEntity<String> httpEntity = new HttpEntity<>("", headers);
     RestTemplate restTemplate = new RestTemplate();
     ResponseEntity<String> data = restTemplate.postForEntity(uri, httpEntity, String.class);
+    dataString = data.getBody() + "";
     if (data.getStatusCode().equals(HttpStatus.OK)) {
-      return data.getBody() + "";
+      return true;
     }
-    return null;
+    return false;
   }
 
   private String getPackage(String url) {
@@ -356,7 +357,7 @@ public class ClientService {
       illegalIdException(dataString, workoutId, Workout.class);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
-    return (Workout) jsonToObject(message, Workout.class);
+    return (Workout) jsonToObject(dataString, Workout.class);
   }
 
   public Exercise queryExercise(String exerciseId, User user) throws Exceptions.BadPackageException,
@@ -375,7 +376,7 @@ public class ClientService {
       illegalIdException(dataString, exerciseId, Exercise.class);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
-    return (Exercise) jsonToObject(message, Exercise.class);
+    return (Exercise) jsonToObject(dataString, Exercise.class);
   }
 
   public History queryHistory(String historyId, User user) throws Exceptions.BadPackageException,
@@ -394,7 +395,7 @@ public class ClientService {
       illegalIdException(dataString, historyId, History.class);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
-    return (History) jsonToObject(message, History.class);
+    return (History) jsonToObject(dataString, History.class);
   }
 
   public Map<String, String> queryExerciseMap(User user) throws Exceptions.BadPackageException,
@@ -402,14 +403,15 @@ public class ClientService {
       URISyntaxException,
       JsonProcessingException {
     String userString = objectToJson(user);
-    String url = baseURL + "getExerciseMap/" + URLEncoder.encode(userString, StandardCharsets.UTF_8);
-    String message = sendPackage(new URI(url));
-    if (message == null) {
-      badPackageExceptionHandler(message);
-      serverExceptionHandler(message);
+    String url = baseUrl + "getExerciseMap/" + URLEncoder.encode(userString, StandardCharsets.UTF_8);
+    dataString = getPackage(url);
+    /*boolean message = sendPackage(new URI(url));
+    if (!message) {
+      badPackageExceptionHandler(dataString);
+      serverExceptionHandler(dataString);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
-    }
-    return (LinkedHashMap<String, String>) jsonToObject(message, LinkedHashMap.class);
+    }*/
+    return (LinkedHashMap<String, String>) jsonToObject(dataString, LinkedHashMap.class);
   }
 
   public Map<String, String> queryWorkoutMap(User user) throws Exceptions.BadPackageException,
@@ -417,14 +419,15 @@ public class ClientService {
       URISyntaxException,
       JsonProcessingException {
     String userString = objectToJson(user);
-    String url = baseURL + "getWorkoutMap/" + URLEncoder.encode(userString, StandardCharsets.UTF_8);
-    String message = sendPackage(new URI(url));
-    if (message == null) {
-      badPackageExceptionHandler(message);
-      serverExceptionHandler(message);
+    String url = baseUrl + "getWorkoutMap/" + URLEncoder.encode(userString, StandardCharsets.UTF_8);
+    dataString = getPackage(url);
+/*    boolean message = sendPackage(new URI(url));
+    if (!message) {
+      badPackageExceptionHandler(dataString);
+      serverExceptionHandler(dataString);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
-    }
-    return (LinkedHashMap<String, String>) jsonToObject(message, LinkedHashMap.class);
+    }*/
+    return (LinkedHashMap<String, String>) jsonToObject(dataString, LinkedHashMap.class);
   }
 
   public Map<String, String> queryHistoryMap(User user) throws Exceptions.BadPackageException,
@@ -432,13 +435,14 @@ public class ClientService {
       URISyntaxException,
       JsonProcessingException {
     String userString = objectToJson(user);
-    String url = baseURL + "/getHistoryMap/" + URLEncoder.encode(userString, StandardCharsets.UTF_8);
-    String message = sendPackage(new URI(url));
-    if (message == null) {
-      badPackageExceptionHandler(message);
-      serverExceptionHandler(message);
+    String url = baseUrl + "getHistoryMap/" + URLEncoder.encode(userString, StandardCharsets.UTF_8);
+    dataString = getPackage(url);
+/*    boolean message = sendPackage(new URI(url));
+    if (!message) {
+      badPackageExceptionHandler(dataString);
+      serverExceptionHandler(dataString);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
-    }
-    return (LinkedHashMap<String, String>) jsonToObject(message, LinkedHashMap.class);
+    }*/
+    return (LinkedHashMap<String, String>) jsonToObject(dataString, LinkedHashMap.class);
   }
 }

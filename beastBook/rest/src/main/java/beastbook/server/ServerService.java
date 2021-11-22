@@ -102,6 +102,9 @@ public class ServerService {
       Rules.exerciseRules(exercise, workout, ids);
       exercise = (Exercise) ids.giveId(exercise);
       workout.addExercise(exercise.getId());
+      exercise.setWorkoutId(workoutId);
+      System.out.println(exercise.getId());
+      System.out.println(workout.getId());
       persistence.saveIds(ids);
       persistence.saveIdObject(workout);
       persistence.saveIdObject(exercise);
@@ -221,7 +224,7 @@ public class ServerService {
       ids.removeId(id, cls);
       persistence.saveIds(ids);
       persistence.deleteIdObject(id, cls);
-    } catch (IOException | Exceptions.IdHandlerNotFoundException | Exceptions.IdNotFoundException e) {
+    } catch (IOException | Exceptions.IdHandlerNotFoundException e) {
       e.printStackTrace();
       throw new Exceptions.ServerException();
     }
@@ -259,6 +262,7 @@ public class ServerService {
    */
   public void deleteWorkout(String id) throws Exceptions.ServerException, Exceptions.IllegalIdException {
     validateId(id, Workout.class);
+    System.out.println("WORKOUT GOT VALIDATED!");
     try {
       Workout workout = persistence.getWorkout(id);
       for (String s : workout.getExerciseIds()) {

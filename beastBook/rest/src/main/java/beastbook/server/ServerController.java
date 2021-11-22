@@ -99,7 +99,7 @@ public class ServerController {
   @PostMapping("addWorkout/{userString}/{workoutString}")
   public ResponseEntity<String> addWorkout(@PathVariable String workoutString, @PathVariable String userString) {
     userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
-    userString = URLDecoder.decode(workoutString, StandardCharsets.UTF_8);
+    workoutString = URLDecoder.decode(workoutString, StandardCharsets.UTF_8);
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
@@ -159,7 +159,7 @@ public class ServerController {
   @PostMapping("updateWorkout/{userString}/{workoutString}")
   public ResponseEntity<String> updateWorkout(@PathVariable String workoutString, @PathVariable String userString) {
     userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
-    userString = URLDecoder.decode(workoutString, StandardCharsets.UTF_8);
+    workoutString = URLDecoder.decode(workoutString, StandardCharsets.UTF_8);
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);

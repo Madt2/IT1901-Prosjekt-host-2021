@@ -191,7 +191,7 @@ public class BeastBookPersistence {
     if (!userExists()) {
       throw new Exceptions.UserNotFoundException(user.getUsername());
     }
-    String filepath = userPath + "/UserData";
+    String filepath = userPath + "UserData";
     try {
       writeObjectToFile(user, new File(filepath));
     } catch (IOException e) {
@@ -200,8 +200,9 @@ public class BeastBookPersistence {
     System.out.println("Saved user " + user.getUsername() + " to " + userPath);
   }
 
-  public void saveIds(Id id) throws IOException {
-    String filepath = userPath + "/IDs";
+  public void saveIds(IdHandler id) throws IOException {
+    String filepath = userPath + "IDs";
+    System.out.println("DETTE ER FILEPATH: " + filepath);
     try {
       writeObjectToFile(id, new File(filepath));
     } catch (IOException e) {
@@ -244,7 +245,7 @@ public class BeastBookPersistence {
   }
 
   private User getUser() throws IOException {
-    String filepath = userPath + "/UserData";
+    String filepath = userPath + "UserData";
     return (User) readObjectFromFile(getFile(filepath), User.class);
   }
 
@@ -289,8 +290,8 @@ public class BeastBookPersistence {
     }
   }
 
-  public Id getIds() throws IOException, Exceptions.IdHandlerNotFoundException {
-    String filepath = userPath + "/IDs";
+  public IdHandler getIds() throws IOException, Exceptions.IdHandlerNotFoundException {
+    String filepath = userPath + "IDs";
     try {
       return (IdHandler) readObjectFromFile(getFile(filepath), IdHandler.class);
     } catch (FileNotFoundException e) {

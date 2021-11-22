@@ -32,7 +32,6 @@ public class History implements IdClasses {
   public History(String name, List<Exercise> exercises, String date) {
     this.name = name;
     this.savedExercises = Collections.unmodifiableList(exercises);
-    SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.yyyy");
     this.date = date;
   }
 

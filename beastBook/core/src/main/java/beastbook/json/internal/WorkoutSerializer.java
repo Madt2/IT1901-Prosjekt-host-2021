@@ -34,8 +34,8 @@ public class WorkoutSerializer extends JsonSerializer<Workout> {
     if (workout.getName() != null) {
       jsonGenerator.writeStringField("name", workout.getName());
     }
-    jsonGenerator.writeArrayFieldStart("exerciseIDs");
-    for (String id : workout.getExerciseIDs()) {
+    jsonGenerator.writeArrayFieldStart("exerciseIds");
+    for (String id : workout.getExerciseIds()) {
       jsonGenerator.writeObject(id);
     }
     jsonGenerator.writeEndArray();

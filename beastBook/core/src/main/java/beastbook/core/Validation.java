@@ -148,7 +148,10 @@ public class Validation {
     }
   }
 
-  public static void validateId(String id, Class cls) throws Exceptions.IllegalIdException {
+  public static void validateId(String id, Class<?> cls) throws Exceptions.IllegalIdException {
+    if (id == null) {
+      throw new Exceptions.IllegalIdException(null, cls);
+    }
     setLegals(cls);
     if (id.length() != legalLength) {
       throw new Exceptions.IllegalIdException(id, cls);
