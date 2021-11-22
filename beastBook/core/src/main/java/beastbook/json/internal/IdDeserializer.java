@@ -1,9 +1,6 @@
 package beastbook.json.internal;
 
-import beastbook.core.Exercise;
-import beastbook.core.History;
-import beastbook.core.Id;
-import beastbook.core.Workout;
+import beastbook.core.*;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -11,10 +8,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 public class IdDeserializer extends JsonDeserializer<Id> {
   /**
@@ -42,17 +36,22 @@ public class IdDeserializer extends JsonDeserializer<Id> {
    * @param jsonNode jsonNode to convert.
    * @return Deserialized Id or null deserialization fails.
    */
-  Id deserialize(JsonNode jsonNode) {
+  Id deserialize(JsonNode jsonNode) throws IOException {
     if (jsonNode instanceof ObjectNode objectNode) {
-      try {
         Id id = new Id();
         JsonNode exerciseMapNode = objectNode.get("exerciseMap");
         if (exerciseMapNode instanceof ArrayNode) {
           for (JsonNode elementNode : exerciseMapNode) {
             String ID = elementNode.asText();
             if (ID != null) {
+              //Todo make storage here more secure
               String[] strings = ID.split(":");
-              id.addId(strings[0], strings[1], Exercise.class);
+              try {
+                id.addId(strings[0], strings[1], Exercise.class);
+              } catch (Exceptions.IdAlreadyInUseException e) {
+                throw new IOException("Id not found when loading file, " +
+                        "something is wrong with writing object to file");
+              }
             }
           }
         }
@@ -61,8 +60,14 @@ public class IdDeserializer extends JsonDeserializer<Id> {
           for (JsonNode elementNode : workoutMapNode) {
             String ID = elementNode.asText();
             if (ID != null) {
+              //Todo make storage here more secure
               String[] strings = ID.split(":");
-              id.addId(strings[0], strings[1], Workout.class);
+              try {
+                id.addId(strings[0], strings[1], Workout.class);
+              } catch (Exceptions.IdAlreadyInUseException e) {
+                throw new IOException("Id not found when loading file, " +
+                        "something is wrong with writing object to file");
+              }
             }
           }
         }
@@ -71,16 +76,19 @@ public class IdDeserializer extends JsonDeserializer<Id> {
           for (JsonNode elementNode : historyMapNode) {
             String ID = elementNode.asText();
             if (ID != null) {
+              //Todo make storage here more secure
               String[] strings = ID.split(":");
-              id.addId(strings[0], strings[1], History.class);
+              try {
+                id.addId(strings[0], strings[1], History.class);
+              } catch (Exceptions.IdAlreadyInUseException e) {
+                throw new IOException("Id not found when loading file, " +
+                        "something is wrong with writing object to file");
+              }
             }
           }
         }
         return id;
-      } catch (IllegalArgumentException e) {
-        System.err.println(e.getMessage() + "\nMost likely wrong format in file");
-      }
     }
-    return null;
+    throw new IOException("Something went wrong with loading IdHandler!");
   }
 }

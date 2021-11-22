@@ -1,28 +1,17 @@
 package beastbook.core;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import static beastbook.core.Validation.validatePassword;
+import static beastbook.core.Validation.validateUsername;
 
 /**
  * User class for application. Creates a user with username, password and a list of references to workouts.
  */
 public class User {
-  //Todo enum?
-  public static final int MIN_CHAR_USERNAME = 3;
-  public static final int MIN_CHAR_PASSWORD = 3;
-
   private final String username;
   private final String password;
 
-  /*
-  private List<String> historyIDs = new ArrayList<>();
-  private List<String> workoutIDs = new ArrayList<>();
-  */
-
   /**
-  * User object for application.
+  * User constructor. Validates input.
   *
   * @param username username for user.
   * @param password password for user.
@@ -34,47 +23,6 @@ public class User {
     this.password = password;
   }
 
-  /**
-   * Validation method for setUsername. Checks for username length, has to be 3 or more characters.
-   *
-   * @param username to validate.
-   * @throws IllegalArgumentException if username is too short.
-   */
-  private void validateUsername(String username) throws IllegalArgumentException {
-    boolean isLongEnough = username.length() >= MIN_CHAR_USERNAME;
-    if (!isLongEnough) {
-      throw new IllegalArgumentException(
-              "Username must be " + MIN_CHAR_USERNAME + " or more characters!"
-      );
-    }
-  }
-
-  /**
-   * Validation method for Password. Checks for password length.
-   *
-   * @param password to validate.
-   */
-  private void validatePassword(String password) throws IllegalArgumentException {
-    boolean isLongEnough = password.length() >= MIN_CHAR_PASSWORD;
-    if (!isLongEnough) {
-      throw new IllegalArgumentException(
-              "Password must be " + MIN_CHAR_PASSWORD + " or more characters!"
-      );
-    }
-  }
-
-//  /**
-//   * Method to remove History object from histories list.
-//   *
-//   * @param id The id of the history to be removed.
-//   * @throws IllegalArgumentException if no History found.
-//   */
-//  public void removeHistory(String id) throws IllegalArgumentException {
-//    if (!historyIDs.remove(id)) {
-//      throw new IllegalArgumentException("No such history found!");
-//    }
-//  }
-
   public String getUsername() {
     return username;
   }
@@ -83,59 +31,5 @@ public class User {
     return password;
   }
 
-//  /**
-//   * Getter to fetch workoutIDs List from user.
-//   *
-//   * @return List of IDs
-//   */
-//  public List<String> getWorkoutIDs() {
-//    return new ArrayList<>(workoutIDs);
-//  }
-
-//  /**
-//   * This method adds a workoutID reference to workoutIDs list.
-//   *
-//   * @param id workoutID to add to user.
-//   * @throws IllegalArgumentException when workoutID is already a reference in workoutIDs list,
-//   *                                  or if validation fails.
-//   */
-//  public void addWorkout(String id) throws IllegalArgumentException {
-//    if (workoutIDs.contains(id)) {
-//      throw new IllegalArgumentException("Workout is already added!");
-//    }
-//    Id.validateID(id, Workout.class);
-//    workoutIDs.add(id);
-//  }
-
-//  /**
-//  * Removes workout object from users workouts List.
-//  *
-//  * @throws IllegalArgumentException when workout reference is not in user's workoutIDs list.
-//  * @param id workoutID to remove from User.
-//  */
-//  public void removeWorkout(String id) throws IllegalArgumentException {
-//    if (!workoutIDs.remove(id)) {
-//      throw new IllegalArgumentException("User does not have workout saved!");
-//    }
-//  }
-
-//  public List<String> getHistoryIDs() {
-//    return new ArrayList<>(historyIDs);
-//  }
-
-//  /**
-//   * This method adds a historyID reference to historyIDs list.
-//   *
-//   * @param id of history object to add.
-//   * @throws IllegalArgumentException when historyID is already a reference in historyIDs list,
-//   *                                  or if validation fails.
-//   */
-//  public void addHistory(String id) throws IllegalArgumentException {
-//    if (historyIDs.contains(id)) {
-//      throw new IllegalArgumentException("User already has history saved!");
-//    }
-//    Id.validateID(id, History.class);
-//    historyIDs.add(id);
-//  }
 }
 

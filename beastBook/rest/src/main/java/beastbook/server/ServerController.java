@@ -1,352 +1,375 @@
 package beastbook.server;
 
 import beastbook.core.*;
+import beastbook.json.internal.BeastBookModule;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import java.io.IOException;
+
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 @RestController
 public class ServerController {
 
-  private final ServerService serverService;
+  private ServerService serverService;
+  ObjectMapper mapper;
 
-  @Autowired
-  public ServerController(ServerService serverService) {
-    this.serverService = serverService;
+  public ServerController() {
+    mapper = new ObjectMapper();
+    mapper.registerModule(new BeastBookModule());
   }
 
-
-  @PostMapping("createUser/")
-  public ResponseEntity createUser(@RequestBody String jsonString) {
-    try {
-      User user = (User) serverService.jsonToObject(jsonString, User.class);
-      serverService.createUser(user);
-      return new ResponseEntity<>("success", HttpStatus.OK);
-    } catch (JsonProcessingException e) { //Error in json
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-    } catch (IllegalArgumentException e) { //Send could not deserialize user send again, bad package?
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.NOT_FOUND);
-    }  catch( IOException e) { //send user already exists exception
-    return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-    //send could not save user, IO error, send package again.
+  private void setService(User user) {
+    serverService = new ServerService(user);
   }
 
-}
-
-
-  @PostMapping("addWorkout/{username}")
-  public ResponseEntity<String> addWorkout(@RequestBody String jsonString, @PathVariable String username) {
+  private String objectToJson(Object object) throws Exceptions.ServerException {
     try {
-      Workout workout = (Workout) serverService.jsonToObject(jsonString, Workout.class);
-      String workoutId = serverService.addIdObject(workout, username, null);
-      return new ResponseEntity<>(workoutId, HttpStatus.OK);
-    } catch (JsonProcessingException e) { //Error in json
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-    } catch (IllegalArgumentException e) { //Send could not deserialize user send again, bad package?
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.NOT_FOUND);
-    }  catch( IOException e) { //send user already exists exception
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-      //send could not save user, IO error, send package again.
-    }
-  }
-
-  @PostMapping("addExercise/{workoutId}/{username}")
-  public ResponseEntity<String> addExercise(@RequestBody String jsonString,
-                          @PathVariable String workoutId,
-                          @PathVariable String username) {
-    try {
-      Exercise exercise = (Exercise) serverService.jsonToObject(jsonString, Exercise.class);
-      return new ResponseEntity<>(serverService.addIdObject((IdClasses) exercise, username, workoutId), HttpStatus.OK);
-    } catch (NullPointerException e ) {
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-    } catch (JsonProcessingException e) { //Error in json
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-    } catch (IllegalArgumentException e) { //Send could not deserialize user send again, bad package?
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.NOT_FOUND);
-    }  catch( IOException e) { //send user already exists exception
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-      //send could not save user, IO error, send package again.
-    }
-  }
-
-  @PostMapping("addHistory/{username}")
-  public ResponseEntity<String> addHistory(@RequestBody String jsonString, @PathVariable String username) {
-    try {
-      History history = (History) serverService.jsonToObject(jsonString, History.class);
-      return new ResponseEntity<>(serverService.addIdObject(history, username, null), HttpStatus.OK);
-    } catch (JsonProcessingException e) { //Error in json
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-    } catch (IllegalArgumentException e) { //Send could not deserialize user send again, bad package?
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.NOT_FOUND);
-    }  catch( IOException e) { //send user already exists exception
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-      //send could not save user, IO error, send package again.
-    }
-  }
-
-  @PostMapping("updateWorkout/{username}")
-  public ResponseEntity<String> updateWorkout(@RequestBody String jsonString, @PathVariable String username) {
-    try {
-      Workout workout = (Workout) serverService.jsonToObject(jsonString, Workout.class);
-      serverService.updateWorkout(workout, username);
-      return new ResponseEntity<>("Success in updating workout",HttpStatus.OK);
-    } catch (IllegalStateException e) {
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);   
-    } catch (JsonProcessingException e) { //Error in json
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-    } catch (IllegalArgumentException e) { //Send could not deserialize user send again, bad package?
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.NOT_FOUND);
-    }  catch( IOException e) { //send user already exists exception
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-      //send could not save user, IO error, send package again.
-    }
-  }
-
-  @PostMapping("updateExercise/{username}")
-  public ResponseEntity<String> updateExercise(@RequestBody String jsonString, @PathVariable String username) {
-    try {
-      Exercise exercise = (Exercise) serverService.jsonToObject(jsonString, Exercise.class);
-      serverService.updateExercise(exercise, username);
-      return new ResponseEntity<>("Success in updating Exercise",HttpStatus.OK);
-    } catch (IllegalStateException e) {
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-    }  catch (IllegalArgumentException e) { //Send could not deserialize user send again, bad package?
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.NOT_FOUND);
-    }  catch( IOException e) { //send user already exists exception
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-      //send could not save user, IO error, send package again.
-    }
-  }
-
-  @PostMapping("deleteUser/{username}")
-  public ResponseEntity<String> deleteUser(@PathVariable String username) {
-    try {
-      serverService.deleteUser(username);
-      return new ResponseEntity<>("Success in deleting User", HttpStatus.OK);
-    } catch (JsonProcessingException e) { //Error in json
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-    } catch (IllegalArgumentException e) { //Send could not deserialize user send again, bad package?
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.NOT_FOUND);
-    }  catch( IOException e) { //send user already exists exception
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-      //send could not save user, IO error, send package again.
-    }
-  }
-
-  @PostMapping("deleteWorkout/{username}/{workoutId}")
-  public ResponseEntity<String> deleteWorkout(@PathVariable String workoutId, @PathVariable String username) {
-    try {
-      serverService.deleteIdObject(workoutId, username, Workout.class);
-      return new ResponseEntity<>("Success in deleting Workout", HttpStatus.OK);
-    } catch (JsonProcessingException e) { //Error in json
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-    } catch (IllegalArgumentException e) { //Send could not deserialize user send again, bad package?
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.NOT_FOUND);
-    }  catch( IOException e) { //send user already exists exception
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-      //send could not save user, IO error, send package again.
-    }
-  }
-
-  @PostMapping("deleteExercise/{username}")
-  public ResponseEntity<String> deleteExercise(@RequestBody String jsonString, @PathVariable String username) {
-    try {
-      Exercise exercise = (Exercise) serverService.jsonToObject(jsonString, Exercise.class);
-      System.out.println(exercise.getId());
-      serverService.deleteExercise(exercise, username);
-      return new ResponseEntity<>("Success in deleting Exercise", HttpStatus.OK);
-    } catch (JsonProcessingException e) { //Error in json
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-    } catch (IllegalArgumentException e) { //Send could not deserialize user send again, bad package?
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.NOT_FOUND);
-    }  catch( IOException e) { //send user already exists exception
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-      //send could not save user, IO error, send package again.
-    }
-  }
-
-  @PostMapping("deleteHistory/{username}/{historyID}")
-  public ResponseEntity<String> deleteHistory(@PathVariable String username, @PathVariable String id) {
-    try {
-      serverService.deleteIdObject(id, username, History.class);
-      return new ResponseEntity<>("Success in deleting Workout", HttpStatus.OK);
-    }  catch (JsonProcessingException e) { //Error in json
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-    } catch (IllegalArgumentException e) { //Send could not deserialize user send again, bad package?
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.NOT_FOUND);
-    }  catch(IOException e) { //send user already exists exception
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-      //send could not save user, IO error, send package again.
-    }
-  }
-
-  @GetMapping("getUser/{username}")
-  public ResponseEntity<String> sendUser(@PathVariable String username) {
-    try {
-      User user = serverService.getUser(username);
-      String packageString = serverService.objectToJson(user);
-      return new ResponseEntity<>(packageString, HttpStatus.OK);
-    } catch (JsonProcessingException e) { //Error in json
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-    } catch (IllegalArgumentException e) { //Send could not deserialize user send again, bad package?
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.NOT_FOUND);
-    }  catch(IOException e) { //send user already exists exception
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-      //send could not save user, IO error, send package again.
-    }
-  }
-
-  @GetMapping("getWorkout/{username}/{workoutID}")
-  public ResponseEntity<String> sendWorkout(@PathVariable String username, @PathVariable String workoutID) {
-    try {
-      Workout workout = serverService.getWorkout(workoutID, username);
-      String packageString = serverService.objectToJson(workout);
-      return new ResponseEntity<>(packageString, HttpStatus.OK);
-    } catch (JsonProcessingException e) { //Error in json
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-    } catch (IllegalArgumentException e) { //Send could not deserialize user send again, bad package?
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.NOT_FOUND);
-    }  catch(IOException e) { //send user already exists exception
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-      //send could not save user, IO error, send package again.
-    }
-  }
-
-  @GetMapping("getExercise/{username}/{exerciseID}")
-  public ResponseEntity<String> sendExercise(@PathVariable String username, @PathVariable String exerciseID) {
-    try {
-      Exercise exercise = serverService.getExercise(exerciseID, username);
-      String packageString = serverService.objectToJson(exercise);
-      return new ResponseEntity<>(packageString, HttpStatus.OK);
-    } catch (JsonProcessingException e) { //Error in json
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-    } catch (IllegalArgumentException e) { //Send could not deserialize user send again, bad package?
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.NOT_FOUND);
-    }  catch(IOException e) { //send user already exists exception
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-      //send could not save user, IO error, send package again.
-    }
-  }
-
-  @GetMapping("getHistory/{username}/{historyID}")
-  public ResponseEntity<String> sendHistory(@PathVariable String username, @PathVariable String historyID) {
-    try {
-      History history = serverService.getHistory(historyID, username);
-      String packageString = serverService.objectToJson(history);
-      return new ResponseEntity<>(packageString, HttpStatus.OK);
-    } catch (JsonProcessingException e) { //Error in json
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-    } catch (IllegalArgumentException e) { //Send could not deserialize user send again, bad package?
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.NOT_FOUND);
-    }  catch(IOException e) { //send user already exists exception
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-      //send could not save user, IO error, send package again.
-    }
-  }
-
-  @GetMapping("getExerciseMap/{username}")
-  public ResponseEntity<String> sendExerciseMap(@PathVariable String username) {
-    try {
-      Map<String, String> map = serverService.getMapping(username, Exercise.class);
-      String packageString = serverService.objectToJson(map);
-      return new ResponseEntity<>(packageString, HttpStatus.OK);
-    } catch (JsonProcessingException e) { //Error in json
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-    } catch (IllegalArgumentException e) { //Send could not deserialize user send again, bad package?
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.NOT_FOUND);
-    }  catch(IOException e) { //send user already exists exception
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-      //send could not save user, IO error, send package again.
-    }
-  }
-
-  @GetMapping("getWorkoutMap/{username}")
-  public ResponseEntity<String> sendWorkoutMap(@PathVariable String username) {
-    try {
-      Map<String, String> map = serverService.getMapping(username, Workout.class);
-      String packageString = serverService.objectToJson(map);
-      return new ResponseEntity<>(packageString, HttpStatus.OK);
-    } catch (JsonProcessingException e) { //Error in json
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-    } catch (IllegalArgumentException e) { //Send could not deserialize user send again, bad package?
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.NOT_FOUND);
-    }  catch(IOException e) { //send user already exists exception
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-      //send could not save user, IO error, send package again.
-    }
-  }
-
-  @GetMapping("getHistoryMap/{username}")
-  public ResponseEntity<String> sendHistoryMap(@PathVariable String username) {
-    try {
-      Map<String, String> map = serverService.getMapping(username, History.class);
-      String packageString = serverService.objectToJson(map);
-      return new ResponseEntity<>(packageString, HttpStatus.OK);
-    } catch (JsonProcessingException e) { //Error in json
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-    } catch (IllegalArgumentException e) { //Send could not deserialize user send again, bad package?
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.NOT_FOUND);
-    }  catch(IOException e) { //send user already exists exception
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-      //send could not save user, IO error, send package again.
-    }
-  }
-
-  @GetMapping("getPassword/{username}")
-  public ResponseEntity<String> sendPassword (@PathVariable String username) {
-    try {
-      String packageString = serverService.getUser(username).getPassword();
-      return new ResponseEntity<>(packageString, HttpStatus.OK);
-    } catch (JsonProcessingException e) { //Error in json
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-    } catch (IllegalArgumentException e) { //Send could not deserialize user send again, bad package?
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.NOT_FOUND);
-    }  catch(IOException e) { //send user already exists exception
-      return new ResponseEntity<>(e.getClass().getSimpleName() + ":" + e.getMessage(), HttpStatus.BAD_REQUEST);
-      //send could not save user, IO error, send package again.
-    }
-  }
-
-  /*@GetMapping("getExerciseName/{username}/{exerciseID}")
-  public ResponseEntity<String> sendExerciseName(@PathVariable String username, @PathVariable String exerciseID) {
-    try {
-      String packageString = serverService.getName(exerciseID, username, Exercise.class);
-      return new ResponseEntity<>(packageString, HttpStatus.OK);
-    } catch (IllegalArgumentException e) {
-
-    } catch (IOException e) {
+      return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+    } catch (JsonProcessingException e) {
       e.printStackTrace();
+      throw new Exceptions.ServerException();
     }
-    return null;
   }
 
-  @GetMapping("getWorkoutName/{username}/{workoutID}")
-  public ResponseEntity<String> sendWorkoutName(@PathVariable String username, @PathVariable String workoutID) {
+  private Object jsonToObject(String jsonString, Class cls) throws Exceptions.BadPackageException {
     try {
-      String packageString = serverService.getName(workoutID, username, Workout.class);
-      return new ResponseEntity<>(packageString, HttpStatus.OK);
-    } catch (IllegalArgumentException e) {
-
-    } catch (IOException e) {
-
+      return mapper.readValue(jsonString, cls);
+    } catch (JsonProcessingException e) {
+      throw new Exceptions.BadPackageException();
     }
-    return null;
   }
 
-  @GetMapping("getHistoryName/{username}/{historyID}")
-  public ResponseEntity<String> sendHistoryName(@PathVariable String username, @PathVariable String historyID) {
-    try {
-      String packageString = serverService.getName(historyID, username, History.class);
-      return new ResponseEntity<>(packageString, HttpStatus.OK);
-    } catch (IllegalArgumentException e) {
+  private ResponseEntity<String> sendNotFound(Exception e) {
+    return new ResponseEntity<String>(e.getClass().getSimpleName(), HttpStatus.NOT_FOUND);
+  }
 
-    } catch (IOException e) {
-      e.printStackTrace();
+  private ResponseEntity<String> sendBadRequest(Exception e) {
+    return new ResponseEntity<String>(e.getClass().getSimpleName(), HttpStatus.BAD_REQUEST);
+  }
+
+  private ResponseEntity<String> sendExpectationFailed(Exception e) {
+    return new ResponseEntity<String>(e.getClass().getSimpleName(), HttpStatus.EXPECTATION_FAILED);
+  }
+
+  private ResponseEntity<String> sendNotAcceptable(Exception e) {
+    return new ResponseEntity<String>(e.getClass().getSimpleName(), HttpStatus.NOT_ACCEPTABLE);
+  }
+
+  @PostMapping("createUser/{userString}")
+  public ResponseEntity createUser(@PathVariable String userString) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
+    try {
+      User user = (User) jsonToObject(userString, User.class);
+      setService(user);
+      serverService.createUser();
+      return new ResponseEntity<>("", HttpStatus.OK);
+    } catch (Exceptions.BadPackageException e) {
+      return sendBadRequest(e);
+    } catch (Exceptions.UserAlreadyExistException e) {
+      return sendNotAcceptable(e);
+    } catch (Exceptions.ServerException e) {
+      return sendExpectationFailed(e);
     }
-    return null;
-  }*/
+  }
+
+  @PostMapping("login/{userString}")
+  public ResponseEntity login(@PathVariable String userString) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
+    try {
+      User user = (User) jsonToObject(userString, User.class);
+      setService(user);
+      serverService.login();
+      return new ResponseEntity<>("", HttpStatus.OK);
+    } catch (Exceptions.UserNotFoundException e) {
+      return sendNotFound(e);
+    } catch (Exceptions.BadPackageException e) {
+      return sendBadRequest(e);
+    } catch (Exceptions.ServerException e) {
+      return sendExpectationFailed(e);
+    } catch (Exceptions.PasswordIncorrectException e) {
+      return sendNotAcceptable(e);
+    }
+  }
+
+  @PostMapping("addWorkout/{userString}/{workoutString}")
+  public ResponseEntity<String> addWorkout(@PathVariable String workoutString, @PathVariable String userString) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
+    userString = URLDecoder.decode(workoutString, StandardCharsets.UTF_8);
+    try {
+      User user = (User) jsonToObject(userString, User.class);
+      setService(user);
+      Workout workout = (Workout) jsonToObject(workoutString, Workout.class);
+      String workoutId = serverService.addWorkout(workout);
+      return new ResponseEntity<String>(workoutId, HttpStatus.OK);
+    } catch (Exceptions.BadPackageException e) {
+      return sendBadRequest(e);
+    } catch (Exceptions.WorkoutAlreadyExistsException e) {
+      return sendNotAcceptable(e);
+    } catch (Exceptions.ServerException e) {
+      return sendExpectationFailed(e);
+    }
+  }
+
+  @PostMapping("addExercise/{userString}/{workoutId}/{exerciseString}")
+  public ResponseEntity<String> addExercise(@PathVariable String userString, @PathVariable String workoutId, @PathVariable String exerciseString) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
+    userString = URLDecoder.decode(workoutId, StandardCharsets.UTF_8);
+    try {
+      User user = (User) jsonToObject(userString, User.class);
+      setService(user);
+      Exercise exercise = (Exercise) jsonToObject(exerciseString, Exercise.class);
+      serverService.addExercise(exercise, workoutId);
+      return new ResponseEntity<String>("", HttpStatus.OK);
+    } catch (Exceptions.BadPackageException e) {
+      return sendBadRequest(e);
+    } catch (Exceptions.WorkoutNotFoundException e) {
+      return sendNotFound(e);
+    } catch (Exceptions.ExerciseAlreadyExistsException e) {
+      return sendNotAcceptable(e);
+    } catch (Exceptions.ServerException e) {
+      return sendExpectationFailed(e);
+    } catch (Exceptions.IllegalIdException e) {
+      return sendNotAcceptable(e);
+    }
+  }
+
+  @PostMapping("addHistory/{userString}/{historyString}")
+  public ResponseEntity<String> addHistory(@PathVariable String userString, @PathVariable String historyString) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
+    userString = URLDecoder.decode(historyString, StandardCharsets.UTF_8);
+    try {
+      User user = (User) jsonToObject(userString, User.class);
+      setService(user);
+      History history = (History) jsonToObject(historyString, History.class);
+      serverService.addHistory(history);
+      return new ResponseEntity<String>("", HttpStatus.OK);
+    } catch (Exceptions.BadPackageException e) {
+      return sendBadRequest(e);
+    } catch (Exceptions.ServerException e) {
+      return sendExpectationFailed(e);
+    } catch (Exceptions.HistoryAlreadyExistsException e) {
+      return sendNotAcceptable(e);
+    }
+  }
+
+  @PostMapping("updateWorkout/{userString}/{workoutString}")
+  public ResponseEntity<String> updateWorkout(@PathVariable String workoutString, @PathVariable String userString) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
+    userString = URLDecoder.decode(workoutString, StandardCharsets.UTF_8);
+    try {
+      User user = (User) jsonToObject(userString, User.class);
+      setService(user);
+      Workout workout = (Workout) jsonToObject(workoutString, Workout.class);
+      serverService.updateWorkout(workout);
+      return new ResponseEntity<>("", HttpStatus.OK);
+    } catch (Exceptions.BadPackageException e) {
+      return sendBadRequest(e);
+    } catch (Exceptions.ServerException e) {
+      return sendExpectationFailed(e);
+    } catch (Exceptions.WorkoutNotFoundException e) {
+      return sendNotFound(e);
+    } catch (Exceptions.IllegalIdException e) {
+      return sendNotAcceptable(e);
+    }
+  }
+
+  @PostMapping("updateExercise/{userString}/{exerciseString}")
+  public ResponseEntity<String> updateExercise(@PathVariable String userString, @PathVariable String exerciseString) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
+    userString = URLDecoder.decode(exerciseString, StandardCharsets.UTF_8);
+    try {
+      User user = (User) jsonToObject(userString, User.class);
+      setService(user);
+      Exercise exercise = (Exercise) jsonToObject(exerciseString, Exercise.class);
+      serverService.updateExercise(exercise);
+      return new ResponseEntity<>("",HttpStatus.OK);
+    } catch (Exceptions.BadPackageException e) {
+      return sendBadRequest(e);
+    } catch (Exceptions.ServerException e) {
+      return sendExpectationFailed(e);
+    } catch (Exceptions.IllegalIdException e) {
+      return sendNotAcceptable(e);
+    } catch (Exceptions.ExerciseNotFoundException e) {
+      return sendNotFound(e);
+    }
+  }
+
+  @PostMapping("deleteUser/{userString}")
+  public ResponseEntity<String> deleteUser(@PathVariable String userString) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
+    try {
+      User user = (User) jsonToObject(userString, User.class);
+      setService(user);
+      serverService.deleteUser();
+      return new ResponseEntity<>("", HttpStatus.OK);
+    } catch (Exceptions.BadPackageException e) {
+      return sendBadRequest(e);
+    } catch (Exceptions.ServerException e) {
+      return sendExpectationFailed(e);
+    }
+  }
+
+  @PostMapping("deleteWorkout/{userString}/{workoutId}")
+  public ResponseEntity<String> deleteWorkout(@PathVariable String workoutId, @PathVariable String userString) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
+    try {
+      User user = (User) jsonToObject(userString, User.class);
+      setService(user);
+      serverService.deleteWorkout(workoutId);
+      return new ResponseEntity<>("", HttpStatus.OK);
+    } catch (Exceptions.BadPackageException e) {
+      return sendBadRequest(e);
+    } catch (Exceptions.ServerException e) {
+      return sendExpectationFailed(e);
+    } catch (Exceptions.IllegalIdException e) {
+      return sendNotAcceptable(e);
+    }
+  }
+
+  @PostMapping("deleteExercise/{userString}/{exerciseId}")
+  public ResponseEntity<String> deleteExercise(@PathVariable String userString, @PathVariable String exerciseId) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
+    try {
+      User user = (User) jsonToObject(userString, User.class);
+      setService(user);
+      serverService.deleteExercise(exerciseId);
+      return new ResponseEntity<>("", HttpStatus.OK);
+    } catch (Exceptions.BadPackageException e) {
+      return sendBadRequest(e);
+    } catch (Exceptions.ServerException e) {
+      return sendExpectationFailed(e);
+    } catch (Exceptions.IllegalIdException e) {
+      return sendNotAcceptable(e);
+    }
+  }
+
+  @PostMapping("deleteHistory/{userString}/{historyId}")
+  public ResponseEntity<String> deleteHistory(@PathVariable String userString, @PathVariable String historyId) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
+    try {
+      User user = (User) jsonToObject(userString, User.class);
+      setService(user);
+      serverService.deleteHistory(historyId);
+      return new ResponseEntity<>("", HttpStatus.OK);
+    } catch (Exceptions.BadPackageException e) {
+      return sendBadRequest(e);
+    } catch (Exceptions.ServerException e) {
+      return sendExpectationFailed(e);
+    } catch (Exceptions.IllegalIdException e) {
+      return sendNotAcceptable(e);
+    }
+  }
+
+  @GetMapping("getWorkout/{userString}/{workoutId}")
+  public ResponseEntity<String> sendWorkout(@PathVariable String userString, @PathVariable String workoutId) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
+    try {
+      User user = (User) jsonToObject(userString, User.class);
+      setService(user);
+      Workout workout = serverService.getWorkout(workoutId);
+      String packageString = objectToJson(workout);
+      return new ResponseEntity<>(packageString, HttpStatus.OK);
+    } catch (Exceptions.WorkoutNotFoundException e) {
+      return sendNotFound(e);
+    } catch (Exceptions.BadPackageException e) {
+      return sendBadRequest(e);
+    } catch (Exceptions.ServerException e) {
+      return sendExpectationFailed(e);
+    } catch (Exceptions.IllegalIdException e) {
+      return sendNotAcceptable(e);
+    }
+  }
+
+  @GetMapping("getExercise/{userString}/{exerciseId}")
+  public ResponseEntity<String> sendExercise(@PathVariable String userString, @PathVariable String exerciseId) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
+    try {
+      User user = (User) jsonToObject(userString, User.class);
+      setService(user);
+      Exercise exercise = serverService.getExercise(exerciseId);
+      String packageString = objectToJson(exercise);
+      return new ResponseEntity<>(packageString, HttpStatus.OK);
+    } catch (Exceptions.BadPackageException e) {
+      return sendBadRequest(e);
+    } catch (Exceptions.ServerException e) {
+      return sendExpectationFailed(e);
+    } catch (Exceptions.ExerciseNotFoundException e) {
+      return sendNotFound(e);
+    } catch (Exceptions.IllegalIdException e) {
+      return sendNotAcceptable(e);
+    }
+  }
+
+  @GetMapping("getHistory/{userString}/{historyId}")
+  public ResponseEntity<String> sendHistory(@PathVariable String userString, @PathVariable String historyId) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
+    try {
+      User user = (User) jsonToObject(userString, User.class);
+      setService(user);
+      History history = serverService.getHistory(historyId);
+      String packageString = objectToJson(history);
+      return new ResponseEntity<>(packageString, HttpStatus.OK);
+    } catch (Exceptions.ServerException e) {
+      return sendExpectationFailed(e);
+    } catch (Exceptions.HistoryNotFoundException e) {
+      return sendNotFound(e);
+    } catch (Exceptions.BadPackageException e) {
+      return sendBadRequest(e);
+    } catch (Exceptions.IllegalIdException e) {
+      return sendNotAcceptable(e);
+    }
+  }
+
+  @GetMapping("getExerciseMap/{userString}")
+  public ResponseEntity<String> sendExerciseMap(@PathVariable String userString) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
+    try {
+      User user = (User) jsonToObject(userString, User.class);
+      setService(user);
+      Map<String, String> map = serverService.getMapping(Exercise.class);
+      String packageString = objectToJson(map);
+      return new ResponseEntity<>(packageString, HttpStatus.OK);
+    } catch (Exceptions.BadPackageException e) {
+      return sendBadRequest(e);
+    } catch (Exceptions.ServerException e) {
+      return sendExpectationFailed(e);
+    }
+  }
+
+  @GetMapping("getWorkoutMap/{userString}")
+  public ResponseEntity<String> sendWorkoutMap(@PathVariable String userString) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
+    try {
+      User user = (User) jsonToObject(userString, User.class);
+      setService(user);
+      Map<String, String> map = serverService.getMapping(Workout.class);
+      String packageString = objectToJson(map);
+      return new ResponseEntity<>(packageString, HttpStatus.OK);
+    } catch (Exceptions.BadPackageException e) {
+      return sendBadRequest(e);
+    } catch (Exceptions.ServerException e) {
+      return sendExpectationFailed(e);
+    }
+  }
+
+  @GetMapping("getHistoryMap/{userString}")
+  public ResponseEntity<String> sendHistoryMap(@PathVariable String userString) {
+    userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
+    try {
+      User user = (User) jsonToObject(userString, User.class);
+      setService(user);
+      Map<String, String> map = serverService.getMapping(History.class);
+      String packageString = objectToJson(map);
+      return new ResponseEntity<>(packageString, HttpStatus.OK);
+    } catch (Exceptions.BadPackageException e) {
+      return sendBadRequest(e);
+    } catch (Exceptions.ServerException e) {
+      return sendExpectationFailed(e);
+    }
+  }
 }

@@ -2,6 +2,7 @@ package beastbook.fxui;
 
 import beastbook.client.ClientController;
 import beastbook.client.RegisterController;
+import beastbook.core.Exceptions;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -40,7 +41,11 @@ public class LoginController extends AbstractController {
     if (!userName.equals("") && !password.equals("")) {
       try {
         RegisterController registerController = new RegisterController();
-        loginError.setText(registerController.registerUser(userName, password));
+        try {
+          registerController.registerUser(userName, password);
+        } catch (Exceptions.UserAlreadyExistException e) {
+          loginError.setText(e.getMessage());
+        }
         loginUser(event);
       } catch (Exception e) {
         loginError.setText(e.getMessage());

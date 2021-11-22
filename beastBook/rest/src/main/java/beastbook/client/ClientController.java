@@ -1,30 +1,25 @@
 package beastbook.client;
 
-import beastbook.core.Exercise;
-import beastbook.core.History;
-import beastbook.core.User;
-import beastbook.core.Workout;
+import beastbook.core.*;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
+import java.net.URISyntaxException;
 import java.util.*;
 
 public class ClientController {
   private ClientService clientService = new ClientService();
-  private final String username;
+  private final User user;
   private boolean isDeleted = false;
   private Map<String, String> exerciseMap;
   private Map<String, String> workoutMap;
   private Map<String, String> historyMap;
 
-  public ClientController(String username, String password) {
-    if (!password.equals(clientService.queryPassword(username))) {
-      throw new IllegalArgumentException("Password not correct");
-    }
-    this.username = username;
-    System.out.println("dette er før map query");
-    System.out.println(exerciseMap = clientService.queryExerciseMap(username));
-    System.out.println(workoutMap = clientService.queryWorkoutMap(username));
-    System.out.println(historyMap = clientService.queryHistoryMap(username));
-    System.out.println("kom ut her");
+  public ClientController(String username, String password) throws Exceptions.UserNotFoundException, Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, Exceptions.PasswordIncorrectException, JsonProcessingException {
+    user = new User(username, password);
+    clientService.login(user);
+    exerciseMap = clientService.queryExerciseMap(user);
+    workoutMap = clientService.queryWorkoutMap(user);
+    historyMap = clientService.queryHistoryMap(user);
   }
 
   public void setIpAddress(String ipAddress) {
@@ -49,89 +44,83 @@ public class ClientController {
     }
   }
 
-  public Exercise getExercise(String exerciseID) {
+  public Exercise getExercise(String exerciseID) throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, Exceptions.ExerciseNotFoundException, Exceptions.IllegalIdException, JsonProcessingException {
     deletionCheck();
-    return clientService.queryExercise(exerciseID, username);
+    return clientService.queryExercise(exerciseID, user);
   }
 
-  public Workout getWorkout(String workoutId) {
+  public Workout getWorkout(String workoutId) throws Exceptions.WorkoutNotFoundException, Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, Exceptions.IllegalIdException, JsonProcessingException {
     deletionCheck();
-    return clientService.queryWorkout(workoutId, username);
+    return clientService.queryWorkout(workoutId, user);
   }
 
-  public History getHistory(String historyId) {
+  public History getHistory(String historyId) throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, Exceptions.HistoryNotFoundException, Exceptions.IllegalIdException, JsonProcessingException {
     deletionCheck();
-    return clientService.queryHistory(historyId, username);
+    return clientService.queryHistory(historyId, user);
   }
 
-  public void addExercise(Exercise exercise, String workoutId) {
+  public void addExercise(Exercise exercise, String workoutId) throws Exceptions.WorkoutNotFoundException, Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, Exceptions.ExerciseAlreadyExistsException, JsonProcessingException {
     deletionCheck();
-    clientService.addExercise(exercise, workoutId, username);
-    workoutMap = clientService.queryWorkoutMap(username);
+    clientService.addExercise(user, workoutId, exercise);
+    workoutMap = clientService.queryWorkoutMap(user);
   }
 
-  public boolean addWorkout(Workout workout, List<Exercise> exercises) {
+  public boolean addWorkout(Workout workout, List<Exercise> exercises) throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, Exceptions.WorkoutAlreadyExistsException, Exceptions.WorkoutNotFoundException, Exceptions.ExerciseAlreadyExistsException, JsonProcessingException {
     deletionCheck();
     String name = workout.getName();
     if (workoutMap.containsValue(name)) {
       return false;
     }
-    String workoutId = clientService.addWorkout(workout, username).getBody();
+    String workoutId = clientService.addWorkout(workout, user);
     System.out.println("Dette er workoutId den får av html package: " + workoutId);
     for (Exercise e : exercises) {
       addExercise(e, workoutId);
     }
-    workoutMap = clientService.queryWorkoutMap(username);
-    exerciseMap = clientService.queryExerciseMap(username);
+    workoutMap = clientService.queryWorkoutMap(user);
+    exerciseMap = clientService.queryExerciseMap(user);
     return true;
 
     //TODO catch return false
   }
 
-  public void updateExercise(Exercise exercise) {
+  public void updateExercise(Exercise exercise) throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, JsonProcessingException, Exceptions.IllegalIdException, Exceptions.ExerciseNotFoundException {
     deletionCheck();
-    clientService.updateExercise(exercise, username);
+    clientService.updateExercise(exercise, user);
   }
 
-  public void addHistory(History history) {
+  public void updateWorkout(Workout workout) throws Exceptions.WorkoutNotFoundException, Exceptions.BadPackageException, Exceptions.ServerException, Exceptions.IllegalIdException, URISyntaxException, JsonProcessingException {
     deletionCheck();
-    clientService.addHistory(history, username);
-    historyMap = clientService.queryHistoryMap(username);
+    clientService.updateWorkout(workout, user);
   }
 
-  public void removeExercise(Exercise exercise) {
+  public void addHistory(History history) throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, Exceptions.HistoryAlreadyExistsException, JsonProcessingException {
     deletionCheck();
-    clientService.deleteExercise(exercise, username);
-    exerciseMap = clientService.queryExerciseMap(username);
-    workoutMap = clientService.queryWorkoutMap(username);
+    clientService.addHistory(history, user);
+    historyMap = clientService.queryHistoryMap(user);
   }
 
-  public void removeWorkout(String workoutId) {
+  public void removeExercise(String exerciseId) throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, JsonProcessingException, Exceptions.IllegalIdException {
     deletionCheck();
-    clientService.deleteWorkout(workoutId, username);
-    workoutMap = clientService.queryWorkoutMap(username);
+    clientService.deleteExercise(exerciseId, user);
+    exerciseMap = clientService.queryExerciseMap(user);
+    workoutMap = clientService.queryWorkoutMap(user);
   }
 
-  public void removeHistory(String historyId) {
+  public void removeWorkout(String workoutId) throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, JsonProcessingException, Exceptions.IllegalIdException {
     deletionCheck();
-    clientService.deleteHistory(historyId, username);
-    historyMap = clientService.queryHistoryMap(username);
+    clientService.deleteWorkout(workoutId, user);
+    workoutMap = clientService.queryWorkoutMap(user);
   }
 
-  public void deleteUser() {
+  public void removeHistory(String historyId) throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, JsonProcessingException, Exceptions.IllegalIdException {
     deletionCheck();
-    clientService.deleteUser(username);
+    clientService.deleteHistory(historyId, user);
+    historyMap = clientService.queryHistoryMap(user);
+  }
+
+  public void deleteUser() throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, JsonProcessingException {
+    deletionCheck();
+    clientService.deleteUser(user);
     isDeleted = true;
   }
-
-  public static void main(String[] args) {
-    ClientController controller = new ClientController("test", "test");
-
-    Workout workout = new Workout("test");
-    Exercise exercise = new Exercise("Chestpress", 90, 35, 22, 33, 94);
-    List<Exercise> exercises = new ArrayList<>();
-   // String s = controller.addWorkout(workout, exercises);
-    //controller.addExercise(exercise, "UC");
-  }
-
 }

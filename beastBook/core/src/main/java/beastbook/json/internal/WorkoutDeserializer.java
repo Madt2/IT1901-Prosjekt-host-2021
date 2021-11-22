@@ -1,5 +1,6 @@
 package beastbook.json.internal;
 
+import beastbook.core.Exceptions;
 import beastbook.core.Workout;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.TreeNode;
@@ -40,9 +41,8 @@ public class WorkoutDeserializer extends JsonDeserializer<Workout> {
   * @param jsonNode jsonNode to convert.
   * @return Deserialized workout or null deserialization fails.
   */
-  Workout deserialize(JsonNode jsonNode) {
+  Workout deserialize(JsonNode jsonNode) throws IOException {
     if (jsonNode instanceof ObjectNode objectNode) {
-      try {
         Workout workout = new Workout();
         JsonNode nameNode = objectNode.get("name");
         if (nameNode instanceof TextNode) {
@@ -50,22 +50,29 @@ public class WorkoutDeserializer extends JsonDeserializer<Workout> {
         }
         JsonNode idNode = objectNode.get("id");
         if (idNode instanceof TextNode) {
-          workout.setId(idNode.asText());
+          try {
+            workout.setId(idNode.asText());
+          } catch (Exceptions.IllegalIdException e) {
+            throw new IOException("Id not found when loading file, " +
+                    "something is wrong with writing object to file");
+          }
         }
         JsonNode exerciseIDsNode = objectNode.get("exerciseIDs");
         if (exerciseIDsNode instanceof ArrayNode) {
           for (JsonNode elementNode : exerciseIDsNode) {
             String id = elementNode.asText();
             if (id != null) {
-              workout.addExercise(id);
+              try {
+                workout.addExercise(id);
+              } catch (Exceptions.IllegalIdException e) {
+                throw new IOException("Id not found when loading file, " +
+                        "something is wrong with writing object to file");
+              }
             }
           }
         }
         return workout;
-      } catch (IllegalArgumentException e) {
-        System.err.println(e.getMessage() + "\nMost likely wrong format in file");
-      }
     }
-    return null;
+    throw new IOException("Something went wrong with loading workout!");
   }
 }

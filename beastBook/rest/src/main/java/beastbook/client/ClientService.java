@@ -1,251 +1,348 @@
 package beastbook.client;
 
-import beastbook.core.Exercise;
-import beastbook.core.History;
-import beastbook.core.User;
-import beastbook.core.Workout;
+import beastbook.core.*;
 import beastbook.json.BeastBookPersistence;
+import beastbook.json.internal.BeastBookModule;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ClientService {
-  private BeastBookPersistence beastBookPersistence = new BeastBookPersistence();
   private String ipAddress = "localhost";
   private String baseURL = "http://" + ipAddress + ":8080/";
+  private ObjectMapper mapper;
+
+  private String objectToJson(Object object) throws JsonProcessingException {
+      return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+  }
+
+  private Object jsonToObject(String jsonString, Class cls) throws Exceptions.BadPackageException {
+    try {
+      return mapper.readValue(jsonString, cls);
+    } catch (JsonProcessingException e) {
+      throw new Exceptions.BadPackageException();
+    }
+  }
 
   public void setIpAddress(String ipAddress) {
     this.ipAddress = ipAddress;
     baseURL = "http://" + ipAddress + ":8080/";
+    mapper = new ObjectMapper();
+    mapper.registerModule(new BeastBookModule());
   }
 
-  private ResponseEntity<String> sendPackage (Object object, URI uri) {
-    try {
-      String jsonString = beastBookPersistence.objectToJson(object);
-      HttpHeaders headers = new HttpHeaders();
-      headers.setContentType(MediaType.APPLICATION_JSON);
-      HttpEntity<String> httpEntity = new HttpEntity<>(jsonString, headers);
-      RestTemplate restTemplate = new RestTemplate();
-      ResponseEntity<String> data = restTemplate.postForEntity(uri, httpEntity, String.class);
-      if (data.getStatusCode() != HttpStatus.OK) {
-        //exceptionHandler(data.getBody());
-      }
-      return data;
-    } catch (JsonProcessingException e) {
-      //throw e;
-      return null;
+  private void serverExceptionHandler(String errorMessage) throws Exceptions.ServerException {
+    if (errorMessage.equals(Exceptions.ServerException.class.getSimpleName())) {
+      throw new Exceptions.ServerException();
     }
   }
 
-  private void exceptionHandler(String exception) throws IOException, IllegalArgumentException, IllegalStateException, NullPointerException {
-    String[] exceptionPack = exception.split(":");
-    String exceptionType = exceptionPack[0];
-    String exceptionMessage = exceptionPack[1];
-
-    if (exceptionType.equals(IOException.class.getSimpleName())) {
-      throw new IOException(exceptionMessage);
-    } else if (exceptionType.equals(IllegalArgumentException.class.getSimpleName())) {
-      throw new IllegalArgumentException(exceptionMessage);
-    } else if (exceptionType.equals(IllegalStateException.class.getSimpleName())) {
-      throw new IllegalStateException(exceptionMessage);
-    } else if (exceptionType.equals(NullPointerException.class.getSimpleName())) {
-      throw new NullPointerException(exceptionMessage);
-    } else if (exceptionType.equals(JsonProcessingException.class.getSimpleName())) {
-      throw new IOException(exceptionMessage);
+  private void badPackageExceptionHandler(String errorMessage) throws Exceptions.BadPackageException {
+    if (errorMessage.equals(Exceptions.BadPackageException.class.getSimpleName())) {
+      throw new Exceptions.BadPackageException();
     }
   }
 
-  public ResponseEntity<String> deleteWorkout(String workoutId, String username) {
-    URI uri = null;
-    try {
-      uri = new URI(baseURL + "deleteWorkout/" + username + "/" + workoutId);
-    } catch (URISyntaxException e) {
-      e.printStackTrace();
+  private void passwordIncorrectException(String errorMessage) throws Exceptions.PasswordIncorrectException {
+    if (errorMessage.equals(Exceptions.PasswordIncorrectException.class.getSimpleName())) {
+      throw new Exceptions.PasswordIncorrectException();
     }
-    return sendPackage(workoutId, uri);
   }
 
-  public ResponseEntity<String> deleteExercise(Exercise exercise, String username) {
-    URI uri = null;
-    try {
-      uri = new URI(baseURL + "deleteExercise/" + username);
-    } catch (URISyntaxException e) {
-      e.printStackTrace();
+  private void userNotFoundExceptionHandler(String errorMessage, User user) throws Exceptions.UserNotFoundException {
+    if (errorMessage.equals(Exceptions.UserNotFoundException.class.getSimpleName())) {
+      throw new Exceptions.UserNotFoundException(user.getUsername());
     }
-    return sendPackage(exercise, uri);
   }
 
-  public ResponseEntity<String> deleteHistory(String historyId, String username) {
-    URI uri = null;
-    try {
-      uri = new URI(baseURL + "deleteHistory/" + username + "/" + historyId);
-    } catch (URISyntaxException e) {
-      e.printStackTrace();
+  private void exerciseNotFoundExceptionHandler(String errorMessage, String exerciseId) throws Exceptions.ExerciseNotFoundException {
+    if (errorMessage.equals(Exceptions.ExerciseNotFoundException.class.getSimpleName())) {
+      throw new Exceptions.ExerciseNotFoundException(exerciseId);
     }
-    return sendPackage(historyId, uri);
   }
 
-  public ResponseEntity<String> deleteUser(String username) {
-    URI uri = null;
-    try {
-      uri = new URI(baseURL + "deleteUser/" + username);
-    } catch (URISyntaxException e) {
-      e.printStackTrace();
+  private void workoutNotFoundExceptionHandler(String errorMessage, String workoutId) throws Exceptions.WorkoutNotFoundException {
+    if (errorMessage.equals(Exceptions.WorkoutNotFoundException.class.getSimpleName())) {
+      throw new Exceptions.WorkoutNotFoundException(workoutId);
     }
-    return sendPackage(username, uri);
   }
 
-  public ResponseEntity<String> createUser (User user) {
-    try {
-      URI uri = new URI(baseURL + "createUser/");
-      return sendPackage(user, uri);
-    } catch (URISyntaxException e) {
-      e.printStackTrace();
+  private void historyNotFoundExceptionHandler(String errorMessage, String historyId) throws Exceptions.HistoryNotFoundException {
+    if (errorMessage.equals(Exceptions.HistoryNotFoundException.class.getSimpleName())) {
+      throw new Exceptions.HistoryNotFoundException(historyId);
     }
-    return null;
   }
 
-  public ResponseEntity<String> addWorkout(Workout workout, String username) {
-    URI uri = null;
-    try {
-      uri = new URI(baseURL + "addWorkout/" + username);
-    } catch (URISyntaxException e) {
-      e.printStackTrace();
+  private void userAlreadyExistsException(String errorMessage, User user) throws Exceptions.UserAlreadyExistException {
+    if (errorMessage.equals(Exceptions.UserAlreadyExistException.class.getSimpleName())) {
+      throw new Exceptions.UserAlreadyExistException(user.getUsername());
     }
-    return sendPackage(workout, uri);
   }
 
-  public ResponseEntity<String> addExercise(Exercise exercise, String workoutId, String username) {
-    URI uri = null;
-    try {
-
-      uri = new URI(baseURL + "addExercise/" + workoutId + "/" + username);
-    } catch (URISyntaxException e) {
-      e.printStackTrace();
+  private void exerciseAlreadyExistsExceptionHandler(String errorMessage, Exercise exercise) throws Exceptions.ExerciseAlreadyExistsException {
+    if (errorMessage.equals(Exceptions.ExerciseNotFoundException.class.getSimpleName())) {
+      throw new Exceptions.ExerciseAlreadyExistsException(exercise.getName());
     }
-      return sendPackage(exercise, uri);
   }
 
-  public ResponseEntity<String> addHistory(History history, String username) {
-    URI uri = null;
-    try {
-      uri = new URI(baseURL + "addHistory/" + username);
-    } catch (URISyntaxException e) {
-      e.printStackTrace();
+  private void workoutAlreadyExistsExceptionHandler(String errorMessage, Workout workout) throws Exceptions.WorkoutAlreadyExistsException {
+    if (errorMessage.equals(Exceptions.WorkoutAlreadyExistsException.class.getSimpleName())) {
+      throw new Exceptions.WorkoutAlreadyExistsException(workout.getName());
     }
-      return sendPackage(history, uri);
   }
 
-  public ResponseEntity<String> updateWorkout(Workout workout, String username) {
-    URI uri = null;
-    try {
-      uri = new URI(baseURL + "updateWorkout/" + username);
-    } catch (URISyntaxException e) {
-      e.printStackTrace();
+  private void historyAlreadyExistsExceptionHandler(String errorMessage, History history) throws Exceptions.HistoryAlreadyExistsException {
+    if (errorMessage.equals(Exceptions.HistoryAlreadyExistsException.class.getSimpleName())) {
+      throw new Exceptions.HistoryAlreadyExistsException(history.getName() + ";" + history.getDate());
     }
-    return sendPackage(workout, uri);
   }
 
-  public ResponseEntity<String> updateExercise(Exercise exercise, String username) {
-    URI uri = null;
-    try {
-      uri = new URI(baseURL + "updateExercise/" + username);
-    } catch (URISyntaxException e) {
-      e.printStackTrace();
+  private void illegalIdException(String errorMessage, String id, Class cls) throws Exceptions.IllegalIdException {
+    if (errorMessage.equals(Exceptions.HistoryAlreadyExistsException.class.getSimpleName())) {
+      throw new Exceptions.IllegalIdException(id, cls);
     }
-    return sendPackage(exercise, uri);
   }
 
-  public User queryUser(String username)  throws JsonProcessingException {
-    final RestTemplate restTemplate = new RestTemplateBuilder().build();
-    String url = baseURL + "getUser/" + username;
-    String jsonString = restTemplate.getForObject(url, String.class);
-    return (User) beastBookPersistence.jsonToObject(jsonString, User.class);
-  }
-
-  public Workout queryWorkout(String workoutID, String username)  {
-    final RestTemplate restTemplate = new RestTemplateBuilder().build();
-    String url = baseURL + "getWorkout/" + username + "/" + workoutID;
-    String jsonString = restTemplate.getForObject(url, String.class);
-    try {
-      return (Workout) beastBookPersistence.jsonToObject(jsonString, Workout.class);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
+  private String sendPackage(URI uri) {
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_JSON);
+    HttpEntity<String> httpEntity = new HttpEntity<>("", headers);
+    RestTemplate restTemplate = new RestTemplate();
+    ResponseEntity<String> data = restTemplate.postForEntity(uri, httpEntity, String.class);
+    if (data.getStatusCode().equals(HttpStatus.OK)) {
+      return data.getBody() + "";
     }
     return null;
   }
 
-  public Exercise queryExercise(String exerciseID, String username)  {
-    final RestTemplate restTemplate = new RestTemplateBuilder().build();
-    String url = baseURL + "getExercise/" + username + "/" + exerciseID;
-    String jsonString = restTemplate.getForObject(url, String.class);
-    try {
-      return (Exercise) beastBookPersistence.jsonToObject(jsonString, Exercise.class);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
+  public void createUser(User user) throws URISyntaxException, Exceptions.BadPackageException, Exceptions.ServerException, Exceptions.UserAlreadyExistException, JsonProcessingException {
+    String userString = objectToJson(user);
+    String url = baseURL + "createUser/" + URLEncoder.encode(userString, StandardCharsets.UTF_8);
+    String message = sendPackage(new URI(url));
+    if (message == null) {
+      badPackageExceptionHandler(message);
+      serverExceptionHandler(message);
+      userAlreadyExistsException(message, user);
+      throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
-    return null;
   }
 
-  public History queryHistory(String historyID, String username)  {
-    final RestTemplate restTemplate = new RestTemplateBuilder().build();
-    String url = baseURL + "getHistory/" + username + "/" + historyID;
-    String jsonString = restTemplate.getForObject(url, String.class);
-    try {
-      return (History) beastBookPersistence.jsonToObject(jsonString, History.class);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
+  public void login(User user) throws URISyntaxException, Exceptions.BadPackageException, Exceptions.ServerException, Exceptions.PasswordIncorrectException, Exceptions.UserNotFoundException, JsonProcessingException {
+    String userString = objectToJson(user);
+    String url = baseURL + "login/" + URLEncoder.encode(userString, StandardCharsets.UTF_8);
+    String message = sendPackage(new URI(url));
+    if (message == null) {
+      badPackageExceptionHandler(message);
+      serverExceptionHandler(message);
+      passwordIncorrectException(message);
+      userNotFoundExceptionHandler(message, user);
+      throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
-    return null;
   }
 
-  public Map<String, String> queryExerciseMap(String username) {
-    final RestTemplate restTemplate = new RestTemplateBuilder().build();
-    String url = baseURL + "getExerciseMap/" + username;
-    String jsonString = restTemplate.getForObject(url, String.class);
-    try {
-      return (Map<String, String>) beastBookPersistence.jsonToObject(jsonString, LinkedHashMap.class);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
+  public void addExercise(User user, String workoutId, Exercise exercise) throws URISyntaxException, Exceptions.BadPackageException, Exceptions.ServerException, Exceptions.ExerciseAlreadyExistsException, Exceptions.WorkoutNotFoundException, JsonProcessingException {
+    String userString = objectToJson(user);
+    String exerciseString = objectToJson(exercise);
+    String url = baseURL + "addExercise/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + workoutId + "/" + URLEncoder.encode(exerciseString, StandardCharsets.UTF_8);
+    String message = sendPackage(new URI(url));
+    if (message == null) {
+      badPackageExceptionHandler(message);
+      serverExceptionHandler(message);
+      exerciseAlreadyExistsExceptionHandler(message, exercise);
+      workoutNotFoundExceptionHandler(message, workoutId);
+      exerciseAlreadyExistsExceptionHandler(message, exercise);
+      throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
-    return null;
   }
 
-  public Map<String, String> queryWorkoutMap(String username) {
-    final RestTemplate restTemplate = new RestTemplateBuilder().build();
-    String url = baseURL + "getWorkoutMap/" + username;
-    String jsonString = restTemplate.getForObject(url, String.class);
-    try {
-      return (Map<String, String>) beastBookPersistence.jsonToObject(jsonString, LinkedHashMap.class);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
+  public String addWorkout(Workout workout, User user) throws URISyntaxException, Exceptions.BadPackageException, Exceptions.ServerException, Exceptions.WorkoutAlreadyExistsException, JsonProcessingException {
+    String workoutString = objectToJson(workout);
+    String userString = objectToJson(user);
+    String url = baseURL + "addWorkout/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + URLEncoder.encode(workoutString, StandardCharsets.UTF_8);
+    String message = sendPackage(new URI(url));
+    if (message == null) {
+      badPackageExceptionHandler(message);
+      serverExceptionHandler(message);
+      workoutAlreadyExistsExceptionHandler(message, workout);
+      throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
-    return null;
+  return message;
   }
 
-  public Map<String, String> queryHistoryMap(String username) {
-    final RestTemplate restTemplate = new RestTemplateBuilder().build();
-    String url = baseURL + "/getHistoryMap/" + username;
-    String jsonString = restTemplate.getForObject(url, String.class);
-    try {
-      return (Map<String, String>) beastBookPersistence.jsonToObject(jsonString, LinkedHashMap.class);
-    } catch (JsonProcessingException e) {
-      e.printStackTrace();
+  public void addHistory(History history, User user) throws URISyntaxException, Exceptions.BadPackageException, Exceptions.ServerException, Exceptions.HistoryAlreadyExistsException, JsonProcessingException {
+    String historyString = objectToJson(history);
+    String userString = objectToJson(user);
+    String url = baseURL + "addHistory/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + URLEncoder.encode(historyString, StandardCharsets.UTF_8);
+    String message = sendPackage(new URI(url));
+    if (message == null) {
+      badPackageExceptionHandler(message);
+      serverExceptionHandler(message);
+      historyAlreadyExistsExceptionHandler(message, history);
+      throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
-    return null;
   }
 
-  public String queryPassword(String username) {
-    final RestTemplate restTemplate = new RestTemplateBuilder().build();
-    String url = baseURL + "getPassword/" + username;
-    String password = restTemplate.getForObject(url, String.class);
-    return password;
+  public void updateExercise(Exercise exercise, User user) throws URISyntaxException, Exceptions.BadPackageException, Exceptions.ServerException, JsonProcessingException, Exceptions.IllegalIdException, Exceptions.ExerciseNotFoundException {
+    String exerciseString = objectToJson(exercise);
+    String userString = objectToJson(user);
+    String url = baseURL + "updateExercise/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + URLEncoder.encode(exerciseString, StandardCharsets.UTF_8);
+    String message = sendPackage(new URI(url));
+    if (message == null) {
+      badPackageExceptionHandler(message);
+      serverExceptionHandler(message);
+      illegalIdException(message, exercise.getId(), Exercise.class);
+      exerciseNotFoundExceptionHandler(exerciseString, exercise.getId());
+      throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
+    }
+  }
+
+  public void updateWorkout(Workout workout, User user) throws URISyntaxException, Exceptions.BadPackageException, Exceptions.ServerException, JsonProcessingException, Exceptions.WorkoutNotFoundException, Exceptions.IllegalIdException {
+    String workoutString = objectToJson(workout);
+    String userString = objectToJson(user);
+    String url = baseURL + "updateWorkout/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + URLEncoder.encode(workoutString, StandardCharsets.UTF_8);
+    String message = sendPackage(new URI(url));
+    if (message == null) {
+      badPackageExceptionHandler(message);
+      serverExceptionHandler(message);
+      workoutNotFoundExceptionHandler(message, workout.getId());
+      illegalIdException(message, workout.getId(), Workout.class);
+      throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
+    }
+  }
+
+  public void deleteExercise(String exerciseId, User user) throws URISyntaxException, Exceptions.BadPackageException, Exceptions.ServerException, JsonProcessingException, Exceptions.IllegalIdException {
+    String userString = objectToJson(user);
+    String url = baseURL + "deleteExercise/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + exerciseId;
+    String message = sendPackage(new URI(url));
+    if (message == null) {
+      badPackageExceptionHandler(message);
+      serverExceptionHandler(message);
+      illegalIdException(message, exerciseId, Exercise.class);
+      throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
+    }
+  }
+
+  public void deleteWorkout(String workoutId, User user) throws URISyntaxException, Exceptions.BadPackageException, Exceptions.ServerException, JsonProcessingException, Exceptions.IllegalIdException {
+    String userString = objectToJson(user);
+    String url = baseURL + "deleteWorkout/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + workoutId;
+    String message = sendPackage(new URI(url));
+    if (message == null) {
+      badPackageExceptionHandler(message);
+      serverExceptionHandler(message);
+      illegalIdException(message, workoutId, Workout.class);
+      throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
+    }
+  }
+
+  public void deleteHistory(String historyId, User user) throws URISyntaxException, Exceptions.BadPackageException, Exceptions.ServerException, JsonProcessingException, Exceptions.IllegalIdException {
+    String userString = objectToJson(user);
+    String url = baseURL + "deleteHistory/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + historyId;
+    String message = sendPackage(new URI(url));
+    if (message == null) {
+      badPackageExceptionHandler(message);
+      serverExceptionHandler(message);
+      illegalIdException(message, historyId, History.class);
+      throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
+    }
+  }
+
+  public void deleteUser(User user) throws URISyntaxException, Exceptions.BadPackageException, Exceptions.ServerException, JsonProcessingException {
+    String userString = objectToJson(user);
+    String url = baseURL + "deleteUser/" + URLEncoder.encode(userString, StandardCharsets.UTF_8);
+    String message = sendPackage(new URI(url));
+    if (message == null) {
+      badPackageExceptionHandler(message);
+      serverExceptionHandler(message);
+      throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
+    }
+  }
+
+  public Workout queryWorkout(String workoutID, User user) throws Exceptions.BadPackageException, Exceptions.ServerException, Exceptions.WorkoutNotFoundException, URISyntaxException, JsonProcessingException, Exceptions.IllegalIdException {
+    String userString = objectToJson(user);
+    String url = baseURL + "getWorkout/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + workoutID;
+    String message = sendPackage(new URI(url));
+    if (message == null) {
+      badPackageExceptionHandler(message);
+      serverExceptionHandler(message);
+      workoutNotFoundExceptionHandler(message, workoutID);
+      illegalIdException(message, workoutID, Workout.class);
+      throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
+    }
+    return (Workout) jsonToObject(message, Workout.class);
+  }
+
+  public Exercise queryExercise(String exerciseID, User user) throws Exceptions.BadPackageException, Exceptions.ServerException, Exceptions.ExerciseNotFoundException, URISyntaxException, JsonProcessingException, Exceptions.IllegalIdException {
+    String userString = objectToJson(user);
+    String url = baseURL + "getExercise/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + exerciseID;
+    String message = sendPackage(new URI(url));
+    if (message == null) {
+      badPackageExceptionHandler(message);
+      serverExceptionHandler(message);
+      exerciseNotFoundExceptionHandler(message, exerciseID);
+      illegalIdException(message, exerciseID, Exercise.class);
+      throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
+    }
+    return (Exercise) jsonToObject(message, Exercise.class);
+  }
+
+  public History queryHistory(String historyID, User user) throws Exceptions.BadPackageException, Exceptions.ServerException, Exceptions.HistoryNotFoundException, URISyntaxException, JsonProcessingException, Exceptions.IllegalIdException {
+    String userString = objectToJson(user);
+    String url = baseURL + "getHistory/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + historyID;
+    String message = sendPackage(new URI(url));
+    if (message == null) {
+      badPackageExceptionHandler(message);
+      serverExceptionHandler(message);
+      historyNotFoundExceptionHandler(message, historyID);
+      illegalIdException(message, historyID, History.class);
+      throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
+    }
+    return (History) jsonToObject(message, History.class);
+  }
+
+  public Map<String, String> queryExerciseMap(User user) throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, JsonProcessingException {
+    String userString = objectToJson(user);
+    String url = baseURL + "getExerciseMap/" + URLEncoder.encode(userString, StandardCharsets.UTF_8);
+    String message = sendPackage(new URI(url));
+    if (message == null) {
+      badPackageExceptionHandler(message);
+      serverExceptionHandler(message);
+      throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
+    }
+    return (LinkedHashMap<String, String>) jsonToObject(message, LinkedHashMap.class);
+  }
+
+  public Map<String, String> queryWorkoutMap(User user) throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, JsonProcessingException {
+    String userString = objectToJson(user);
+    String url = baseURL + "getWorkoutMap/" + URLEncoder.encode(userString, StandardCharsets.UTF_8);
+    String message = sendPackage(new URI(url));
+    if (message == null) {
+      badPackageExceptionHandler(message);
+      serverExceptionHandler(message);
+      throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
+    }
+    return (LinkedHashMap<String, String>) jsonToObject(message, LinkedHashMap.class);
+  }
+
+  public Map<String, String> queryHistoryMap(User user) throws Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, JsonProcessingException {
+    String userString = objectToJson(user);
+    String url = baseURL + "/getHistoryMap/" + URLEncoder.encode(userString, StandardCharsets.UTF_8);
+    String message = sendPackage(new URI(url));
+    if (message == null) {
+      badPackageExceptionHandler(message);
+      serverExceptionHandler(message);
+      throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
+    }
+    return (LinkedHashMap<String, String>) jsonToObject(message, LinkedHashMap.class);
   }
 }

@@ -1,47 +1,50 @@
 package beastbook.core;
 
 import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.*;
+import beastbook.core.Exceptions.IllegalIdException;
+
 
 public class ExerciseTest {
   private Exercise exercise;
 
   @BeforeEach
-  void init() {
-      exercise = new Exercise("Bench Press", 25, 100, 5, 0, 120);
+  void setup() {
+      exercise = new Exercise("Bench press", 25, 100, 5, 0, 120);
   }
 
   @Test
-  @DisplayName("Tests if Constructor works as intended")
-  void testExercise() {
-    Assertions.assertEquals("Bench Press", exercise.getName());
-    Assertions.assertEquals(25, exercise.getRepGoal());
-    Assertions.assertEquals(100, exercise.getWeight());
-    Assertions.assertEquals(5, exercise.getSets());
-    Assertions.assertEquals(120, exercise.getRestTime());
+  void testConstructor() {
+    assertEquals("Bench press", exercise.getName());
+    assertEquals(25, exercise.getRepGoal());
+    assertEquals(100, exercise.getWeight());
+    assertEquals(5, exercise.getSets());
+    assertEquals(120, exercise.getRestTime());
   }
 
   @Test
-  @DisplayName("Tests if illegal arguments trigger exceptions")
-  void testValidation() {
-    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+  void testInvalidInputsThrows() {
+    assertThrows(IllegalArgumentException.class, () -> {
       exercise.setRepGoal(-1);
     });
-    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+    assertThrows(IllegalArgumentException.class, () -> {
       exercise.setSets(-1);
     });
-    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+    assertThrows(IllegalArgumentException.class, () -> {
       exercise.setWeight(-1);
     });
-    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+    assertThrows(IllegalArgumentException.class, () -> {
       exercise.setRestTime(-1);
     });
-    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+    assertThrows(IllegalArgumentException.class, () -> {
       exercise.setName("");
     });
-    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+    assertThrows(IllegalIdException.class, () -> {
       exercise.setId("111");
     });
-    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+    assertThrows(IllegalIdException.class, () -> {
       exercise.setId("2G");
     });
   }

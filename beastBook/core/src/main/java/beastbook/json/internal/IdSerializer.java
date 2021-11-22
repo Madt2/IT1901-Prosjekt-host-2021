@@ -9,6 +9,7 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 
 import java.io.IOException;
+import java.util.LinkedHashMap;
 
 public class IdSerializer extends JsonSerializer<Id> {
 
@@ -30,18 +31,18 @@ public class IdSerializer extends JsonSerializer<Id> {
   ) throws IOException {
     jsonGenerator.writeStartObject();
     jsonGenerator.writeArrayFieldStart("exerciseMap");
-    for (String ID : id.getIds(Exercise.class)) {
-      jsonGenerator.writeObject(ID + ":" + id.getName(ID, Exercise.class));
+    for (String Id : id.getMap(Exercise.class).keySet()) {
+      jsonGenerator.writeObject( id + ":" + id.getMap(Exercise.class).get(id));
     }
     jsonGenerator.writeEndArray();
     jsonGenerator.writeArrayFieldStart("workoutMap");
-    for (String ID : id.getIds(Workout.class)) {
-      jsonGenerator.writeObject(ID + ":" + id.getName(ID, Workout.class));
+    for (String Id : id.getMap(Workout.class).keySet()) {
+      jsonGenerator.writeObject( id + ":" + id.getMap(Workout.class).get(id));
     }
     jsonGenerator.writeEndArray();
     jsonGenerator.writeArrayFieldStart("historyMap");
-    for (String ID : id.getIds(History.class)) {
-      jsonGenerator.writeObject(ID + ":" + id.getName(ID, History.class));
+    for (String Id : id.getMap(History.class).keySet()) {
+      jsonGenerator.writeObject( id + ":" + id.getMap(History.class).get(id));
     }
     jsonGenerator.writeEndArray();
     jsonGenerator.writeEndObject();

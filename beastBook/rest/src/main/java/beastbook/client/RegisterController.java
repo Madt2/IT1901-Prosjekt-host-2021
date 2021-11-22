@@ -1,26 +1,21 @@
 package beastbook.client;
 
+import beastbook.core.Exceptions;
 import beastbook.core.User;
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import java.net.URISyntaxException;
 
 public class RegisterController {
   ClientService clientService = new ClientService();
 
-  public String registerUser(String username, String password) {
-    try {
-      User user = new User(username, password);
-      clientService.createUser(user).getBody();
-      return "Success";
-    } catch (Exception e) {
-      System.out.println(e.getMessage());
-      return "Failure";
+  public void registerUser(String username, String password) throws Exceptions.BadPackageException, Exceptions.UserAlreadyExistException, Exceptions.ServerException, URISyntaxException, JsonProcessingException {
+    if (username == null || password == null) {
+      throw new IllegalArgumentException("Username and password cannot be null!");
     }
-
-    //Throws exceptions if user object does not get validated or creating user dir
-    // on server fails and throw exception
+    User user = new User(username, password);
+    clientService.createUser(user);
   }
-
-//  public static void main(String[] args) {
-//    RegisterController reg = new RegisterController();
-//    reg.registerUser("test", "test");
-//  }
 }
+
+

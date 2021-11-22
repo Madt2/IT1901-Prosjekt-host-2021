@@ -3,4 +3,5 @@ module beastbook.core {
   requires transitive com.fasterxml.jackson.databind;
   exports beastbook.core;
   exports beastbook.json;
+  exports beastbook.json.internal;
 }

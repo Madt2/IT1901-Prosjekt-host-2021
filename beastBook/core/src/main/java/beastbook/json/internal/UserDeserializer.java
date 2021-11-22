@@ -6,9 +6,7 @@ import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
 import java.io.IOException;
 
 /**
@@ -40,42 +38,13 @@ public class UserDeserializer extends JsonDeserializer<User> {
   * @param jsonNode jsonNode to convert.
   * @return Deserialized user, or null deserialization fails.
   */
-  User deserialize(JsonNode jsonNode) {
+  User deserialize(JsonNode jsonNode) throws IOException {
     if (jsonNode instanceof ObjectNode objectNode) {
-      try {
-        JsonNode usernameNode = objectNode.get("username");
-        JsonNode passwordNode = objectNode.get("password");
-        User user = new User(usernameNode.asText(), passwordNode.asText());
-//        if (usernameNode instanceof TextNode) {
-//          user.setUsername(usernameNode.asText());
-//        }
-//        JsonNode passwordNode = objectNode.get("password");
-//        if (passwordNode instanceof TextNode) {
-//          user.setPassword(passwordNode.asText());
-//        }
-//        JsonNode workoutIDsNode = objectNode.get("workoutIDs");
-//        if (workoutIDsNode instanceof ArrayNode) {
-//          for (JsonNode elementNode : workoutIDsNode) {
-//            String id = elementNode.asText();
-//            if (id != null) {
-//              user.addWorkout(id);
-//            }
-//          }
-//        }
-//        JsonNode historyIDsNode = objectNode.get("historyIDs");
-//        if (historyIDsNode instanceof ArrayNode) {
-//          for (JsonNode node : historyIDsNode) {
-//            String id = node.asText();
-//            if (id != null) {
-//             user.addHistory(id);
-//            }
-//          }
-//        }
-        return user;
-      } catch (IllegalArgumentException e) {
-        System.err.println(e.getMessage() + "\nMost likely wrong format in file");
-      }
+      JsonNode usernameNode = objectNode.get("username");
+      JsonNode passwordNode = objectNode.get("password");
+      User user = new User(usernameNode.asText(), passwordNode.asText());
+      return user;
     }
-    return null;
+    throw new IOException("Something went wrong with loading User!");
   }
 }
