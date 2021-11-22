@@ -6,7 +6,7 @@ This is how we have imagined our final project to be.
 It should be possible to ...
 - create a new workout
 - open a saved workout
-- look at your workout log 
+- look at your workout log
 - import and export workouts
 
 When you create a workout it contains ...
