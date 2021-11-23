@@ -64,12 +64,12 @@ public class WorkoutTest {
   @Test
   void addAndRemoveDuplicateExerciseTest() throws IllegalIdException, Exceptions.ExerciseNotFoundException, Exceptions.ExerciseAlreadyExistsException {
     testWorkout.addExercise(exercise.getId());
-    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+    Assertions.assertThrows(Exceptions.ExerciseAlreadyExistsException.class, () -> {
       testWorkout.addExercise(exercise.getId());
     });
 
     testWorkout.removeExercise(exercise.getId());
-    Assertions.assertThrows(IllegalArgumentException.class, () -> {
+    Assertions.assertThrows(Exceptions.ExerciseNotFoundException.class, () -> {
       testWorkout.removeExercise(exercise.getId());
     });
   }

@@ -174,9 +174,12 @@ public class ClientController {
       JsonProcessingException, Exceptions.WorkoutNotFoundException, Exceptions.IllegalIdException {
     deletionCheck();
     String workoutId = clientService.addWorkout(workout, user);
-    System.out.println("Dette er workoutId den får av html package: " + workoutId);
-    for (Exercise e : exercises) {
-      addExercise(e, workoutId);
+    try {
+      for (Exercise e : exercises) {
+        addExercise(e, workoutId);
+      }
+    } catch (Exceptions.ExerciseAlreadyExistsException e) {
+      removeWorkout(workoutId);
     }
     workoutMap = clientService.queryWorkoutMap(user);
     exerciseMap = clientService.queryExerciseMap(user);

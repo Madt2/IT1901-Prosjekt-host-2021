@@ -82,12 +82,12 @@ public class ClientControllerTest {
   void testAddObjects() throws Exceptions.WorkoutNotFoundException, Exceptions.ServerException,
       Exceptions.ExerciseAlreadyExistsException, Exceptions.WorkoutAlreadyExistsException,
       Exceptions.HistoryAlreadyExistsException, Exceptions.ExerciseNotFoundException,
-      Exceptions.HistoryNotFoundException, Exceptions.IllegalIdException, Exceptions.IdNotFoundException, Exceptions.BadPackageException, URISyntaxException, JsonProcessingException {
+      Exceptions.HistoryNotFoundException, Exceptions.IllegalIdException, Exceptions.BadPackageException, URISyntaxException, JsonProcessingException {
     //add objects:
     assertThrows(Exceptions.IllegalIdException.class, () -> clientController.addExercise(mockExercise, "fakeId"));
     assertThrows(Exceptions.WorkoutNotFoundException.class, () -> clientController.addExercise(mockExercise, ("AB")));
-    clientController.addWorkout(mockWorkout, List.of(mockExercise));
-    String returnedWorkoutId = clientController.getExerciseMap().keySet().stream().toList().get(0);
+    clientController.addWorkout(mockWorkout, List.of());
+    String returnedWorkoutId = clientController.getWorkoutMap().keySet().stream().toList().get(0);
     clientController.addExercise(mockExercise, returnedWorkoutId);
     clientController.addHistory(mockHistory);
 
@@ -121,13 +121,15 @@ public class ClientControllerTest {
   void testUpdateObjects() throws Exceptions.ServerException, Exceptions.IllegalIdException,
       Exceptions.WorkoutNotFoundException, Exceptions.ExerciseNotFoundException,
       Exceptions.ExerciseAlreadyExistsException,
-      Exceptions.BadPackageException, URISyntaxException, JsonProcessingException {
+      Exceptions.BadPackageException, URISyntaxException, JsonProcessingException, Exceptions.WorkoutAlreadyExistsException {
+
     assertThrows(Exceptions.IllegalIdException.class, () -> clientController.updateExercise(mockExercise));
     assertThrows(Exceptions.IllegalIdException.class, () -> clientController.updateWorkout(mockWorkout));
 
     clientController.addWorkout(mockWorkout, List.of());
     String returnedWorkoutId = clientController.getWorkoutMap().keySet().stream().toList().get(0);
     clientController.addExercise(mockExercise, returnedWorkoutId);
+
 
     Exercise falseExercise = new Exercise("Bench press", 20, 30, 40, 50, 60);
     Workout falseWorkout = new Workout("test");
@@ -180,9 +182,9 @@ public class ClientControllerTest {
       Exceptions.HistoryAlreadyExistsException, Exceptions.BadPackageException,
       URISyntaxException, JsonProcessingException {
 
-    assertThrows(Exceptions.IllegalIdException.class, () -> clientController.removeExercise("not valid"));
-    assertThrows(Exceptions.IllegalIdException.class, () -> clientController.removeWorkout("not valid"));
-    assertThrows(Exceptions.IllegalIdException.class, () -> clientController.removeHistory("not valid"));
+    assertThrows(Exceptions.IllegalIdException.class, () -> clientController.removeExercise("notValid"));
+    assertThrows(Exceptions.IllegalIdException.class, () -> clientController.removeWorkout("notValid"));
+    assertThrows(Exceptions.IllegalIdException.class, () -> clientController.removeHistory("notValid"));
 
     clientController.addWorkout(mockWorkout, List.of());
     String returnedWorkoutId = clientController.getWorkoutMap().keySet().stream().toList().get(0);

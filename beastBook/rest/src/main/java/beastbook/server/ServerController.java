@@ -5,7 +5,6 @@ import beastbook.json.internal.BeastBookModule;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import org.springframework.http.HttpStatus;
@@ -29,7 +28,8 @@ public class ServerController {
 
   private String objectToJson(Object object) throws Exceptions.ServerException {
     try {
-      return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+      String jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+      return jsonString;
     } catch (JsonProcessingException e) {
       e.printStackTrace();
       throw new Exceptions.ServerException();
@@ -330,8 +330,8 @@ public class ServerController {
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
-      Map<String, String> map = serverService.getMapping(Exercise.class);
-      String packageString = URLEncoder.encode(objectToJson(map), StandardCharsets.UTF_8);
+      LinkedHashMap<String, String> map = serverService.getMapping(Exercise.class);
+      String packageString = objectToJson(map);
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (Exceptions.BadPackageException e) {
       return sendBadRequest(e);
@@ -346,7 +346,7 @@ public class ServerController {
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
-      Map<String, String> map = serverService.getMapping(Workout.class);
+      LinkedHashMap<String, String> map = serverService.getMapping(Workout.class);
       String packageString = objectToJson(map);
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (Exceptions.BadPackageException e) {

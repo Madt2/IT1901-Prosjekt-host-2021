@@ -4,7 +4,7 @@ import static beastbook.core.Validation.validatePassword;
 import static beastbook.core.Validation.validateUsername;
 
 /**
- * User class for application. Creates a user with username, password and a list of references to workouts.
+ * User class for application. Creates a user with username and password. This is used for login
  */
 public class User {
   private final String username;

@@ -26,11 +26,14 @@ public class ClientService {
   }
 
   private String objectToJson(Object object) throws JsonProcessingException {
-    return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+    String jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+    System.out.println("Dette er det klienten sender til serveren: " + jsonString);
+    return jsonString;
   }
 
   private Object jsonToObject(String jsonString, Class cls) throws Exceptions.BadPackageException {
     try {
+      System.out.println("Dette er det klienten fikk fra serveren: " + jsonString);
       return mapper.readValue(jsonString, cls);
     } catch (JsonProcessingException e) {
       throw new Exceptions.BadPackageException();
@@ -55,7 +58,7 @@ public class ClientService {
     }
   }
 
-  private void passwordIncorrectException(String errorMessage)
+  private void passwordIncorrectExceptionHandler(String errorMessage)
       throws Exceptions.PasswordIncorrectException {
     if (errorMessage.equals(Exceptions.PasswordIncorrectException.class.getSimpleName())) {
       throw new Exceptions.PasswordIncorrectException();
@@ -90,7 +93,7 @@ public class ClientService {
     }
   }
 
-  private void userAlreadyExistsException(String errorMessage, User user)
+  private void userAlreadyExistsExceptionHandler(String errorMessage, User user)
       throws Exceptions.UserAlreadyExistException {
     if (errorMessage.equals(Exceptions.UserAlreadyExistException.class.getSimpleName())) {
       throw new Exceptions.UserAlreadyExistException(user.getUsername());
@@ -99,7 +102,7 @@ public class ClientService {
 
   private void exerciseAlreadyExistsExceptionHandler(String errorMessage, Exercise exercise)
       throws Exceptions.ExerciseAlreadyExistsException {
-    if (errorMessage.equals(Exceptions.ExerciseNotFoundException.class.getSimpleName())) {
+    if (errorMessage.equals(Exceptions.ExerciseAlreadyExistsException.class.getSimpleName())) {
       throw new Exceptions.ExerciseAlreadyExistsException(exercise.getName());
     }
   }
@@ -118,7 +121,7 @@ public class ClientService {
     }
   }
 
-  private void illegalIdException(String errorMessage, String id, Class cls)
+  private void illegalIdExceptionHandler(String errorMessage, String id, Class cls)
       throws Exceptions.IllegalIdException {
     if (errorMessage.equals(Exceptions.IllegalIdException.class.getSimpleName())) {
       throw new Exceptions.IllegalIdException(id, cls);
@@ -166,10 +169,9 @@ public class ClientService {
     return response;
   }
 
-  private String getPackage(String url) {
+  private ResponseEntity<String> getPackage(URI uri) {
     RestTemplate restTemplate = new RestTemplate();
-    ResponseEntity<String> data = restTemplate.getForEntity(url,String.class);
-    return data.getBody();
+    return restTemplate.getForEntity(uri, String.class);
   }
 
   public void createUser(User user) throws URISyntaxException,
@@ -253,7 +255,6 @@ public class ClientService {
       workoutAlreadyExistsExceptionHandler(error, workout);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
-    return dataString;
   }
 
   public void addHistory(History history, User user) throws URISyntaxException,
@@ -412,7 +413,6 @@ public class ClientService {
       illegalIdExceptionHandler(error, workoutId, Workout.class);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
-    return (Workout) jsonToObject(dataString, Workout.class);
   }
 
   public Exercise queryExercise(String exerciseId, User user) throws Exceptions.BadPackageException,

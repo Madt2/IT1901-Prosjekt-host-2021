@@ -7,8 +7,8 @@ import java.util.List;
 
 
 /**
- * Workout class that creates a workout. It has a name, a unique ID to identify it,
- * and a list of IDs to reference exercise objects.
+ * Workout class that creates a workout. It has a name, a unique Id to identify it,
+ * and a list of Ids to reference exercise objects.
  */
 public class Workout implements IdClasses {
   private String id;
@@ -29,15 +29,20 @@ public class Workout implements IdClasses {
   */
   public Workout() {}
 
+  /**
+   * Sets name of Workout
+   *
+   * @param name to set.
+   */
   public void setName(String name) {
     this.name = name;
   }
 
   /**
-   * Sets id for this workout object.
+   * Sets workoutId for Workout.
    *
-   * @param id to set
-   * @throws IllegalArgumentException if id is in wrong format.
+   * @param id to set.
+   * @throws Exceptions.IllegalIdException if id is invalid as workoutId.
    */
   public void setId(String id) throws Exceptions.IllegalIdException {
     validateId(id, Workout.class);
@@ -57,29 +62,32 @@ public class Workout implements IdClasses {
   }
 
   /**
-  * Adds an exercise to workout.
+  * Adds an exerciseId to Workout.
   *
-  * @param exerciseId exerciseID to add to workout.
-  * @throws IllegalArgumentException when workout already have reference to exercise,
-  *                                  or if ID is wrong formatted.
+  * @param exerciseId exerciseId to add to Workout.
+  * @throws Exceptions.IllegalIdException if Id is not valid exerciseId.
+  * @throws Exceptions.ExerciseAlreadyExistsException when workout already have reference to Exercise.
   */
-  public void addExercise(String exerciseId) throws Exceptions.IllegalIdException {
-    if (exerciseIds.contains(exerciseId)) {
-      throw new IllegalArgumentException("Exercise is already added!");
-    }
+  public void addExercise(String exerciseId) throws Exceptions.ExerciseAlreadyExistsException, Exceptions.IllegalIdException {
     validateId(exerciseId, Exercise.class);
+    if (exerciseIds.contains(exerciseId)) {
+      throw new Exceptions.ExerciseAlreadyExistsException(name);
+    }
     exerciseIds.add(exerciseId);
   }
 
   /**
    * Removes reference to exercise object from exerciseIDs List.
    *
-   * @param exerciseId to remove from workout.
-   * @throws IllegalArgumentException when exerciseID does not exist in workout.
+   * @param exerciseId of Exercise remove from workout.
+   * @throws Exceptions.ExerciseNotFoundException when exerciseID does not exist in workout.
    */
-  public void removeExercise(String exerciseId) throws IllegalArgumentException {
+  public void removeExercise(String exerciseId) throws Exceptions.ExerciseNotFoundException {
     if (!exerciseIds.remove(exerciseId)) {
-      throw new IllegalArgumentException("Exercise was not found in workout!");
+      throw new Exceptions.ExerciseNotFoundException(exerciseId);
     }
   }
 }
+
+
+

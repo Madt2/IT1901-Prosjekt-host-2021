@@ -23,8 +23,8 @@ public class Rules {
   }
 
   public static void historyRules(History history, IdHandler ids) throws Exceptions.HistoryAlreadyExistsException {
-    Map<String, String> map = ids.getMap(Workout.class);
-    if (map.containsValue(history.getName())) {
+    Map<String, String> map = ids.getMap(History.class);
+    if (map.containsValue(history.getName() + ";" + history.getDate())) {
       throw new Exceptions.HistoryAlreadyExistsException(history.getName());
     }
   }

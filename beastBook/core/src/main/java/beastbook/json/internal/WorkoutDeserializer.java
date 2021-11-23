@@ -73,6 +73,6 @@ public class WorkoutDeserializer extends JsonDeserializer<Workout> {
       }
       return workout;
     }
-    throw new IOException("Something went wrong with loading workout!");
+    return null;
   }
 }

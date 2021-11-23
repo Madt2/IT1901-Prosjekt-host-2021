@@ -29,12 +29,24 @@ public class History implements IdClasses {
     date = sdf.format(new Date());
   }
 
+  /**
+   * Constructor for History object used by deserializer.
+   *
+   * @param name name of workout to log.
+   * @param exercises The Exercises to be saved.
+   */
   public History(String name, List<Exercise> exercises, String date) {
     this.name = name;
     this.savedExercises = Collections.unmodifiableList(exercises);
     this.date = date;
   }
 
+  /**
+   * Sets id for History
+   *
+   * @param id to set.
+   * @throws Exceptions.IllegalIdException if id is invalid as historyId.
+   */
   public void setId(String id) throws Exceptions.IllegalIdException {
     validateId(id, this.getClass());
     this.id = id;

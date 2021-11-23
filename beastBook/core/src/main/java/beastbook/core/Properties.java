@@ -17,9 +17,9 @@ public class Properties {
   public static final String LEGAL_CHARS_EXERCISE_ID = "abcdefghijklmnopqrstuvwxyz0123456789";
   public static final String LEGAL_CHARS_WORKOUT_ID = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
-  public static final String notValidHistoryId = "not valid";
-  public static final String notValidExerciseId = "not valid";
-  public static final String notValidWorkoutId = "not valid";
+  public static final String notValidHistoryId = "notValid";
+  public static final String notValidExerciseId = "notValid";
+  public static final String notValidWorkoutId = "notValid";
   public static final User mockUser = new User("mock", "mock");
 
   public static String mockIdGenerator(Class cls, Map map) throws Exceptions.ServerException {

@@ -50,7 +50,7 @@ public class HistoryDeserializer extends JsonDeserializer<History> {
   History deserialize(JsonNode jsonNode) throws IOException {
     if (jsonNode instanceof ObjectNode objectNode) {
       JsonNode idNode = objectNode.get("id");
-      String id = null;
+      String id = "";
       if (idNode instanceof TextNode) {
         id = idNode.asText();
       }
@@ -73,15 +73,17 @@ public class HistoryDeserializer extends JsonDeserializer<History> {
         }
       }
       try {
-        if (!date.equals("") && !name.equals("") && id != null) {
+        if (!date.equals("") && !name.equals("")) {
           History history = new History(name, savedExercises, date);
-          history.setId(id);
+          if (!id.equals("")) {
+            history.setId(id);
+          }
           return history;
         }
       } catch (Exceptions.IllegalIdException e) {
         throw new IOException("Something wrong with loading id in history!");
       }
     }
-    throw new IOException("Something wrong with loading history!");
+    return null;
   }
 }

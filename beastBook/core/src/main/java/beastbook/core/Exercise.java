@@ -20,12 +20,12 @@ public class Exercise implements IdClasses {
   /**
   * Creates an Exercise using given input.
   *
-  * @param name Name of the exercise
+  * @param name Name of the Exercise
   * @param repGoal Number of repetitions to be performed
   * @param weight Weight to be used for the exercise
   * @param sets Number of sets to be performed
   * @param restTime How much rest between sets in seconds
-   * @throws IllegalArgumentException when params are illegal.
+  * @throws IllegalArgumentException when validation for params fail.
   */
   public Exercise(String name, int repGoal, double weight, int sets, int repsPerSet, int restTime)
       throws IllegalArgumentException {
@@ -37,16 +37,34 @@ public class Exercise implements IdClasses {
     setRestTime(restTime);
   }
 
+  /**
+   * Sets id for Exercise.
+   *
+   * @param id to set.
+   * @throws Exceptions.IllegalIdException when id is invalid as exercise id.
+   */
   public void setId(String id) throws Exceptions.IllegalIdException {
     validateId(id, Exercise.class);
     this.id = id;
   }
 
+  /**
+   * Sets workoutId for Exercise.
+   *
+   * @param id workoutId to set.
+   * @throws Exceptions.IllegalIdException when id is invalid as workout id.
+   */
   public void setWorkoutId(String id) throws Exceptions.IllegalIdException {
     validateId(id, Workout.class);
     this.workoutId = id;
   }
 
+  /**
+   * Sets name for Exercise with Validation.
+   *
+   * @param name of Exercise
+   * @throws IllegalArgumentException if validation fails.
+   */
   public void setName(String name) throws IllegalArgumentException {
     validateExerciseName(name);
     this.name = name;
