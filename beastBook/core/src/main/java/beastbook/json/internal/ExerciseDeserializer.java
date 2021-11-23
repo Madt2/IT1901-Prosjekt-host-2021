@@ -45,7 +45,7 @@ public class ExerciseDeserializer extends JsonDeserializer<Exercise> {
     if (jsonNode instanceof ObjectNode objectNode) {
       Exercise exercise;
       JsonNode idNode = objectNode.get("id");
-      String id = null;
+      String id = "";
       if (idNode instanceof TextNode) {
         id = idNode.asText();
       }
@@ -72,7 +72,7 @@ public class ExerciseDeserializer extends JsonDeserializer<Exercise> {
       JsonNode setsNode = objectNode.get("sets");
       int sets = 0;
       if (setsNode instanceof TextNode) {
-        sets  = setsNode.asInt();
+        sets = setsNode.asInt();
       }
       JsonNode repsPerSetNode = objectNode.get("repsPerSet");
       int repsPerSet = 0;
@@ -93,9 +93,8 @@ public class ExerciseDeserializer extends JsonDeserializer<Exercise> {
         } catch (Exceptions.IllegalIdException e) {
           throw new IOException("IdHandler not found when loading file, "
             + "something is wrong with writing object to file");
-        }
       }
     }
-    throw new IOException("something when wrong when loading exercise! ");
+    return null;
   }
 }

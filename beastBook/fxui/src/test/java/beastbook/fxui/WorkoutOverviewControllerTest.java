@@ -36,7 +36,7 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
       Exceptions.PasswordIncorrectException,
       Exceptions.WorkoutAlreadyExistsException,
       Exceptions.WorkoutNotFoundException,
-      Exceptions.ExerciseAlreadyExistsException {
+      Exceptions.ExerciseAlreadyExistsException, Exceptions.IllegalIdException {
     FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/beastbook.fxui/WorkoutOverview.fxml"));
     woc = new WorkoutOverviewController();
     loader.setController(woc);
@@ -47,7 +47,7 @@ public class WorkoutOverviewControllerTest extends ApplicationTest{
     stage.show();
   }
 
-  private void addWorkoutsToUser() throws Exceptions.WorkoutAlreadyExistsException, Exceptions.WorkoutNotFoundException, Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, JsonProcessingException, Exceptions.ExerciseAlreadyExistsException {
+  private void addWorkoutsToUser() throws Exceptions.WorkoutAlreadyExistsException, Exceptions.WorkoutNotFoundException, Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, JsonProcessingException, Exceptions.ExerciseAlreadyExistsException, Exceptions.IllegalIdException {
     Workout workout1 = new Workout("Pull workout");
     Workout workout2 = new Workout("LEGS");
     List<Exercise> exerciseList1 = new ArrayList<>();

@@ -9,15 +9,17 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
+
 
 public class ClientService {
   private String ipAddress = "localhost";
   private String baseUrl = "http://" + ipAddress + ":8080/";
   private ObjectMapper mapper = new ObjectMapper();
-  String dataString = "";
+  private RestTemplate restTemplate = new RestTemplate();
 
   ClientService() {
     mapper.registerModule(new BeastBookModule());
@@ -118,22 +120,50 @@ public class ClientService {
 
   private void illegalIdException(String errorMessage, String id, Class cls)
       throws Exceptions.IllegalIdException {
-    if (errorMessage.equals(Exceptions.HistoryAlreadyExistsException.class.getSimpleName())) {
+    if (errorMessage.equals(Exceptions.IllegalIdException.class.getSimpleName())) {
       throw new Exceptions.IllegalIdException(id, cls);
     }
   }
 
-  private boolean sendPackage(URI uri) {
+  public static void main(String[] args) throws Exceptions.BadPackageException, Exceptions.UserAlreadyExistException, Exceptions.ServerException, URISyntaxException, JsonProcessingException, Exceptions.WorkoutAlreadyExistsException, Exceptions.WorkoutNotFoundException, Exceptions.IllegalIdException, Exceptions.ExerciseAlreadyExistsException, Exceptions.ExerciseNotFoundException, Exceptions.HistoryAlreadyExistsException, Exceptions.HistoryNotFoundException {
+    ClientService service = new ClientService();
+    User user = new User("Temp", "Temp");
+    service.createUser(user);
+    Workout workout = new Workout("workout");
+    service.addWorkout(workout , user);
+    Map<String,String> wmap = service.queryWorkoutMap(user);
+    String wkey = "";
+    for (String keys : wmap.keySet()) {
+      wkey = keys;
+    }
+    service.queryWorkout(wkey, user);
+    Exercise exercise = new Exercise("ovelse", 1,1, 1, 1, 1);
+    service.addExercise(user, wkey, exercise);
+    String ekey = "";
+    Map<String,String> emap = service.queryExerciseMap(user);
+    for (String keys : emap.keySet()) {
+      ekey = keys;
+    }
+    exercise = service.queryExercise(ekey, user);
+    exercise.setRepsPerSet(10);
+    service.updateExercise(exercise, user);
+    System.out.println(service.queryExercise(ekey, user));
+    service.addHistory(new History("workout", List.of()), user);
+    String hkey = "";
+    Map<String,String> hmap = service.queryHistoryMap(user);
+    for (String keys : hmap.keySet()) {
+      hkey = keys;
+    }
+    service.queryHistory(hkey, user);
+
+  }
+
+  private ResponseEntity<String> sendPackage(URI uri) {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
     HttpEntity<String> httpEntity = new HttpEntity<>("", headers);
-    RestTemplate restTemplate = new RestTemplate();
-    ResponseEntity<String> data = restTemplate.postForEntity(uri, httpEntity, String.class);
-    dataString = data.getBody() + "";
-    if (data.getStatusCode().equals(HttpStatus.OK)) {
-      return true;
-    }
-    return false;
+    ResponseEntity<String> response = restTemplate.postForEntity(uri, httpEntity, String.class);
+    return response;
   }
 
   private String getPackage(String url) {
@@ -149,11 +179,13 @@ public class ClientService {
       JsonProcessingException {
     String userString = objectToJson(user);
     String url = baseUrl + "createUser/" + URLEncoder.encode(userString, StandardCharsets.UTF_8);
-    boolean sentPackage = sendPackage(new URI(url));
-    if (!sentPackage) {
-      badPackageExceptionHandler(dataString);
-      serverExceptionHandler(dataString);
-      userAlreadyExistsException(dataString, user);
+    try {
+      sendPackage(new URI(url));
+    } catch (org.springframework.web.client.HttpClientErrorException e) {
+      String error = e.getMessage().substring(5).replace("\"", "").trim();
+      badPackageExceptionHandler(e.getMessage());
+      serverExceptionHandler(e.getMessage());
+      userAlreadyExistsExceptionHandler(error, user);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
   }
@@ -166,12 +198,14 @@ public class ClientService {
       JsonProcessingException {
     String userString = objectToJson(user);
     String url = baseUrl + "login/" + URLEncoder.encode(userString, StandardCharsets.UTF_8);
-    boolean sentPackage = sendPackage(new URI(url));
-    if (!sentPackage) {
-      badPackageExceptionHandler(dataString);
-      serverExceptionHandler(dataString);
-      passwordIncorrectException(dataString);
-      userNotFoundExceptionHandler(dataString, user);
+    try {
+      sendPackage(new URI(url));
+    } catch (org.springframework.web.client.HttpClientErrorException e) {
+      String error = e.getMessage().substring(5).replace("\"", "").trim();
+      badPackageExceptionHandler(error);
+      serverExceptionHandler(error);
+      passwordIncorrectExceptionHandler(error);
+      userNotFoundExceptionHandler(error, user);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
   }
@@ -181,19 +215,21 @@ public class ClientService {
       Exceptions.ServerException,
       Exceptions.ExerciseAlreadyExistsException,
       Exceptions.WorkoutNotFoundException,
-      JsonProcessingException {
+      JsonProcessingException, Exceptions.IllegalIdException {
     String userString = objectToJson(user);
     String exerciseString = objectToJson(exercise);
     String url = baseUrl + "addExercise/"
         + URLEncoder.encode(userString, StandardCharsets.UTF_8)
         + "/" + workoutId + "/" + URLEncoder.encode(exerciseString, StandardCharsets.UTF_8);
-    boolean sentPackage = sendPackage(new URI(url));
-    if (!sentPackage) {
-      badPackageExceptionHandler(dataString);
-      serverExceptionHandler(dataString);
-      exerciseAlreadyExistsExceptionHandler(dataString, exercise);
-      workoutNotFoundExceptionHandler(dataString, workoutId);
-      exerciseAlreadyExistsExceptionHandler(dataString, exercise);
+    try {
+      sendPackage(new URI(url));
+    } catch (org.springframework.web.client.HttpClientErrorException e) {
+      String error = e.getMessage().substring(5).replace("\"", "").trim();
+      badPackageExceptionHandler(error);
+      serverExceptionHandler(error);
+      illegalIdExceptionHandler(error, workoutId, Workout.class);
+      exerciseAlreadyExistsExceptionHandler(error, exercise);
+      workoutNotFoundExceptionHandler(error, workoutId);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
   }
@@ -208,11 +244,13 @@ public class ClientService {
     String url = baseUrl + "addWorkout/"
         + URLEncoder.encode(userString, StandardCharsets.UTF_8)
         + "/" + URLEncoder.encode(workoutString, StandardCharsets.UTF_8);
-    boolean sentPackage = sendPackage(new URI(url));
-    if (!sentPackage) {
-      badPackageExceptionHandler(dataString);
-      serverExceptionHandler(dataString);
-      workoutAlreadyExistsExceptionHandler(dataString, workout);
+    try {
+      return sendPackage(new URI(url)).getBody();
+    } catch (org.springframework.web.client.HttpClientErrorException e) {
+      String error = e.getMessage().substring(5).replace("\"", "").trim();
+      badPackageExceptionHandler(error);
+      serverExceptionHandler(error);
+      workoutAlreadyExistsExceptionHandler(error, workout);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
     return dataString;
@@ -228,11 +266,13 @@ public class ClientService {
     String url = baseUrl + "addHistory/"
         + URLEncoder.encode(userString, StandardCharsets.UTF_8)
         + "/" + URLEncoder.encode(historyString, StandardCharsets.UTF_8);
-    boolean sentPackage = sendPackage(new URI(url));
-    if (!sentPackage) {
-      badPackageExceptionHandler(dataString);
-      serverExceptionHandler(dataString);
-      historyAlreadyExistsExceptionHandler(dataString, history);
+    try {
+      sendPackage(new URI(url));
+    } catch (org.springframework.web.client.HttpClientErrorException e) {
+      String error = e.getMessage().substring(5).replace("\"", "").trim();
+      badPackageExceptionHandler(error);
+      serverExceptionHandler(error);
+      historyAlreadyExistsExceptionHandler(error, history);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
   }
@@ -248,11 +288,13 @@ public class ClientService {
     String url = baseUrl + "updateExercise/"
         + URLEncoder.encode(userString, StandardCharsets.UTF_8)
         + "/" + URLEncoder.encode(exerciseString, StandardCharsets.UTF_8);
-    boolean sentPackage = sendPackage(new URI(url));
-    if (!sentPackage) {
-      badPackageExceptionHandler(dataString);
-      serverExceptionHandler(dataString);
-      illegalIdException(dataString, exercise.getId(), Exercise.class);
+    try {
+      sendPackage(new URI(url));
+    } catch (org.springframework.web.client.HttpClientErrorException e) {
+      String error = e.getMessage().substring(5).replace("\"", "").trim();
+      badPackageExceptionHandler(error);
+      serverExceptionHandler(error);
+      illegalIdExceptionHandler(error, exercise.getId(), Exercise.class);
       exerciseNotFoundExceptionHandler(exerciseString, exercise.getId());
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
@@ -269,12 +311,14 @@ public class ClientService {
     String url = baseUrl + "updateWorkout/"
         + URLEncoder.encode(userString, StandardCharsets.UTF_8)
         + "/" + URLEncoder.encode(workoutString, StandardCharsets.UTF_8);
-    boolean sentPackage = sendPackage(new URI(url));
-    if (!sentPackage) {
-      badPackageExceptionHandler(dataString);
-      serverExceptionHandler(dataString);
-      workoutNotFoundExceptionHandler(dataString, workout.getId());
-      illegalIdException(dataString, workout.getId(), Workout.class);
+    try {
+      sendPackage(new URI(url));
+    } catch (org.springframework.web.client.HttpClientErrorException e) {
+      String error = e.getMessage().substring(5).replace("\"", "").trim();
+      badPackageExceptionHandler(error);
+      serverExceptionHandler(error);
+      workoutNotFoundExceptionHandler(error, workout.getId());
+      illegalIdExceptionHandler(error, workout.getId(), Workout.class);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
   }
@@ -286,11 +330,13 @@ public class ClientService {
       Exceptions.IllegalIdException {
     String userString = objectToJson(user);
     String url = baseUrl + "deleteExercise/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + exerciseId;
-    boolean sentPackage = sendPackage(new URI(url));
-    if (!sentPackage) {
-      badPackageExceptionHandler(dataString);
-      serverExceptionHandler(dataString);
-      illegalIdException(dataString, exerciseId, Exercise.class);
+    try {
+      sendPackage(new URI(url));
+    } catch (org.springframework.web.client.HttpClientErrorException e) {
+      String error = e.getMessage().substring(5).replace("\"", "").trim();
+      badPackageExceptionHandler(error);
+      serverExceptionHandler(error);
+      illegalIdExceptionHandler(error, exerciseId, Exercise.class);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
   }
@@ -302,11 +348,13 @@ public class ClientService {
       Exceptions.IllegalIdException {
     String userString = objectToJson(user);
     String url = baseUrl + "deleteWorkout/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + workoutId;
-    boolean sentPackage = sendPackage(new URI(url));
-    if (!sentPackage) {
-      badPackageExceptionHandler(dataString);
-      serverExceptionHandler(dataString);
-      illegalIdException(dataString, workoutId, Workout.class);
+    try {
+      sendPackage(new URI(url));
+    } catch (org.springframework.web.client.HttpClientErrorException e) {
+      String error = e.getMessage().substring(5).replace("\"", "").trim();
+      badPackageExceptionHandler(error);
+      serverExceptionHandler(error);
+      illegalIdExceptionHandler(error, workoutId, Workout.class);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
   }
@@ -318,11 +366,13 @@ public class ClientService {
       Exceptions.IllegalIdException {
     String userString = objectToJson(user);
     String url = baseUrl + "deleteHistory/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + historyId;
-    boolean sentPackage = sendPackage(new URI(url));
-    if (!sentPackage) {
-      badPackageExceptionHandler(dataString);
-      serverExceptionHandler(dataString);
-      illegalIdException(dataString, historyId, History.class);
+    try {
+      sendPackage(new URI(url));
+    } catch (org.springframework.web.client.HttpClientErrorException e) {
+      String error = e.getMessage().substring(5).replace("\"", "").trim();
+      badPackageExceptionHandler(error);
+      serverExceptionHandler(error);
+      illegalIdExceptionHandler(error, historyId, History.class);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
   }
@@ -333,10 +383,12 @@ public class ClientService {
       JsonProcessingException {
     String userString = objectToJson(user);
     String url = baseUrl + "deleteUser/" + URLEncoder.encode(userString, StandardCharsets.UTF_8);
-    boolean sentPackage = sendPackage(new URI(url));
-    if (!sentPackage) {
-      badPackageExceptionHandler(dataString);
-      serverExceptionHandler(dataString);
+    try {
+      sendPackage(new URI(url));
+    } catch (org.springframework.web.client.HttpClientErrorException e) {
+      String error = e.getMessage().substring(5).replace("\"", "").trim();
+      badPackageExceptionHandler(error);
+      serverExceptionHandler(error);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
   }
@@ -349,12 +401,15 @@ public class ClientService {
       Exceptions.IllegalIdException {
     String userString = objectToJson(user);
     String url = baseUrl + "getWorkout/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + workoutId;
-    boolean sentPackage = sendPackage(new URI(url));
-    if (!sentPackage) {
-      badPackageExceptionHandler(dataString);
-      serverExceptionHandler(dataString);
-      workoutNotFoundExceptionHandler(dataString, workoutId);
-      illegalIdException(dataString, workoutId, Workout.class);
+    try {
+      ResponseEntity<String> response = getPackage(new URI(url));
+      return (Workout) jsonToObject(response.getBody(), Workout.class);
+    } catch (org.springframework.web.client.HttpClientErrorException e) {
+      String error = e.getMessage().substring(5).replace("\"", "").trim();
+      badPackageExceptionHandler(error);
+      serverExceptionHandler(error);
+      workoutNotFoundExceptionHandler(error, workoutId);
+      illegalIdExceptionHandler(error, workoutId, Workout.class);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
     return (Workout) jsonToObject(dataString, Workout.class);
@@ -368,15 +423,17 @@ public class ClientService {
       Exceptions.IllegalIdException {
     String userString = objectToJson(user);
     String url = baseUrl + "getExercise/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + exerciseId;
-    boolean message = sendPackage(new URI(url));
-    if (!message) {
-      badPackageExceptionHandler(dataString);
-      serverExceptionHandler(dataString);
-      exerciseNotFoundExceptionHandler(dataString, exerciseId);
-      illegalIdException(dataString, exerciseId, Exercise.class);
+    try {
+      ResponseEntity<String> response = getPackage(new URI(url));
+      return (Exercise) jsonToObject(response.getBody(), Exercise.class);
+    } catch (org.springframework.web.client.HttpClientErrorException e) {
+      String error = e.getMessage().substring(5).replace("\"", "").trim();
+      badPackageExceptionHandler(error);
+      serverExceptionHandler(error);
+      exerciseNotFoundExceptionHandler(error, exerciseId);
+      illegalIdExceptionHandler(error, exerciseId, Exercise.class);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
-    return (Exercise) jsonToObject(dataString, Exercise.class);
   }
 
   public History queryHistory(String historyId, User user) throws Exceptions.BadPackageException,
@@ -387,15 +444,17 @@ public class ClientService {
       Exceptions.IllegalIdException {
     String userString = objectToJson(user);
     String url = baseUrl + "getHistory/" + URLEncoder.encode(userString, StandardCharsets.UTF_8) + "/" + historyId;
-    boolean message = sendPackage(new URI(url));
-    if (!message) {
-      badPackageExceptionHandler(dataString);
-      serverExceptionHandler(dataString);
-      historyNotFoundExceptionHandler(dataString, historyId);
-      illegalIdException(dataString, historyId, History.class);
+    try {
+      ResponseEntity<String> response = getPackage(new URI(url));
+      return (History) jsonToObject(response.getBody(), History.class);
+    } catch (org.springframework.web.client.HttpClientErrorException e) {
+      String error = e.getMessage().substring(5).replace("\"", "").trim();
+      badPackageExceptionHandler(error);
+      serverExceptionHandler(error);
+      historyNotFoundExceptionHandler(error, historyId);
+      illegalIdExceptionHandler(error, historyId, History.class);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
     }
-    return (History) jsonToObject(dataString, History.class);
   }
 
   public Map<String, String> queryExerciseMap(User user) throws Exceptions.BadPackageException,
@@ -404,14 +463,15 @@ public class ClientService {
       JsonProcessingException {
     String userString = objectToJson(user);
     String url = baseUrl + "getExerciseMap/" + URLEncoder.encode(userString, StandardCharsets.UTF_8);
-    dataString = getPackage(url);
-    /*boolean message = sendPackage(new URI(url));
-    if (!message) {
-      badPackageExceptionHandler(dataString);
-      serverExceptionHandler(dataString);
+    try {
+      ResponseEntity<String> response = getPackage(new URI(url));
+      return (LinkedHashMap<String, String>) jsonToObject(response.getBody(), LinkedHashMap.class);
+    } catch (org.springframework.web.client.HttpClientErrorException e) {
+      String error = e.getMessage().substring(5).replace("\"", "").trim();
+      badPackageExceptionHandler(error);
+      serverExceptionHandler(error);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
-    }*/
-    return (LinkedHashMap<String, String>) jsonToObject(dataString, LinkedHashMap.class);
+    }
   }
 
   public Map<String, String> queryWorkoutMap(User user) throws Exceptions.BadPackageException,
@@ -420,14 +480,15 @@ public class ClientService {
       JsonProcessingException {
     String userString = objectToJson(user);
     String url = baseUrl + "getWorkoutMap/" + URLEncoder.encode(userString, StandardCharsets.UTF_8);
-    dataString = getPackage(url);
-/*    boolean message = sendPackage(new URI(url));
-    if (!message) {
-      badPackageExceptionHandler(dataString);
-      serverExceptionHandler(dataString);
+    try {
+      ResponseEntity<String> response = getPackage(new URI(url));
+      return (LinkedHashMap<String, String>) jsonToObject(response.getBody(), LinkedHashMap.class);
+    } catch (org.springframework.web.client.HttpClientErrorException e) {
+      String error = e.getMessage().substring(5).replace("\"", "").trim();
+      badPackageExceptionHandler(error);
+      serverExceptionHandler(error);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
-    }*/
-    return (LinkedHashMap<String, String>) jsonToObject(dataString, LinkedHashMap.class);
+    }
   }
 
   public Map<String, String> queryHistoryMap(User user) throws Exceptions.BadPackageException,
@@ -436,13 +497,14 @@ public class ClientService {
       JsonProcessingException {
     String userString = objectToJson(user);
     String url = baseUrl + "getHistoryMap/" + URLEncoder.encode(userString, StandardCharsets.UTF_8);
-    dataString = getPackage(url);
-/*    boolean message = sendPackage(new URI(url));
-    if (!message) {
-      badPackageExceptionHandler(dataString);
-      serverExceptionHandler(dataString);
+    try {
+      ResponseEntity<String> response = getPackage(new URI(url));
+      return (LinkedHashMap<String, String>) jsonToObject(response.getBody(), LinkedHashMap.class);
+    } catch (org.springframework.web.client.HttpClientErrorException e) {
+      String error = e.getMessage().substring(5).replace("\"", "").trim();
+      badPackageExceptionHandler(error);
+      serverExceptionHandler(error);
       throw new UnknownError("Unknown error has occurred. Please check server and client log for debugging");
-    }*/
-    return (LinkedHashMap<String, String>) jsonToObject(dataString, LinkedHashMap.class);
+    }
   }
 }

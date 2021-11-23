@@ -42,10 +42,38 @@ public class ClientController {
     historyMap = clientService.queryHistoryMap(user);
   }
 
-  public static void main(String[] args) throws Exceptions.UserNotFoundException, Exceptions.BadPackageException, Exceptions.ServerException, URISyntaxException, Exceptions.PasswordIncorrectException, JsonProcessingException, Exceptions.UserAlreadyExistException {
-    RegisterController registerController = new RegisterController();
-    registerController.registerUser("Emil","Emil");
-    ClientController clientController = new ClientController("Emil", "Emil");
+  public static void main(String[] args) throws Exceptions.BadPackageException, Exceptions.UserAlreadyExistException, Exceptions.ServerException, URISyntaxException, JsonProcessingException, Exceptions.UserNotFoundException, Exceptions.PasswordIncorrectException, Exceptions.WorkoutAlreadyExistsException, Exceptions.WorkoutNotFoundException, Exceptions.IllegalIdException, Exceptions.ExerciseAlreadyExistsException, Exceptions.ExerciseNotFoundException, Exceptions.HistoryAlreadyExistsException, Exceptions.HistoryNotFoundException {
+    User user = new User("Temp", "Temp");
+    RegisterController reg = new RegisterController();
+    reg.registerUser(user.getUsername(), user.getPassword());
+    ClientController clientController = new ClientController(user.getUsername(), user.getPassword());
+    Workout workout = new Workout("workout");
+    clientController.addWorkout(workout , List.of());
+    Map<String,String> wmap = clientController.getWorkoutMap();
+    String wkey = "";
+    for (String keys : wmap.keySet()) {
+      wkey = keys;
+    }
+    clientController.getWorkout(wkey);
+    Exercise exercise = new Exercise("ovelse", 1,1, 1, 1, 1);
+    clientController.addExercise(exercise, wkey);
+    String ekey = "";
+    Map<String,String> emap = clientController.getExerciseMap();
+    for (String keys : emap.keySet()) {
+      ekey = keys;
+    }
+    System.out.println(ekey);
+    exercise = clientController.getExercise(ekey);
+    exercise.setRepsPerSet(10);
+    clientController.updateExercise(exercise);
+    System.out.println(clientController.getExercise(ekey));
+    clientController.addHistory(new History("workout", List.of()));
+    String hkey = "";
+    Map<String,String> hmap = clientController.getHistoryMap();
+    for (String keys : hmap.keySet()) {
+      hkey = keys;
+    }
+    clientController.getHistory(hkey);
   }
 
   public void setIpAddress(String ipAddress) {
@@ -117,10 +145,11 @@ public class ClientController {
       Exceptions.ServerException,
       URISyntaxException,
       Exceptions.ExerciseAlreadyExistsException,
-      JsonProcessingException {
+      JsonProcessingException, Exceptions.IllegalIdException {
     deletionCheck();
     clientService.addExercise(user, workoutId, exercise);
     workoutMap = clientService.queryWorkoutMap(user);
+    exerciseMap = clientService.queryExerciseMap(user);
   }
 
   /**
@@ -142,9 +171,8 @@ public class ClientController {
       URISyntaxException,
       Exceptions.WorkoutAlreadyExistsException,
       Exceptions.ExerciseAlreadyExistsException,
-      JsonProcessingException, Exceptions.WorkoutNotFoundException {
+      JsonProcessingException, Exceptions.WorkoutNotFoundException, Exceptions.IllegalIdException {
     deletionCheck();
-    String name = workout.getName();
     String workoutId = clientService.addWorkout(workout, user);
     System.out.println("Dette er workoutId den får av html package: " + workoutId);
     for (Exercise e : exercises) {
@@ -255,6 +283,7 @@ public class ClientController {
     deletionCheck();
     clientService.deleteWorkout(workoutId, user);
     workoutMap = clientService.queryWorkoutMap(user);
+    exerciseMap = clientService.queryExerciseMap(user);
   }
 
   /**

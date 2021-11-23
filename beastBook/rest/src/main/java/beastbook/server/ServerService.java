@@ -3,6 +3,7 @@ package beastbook.server;
 import beastbook.core.*;
 import beastbook.json.BeastBookPersistence;
 import java.io.IOException;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 import static beastbook.core.Validation.validateId;
@@ -103,8 +104,6 @@ public class ServerService {
       exercise = (Exercise) ids.giveId(exercise);
       workout.addExercise(exercise.getId());
       exercise.setWorkoutId(workoutId);
-      System.out.println(exercise.getId());
-      System.out.println(workout.getId());
       persistence.saveIds(ids);
       persistence.saveIdObject(workout);
       persistence.saveIdObject(exercise);
@@ -194,9 +193,11 @@ public class ServerService {
     }
     try {
       persistence.saveIdObject(exercise);
-    } catch (IOException | Exceptions.IdNotFoundException e) {
+    } catch (IOException e) {
       e.printStackTrace();
       throw new Exceptions.ServerException();
+    } catch (Exceptions.IdNotFoundException e) {
+      throw new Exceptions.ExerciseNotFoundException(e.getMessage());
     }
   }
 
@@ -262,7 +263,6 @@ public class ServerService {
    */
   public void deleteWorkout(String id) throws Exceptions.ServerException, Exceptions.IllegalIdException {
     validateId(id, Workout.class);
-    System.out.println("WORKOUT GOT VALIDATED!");
     try {
       Workout workout = persistence.getWorkout(id);
       for (String s : workout.getExerciseIds()) {
@@ -359,7 +359,7 @@ public class ServerService {
    * @return
    * @throws Exceptions.ServerException
    */
-  public Map<String, String> getMapping(Class cls) throws Exceptions.ServerException {
+  public LinkedHashMap<String, String> getMapping(Class cls) throws Exceptions.ServerException {
     try {
       IdHandler ids = persistence.getIds();
       return ids.getMap(cls);

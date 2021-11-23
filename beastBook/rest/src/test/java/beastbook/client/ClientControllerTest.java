@@ -1,17 +1,23 @@
 package beastbook.client;
 
 import beastbook.core.*;
-import beastbook.server.ServerController;
 import beastbook.server.ServerService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.*;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.web.server.LocalServerPort;
+
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import static beastbook.core.Properties.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ClientControllerTest {
+
+/*  @LocalServerPort
+  private int port;*/
 
   private static ClientController clientController;
   private final Exercise mockExercise = new Exercise("mockExercise", 1, 1, 1, 1, 1);
@@ -23,12 +29,16 @@ public class ClientControllerTest {
       Exceptions.BadPackageException, URISyntaxException,
       Exceptions.PasswordIncorrectException, JsonProcessingException,
       Exceptions.UserAlreadyExistException {
-    ServerService service = new ServerService(mockUser);
-    service.deleteUser();
-    RegisterController registerController = new RegisterController();
-    registerController.registerUser(mockUser.getUsername(), mockUser.getPassword());
+    try {
+      RegisterController registerController = new RegisterController();
+      registerController.registerUser(mockUser.getUsername(), mockUser.getPassword());
+    } catch (Exceptions.UserAlreadyExistException e) {
+      clientController = new ClientController(mockUser.getUsername(), mockUser.getPassword());
+      clientController.deleteUser();
+      RegisterController registerController = new RegisterController();
+      registerController.registerUser(mockUser.getUsername(), mockUser.getPassword());
+    }
     clientController = new ClientController(mockUser.getUsername(), mockUser.getPassword());
-    System.out.println(clientController);
   }
 
   private void assertEqualWithoutIdExercise(Exercise exercise1, Exercise exercise2) {
@@ -59,9 +69,9 @@ public class ClientControllerTest {
 
   @Test
   void testGetters() {
-    assertThrows(Exceptions.IllegalIdException.class, () -> clientController.getExercise(notValidExerciseId));
-    assertThrows(Exceptions.IllegalIdException.class, () -> clientController.getWorkout(notValidWorkoutId));
-    assertThrows(Exceptions.IllegalIdException.class, () -> clientController.getHistory(notValidHistoryId));
+    assertThrows(Exceptions.IllegalIdException.class, () -> clientController.getExercise("fakeId"));
+    assertThrows(Exceptions.IllegalIdException.class, () -> clientController.getWorkout("fakeId"));
+    assertThrows(Exceptions.IllegalIdException.class, () -> clientController.getHistory("fakeId"));
 
     assertThrows(Exceptions.ExerciseNotFoundException.class, () -> clientController.getExercise("ab"));
     assertThrows(Exceptions.WorkoutNotFoundException.class, () -> clientController.getWorkout("AB"));
@@ -74,7 +84,7 @@ public class ClientControllerTest {
       Exceptions.HistoryAlreadyExistsException, Exceptions.ExerciseNotFoundException,
       Exceptions.HistoryNotFoundException, Exceptions.IllegalIdException, Exceptions.IdNotFoundException, Exceptions.BadPackageException, URISyntaxException, JsonProcessingException {
     //add objects:
-    assertThrows(Exceptions.IllegalIdException.class, () -> clientController.addExercise(mockExercise, notValidWorkoutId));
+    assertThrows(Exceptions.IllegalIdException.class, () -> clientController.addExercise(mockExercise, "fakeId"));
     assertThrows(Exceptions.WorkoutNotFoundException.class, () -> clientController.addExercise(mockExercise, ("AB")));
     clientController.addWorkout(mockWorkout, List.of(mockExercise));
     String returnedWorkoutId = clientController.getExerciseMap().keySet().stream().toList().get(0);
@@ -115,19 +125,25 @@ public class ClientControllerTest {
     assertThrows(Exceptions.IllegalIdException.class, () -> clientController.updateExercise(mockExercise));
     assertThrows(Exceptions.IllegalIdException.class, () -> clientController.updateWorkout(mockWorkout));
 
-    assertThrows(Exceptions.IllegalIdException.class, () -> clientController.addWorkout(mockWorkout, List.of(mockExercise)));
-    assertThrows(Exceptions.IllegalIdException.class, () -> clientController.updateWorkout(mockWorkout));
+    clientController.addWorkout(mockWorkout, List.of());
     String returnedWorkoutId = clientController.getWorkoutMap().keySet().stream().toList().get(0);
     clientController.addExercise(mockExercise, returnedWorkoutId);
 
     Exercise falseExercise = new Exercise("Bench press", 20, 30, 40, 50, 60);
     Workout falseWorkout = new Workout("test");
+    assertThrows(Exceptions.IllegalIdException.class, () -> clientController.updateExercise(falseExercise));
+    assertThrows(Exceptions.IllegalIdException.class, () -> clientController.updateWorkout(falseWorkout));
+/*
+
+    falseExercise = new Exercise("Bench press", 20, 30, 40, 50, 60);
+    falseWorkout = new Workout("test");
     falseExercise.setId("dd");
     falseWorkout.setId("GG");
-    assertThrows(Exceptions.IllegalIdException.class, () -> clientController.updateExercise(new Exercise("Bench press", 20, 30, 40, 50, 60)));
-    assertThrows(Exceptions.IllegalIdException.class, () -> clientController.updateWorkout(new Workout("test")));
-    assertThrows(Exceptions.ExerciseNotFoundException.class, () -> clientController.updateExercise(falseExercise));
-    assertThrows(Exceptions.WorkoutNotFoundException.class, () -> clientController.updateWorkout(falseWorkout));
+    Exercise falseExerciseWithValidId = falseExercise;
+    Workout falseWorkoutWithValidId = falseWorkout;
+    assertThrows(Exceptions.ExerciseNotFoundException.class, () -> clientController.updateExercise(falseExerciseWithValidId));
+    assertThrows(Exceptions.WorkoutNotFoundException.class, () -> clientController.updateWorkout(falseWorkoutWithValidId));
+*/
 
     Map<String, String> exerciseMap = clientController.getExerciseMap();
     Map<String, String> workoutMap = clientController.getWorkoutMap();
@@ -168,8 +184,9 @@ public class ClientControllerTest {
     assertThrows(Exceptions.IllegalIdException.class, () -> clientController.removeWorkout("not valid"));
     assertThrows(Exceptions.IllegalIdException.class, () -> clientController.removeHistory("not valid"));
 
-    clientController.addWorkout(mockWorkout, List.of(mockExercise));
-    String returnedWorkoutId = clientController.getExerciseMap().keySet().stream().toList().get(0);
+    clientController.addWorkout(mockWorkout, List.of());
+    String returnedWorkoutId = clientController.getWorkoutMap().keySet().stream().toList().get(0);
+    System.out.println(returnedWorkoutId);
     clientController.addExercise(mockExercise, returnedWorkoutId);
     clientController.addHistory(mockHistory);
 

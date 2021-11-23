@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Map;
+import java.util.LinkedHashMap;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -67,7 +67,7 @@ public class ServerController {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
       serverService.createUser();
-      return new ResponseEntity<>("", HttpStatus.OK);
+      return new ResponseEntity<>("", HttpStatus.CREATED);
     } catch (Exceptions.BadPackageException e) {
       return sendBadRequest(e);
     } catch (Exceptions.UserAlreadyExistException e) {
@@ -105,7 +105,7 @@ public class ServerController {
       setService(user);
       Workout workout = (Workout) jsonToObject(workoutString, Workout.class);
       String workoutId = serverService.addWorkout(workout);
-      return new ResponseEntity<>(workoutId, HttpStatus.OK);
+      return new ResponseEntity<>(workoutId, HttpStatus.CREATED);
     } catch (Exceptions.BadPackageException e) {
       return sendBadRequest(e);
     } catch (Exceptions.WorkoutAlreadyExistsException e) {
@@ -125,7 +125,7 @@ public class ServerController {
       setService(user);
       Exercise exercise = (Exercise) jsonToObject(exerciseString, Exercise.class);
       serverService.addExercise(exercise, workoutId);
-      return new ResponseEntity<>("", HttpStatus.OK);
+      return new ResponseEntity<>("", HttpStatus.CREATED);
     } catch (Exceptions.BadPackageException e) {
       return sendBadRequest(e);
     } catch (Exceptions.WorkoutNotFoundException e) {
@@ -146,7 +146,7 @@ public class ServerController {
       setService(user);
       History history = (History) jsonToObject(historyString, History.class);
       serverService.addHistory(history);
-      return new ResponseEntity<>("", HttpStatus.OK);
+      return new ResponseEntity<>("", HttpStatus.CREATED);
     } catch (Exceptions.BadPackageException e) {
       return sendBadRequest(e);
     } catch (Exceptions.ServerException e) {
@@ -205,7 +205,7 @@ public class ServerController {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
       serverService.deleteUser();
-      return new ResponseEntity<>("", HttpStatus.OK);
+      return new ResponseEntity<String>("", HttpStatus.OK);
     } catch (Exceptions.BadPackageException e) {
       return sendBadRequest(e);
     } catch (Exceptions.ServerException e) {
@@ -362,7 +362,7 @@ public class ServerController {
     try {
       User user = (User) jsonToObject(userString, User.class);
       setService(user);
-      Map<String, String> map = serverService.getMapping(History.class);
+      LinkedHashMap<String, String> map = serverService.getMapping(History.class);
       String packageString = objectToJson(map);
       return new ResponseEntity<>(packageString, HttpStatus.OK);
     } catch (Exceptions.BadPackageException e) {

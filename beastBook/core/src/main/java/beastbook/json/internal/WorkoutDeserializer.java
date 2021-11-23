@@ -64,7 +64,7 @@ public class WorkoutDeserializer extends JsonDeserializer<Workout> {
           if (id != null) {
             try {
               workout.addExercise(id);
-            } catch (Exceptions.IllegalIdException e) {
+            } catch (Exceptions.IllegalIdException | Exceptions.ExerciseAlreadyExistsException e) {
               throw new IOException("IdHandler not found when loading file, "
                   + "something is wrong with writing object to file");
             }

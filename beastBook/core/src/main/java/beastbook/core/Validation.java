@@ -156,7 +156,20 @@ public class Validation {
     if (id.length() != legalLength) {
       throw new Exceptions.IllegalIdException(id, cls);
     }
-    for (int i = 0; i < legalChars.length(); i++) {
+    int counter = 0;
+    for (char c : id.toCharArray()) {
+      for (char l : legalChars.toCharArray()) {
+        if (c == l) {
+          counter++;
+        }
+      }
+    }
+    if (counter == id.length()) {
+      return;
+    }
+
+
+/*    for (int i = 0; i < legalChars.length(); i++) {
       for (int j = 0; j < id.length(); j++) {
         if (id.charAt(j) == legalChars.charAt(i)) {
           id = id.replace(id.substring(j, j + 1), "");
@@ -165,7 +178,7 @@ public class Validation {
           return;
         }
       }
-    }
+    }*/
     throw new Exceptions.IllegalIdException(id, cls);
   }
 }

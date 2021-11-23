@@ -15,15 +15,15 @@ import java.util.concurrent.ThreadLocalRandom;
 public class IdHandler {
   static int legalLength;
   static String legalChars;
-  private Map<String, String> exerciseMap = new LinkedHashMap<>();
-  private Map<String, String> workoutMap = new LinkedHashMap<>();
-  private Map<String, String> historyMap = new LinkedHashMap<>();
+  private LinkedHashMap<String, String> exerciseMap = new LinkedHashMap<>();
+  private LinkedHashMap<String, String> workoutMap = new LinkedHashMap<>();
+  private LinkedHashMap<String, String> historyMap = new LinkedHashMap<>();
 
-  public Map<String, String> getMap(Class cls) throws IllegalArgumentException {
+  public LinkedHashMap<String, String> getMap(Class cls) throws IllegalArgumentException {
     return new LinkedHashMap<>(Collections.synchronizedMap(getEditableMap(cls)));
   }
 
-  private Map<String, String> getEditableMap(Class<?> cls) throws IllegalArgumentException {
+  private LinkedHashMap<String, String> getEditableMap(Class<?> cls) throws IllegalArgumentException {
     Map<String, String> map;
     if (cls == Exercise.class) {
       return exerciseMap;

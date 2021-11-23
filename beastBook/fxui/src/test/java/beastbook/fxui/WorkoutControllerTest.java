@@ -42,7 +42,7 @@ public class WorkoutControllerTest extends ApplicationTest{
       Exceptions.PasswordIncorrectException,
       Exceptions.WorkoutAlreadyExistsException,
       Exceptions.WorkoutNotFoundException,
-      Exceptions.ExerciseAlreadyExistsException {
+      Exceptions.ExerciseAlreadyExistsException, Exceptions.IllegalIdException {
     FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/beastbook.fxui/Workout.fxml"));
     wc = new WorkoutController();
     loader.setController(wc);
@@ -59,7 +59,7 @@ public class WorkoutControllerTest extends ApplicationTest{
       Exceptions.ServerException,
       URISyntaxException,
       JsonProcessingException,
-      Exceptions.ExerciseAlreadyExistsException {
+      Exceptions.ExerciseAlreadyExistsException, Exceptions.IllegalIdException {
     workout1 = new Workout("Pull workout");
     workout2 = new Workout("LEGS");
     List<Exercise> exerciseList1 = new ArrayList<>();

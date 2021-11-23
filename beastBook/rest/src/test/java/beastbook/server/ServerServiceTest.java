@@ -15,12 +15,10 @@ public class ServerServiceTest {
   private final Exercise mockExercise = new Exercise("mockExercise", 1, 1, 1, 1, 1);
   private final Workout mockWorkout = new Workout("mockWorkout");
   private final History mockHistory = new History("mockHistory", List.of(mockExercise));
-  private User user;
 
   @BeforeEach
   void setup() throws Exceptions.ServerException, Exceptions.UserAlreadyExistException {
     serverService = new ServerService(mockUser);
-    user = new User("test", "test");
     try {
       serverService.createUser();
     } catch (Exceptions.UserAlreadyExistException e) {
@@ -31,7 +29,6 @@ public class ServerServiceTest {
 
   @Test
   void testCreateUser() {
-    user = new User("test", "test");
     assertThrows(Exceptions.UserAlreadyExistException.class, () -> serverService.createUser());
   }
 

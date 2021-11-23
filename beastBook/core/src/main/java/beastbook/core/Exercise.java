@@ -52,26 +52,56 @@ public class Exercise implements IdClasses {
     this.name = name;
   }
 
+  /**
+   * Sets rep goal for Exercise with Validation.
+   *
+   * @param repGoal to set.
+   * @throws IllegalArgumentException if validation fails.
+   */
   public void setRepGoal(int repGoal) throws IllegalArgumentException {
     validateRepGoal(repGoal);
     this.repGoal = repGoal;
   }
 
+  /**
+   * Sets weight for Exercise with Validation.
+   *
+   * @param weight to set.
+   * @throws IllegalArgumentException if validation fails.
+   */
   public void setWeight(double weight) throws IllegalArgumentException {
     validateWeight(weight);
     this.weight = weight;
   }
 
+  /**
+   * Sets number of sets for Exercise with Validation.
+   *
+   * @param sets to set.
+   * @throws IllegalArgumentException if validation fails.
+   */
   public void setSets(int sets) throws IllegalArgumentException {
     validateSets(sets);
     this.sets = sets;
   }
 
+  /**
+   * Sets number of reps per set for Exercise with Validation.
+   *
+   * @param repsPerSet to set.
+   * @throws IllegalArgumentException if validation fails.
+   */
   public void setRepsPerSet(int repsPerSet) throws IllegalArgumentException {
     validateRepsPerSet(repsPerSet);
     this.repsPerSet = repsPerSet;
   }
 
+  /**
+   * Sets rest time between sets for Exercise with Validation.
+   *
+   * @param restTime to set.
+   * @throws IllegalArgumentException if validation fails.
+   */
   public void setRestTime(int restTime) throws IllegalArgumentException {
     validateRestTime(restTime);
     this.restTime = restTime;

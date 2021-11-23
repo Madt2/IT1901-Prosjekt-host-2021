@@ -51,7 +51,7 @@ public class WorkoutTest {
   }
 
   @Test
-  void testAddAndRemoveExercise() throws IllegalIdException {
+  void testAddAndRemoveExercise() throws IllegalIdException, Exceptions.ExerciseNotFoundException, Exceptions.ExerciseAlreadyExistsException {
     testWorkout.addExercise(exercise.getId());
    
     assertEquals(1, testWorkout.getExerciseIds().size());
@@ -62,7 +62,7 @@ public class WorkoutTest {
   }
 
   @Test
-  void addAndRemoveDuplicateExerciseTest() throws IllegalIdException{
+  void addAndRemoveDuplicateExerciseTest() throws IllegalIdException, Exceptions.ExerciseNotFoundException, Exceptions.ExerciseAlreadyExistsException {
     testWorkout.addExercise(exercise.getId());
     Assertions.assertThrows(IllegalArgumentException.class, () -> {
       testWorkout.addExercise(exercise.getId());

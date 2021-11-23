@@ -227,12 +227,7 @@ public class CreateWorkoutController extends AbstractController {
         updateTable();
         createButton.setDisable(false);
         emptyInputFields();
-      } catch (IllegalArgumentException | Exceptions.ExerciseAlreadyExistsException
-          | JsonProcessingException
-          | URISyntaxException
-          | Exceptions.ServerException
-          | Exceptions.BadPackageException
-          | Exceptions.WorkoutNotFoundException i) {
+      } catch (IllegalArgumentException | Exceptions.ExerciseAlreadyExistsException | JsonProcessingException | URISyntaxException | Exceptions.ServerException | Exceptions.BadPackageException | Exceptions.WorkoutNotFoundException | Exceptions.IllegalIdException i) {
         exceptionFeedback.setText(i.getMessage());
       }
     } else if (checkForEmptyInputFields()) {
@@ -345,10 +340,7 @@ public class CreateWorkoutController extends AbstractController {
         workout = new Workout();
         exercises = new ArrayList<>();
         updateTable();
-      } catch (IllegalArgumentException | Exceptions.BadPackageException
-          | Exceptions.ServerException | URISyntaxException
-          | Exceptions.WorkoutNotFoundException | Exceptions.ExerciseAlreadyExistsException
-          | JsonProcessingException | Exceptions.WorkoutAlreadyExistsException i) {
+      } catch (IllegalArgumentException | Exceptions.BadPackageException | Exceptions.ServerException | URISyntaxException | Exceptions.WorkoutNotFoundException | Exceptions.ExerciseAlreadyExistsException | JsonProcessingException | Exceptions.WorkoutAlreadyExistsException | Exceptions.IllegalIdException i) {
         exceptionFeedback.setText(i.getMessage());
       }
     }
