@@ -184,5 +184,10 @@ public class HistoryOverviewController extends AbstractController {
     public String getDate() {
       return date;
     }
+
+    @Override
+    public String toString() {
+      return name + ";" + date;
+    }
   }
 }

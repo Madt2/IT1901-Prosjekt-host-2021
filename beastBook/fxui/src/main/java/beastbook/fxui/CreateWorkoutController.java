@@ -163,11 +163,7 @@ public class CreateWorkoutController extends AbstractController {
     setsColumn.setResizable(false);
     restTimeColumn.setResizable(false);
   }
-
-  Exercise getTable(int row) {
-    return workoutTable.getItems().get(row);
-  }
-
+  
   TableView<Exercise> getWorkoutTable() {
     return workoutTable;
   }
@@ -208,32 +204,25 @@ public class CreateWorkoutController extends AbstractController {
         String name = exerciseNameInput.getText();
         int repsPerSet = 0;
         Exercise exercise = new Exercise(name, repGoal, weight, sets, repsPerSet, rest);
-        if (workout.getId() != null) {
-          for (Exercise e : exercises) {
-            if (e.getName().equals(exercise.getName())) {
-              exceptionFeedback.setText("Could not add exercise because it is already added!");
-            }
+    
+        for (Exercise e : exercises) {
+          if (e.getName().equals(exercise.getName())) {
+            exceptionFeedback.setText("Could not add exercise because it is already added!");
+            return;
           }
-          service.addExercise(exercise, workout.getId());
-        } else {
-          for (Exercise e : exercises) {
-            if (e.getName().equals(exercise.getName())) {
-              exceptionFeedback.setText("Could not add exercise because it is already added!");
-            }
-          }
-        }
+        }       
         exercises.add(exercise);
         exceptionFeedback.setText("Exercise added and saved to the workout!");
         updateTable();
         createButton.setDisable(false);
         emptyInputFields();
-      } catch (IllegalArgumentException | Exceptions.ExerciseAlreadyExistsException | JsonProcessingException | URISyntaxException | Exceptions.ServerException | Exceptions.BadPackageException | Exceptions.WorkoutNotFoundException | Exceptions.IllegalIdException i) {
+      } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage());
       }
     } else if (checkForEmptyInputFields()) {
       exceptionFeedback.setText("Input missing in one or more fields");
     } else if (exceptionFeedback.getText().equals("Could not add exercise because it is already added!")) {
-      //statement to fix bug where exception message is overwritten
+      return; // Do nothing. Do not change the exception feedback to the one underneath
     } else {
       exceptionFeedback.setText("Wrong input, exercise was not created");
     }
@@ -312,9 +301,10 @@ public class CreateWorkoutController extends AbstractController {
       titleInput.setDisable(true);
       loadButton.setDisable(true);
       updateTable();
+    } catch (Exceptions.IllegalIdException e) {
+      exceptionFeedback.setText("Invalid workout!");
     } catch (Exceptions.WorkoutNotFoundException | Exceptions.BadPackageException
-        | Exceptions.ServerException | Exceptions.IllegalIdException
-        | URISyntaxException | JsonProcessingException
+        | Exceptions.ServerException | URISyntaxException | JsonProcessingException
         | Exceptions.ExerciseNotFoundException e) {
       exceptionFeedback.setText(e.getMessage());
     }
@@ -340,7 +330,10 @@ public class CreateWorkoutController extends AbstractController {
         workout = new Workout();
         exercises = new ArrayList<>();
         updateTable();
-      } catch (IllegalArgumentException | Exceptions.BadPackageException | Exceptions.ServerException | URISyntaxException | Exceptions.WorkoutNotFoundException | Exceptions.ExerciseAlreadyExistsException | JsonProcessingException | Exceptions.WorkoutAlreadyExistsException | Exceptions.IllegalIdException i) {
+      } catch (IllegalArgumentException | Exceptions.BadPackageException 
+        | Exceptions.ServerException | URISyntaxException 
+        | Exceptions.WorkoutNotFoundException | Exceptions.ExerciseAlreadyExistsException 
+        | JsonProcessingException | Exceptions.WorkoutAlreadyExistsException | Exceptions.IllegalIdException i) {
         exceptionFeedback.setText(i.getMessage());
       }
     }
@@ -381,11 +374,11 @@ public class CreateWorkoutController extends AbstractController {
   TextField getWeightInput() {
     return this.weightInput;
   }
-
   /**
   * Validates if int given as input is allowed.
   * If int is not accepted, border for input field is given red colour.
   */
+
   public class IntValidator {
     /**
     * IntValidators method for validating.
