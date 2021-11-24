@@ -10,7 +10,7 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 
-public class IdDeserializer extends JsonDeserializer<IdHandler> {
+public class IdHandlerDeserializer extends JsonDeserializer<IdHandler> {
   /**
    * Deserializes User data from json file.
    * Format for User in json: { exerciseIdMap: "[(...:...),(...:...)]",
