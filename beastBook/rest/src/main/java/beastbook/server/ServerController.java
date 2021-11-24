@@ -11,8 +11,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+/**
+ * Controller class for server. Uses methods to send requests to ServerService.
+ */
 @RestController
 public class ServerController {
+
 
   private ServerService serverService;
   ObjectMapper mapper;
@@ -33,6 +37,7 @@ public class ServerController {
    * Converts object to jsonString.
    *
    * @param object The object to be converted.
+   * @return the jsonString that the object was converted to.
    */
   private String objectToJson(Object object) throws Exceptions.ServerException {
     try {
@@ -49,6 +54,7 @@ public class ServerController {
    *
    * @param jsonString The jsonString to be converted.
    * @param cls The class of the jsonString to be converted.
+   * @return The object that the jsonString was converted to.
    */
   private Object jsonToObject(String jsonString, Class<?> cls) throws Exceptions.BadPackageException {
     try {
@@ -78,7 +84,8 @@ public class ServerController {
    * Creates a user and
    * sends a request to ServerService
    *
-   * @param userString 
+   * @param userString to be used to create a user
+   * @return
    */
   @PostMapping("createUser/{userString}")
   public ResponseEntity<String> createUser(@PathVariable String userString) {
