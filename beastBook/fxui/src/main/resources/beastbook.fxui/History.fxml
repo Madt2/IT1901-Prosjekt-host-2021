@@ -9,14 +9,14 @@
 
 <AnchorPane fx:id="rootPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <TableView fx:id="historyTable" layoutX="41.0" layoutY="84.0" minHeight="200.0" minWidth="525.0" prefHeight="60.0" prefWidth="525.0">
+      <TableView fx:id="historyTable" layoutX="18.0" layoutY="85.0" minHeight="200.0" minWidth="565.0" prefHeight="60.0" prefWidth="565.0">
          <cursor>
             <Cursor fx:constant="DEFAULT" />
          </cursor></TableView>
       <Button fx:id="backButton" layoutX="14.0" layoutY="14.0" mnemonicParsing="false" onAction="#loadHistoryOverview" text="&lt;- Back" />
-      <Text layoutX="45.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title:" wrappingWidth="42.484375">
+      <Text layoutX="21.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Title:" wrappingWidth="42.484375">
          <font>
-            <Font size="18.0" />
+            <Font name="System Bold" size="18.0" />
          </font>
       </Text>
       <Text fx:id="exceptionFeedback" fill="#f80000" layoutX="42.0" layoutY="316.0" strokeType="OUTSIDE" strokeWidth="0.0" textAlignment="CENTER" wrappingWidth="525.0">
@@ -24,19 +24,19 @@
             <Font size="15.0" />
          </font>
       </Text>
-      <Text fx:id="date" layoutX="428.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="[date insert here]" wrappingWidth="137.484375">
+      <Text fx:id="date" layoutX="495.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="[date]" wrappingWidth="87.484375">
          <font>
             <Font size="18.0" />
          </font>
       </Text>
-      <Text fx:id="title" layoutX="87.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="[title insert here]" wrappingWidth="208.484375">
+      <Text fx:id="title" layoutX="63.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="[title]" wrappingWidth="360.484375">
          <font>
             <Font size="18.0" />
          </font>
       </Text>
-      <Text fx:id="date1" layoutX="379.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date:" wrappingWidth="48.484375">
+      <Text layoutX="446.0" layoutY="69.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Date:" wrappingWidth="48.484375">
          <font>
-            <Font name="System Bold Italic" size="18.0" />
+            <Font name="System Bold" size="18.0" />
          </font>
       </Text>
    </children>

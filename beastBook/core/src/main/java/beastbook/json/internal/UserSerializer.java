@@ -15,7 +15,9 @@ public class UserSerializer extends JsonSerializer<User> {
 
   /**
   * Serializes user from input argument. Serializes user-object to json format.
-  * Format for User in json: { username: "...", password: "...", workouts: "[...,...]" }.
+  * Format for User in json: { exerciseIdMap: "[(...:...),(...:...)]",
+   * workoutIdMap: "[(...:...),(...:...)]",
+   * historyIdMap: "[(...:...),(...:...)]" }.
   *
   * @param user User to serialize.
   * @param jsonGenerator class that writes JSON-file.
@@ -30,22 +32,12 @@ public class UserSerializer extends JsonSerializer<User> {
       SerializerProvider serializerProvider
   ) throws IOException {
     jsonGenerator.writeStartObject();
-    if (user.getUserName() != null) {
-      jsonGenerator.writeStringField("username", user.getUserName());
+    if (user.getUsername() != null) {
+      jsonGenerator.writeStringField("username", user.getUsername());
     }
     if (user.getPassword() != null) {
       jsonGenerator.writeStringField("password", user.getPassword());
     }
-    jsonGenerator.writeArrayFieldStart("workouts");
-    for (Workout item : user.getWorkouts()) {
-      jsonGenerator.writeObject(item);
-    }
-    jsonGenerator.writeEndArray();
-    jsonGenerator.writeArrayFieldStart("history");
-    for (History item : user.getHistories()) {
-      jsonGenerator.writeObject(item);
-    }
-    jsonGenerator.writeEndArray();
     jsonGenerator.writeEndObject();
   }
 }

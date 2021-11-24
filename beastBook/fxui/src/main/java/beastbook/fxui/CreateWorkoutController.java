@@ -1,9 +1,16 @@
 package beastbook.fxui;
 
+import static beastbook.core.Properties.*;
+
+import beastbook.core.Exceptions;
 import beastbook.core.Exercise;
-import beastbook.core.User;
 import beastbook.core.Workout;
-import java.io.IOException;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -12,7 +19,6 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Text;
-
 
 /**
  * Controller for the CreateWorkout screen.
@@ -24,9 +30,6 @@ public class CreateWorkoutController extends AbstractController {
 
   @FXML
   private Text exceptionFeedback;
-
-  @FXML
-  private Button backButton;
 
   @FXML
   private TextField exerciseNameInput;
@@ -56,7 +59,7 @@ public class CreateWorkoutController extends AbstractController {
   private Button deleteButton;
 
   @FXML
-  private Button addExercise;
+  private Button addExerciseButton;
 
   @FXML
   private Text exerciseTitle;
@@ -78,6 +81,8 @@ public class CreateWorkoutController extends AbstractController {
   private TableColumn<Exercise, Double> weightColumn;
   private TableColumn<Exercise, Integer> setsColumn;
   private TableColumn<Exercise, Integer> restTimeColumn;
+  private List<Exercise> exercises = new ArrayList<>();
+  private Workout workout = new Workout();
 
   public static final String WRONG_INPUT_BORDER_COLOR = "-fx-text-box-border: #B22222;"
           + "-fx-focus-color: #B22222";
@@ -86,8 +91,7 @@ public class CreateWorkoutController extends AbstractController {
   /**
    * Initializes the CreateWorkout scene with the listeners for validation of input fields.
    */
-  public void initialize() throws IOException {
-    user = user.loadUser(user.getUserName());
+  public void initialize() {
     updateTable();
     exerciseNameInput.setOnKeyTyped(event ->
             new StringValidator(exerciseTitle, exerciseNameInput, exceptionFeedback));
@@ -99,18 +103,18 @@ public class CreateWorkoutController extends AbstractController {
             new IntValidator(setsTitle, setsInput, exceptionFeedback));
     restInput.setOnKeyTyped(event ->
             new IntValidator(restTimeTitle, restInput, exceptionFeedback));
-  } 
+  }
 
   /**
-  * Sets the workout table columns. Clears the columns first, to avoid duplicate columns.
-  * After the columns are created, they are added to the table view.
-  * The exercises to the workout appears in to the table view if a saved workout is loaded.
-  */
+   * Sets the workout table columns. Clears the columns first, to avoid duplicate columns.
+   * After the columns are created, they are added to the table view
+   * The exercises to the workout appears in to the table view if a saved workout is loaded.
+   */
   public void updateTable() {
     workoutTable.getColumns().clear();
     exerciseNameColumn = new TableColumn<>("Exercise name");
     exerciseNameColumn.setCellValueFactory(
-            new PropertyValueFactory<>("exerciseName")
+            new PropertyValueFactory<>("name")
     );
     repGoalColumn = new TableColumn<>("Rep goal");
     repGoalColumn.setCellValueFactory(
@@ -124,7 +128,7 @@ public class CreateWorkoutController extends AbstractController {
     setsColumn.setCellValueFactory(
             new PropertyValueFactory<>("sets")
     );
-    restTimeColumn = new TableColumn<>("Rest time in sec");
+    restTimeColumn = new TableColumn<>("Rest time (sec)");
     restTimeColumn.setCellValueFactory(
             new PropertyValueFactory<>("restTime")
     );
@@ -133,55 +137,40 @@ public class CreateWorkoutController extends AbstractController {
     workoutTable.getColumns().add(weightColumn);
     workoutTable.getColumns().add(setsColumn);
     workoutTable.getColumns().add(restTimeColumn);
-    setColumnsSize();
-    Workout workout;
-    if (hasWorkout()) {
-      workout = user.getWorkout(titleInput.getText());
-    } else if (hasTemp()) {
-      workout = user.getWorkout("Temp");
-    } else {
-      workout = new Workout(titleInput.getText());
-    }
-    workoutTable.getItems().setAll(workout.getExercises());
+    setColumnProperties();
+    workoutTable.getItems().setAll(exercises);
   }
 
-  private void setColumnsSize() {
-    exerciseNameColumn.setPrefWidth(100);        
-    repGoalColumn.setPrefWidth(75);
-    weightColumn.setPrefWidth(75);
-    setsColumn.setPrefWidth(80);
-    restTimeColumn.setPrefWidth(100);
-  }
+  /**
+  * Sets different properties to the columns.
+  * Width, not reorderable and not resizable functionality is set.
+  */
+  private void setColumnProperties() {
+    exerciseNameColumn.setPrefWidth(210);        
+    repGoalColumn.setPrefWidth(65);
+    weightColumn.setPrefWidth(65);
+    setsColumn.setPrefWidth(64);
+    restTimeColumn.setPrefWidth(94);
+  
+    exerciseNameColumn.setReorderable(false);
+    repGoalColumn.setReorderable(false);
+    weightColumn.setReorderable(false);
+    setsColumn.setReorderable(false);
+    restTimeColumn.setReorderable(false);
 
-  Exercise getTable(int row) {
-    return workoutTable.getItems().get(row);
+    repGoalColumn.setResizable(false);
+    weightColumn.setResizable(false);
+    setsColumn.setResizable(false);
+    restTimeColumn.setResizable(false);
   }
-    
+  
   TableView<Exercise> getWorkoutTable() {
     return workoutTable;
   }
 
-  private boolean hasWorkout() {
-    for (Workout w : user.getWorkouts()) {
-      if (w.getName().equals(titleInput.getText())) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-  private boolean hasTemp() {
-    for (Workout w : user.getWorkouts()) {
-      if (w.getName().equals("Temp")) {
-        return true;
-      }
-    }
-    return false;
-  }
-
   /**
-   * Creates a exercise object based on the input in the input fields.
-   * Adds the exercise to the table view and to the users data.
+   * Creates an exercise object based on the input in the input fields.
+   * Adds the exercise to the table view and to the user's data.
    * Will show an error in the GUI if the exercise could not be added/created.
    */
   @FXML
@@ -192,7 +181,6 @@ public class CreateWorkoutController extends AbstractController {
         double weight;
         int sets;
         int rest;
-
         try {
           repGoal = Integer.parseInt(repGoalInput.getText());
         } catch (NumberFormatException a) {
@@ -216,42 +204,32 @@ public class CreateWorkoutController extends AbstractController {
         String name = exerciseNameInput.getText();
         int repsPerSet = 0;
         Exercise exercise = new Exercise(name, repGoal, weight, sets, repsPerSet, rest);
-        Workout workout;
-        if (hasWorkout()) {
-          workout = user.getWorkout(titleInput.getText());
-        } else if (hasTemp()) {
-          workout = user.getWorkout("Temp");
-        } else {
-          workout = new Workout("Temp");
-          user.addWorkout(workout);
-        }
-        for (Exercise e : workout.getExercises()) {
-          if (e.getExerciseName().equals(exercise.getExerciseName())) {
-            workout.removeExercise(e);
-            workout.addExercise(exercise);
-            exceptionFeedback.setText("Exercise overwritten!");
+    
+        for (Exercise e : exercises) {
+          if (e.getName().equals(exercise.getName())) {
+            exceptionFeedback.setText("Could not add exercise because it is already added!");
+            return;
           }
-        }
-        if (!exceptionFeedback.getText().equals("Exercise overwritten!")) {
-          workout.addExercise(exercise);
-          exceptionFeedback.setText("Exercise added!");
-        }
+        }       
+        exercises.add(exercise);
+        exceptionFeedback.setText("Exercise added and saved to the workout!");
         updateTable();
-        exceptionFeedback.setText("");
         createButton.setDisable(false);
         emptyInputFields();
       } catch (IllegalArgumentException i) {
         exceptionFeedback.setText(i.getMessage());
       }
     } else if (checkForEmptyInputFields()) {
-      exceptionFeedback.setText("Input missing in a field");
+      exceptionFeedback.setText("Input missing in one or more fields");
+    } else if (exceptionFeedback.getText().equals("Could not add exercise because it is already added!")) {
+      return; // Do nothing. Do not change the exception feedback to the one underneath
     } else {
       exceptionFeedback.setText("Wrong input, exercise was not created");
     }
   }
 
   /**
-  * Empties all the input fields when a exercises is created successfully.
+  *  Empties all the input fields when an exercise is created successfully.
   */
   private void emptyInputFields() {
     exerciseNameInput.setText("");
@@ -299,16 +277,36 @@ public class CreateWorkoutController extends AbstractController {
       exceptionFeedback.setText("Missing Title!");
       return;
     }
+    String name = titleInput.getText();
     try {
-      if (hasWorkout()) {
-        updateTable();
-        exceptionFeedback.setText("");
-      } else {
-        throw new IllegalArgumentException("No workout found");
+      String id = null;
+      Map<String, String> workoutMap = service.getWorkoutMap();
+      Iterator it = workoutMap.entrySet().iterator();
+      while (it.hasNext()) {
+        Map.Entry entry = (Map.Entry) it.next();
+        if (entry.getValue().equals(name)) {
+          id = entry.getKey().toString();
+          break;
+        }
       }
-    } catch (Exception e) {
-      exceptionFeedback.setText("Workout not found!");
+      workout = service.getWorkout(id);
+      exercises = new ArrayList<>();
+      for (String exerciseId : workout.getExerciseIds()) {
+        Exercise e = service.getExercise(exerciseId);
+        if (e != null) {
+          exercises.add(e);
+        }
+      }
+      createButton.setVisible(false);
+      titleInput.setDisable(true);
+      loadButton.setDisable(true);
       updateTable();
+    } catch (Exceptions.IllegalIdException e) {
+      exceptionFeedback.setText("Invalid workout!");
+    } catch (Exceptions.WorkoutNotFoundException | Exceptions.BadPackageException
+        | Exceptions.ServerException | URISyntaxException | JsonProcessingException
+        | Exceptions.ExerciseNotFoundException e) {
+      exceptionFeedback.setText(e.getMessage());
     }
   }
 
@@ -316,51 +314,34 @@ public class CreateWorkoutController extends AbstractController {
   * Creates a workout to the user based on the exercises added and the title input.
   * If no title input is given, an error message is displayed in GUI.
   * If an error occurs in saveWorkout, an error message is displayed in GUI.
-  * Overwrites a loaded workout with the data currently added.
-  *
-  * @param event the event when "Create workout" button is clicked.
   */
   @FXML
-  void createWorkout(ActionEvent event) {
+  void createWorkout() {
     if (titleInput.getText() == null || titleInput.getText().equals("")) {
-      exceptionFeedback.setText("Input title is empty, please enter name to workout");
+      exceptionFeedback.setText("Input title is empty, please enter name of workout");
     } else {
       try {
-        Workout workout;
-        if (hasWorkout()) {
-          workout = user.getWorkout(titleInput.getText());
-          user.updateWorkout(workout);
-          exceptionFeedback.setText("Workout overwritten!");
-          updateTable();
-        } else if (hasTemp()) {
-          workout = user.getWorkout("Temp");
-          user.removeWorkout(user.getWorkout("Temp"));
-          workout.setName(titleInput.getText());
-          user.addWorkout(workout);
-        } else {
-          workout = new Workout(titleInput.getText());
-          user.addWorkout(workout);
-          exceptionFeedback.setText("Workout saved!");
-        }
-        if (hasTemp()) {
-          user.removeWorkout(user.getWorkout("Temp"));
-        }
-        user.saveUser();
+        workout.setName(titleInput.getText());
+        service.addWorkout(workout, exercises);
+        exceptionFeedback.setText("Workout saved!");
         emptyInputFields();
         titleInput.setText("");
         createButton.setDisable(true);
+        workout = new Workout();
+        exercises = new ArrayList<>();
         updateTable();
-      } catch (IllegalArgumentException i) {
+      } catch (IllegalArgumentException | Exceptions.BadPackageException 
+        | Exceptions.ServerException | URISyntaxException 
+        | Exceptions.WorkoutNotFoundException | Exceptions.ExerciseAlreadyExistsException 
+        | JsonProcessingException | Exceptions.WorkoutAlreadyExistsException | Exceptions.IllegalIdException i) {
         exceptionFeedback.setText(i.getMessage());
-      } catch (Exception e) {
-        exceptionFeedback.setText("Save Workout failed!");
       }
     }
   }
 
   /**
-   * Listener for when a exercise is clicked in the table view.
-   */  
+   * Listener for when an exercise is clicked in the table view.
+   */
   @FXML
   private void exerciseSelectedListener() {
     Exercise selectedExercise = workoutTable.getSelectionModel().getSelectedItem();
@@ -372,46 +353,32 @@ public class CreateWorkoutController extends AbstractController {
    */
   @FXML
   void deleteExercise() {
-    Exercise selectedExercise;
-    selectedExercise = workoutTable.getSelectionModel().getSelectedItem();
-    Workout workout;
+    Exercise selectedExercise = workoutTable.getSelectionModel().getSelectedItem();
     try {
-      if (hasWorkout()) {
-        workout = user.getWorkout(titleInput.getText());
-      } else if (hasTemp()) {
-        workout = user.getWorkout("Temp");
-      } else {
-        throw new IllegalStateException("No Exercise deleted");
+      if (workout.getId() != null) {
+        if (selectedExercise.getId() != null) {
+          service.removeExercise(selectedExercise.getId());
+        }
       }
-      workout.removeExercise(selectedExercise);
-      exceptionFeedback.setText("The exercise '"
-              + selectedExercise.getExerciseName() + "' was deleted!");
+      exercises.remove(selectedExercise);
+      exceptionFeedback.setText("The exercise '" + selectedExercise.getName() + "' was deleted!");
       updateTable();
-      if (hasTemp()) {
-        user.removeWorkout(user.getWorkout("Temp"));
-      }
-      user.saveUser();
       deleteButton.setDisable(true);
-    } catch (IllegalArgumentException | IOException e) {
-      exceptionFeedback.setText("The exercise '"
-              + selectedExercise.getExerciseName() + "' does not exist");
+    } catch (Exceptions.BadPackageException | JsonProcessingException
+        | Exceptions.IllegalIdException | Exceptions.ServerException
+        | URISyntaxException e) {
+      exceptionFeedback.setText(e.getMessage());
     }
   }
-
 
   TextField getWeightInput() {
     return this.weightInput;
   }
-
-
-  void setUser(User user) {
-    this.user = user;
-  }
-
   /**
   * Validates if int given as input is allowed.
   * If int is not accepted, border for input field is given red colour.
   */
+
   public class IntValidator {
     /**
     * IntValidators method for validating.
@@ -427,10 +394,10 @@ public class CreateWorkoutController extends AbstractController {
         if (num <= 0) {
           exception.setText(title.getText().replace(":", "") + " must be more than 0");
           field.setStyle(WRONG_INPUT_BORDER_COLOR);
-        } else if (String.valueOf(num).length() >= Exercise.maxIntLength) {
+        } else if (String.valueOf(num).length() > maxIntLength) {
           exception.setText(
                 title.getText().replace(":", "") + " can not be longer than "
-                + Exercise.maxIntLength + " characters!"
+                + maxIntLength + " characters!"
           );
           field.setStyle(WRONG_INPUT_BORDER_COLOR);
         } else {
@@ -441,7 +408,7 @@ public class CreateWorkoutController extends AbstractController {
         exception.setText(
             title.getText().replace(":", "")
             + " must be a number and can not exceed "
-            + Exercise.maxIntLength
+            + maxIntLength + " characters!"
         );
         field.setStyle(WRONG_INPUT_BORDER_COLOR);
       }
@@ -467,10 +434,10 @@ public class CreateWorkoutController extends AbstractController {
         if (num <= 0) {
           exception.setText(title.getText().replace(":", "") + " must be more than 0");
           field.setStyle(WRONG_INPUT_BORDER_COLOR);
-        } else if (String.valueOf(num).length() >= Exercise.maxDoubleLength) {
+        } else if (String.valueOf(num).length() > maxDoubleLength) {
           exception.setText(
                 title.getText().replace(":", "") + " can not be longer than "
-                + Exercise.maxDoubleLength + " characters!"
+                + maxDoubleLength + " characters! (including the '.' and decimals)!"
           );
           field.setStyle(WRONG_INPUT_BORDER_COLOR);
         } else {
@@ -481,7 +448,7 @@ public class CreateWorkoutController extends AbstractController {
         exception.setText(
                 title.getText().replace(":", "")
                 + " must be a number and can not exceed "
-                + Exercise.maxDoubleLength
+                + maxDoubleLength + " characters (including the '.' and decimals)!"
         );
         field.setStyle(WRONG_INPUT_BORDER_COLOR);
       }
@@ -509,11 +476,11 @@ public class CreateWorkoutController extends AbstractController {
                 + " can not be blank"
         );
         field.setStyle(WRONG_INPUT_BORDER_COLOR);
-      } else if (text.length() >= Exercise.maxStringLength) {
+      } else if (text.length() > maxStringLength) {
         exception.setText(
                 title.getText().replace(":", "")
                 + " must be less than "
-                + Exercise.maxStringLength
+                + maxStringLength
                 + " characters!"
         );
         field.setStyle(WRONG_INPUT_BORDER_COLOR);

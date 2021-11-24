@@ -1,10 +1,12 @@
 package beastbook.fxui;
 
-import beastbook.core.User;
-import java.io.IOException;
+import beastbook.client.ClientController;
+import beastbook.client.RegisterController;
+import beastbook.core.Exceptions;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 
@@ -39,8 +41,12 @@ public class LoginController extends AbstractController {
     String password = passwordInput.getText();
     if (!userName.equals("") && !password.equals("")) {
       try {
-        user = new User(userName, password);
-        user.saveUser(); //Skal lagre bruker som en JSON-fil
+        RegisterController registerController = new RegisterController();
+        try {
+          registerController.registerUser(userName, password);
+        } catch (Exceptions.UserAlreadyExistException e) {
+          loginError.setText(e.getMessage());
+        }
         loginUser(event);
       } catch (Exception e) {
         loginError.setText(e.getMessage());
@@ -59,10 +65,12 @@ public class LoginController extends AbstractController {
   void loginUser(ActionEvent event) throws IllegalArgumentException {
     String userName = usernameInput.getText();
     String password = passwordInput.getText();
-    user = new User("user", "user");
     try {
       validateLogin(userName, password);
-      user =  user.loadUser(userName);
+      System.out.println(userName);
+      System.out.println(password);
+      ClientController controller = new ClientController(userName, password);
+      setService(controller);
       super.loadHome(event);
     } catch (Exception e) {
       loginError.setText(e.getMessage());
@@ -70,23 +78,13 @@ public class LoginController extends AbstractController {
   }
 
   private void validateLogin(
-      String userName, String password)
-      throws IOException, IllegalArgumentException {
+          String userName, String password)
+      throws IllegalArgumentException {
     if (userName.equals("")) {
       throw new IllegalArgumentException("No username given");
     }
     if (password.equals("")) {
       throw new IllegalArgumentException("No Password given!");
-    }
-    try {
-      User login = user.loadUser(userName);
-      if (!login.getPassword().equals(password)) {
-        throw new IllegalArgumentException("Wrong Password");
-      }
-    } catch (IOException e) {
-      throw new IOException("No user found!");
-    } catch (IllegalArgumentException e) {
-      throw e;
     }
   }
 }

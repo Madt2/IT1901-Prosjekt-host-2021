@@ -1,25 +1,34 @@
 package beastbook.fxui;
 
-import beastbook.core.User;
+import beastbook.core.Exceptions;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-
+import javafx.scene.text.Text;
 
 /**
  * Controller for the Home screen.
  */
 public class HomeScreenController extends AbstractController {
-  @FXML
-  private Button logoutButton;
 
   @FXML
-  private Button createButton;
+  private Text exceptionFeedback;
 
+  /**
+   * Deletes the user and its data.
+   *
+   * @param event the event when "Delete user" button is clicked.
+   */
   @FXML
-  private Button workoutsButton;
-
-  void setUser(User user) {
-    this.user = user;
+  void deleteUser(ActionEvent event) {
+    try {
+      service.deleteUser();
+      super.loadLogin(event);
+    } catch (IOException | Exceptions.BadPackageException
+        | Exceptions.ServerException | URISyntaxException e) {
+      exceptionFeedback.setText(e.getMessage());
+    }
   }
 }
 

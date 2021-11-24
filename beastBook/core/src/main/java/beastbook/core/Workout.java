@@ -1,109 +1,93 @@
 package beastbook.core;
 
+import static beastbook.core.Validation.validateId;
+
 import java.util.ArrayList;
 import java.util.List;
 
+
 /**
- * Workout class used by User class. Contains name and exercises List.
+ * Workout class that creates a workout. It has a name, a unique Id to identify it,
+ * and a list of Ids to reference exercise objects.
  */
-public class Workout {
+public class Workout implements IdClasses {
+  private String id;
   private String name;
-  private List<Exercise> exercises = new ArrayList<>();
+  private List<String> exerciseIds = new ArrayList<>();
     
   /**
-  * Contructor for workout with name parameter.
+  * Constructor for workout with name parameter.
   *
-  * @param name name of the workout.
+  * @param name of the workout.
   */
   public Workout(String name) {
     setName(name);
   }
 
   /**
-  * Contructor for workout with no set name.
+  * Constructor for workout with no set name.
   */
   public Workout() {}
 
   /**
-  * Method for setting name of workout.
-  *
-  * @param name name of workout.
-  */
+   * Sets name of Workout
+   *
+   * @param name to set.
+   */
   public void setName(String name) {
     this.name = name;
   }
 
   /**
-  * Workout name getter.
-  *
-  * @return workout name.
-  */
+   * Sets workoutId for Workout.
+   *
+   * @param id to set.
+   * @throws Exceptions.IllegalIdException if id is invalid as workoutId.
+   */
+  public void setId(String id) throws Exceptions.IllegalIdException {
+    validateId(id, Workout.class);
+    this.id = id;
+  }
+
   public String getName() {
     return name;
   }
 
-  /**
-  * Adds an exercise to workout.
-  *
-  * @param exercise exercise object to add to workout.
-  */
-  public void addExercise(Exercise exercise) {
-    for (Exercise e : exercises) {
-      if (e.getExerciseName().equals(exercise.getExerciseName())) {
-        throw new IllegalArgumentException(
-          exercise.getExerciseName() + " is already added as an exercise!"
-        );
-      }
-    }
-    exercises.add(exercise);
+  public String getId() {
+    return id;
+  }
+
+  public List<String> getExerciseIds() {
+    return new ArrayList<>(exerciseIds);
   }
 
   /**
-   * Removed exercise object from exercises List.
+  * Adds an exerciseId to Workout.
+  *
+  * @param exerciseId exerciseId to add to Workout.
+  * @throws Exceptions.IllegalIdException if Id is not valid exerciseId.
+  * @throws Exceptions.ExerciseAlreadyExistsException when workout already have reference to Exercise.
+  */
+  public void addExercise(String exerciseId) throws Exceptions.ExerciseAlreadyExistsException, Exceptions.IllegalIdException {
+    validateId(exerciseId, Exercise.class);
+    if (exerciseIds.contains(exerciseId)) {
+      throw new Exceptions.ExerciseAlreadyExistsException(name);
+    }
+    exerciseIds.add(exerciseId);
+  }
+
+  /**
+   * Removes reference to exercise object from exerciseIDs List.
    *
-   * @param exercise exercise to remove
+   * @param exerciseId of Exercise remove from workout.
+   * @throws Exceptions.ExerciseNotFoundException when exerciseID does not exist in workout.
    */
-  public void removeExercise(Exercise exercise) {
-    if (exercises.contains(exercise)) {
-      exercises.remove(exercise);
-    } else {
-      throw new IllegalArgumentException(
-        exercise.getExerciseName() + " was not found in workout!"
-      );
+  public void removeExercise(String exerciseId) throws Exceptions.ExerciseNotFoundException {
+    if (!exerciseIds.remove(exerciseId)) {
+      throw new Exceptions.ExerciseNotFoundException(exerciseId);
     }
-  }
-
-  /**
-  * Getter for exercises.
-  *
-  * @return returns the list of exercises in workout.
-  */
-  public List<Exercise> getExercises() {
-    return new ArrayList<>(exercises);
-  }
-
-  /**
-   * Method to get a copy of a workout,
-   * used to save History objects with new reference.
-   *
-   * @param workout The Workout to be copied
-   * @return a copy of the Workout
-   */
-  public Workout copy(Workout workout) {
-    Workout copy = new Workout(workout.getName());
-    for (Exercise e : workout.getExercises()) {
-      copy.addExercise(e);
-    }
-    return copy;
-  }
-
-  /**
-  * toString for workout. Returns object in more readable format.
-  *
-  * @return (name of workout): [list of exercises]
-  */
-  @Override
-  public String toString() {
-    return getName() + ": " + getExercises();
   }
 }
+
+
+
