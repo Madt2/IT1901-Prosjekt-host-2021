@@ -17,6 +17,9 @@ public class ServerController {
   private ServerService serverService;
   ObjectMapper mapper;
 
+  /**
+   * Constructor for ServerController.
+   */
   public ServerController() {
     mapper = new ObjectMapper();
     mapper.registerModule(new BeastBookModule());
@@ -26,6 +29,11 @@ public class ServerController {
     serverService = new ServerService(user);
   }
 
+  /**
+   * Converts object to jsonString.
+   *
+   * @param object The object to be converted.
+   */
   private String objectToJson(Object object) throws Exceptions.ServerException {
     try {
       String jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
@@ -36,6 +44,12 @@ public class ServerController {
     }
   }
 
+  /**
+   * Converts jsonString to object.
+   *
+   * @param jsonString The jsonString to be converted.
+   * @param cls The class of the jsonString to be converted.
+   */
   private Object jsonToObject(String jsonString, Class<?> cls) throws Exceptions.BadPackageException {
     try {
       return mapper.readValue(jsonString, cls);
@@ -60,6 +74,12 @@ public class ServerController {
     return new ResponseEntity<>(e.getClass().getSimpleName(), HttpStatus.NOT_ACCEPTABLE);
   }
 
+  /**
+   * Creates a user and
+   * sends a request to ServerService
+   *
+   * @param userString 
+   */
   @PostMapping("createUser/{userString}")
   public ResponseEntity<String> createUser(@PathVariable String userString) {
     userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);

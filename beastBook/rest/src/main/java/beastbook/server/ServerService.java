@@ -16,7 +16,7 @@ public class ServerService {
   /**
    * Constructor for ServerService.
    *
-   * @param user to get server data for
+   * @param user to get server data for.
    */
   public ServerService(User user) {
     this.user = user;
@@ -377,7 +377,7 @@ public class ServerService {
    * @return Hashmap of (id : name) mapping for given Class.
    * @throws Exceptions.ServerException if error further down in the server occurs.
    */
-  public LinkedHashMap<String, String> getMapping(Class cls) throws Exceptions.ServerException {
+  public LinkedHashMap<String, String> getMapping(Class<?> cls) throws Exceptions.ServerException {
     try {
       IdHandler idHandler = persistence.getIdHandler();
       return idHandler.getMap(cls);

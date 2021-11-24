@@ -9,7 +9,6 @@ import java.net.URISyntaxException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
@@ -31,7 +30,7 @@ public class ClientService {
     return jsonString;
   }
 
-  private Object jsonToObject(String jsonString, Class cls) throws Exceptions.BadPackageException {
+  private Object jsonToObject(String jsonString, Class<?> cls) throws Exceptions.BadPackageException {
     try {
       System.out.println("Dette er det klienten fikk fra serveren: " + jsonString);
       return mapper.readValue(jsonString, cls);
@@ -121,44 +120,11 @@ public class ClientService {
     }
   }
 
-  private void illegalIdExceptionHandler(String errorMessage, String id, Class cls)
+  private void illegalIdExceptionHandler(String errorMessage, String id, Class<?> cls)
       throws Exceptions.IllegalIdException {
     if (errorMessage.equals(Exceptions.IllegalIdException.class.getSimpleName())) {
       throw new Exceptions.IllegalIdException(id, cls);
     }
-  }
-
-  public static void main(String[] args) throws Exceptions.BadPackageException, Exceptions.UserAlreadyExistException, Exceptions.ServerException, URISyntaxException, JsonProcessingException, Exceptions.WorkoutAlreadyExistsException, Exceptions.WorkoutNotFoundException, Exceptions.IllegalIdException, Exceptions.ExerciseAlreadyExistsException, Exceptions.ExerciseNotFoundException, Exceptions.HistoryAlreadyExistsException, Exceptions.HistoryNotFoundException {
-    ClientService service = new ClientService();
-    User user = new User("Temp", "Temp");
-    service.createUser(user);
-    Workout workout = new Workout("workout");
-    service.addWorkout(workout , user);
-    Map<String,String> wmap = service.queryWorkoutMap(user);
-    String wkey = "";
-    for (String keys : wmap.keySet()) {
-      wkey = keys;
-    }
-    service.queryWorkout(wkey, user);
-    Exercise exercise = new Exercise("ovelse", 1,1, 1, 1, 1);
-    service.addExercise(user, wkey, exercise);
-    String ekey = "";
-    Map<String,String> emap = service.queryExerciseMap(user);
-    for (String keys : emap.keySet()) {
-      ekey = keys;
-    }
-    exercise = service.queryExercise(ekey, user);
-    exercise.setRepsPerSet(10);
-    service.updateExercise(exercise, user);
-    System.out.println(service.queryExercise(ekey, user));
-    service.addHistory(new History("workout", List.of()), user);
-    String hkey = "";
-    Map<String,String> hmap = service.queryHistoryMap(user);
-    for (String keys : hmap.keySet()) {
-      hkey = keys;
-    }
-    service.queryHistory(hkey, user);
-
   }
 
   private ResponseEntity<String> sendPackage(URI uri) {

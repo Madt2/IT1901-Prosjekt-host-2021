@@ -1,7 +1,7 @@
 package beastbook.server;
 
 import beastbook.core.*;
-import beastbook.server.ServerService;
+import beastbook.core.Exceptions.UserAlreadyExistException;
 import com.fasterxml.jackson.databind.annotation.NoClass;
 import org.junit.jupiter.api.*;
 import java.util.List;
@@ -35,14 +35,19 @@ public class ServerServiceTest {
 
   @Test
   void testLogin() throws Exceptions.ServerException,
-      Exceptions.UserNotFoundException, Exceptions.PasswordIncorrectException {
+      Exceptions.UserNotFoundException, Exceptions.PasswordIncorrectException, UserAlreadyExistException {
     serverService.login();
     User user = new User("doesNotExist", "test");
     serverService = new ServerService(user);
     assertThrows(Exceptions.UserNotFoundException.class, () -> serverService.login());
+    serverService.deleteUser();
+    user = new User("test", "password");
+    serverService = new ServerService(user);
+    serverService.createUser();
     user = new User("test", "wrongPassword");
     serverService = new ServerService(user);
     assertThrows(Exceptions.PasswordIncorrectException.class, () -> serverService.login());
+    serverService.deleteUser();
     serverService = new ServerService(mockUser);
   }
 
