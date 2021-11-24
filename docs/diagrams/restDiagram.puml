@@ -60,6 +60,12 @@ class ServerApplication {
 class Rules {
 }
 
+ClientController --> ClientService
+ClientService --> ServerController
+ServerController --> ServerService
+RegisterController --> ClientService
+
+/'
 rest -- client
 rest -- server
 rest -- ServerApplication
@@ -70,4 +76,5 @@ client -- RegisterController
 server -- ServerService
 server -- ServerController
 server -- Rules
+'/
 @enduml

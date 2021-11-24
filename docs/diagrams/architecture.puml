@@ -23,14 +23,18 @@ component javafx {
 beastbook.fxui ..> javafx
 beastbook.fxui ..> fxml
 beastbook.fxui ..> beastbook.core
-beastbook.fxui ..> beastbook.json
-
+beastbook.fxui ..> beastbook.client
+/'
 beastbook.core ..> beastbook.json
+'/
 beastbook.json ..> jackson
+beastbook.json ..> beastbook.core
+
 
 beastbook.server ..> beastbook.core
 beastbook.server ..> beastbook.json
 
+beastbook.client ..> beastbook.server
 beastbook.client ..> beastbook.core
 
 @enduml

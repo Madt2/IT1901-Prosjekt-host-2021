@@ -6,7 +6,7 @@ interface IdClasses {
   void: setId(String)
 }
 
-class Exercise {
+class Exercise implements IdClasses{
   -String id
   -String name
   -int repGoal
@@ -25,13 +25,13 @@ class User {
   -final String password
 }
 
-class Workout {
+class Workout implements IdClasses{
   -String id
   -String name
   -List<String> exerciseIds
 }
 
-class History {
+class History implements IdClasses{
   -String id
   -String name
   -String date
@@ -39,11 +39,10 @@ class History {
 }
 
 class IdHandler {
-  - !! OPPDATER MED KORREKT !!
   -Map<String, String> exerciseMap
   -Map<String, String> workoutMap
   -Map<String, String> historyMap
-  +void setLegalCharacters(Class)
+  +void setLegals(Class)
   +void addId(String, String, Class)
   +void removeId(String, Class)
   +IdClasses giveId(IdClasses)
@@ -58,13 +57,25 @@ class Validation {
 
 }
 
-core -- Exercise
-core -- User
-core -- History
-core -- Workout
-core -- IdHandler
-core -- Exceptions
-core -- Properties
-core -- IdClasses
-core -- Validation
+Exercise --> Validation
+History --> Validation
+User --> Validation
+Workout --> Validation
+
+Validation --> Properties
+IdHandler --> Properties
+
+IdHandler --> Exceptions
+Exercise --> Exceptions
+History --> Exceptions
+Workout --> Exceptions
+Validation --> Exceptions
+
+/' Should we have this???
+IdHandler --> Exercise
+IdHandler --> History
+IdHandler --> Workout
+IdHandler --> User
+'/
+
 @enduml

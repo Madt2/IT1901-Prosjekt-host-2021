@@ -45,17 +45,15 @@ class BeastBookModule {
 
 }
 
-json -- internal
-internal -- ExerciseDeserializer
-internal -- ExerciseSerializer
-internal -- UserDeserializer
-internal -- UserSerializer
-internal -- WorkoutDeserializer
-internal -- WorkoutSerializer
-internal -- HistoryDeserializer
-internal -- HistorySerializer
-internal -- IdHandlerDeserializer
-internal -- IdHandlerSerializer
-internal -- BeastBookModule
-json -- BeastBookPersistence
+BeastBookModule --> ExerciseDeserializer
+BeastBookModule --> ExerciseSerializer
+BeastBookModule --> UserDeserializer
+BeastBookModule --> UserSerializer
+BeastBookModule --> WorkoutDeserializer
+BeastBookModule --> WorkoutSerializer
+BeastBookModule --> HistoryDeserializer
+BeastBookModule --> HistorySerializer
+BeastBookModule --> IdHandlerDeserializer
+BeastBookModule --> IdHandlerSerializer
+
 @enduml

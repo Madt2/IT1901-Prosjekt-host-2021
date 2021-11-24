@@ -58,8 +58,9 @@ class HomeScreenController extends AbstractController{
 class App {
   +void start(Stage)
 }
-
+/'
 fxui -- AbstractController
 fxui -- App
+'/
 
 @enduml
