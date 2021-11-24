@@ -27,3 +27,14 @@ To run the server, type `mvn spring-boot:run -f rest/pom.xml`
 To run the app, type `mvn javafx:run -f fxui/pom.xml`
 
 To check for code coverage, spotbugs, checkstyles and tests, type `mvn verify`
+
+# How to test the project
+Testing of the projects is done by opening two terminals.
+
+One terminal is used to test the project and one terminal is used to run the server.
+
+First, type `cd beastBook/rest` and then `mvn spring-boot:run`
+
+Open a new terminal and then type `cd beastBook` followed by `mvn test`
+
+By then running the app in this terminal, files will be added to your computer, because the server is running as well.
