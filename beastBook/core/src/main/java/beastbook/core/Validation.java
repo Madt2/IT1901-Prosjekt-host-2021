@@ -3,6 +3,9 @@ package beastbook.core;
 import static beastbook.core.IdHandler.*;
 import static beastbook.core.Properties.*;
 
+/**
+ * Class used to store all validation logic for all classes in core.
+ */
 public class Validation {
 
   /**
@@ -148,6 +151,13 @@ public class Validation {
     }
   }
 
+  /**
+   * Validated id for given class.
+   *
+   * @param id to validate.
+   * @param cls Class to validate for.
+   * @throws Exceptions.IllegalIdException
+   */
   public static void validateId(String id, Class<?> cls) throws Exceptions.IllegalIdException {
     if (id == null) {
       throw new Exceptions.IllegalIdException(null, cls);
@@ -167,18 +177,6 @@ public class Validation {
     if (counter == id.length()) {
       return;
     }
-
-
-/*    for (int i = 0; i < legalChars.length(); i++) {
-      for (int j = 0; j < id.length(); j++) {
-        if (id.charAt(j) == legalChars.charAt(i)) {
-          id = id.replace(id.substring(j, j + 1), "");
-        }
-        if (id.length() == 0) {
-          return;
-        }
-      }
-    }*/
     throw new Exceptions.IllegalIdException(id, cls);
   }
 }

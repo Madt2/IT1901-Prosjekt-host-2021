@@ -12,7 +12,7 @@ import java.io.IOException;
 public class WorkoutSerializer extends JsonSerializer<Workout> {
   /**
   * Serializes Workout from input-arguments. Serializes Workout-object to json format.
-  * Format for Workout in json: { name: "...", exercises: "[...,...]"}.
+  * Format for Workout in json: { id: "...", name: "...", exerciseIds: "[...,...]"}.
   *
   * @param workout Workout to serialize.
   * @param jsonGenerator class that writes JSON-file.

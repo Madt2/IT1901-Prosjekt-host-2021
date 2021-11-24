@@ -16,7 +16,7 @@ public class UserDeserializer extends JsonDeserializer<User> {
 
   /**
   * Deserializes User data from json file.
-  * Format for User in json: { username: "...", password: "...", workouts: "[...,...]" }.
+  * Format for User in json: { username: "...", password: "..." }.
   *
   * @param parser defines how JSON-file should be parsed
   * @param deserializationContext defines context for deserialization

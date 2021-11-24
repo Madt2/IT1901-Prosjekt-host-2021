@@ -17,6 +17,12 @@ public class BeastBookPersistence {
   private String exerciseFolderPath;
   private String historyFolderPath;
 
+  /**
+   * Constructor for BeastBookPersistence.
+   *
+   * @param user object to handle reading and writing for.
+   * @throws NullPointerException if user is null.
+   */
   public BeastBookPersistence(User user) {
     if (user == null) {
       throw new NullPointerException("User cannot be null");
@@ -30,11 +36,22 @@ public class BeastBookPersistence {
     historyFolderPath = userPath + "Histories";
   }
 
+  /**
+   * Checks if user exists in server's home directory.
+   *
+   * @return true if userfolder exists, false otherwise.
+   */
   private boolean userExists() {
     File userFolder = new File(userPath);
     return userFolder.isDirectory();
   }
 
+  /**
+   * Creates folder at given object's filepath.
+   *
+   * @param folder File object with filepath to where folder should be created.
+   * @throws IOException if it fails to create folder.
+   */
   private void createFolder(File folder) throws IOException {
     if (folder.mkdir()) {
       System.out.println("Folder: " + folder.getPath() + " was created.");
@@ -82,10 +99,12 @@ public class BeastBookPersistence {
   }
 
   /**
-   * Deletes file given.
+   * Deletes file or folder given. If given file is a folder it deletes every subfile,
+   * sub folders and itself.
    *
-   * @param file to delete
+   * @param file object of file or folder to delete.
    * @throws IOException when file deletion fails.
+   * @throws Exceptions.ServerException if nullpointer error happens.
    */
   private void deleteFile(File file) throws IOException, Exceptions.ServerException {
     System.out.println(file.getPath());
@@ -143,7 +162,7 @@ public class BeastBookPersistence {
    *
    * @param path to file
    * @return File at path
-   * @throws IOException if file at path does not exist.
+   * @throws FileNotFoundException if it does not find file.
    */
   private File getFile(String path) throws FileNotFoundException {
     File file = new File(path);
@@ -162,13 +181,20 @@ public class BeastBookPersistence {
       createFolder(new File(workoutFolderPath));
       createFolder(new File(exerciseFolderPath));
       createFolder(new File(historyFolderPath));
-      saveIds(new IdHandler());
+      saveIdHandler(new IdHandler());
       saveUser();
     } catch (IOException | Exceptions.UserNotFoundException e) {
       throw new IOException("Could not create all core classes. Failed at: " + e.getMessage());
     }
   }
 
+  /**
+   * Method used for saving object with interface IdClass. Handles saving to file for objects with id.
+   *
+   * @param object to save.
+   * @throws IOException if it fails to save properly.
+   * @throws Exceptions.IdNotFoundException if object does not have an id.
+   */
   public void saveIdObject(IdClasses object) throws IOException, Exceptions.IdNotFoundException {
     String filepath = null;
     if (object.getId() == null) {
@@ -187,6 +213,12 @@ public class BeastBookPersistence {
     System.out.println("Saved " + object.getName() + " " + object.getName() + " to " + filepath);
   }
 
+  /**
+   * Saves user given in constructor to file.
+   *
+   * @throws IOException if it fails to save file correctly.
+   * @throws Exceptions.UserNotFoundException if user directory does not exist in server's home directory.
+   */
   public void saveUser() throws IOException, Exceptions.UserNotFoundException {
     if (!userExists()) {
       throw new Exceptions.UserNotFoundException(user.getUsername());
@@ -200,11 +232,17 @@ public class BeastBookPersistence {
     System.out.println("Saved user " + user.getUsername() + " to " + userPath);
   }
 
-  public void saveIds(IdHandler id) throws IOException {
+  /**
+   * Saves idHandler to file.
+   *
+   * @param idHandler to save to file.
+   * @throws IOException if it fails to write to file correctly.
+   */
+  public void saveIdHandler(IdHandler idHandler) throws IOException {
     String filepath = userPath + "IDs";
     System.out.println("DETTE ER FILEPATH: " + filepath);
     try {
-      writeObjectToFile(id, new File(filepath));
+      writeObjectToFile(idHandler, new File(filepath));
     } catch (IOException e) {
       throw new IOException("Could not save IdHandler object");
     }
@@ -217,7 +255,8 @@ public class BeastBookPersistence {
    * @param objectId to delete file for.
    * @param cls class to delete object for.
    * @throws NullPointerException if username is null, or if objects id is null.
-   * @throws IOException if deletion of file fails.
+   * @throws IOException if an IO error happens during file deletion.
+   * @throws Exceptions.ServerException if it fails to delete file.
    */
   public void deleteIdObject(String objectId, Class cls) throws NullPointerException,
       IOException,
@@ -240,15 +279,36 @@ public class BeastBookPersistence {
     System.out.println("Deleted file: " + filepath);
   }
 
+  /**
+   * Deletes User directory on server's home directory for user given in constructor.
+   *
+   * @throws IOException if IO error happens during file deletion.
+   * @throws Exceptions.ServerException if it fails to delete user directory.
+   */
   public void deleteUserDir() throws IOException, Exceptions.ServerException {
     deleteFile(new File(userPath));
   }
 
+  /**
+   * Reads user given in constructor from file.
+   *
+   * @return User object deserialized from file.
+   * @throws IOException if it fails to read User object from file.
+   */
   private User getUser() throws IOException {
     String filepath = userPath + "UserData";
     return (User) readObjectFromFile(getFile(filepath), User.class);
   }
 
+  /**
+   * Validates that User given in constructor has same username and password
+   * as User stored in server's directory. Used to validate login.
+   *
+   * @throws IOException If IO error happens during loading of user object.
+   * @throws Exceptions.UserNotFoundException if user directory for given user does not exist.
+   * @throws Exceptions.PasswordIncorrectException if password for given user does not match
+   * password of stored user.
+   */
   public void validateUser() throws IOException,
       Exceptions.UserNotFoundException,
       Exceptions.PasswordIncorrectException {
@@ -260,6 +320,14 @@ public class BeastBookPersistence {
     }
   }
 
+  /**
+   * Getter for Workout with given id for User given in constructor.
+   *
+   * @param workoutId belonging to Workout to get.
+   * @return Workout object.
+   * @throws IOException if IO error happens during reading of Workout object.
+   * @throws Exceptions.WorkoutNotFoundException if no Workout with given id exists in user directory.
+   */
   public Workout getWorkout(String workoutId) throws IOException,
       Exceptions.WorkoutNotFoundException {
     String filepath = workoutFolderPath + "/" + workoutId;
@@ -270,6 +338,14 @@ public class BeastBookPersistence {
     }
   }
 
+  /**
+   * Getter for Exercise with given id for User given in constructor.
+   *
+   * @param exerciseId belonging to Exercise to get.
+   * @return Exercise object.
+   * @throws Exceptions.ExerciseNotFoundException if Exercise with given id does not exist in user directory.
+   * @throws IOException if IO error happens during reading of Exercise object.
+   */
   public Exercise getExercise(String exerciseId) throws Exceptions.ExerciseNotFoundException,
       IOException {
     String filepath = exerciseFolderPath + "/" + exerciseId;
@@ -280,6 +356,14 @@ public class BeastBookPersistence {
     }
   }
 
+  /**
+   * Getter for History with given id for User given in constructor.
+   *
+   * @param historyId
+   * @return
+   * @throws IOException if IO error happens during reading of History object.
+   * @throws Exceptions.HistoryNotFoundException if History with given id does not exist in user directory.
+   */
   public History getHistory(String historyId) throws IOException,
       Exceptions.HistoryNotFoundException {
     String filepath = historyFolderPath + "/" + historyId;
@@ -290,7 +374,14 @@ public class BeastBookPersistence {
     }
   }
 
-  public IdHandler getIds() throws IOException, Exceptions.IdHandlerNotFoundException {
+  /**
+   * Getter for idHandler for user given in constructor.
+   *
+   * @return idHandler object.
+   * @throws IOException if IO error happens during reading of IdHandler object.
+   * @throws Exceptions.IdHandlerNotFoundException if IdHandler with given id does not exist in user directory.
+   */
+  public IdHandler getIdHandler() throws IOException, Exceptions.IdHandlerNotFoundException {
     String filepath = userPath + "IDs";
     try {
       return (IdHandler) readObjectFromFile(getFile(filepath), IdHandler.class);

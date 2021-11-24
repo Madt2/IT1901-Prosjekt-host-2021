@@ -13,8 +13,9 @@ import java.io.IOException;
 public class IdDeserializer extends JsonDeserializer<IdHandler> {
   /**
    * Deserializes User data from json file.
-   * Format for User in json: { exerciseIDs: "[...,...]", workoutIDs: "[...,...]",
-   *            exerciseNameIDMap: "[...,...]", exerciseNameIDMap: "[...,...]" }.
+   * Format for User in json: { exerciseIdMap: "[(...:...),(...:...)]",
+   * workoutIdMap: "[(...:...),(...:...)]",
+   * historyIdMap: "[(...:...),(...:...)]" }.
    *
    * @param parser defines how JSON-file should be parsed.
    * @param deserializer defines context for deserialization.

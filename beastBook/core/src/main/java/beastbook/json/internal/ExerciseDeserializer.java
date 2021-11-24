@@ -19,7 +19,8 @@ public class ExerciseDeserializer extends JsonDeserializer<Exercise> {
   /**
   * Deserializes Exercise data from JSON-file.
   * Format for Exercise in json:
-  * { exerciseName: "...", repGoal: "...", weight: "...", sets: "...", restTime: "..." }.
+  * { id: "...", workoutId: "...", name: "...", repGoal: "...",
+   * weight: "...", sets: "...", restTime: "..." }.
   *
   * @param parser defines how JSON-file should be parsed
   * @param deserializationContext defines context for deserialization

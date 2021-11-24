@@ -19,7 +19,7 @@ public class WorkoutDeserializer extends JsonDeserializer<Workout> {
   
   /**
   * Deserializes Workout data from json file.
-  * Format for Workout in json: { name: "...", exercises: "[...,...]"}.
+  * Format for Workout in json: { id: "...", name: "...", exerciseIds: "[...,...]"}.
   *
   * @param parser defines how JSON-file should be parsed
   * @param deserializationContext defines context for deserialization

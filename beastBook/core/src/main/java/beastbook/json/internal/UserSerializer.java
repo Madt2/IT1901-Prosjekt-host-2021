@@ -15,8 +15,9 @@ public class UserSerializer extends JsonSerializer<User> {
 
   /**
   * Serializes user from input argument. Serializes user-object to json format.
-  * Format for User in json: { exerciseIDs: "[...,...]", workoutIDs: "[...,...]",
-  *             exerciseNameIDMap: "[...,...]", exerciseNameIDMap: "[...,...]" }.
+  * Format for User in json: { exerciseIdMap: "[(...:...),(...:...)]",
+   * workoutIdMap: "[(...:...),(...:...)]",
+   * historyIdMap: "[(...:...),(...:...)]" }.
   *
   * @param user User to serialize.
   * @param jsonGenerator class that writes JSON-file.

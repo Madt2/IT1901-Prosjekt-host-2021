@@ -25,7 +25,7 @@ public class HistoryDeserializer extends JsonDeserializer<History> {
 
   /**
    * Deserializes History data from json file.
-   * Format for History in json: { date: "...", savedWorkout: "[...,...]"}.
+   * Format for History in json: { id: "...", name "...", date: "...", savedExercises: "[...,...]"}.
    *
    * @param parser defines how JSON-file should be parsed
    * @param deserializationContext defines context for deserialization

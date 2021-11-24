@@ -14,7 +14,8 @@ public class ExerciseSerializer extends JsonSerializer<Exercise> {
   /**
   * Serializes Exercise from input argument. Serializes Exercise object to JSON-format.
   * Format for Exercise in json:
-  * { exerciseName: "...", repGoal: "...", weight: "...", sets: "...", repsPerSet: "...", restTime: "..."}.
+  * { id: "...", workoutId: "...", name: "...", repGoal: "...", weight: "...", sets: "..."
+   * , repsPerSet: "...", restTime: "..."}.
   *
   * @param exercise Exercise to serialize.
   * @param jsonGenerator class that writes JSON-file.

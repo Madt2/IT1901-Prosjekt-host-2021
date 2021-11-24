@@ -11,7 +11,7 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import java.io.IOException;
 
 public class IdSerializer extends JsonSerializer<IdHandler> {
-
+  //Todo update javadocs:
   /**
    * Serializes IdHandler from input argument. Serializes IdHandler-object to json format.
    * Format for IdHandler in json: { username: "...", password: "...", workouts: "[...,...]" }.

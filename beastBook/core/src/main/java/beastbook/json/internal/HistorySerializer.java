@@ -13,7 +13,7 @@ import java.io.IOException;
 public class HistorySerializer extends JsonSerializer<History> {
   /**
    * Serializes History from input-arguments. Serializes History object to json format.
-   * Format for History in json: { date: "...", savedWorkout: "[...,...]"}.
+   * Format for History in json: { id: "...", name "...", date: "...", savedExercises: "[...,...]"}.
    *
    * @param history History object to serialize.
    * @param jsonGenerator class that writes JSON-file.

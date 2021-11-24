@@ -2,7 +2,6 @@ package beastbook.core;
 
 import static beastbook.core.Properties.*;
 import static beastbook.core.Validation.validateId;
-
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -10,7 +9,8 @@ import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * IdHandler class. This class keeps track of what IDs are in use for workout and exercise objects,
- * and contains a map of (exerciseID : exerciseName) and (workoutID : workoutName).
+ * and contains a map of (exerciseId : exerciseName), (workoutId : workoutName)
+ * and history (historyId : name;date).
  */
 public class IdHandler {
   static int legalLength;
@@ -23,6 +23,13 @@ public class IdHandler {
     return new LinkedHashMap<>(Collections.synchronizedMap(getEditableMap(cls)));
   }
 
+  /**
+   * Help method for getting editable hashmap of given class.
+   *
+   * @param cls Class to get hashmap for.
+   * @return hashmap for given class.
+   * @throws IllegalArgumentException if Class is not valid input for this method.
+   */
   private LinkedHashMap<String, String> getEditableMap(Class<?> cls) throws IllegalArgumentException {
     Map<String, String> map;
     if (cls == Exercise.class) {
@@ -36,6 +43,12 @@ public class IdHandler {
     }
   }
 
+  /**
+   * Setter for setting legal characters and lenght of id for given Class.
+   *
+   * @param cls class to set legals for.
+   * @throws IllegalArgumentException if Class input is not valid for this method.
+   */
   public static void setLegals(Class<?> cls) throws IllegalArgumentException {
     if (cls == Exercise.class) {
       legalChars = LEGAL_CHARS_EXERCISE_ID;
@@ -51,10 +64,26 @@ public class IdHandler {
     }
   }
 
-  private boolean hasId(String id, Class<?> cls) {
+  /**
+   * Checks of idHandler has if stored for given class.
+   *
+   * @param id to check if exists.
+   * @param cls Class to check for.
+   * @return true if idHandler has given id stored, false otherwise.
+   * @throws IllegalArgumentException if given Class is not valid for this method.
+   */
+  private boolean hasId(String id, Class<?> cls) throws IllegalArgumentException {
     return getMap(cls).containsKey(id);
   }
 
+  /**
+   * Adds id to hashmap with given class.
+   *
+   * @param id to add.
+   * @param displayData data to connect id to (name).
+   * @param cls Class for hashmap to add id to.
+   * @throws Exceptions.IdAlreadyInUseException if idHandler already has id stored.
+   */
   public void addId(String id, String displayData, Class cls) throws Exceptions.IdAlreadyInUseException {
     if (hasId(id, cls)) {
       throw new Exceptions.IdAlreadyInUseException(cls, id);
@@ -62,6 +91,13 @@ public class IdHandler {
     getEditableMap(cls).put(id, displayData);
   }
 
+  /**
+   * Removes id from hashmap for given Class.
+   *
+   * @param id to remove.
+   * @param cls Class for hashmap to remove id from.
+   * @throws Exceptions.IdNotFoundException if idHandler does not have id stored.
+   */
   public void removeId(String id, Class cls) throws Exceptions.IdNotFoundException {
     if (!hasId(id, cls)) {
       throw new Exceptions.IdNotFoundException(cls, id);
@@ -69,6 +105,15 @@ public class IdHandler {
     getEditableMap(cls).remove(id);
   }
 
+  /**
+   * Id generator for given class. Use legal characters and legal length
+   * to generate a valid id for given Class.
+   *
+   * @param cls
+   * @return
+   * @throws IllegalStateException
+   * @throws StackOverflowError
+   */
   private String generateIdWhileLoop(Class<?> cls) throws IllegalStateException, StackOverflowError {
     setLegals(cls);
     int possibilities = (int) Math.pow(legalChars.length(), legalLength);
@@ -102,6 +147,13 @@ public class IdHandler {
     return id;
   }
 
+  /**
+   * Gives id to IdClass object. This adds the given id to hashmap corresponding to object class type,
+   * and sets id of given object.
+   *
+   * @param obj object to give id to.
+   * @return object with given id.
+   */
   public IdClasses giveId(IdClasses obj) {
     String id = null;
     id = generateIdWhileLoop(obj.getClass());
