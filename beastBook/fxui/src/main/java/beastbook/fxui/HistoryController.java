@@ -137,4 +137,8 @@ public class HistoryController extends AbstractController {
   public void setHistoryId(String historyId) {
     this.historyId = historyId;
   }
+
+  public String getHistoryId() {
+    return this.historyId;
+  }
 }

@@ -218,31 +218,14 @@ public class WorkoutController extends AbstractController {
   @FXML
   void saveHistory() throws IOException {
     try {
-      boolean overwritten = false;
       Workout workout = service.getWorkout(workoutId);
       History history = new History(workout.getName(), exercises);
-      Iterator it = service.getHistoryMap().entrySet().iterator();
-      while (it.hasNext()) {
-        Map.Entry entry = (Map.Entry) it.next();
-        if (entry.getValue().equals(history.getName())) {
-          History h = service.getHistory(entry.getKey().toString());
-          if (h.getName().equals(history.getName()) && h.getDate().equals(history.getDate())) {
-            service.removeHistory(h.getId());
-            overwritten = !overwritten;
-          }
-        }
-        service.addHistory(history);
-        saveButton.setDisable(true);
-        if (overwritten) {
-          exceptionFeedback.setText("History overwritten!");
-        } else {
-          exceptionFeedback.setText("Workout was successfully added to history!");
-        }
-      }
+      service.addHistory(history);
+      saveButton.setDisable(true);
+      exceptionFeedback.setText("Workout was successfully added to history!");
     } catch (Exceptions.WorkoutNotFoundException | Exceptions.IllegalIdException
         | URISyntaxException | Exceptions.ServerException
-        | Exceptions.BadPackageException | Exceptions.HistoryNotFoundException
-        | Exceptions.HistoryAlreadyExistsException e) {
+        | Exceptions.BadPackageException | Exceptions.HistoryAlreadyExistsException e) {
       exceptionFeedback.setText(e.getMessage());
     }
   }

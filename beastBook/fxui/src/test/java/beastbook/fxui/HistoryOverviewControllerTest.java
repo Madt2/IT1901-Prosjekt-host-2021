@@ -1,25 +1,24 @@
 package beastbook.fxui;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import beastbook.client.ClientController;
+import beastbook.client.RegisterController;
 import beastbook.core.*;
+import beastbook.core.Exceptions.BadPackageException;
+import beastbook.core.Exceptions.ServerException;
+import beastbook.core.Exceptions.UserAlreadyExistException;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.testfx.api.FxAssert;
 import org.testfx.framework.junit5.ApplicationTest;
 import org.testfx.matcher.control.TextMatchers;
-
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -31,6 +30,10 @@ public class HistoryOverviewControllerTest extends ApplicationTest {
   private HistoryOverviewController controller;
   private History history1;
   private History history2;
+  private RegisterController reg = new RegisterController();
+  private ClientController service;
+  private final String username = "testUser";
+  private final String password = "password123";
   
   @Override
   public void start(final Stage stage) throws IOException,
@@ -39,11 +42,14 @@ public class HistoryOverviewControllerTest extends ApplicationTest {
       Exceptions.HistoryAlreadyExistsException,
       URISyntaxException,
       Exceptions.UserNotFoundException,
-      Exceptions.PasswordIncorrectException {
+      Exceptions.PasswordIncorrectException, UserAlreadyExistException {
+
     final FXMLLoader loader = new FXMLLoader(this.getClass().getResource("/beastbook.fxui/HistoryOverview.fxml"));
     controller = new HistoryOverviewController();
     loader.setController(controller);
-    controller.setService(new ClientController("Test", "Test"));
+    reg.registerUser(username, password);
+    service = new ClientController(username, password);
+    controller.setService(service);
     addHistoryToUser();
     final Parent root = loader.load();
     stage.setScene(new Scene(root));
@@ -52,7 +58,7 @@ public class HistoryOverviewControllerTest extends ApplicationTest {
 
   private void addHistoryToUser() throws Exceptions.BadPackageException, Exceptions.ServerException, Exceptions.HistoryAlreadyExistsException, URISyntaxException, JsonProcessingException {
     List<Exercise> exercises1 = new ArrayList<>();
-    exercises1.add(new Exercise("Benchpress", 20, 30, 40, 50, 50));
+    exercises1.add(new Exercise("Benchpress", 20, 30, 40, 50, 718));
     exercises1.add(new Exercise("Chestpress", 90, 35, 22, 33, 94));
     history1 = new History("myHistory1", exercises1);
 
@@ -65,45 +71,52 @@ public class HistoryOverviewControllerTest extends ApplicationTest {
   }
 
   @Test
-  void testCorrectHistoryIsOpened(){
+  void testCorrectHistoryIsOpened() throws IOException{
     controller.getHistoryOverview().getColumns().get(1).setId("historyName");
     Node node = lookup("#historyName").nth(1).query();
     clickOn(node);
+
+    String firstKeyId = controller.service.getHistoryMap().keySet().stream().findFirst().get();
+    FXMLLoader loader = new FXMLLoader(getClass().getResource("/beastbook.fxui/History.fxml"));
+    HistoryController hc = new HistoryController();
+    hc.setHistoryId(firstKeyId);
+    loader.setController(hc);
+    hc.setService(service);
+    Parent root = loader.load();
+    
     clickOn("#openButton");
-    // might be wrong:
     FxAssert.verifyThat("#title", TextMatchers.hasText(history1.getName()));
     FxAssert.verifyThat("#date", TextMatchers.hasText(history1.getDate()));
+
+    assertEquals(718, hc.getHistoryTable().getItems().get(0).getRestTime());
+    assertNotEquals(48, hc.getHistoryTable().getItems().get(0).getRestTime());
+
+    assertEquals("Chestpress", hc.getHistoryTable().getItems().get(1).getName());
+    assertNotEquals("Squat", hc.getHistoryTable().getItems().get(1).getName());
   }
 
   @Test
   void testDeleteHistory(){
-/*    Map<String,String> historyMap = controller.service.getHistoryMap();
-    String historyLine = controller.getHistoryOverview().getItems().get(0);
-    String serviceH1 = null;
-    Optional<String> firstKey = historyMap.keySet().stream().findFirst();
-    if (firstKey.isPresent()) {
-      serviceH1 = historyMap.get(firstKey);
-    }
-    Assertions.assertEquals(historyLine, serviceH1);
-
-    assertEquals(2, controller.service.getWorkoutMap().values().size());
     controller.getHistoryOverview().getColumns().get(0).setId("historyName");
     Node node = lookup("#historyName").nth(1).query();
     clickOn(node);
     clickOn("#deleteButton");
     FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText("History entry deleted!"));
-    assertEquals(controller.getHistoryOverview().getItems(), controller.service.getWorkoutMap().values());
-    assertEquals(1, controller.service.getWorkoutMap().values().size());
 
+    String firstKeyId = controller.service.getHistoryMap().keySet().stream().findFirst().get();      
+
+    assertEquals(1, controller.service.getHistoryMap().values().size());
+    assertNotEquals(2, controller.service.getHistoryMap().values().size());
+    assertEquals(controller.getHistoryOverview().getItems().get(0).toString(), controller.service.getHistoryMap().get(firstKeyId));
+    assertNotEquals("myHistory999;12.12.2020", controller.service.getHistoryMap().get(firstKeyId));
     controller.getHistoryOverview().getColumns().get(1).setId("historyName");
     Node node2 = lookup("#historyName").nth(1).query();
     clickOn(node2);
-    FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText(""));*/
+    FxAssert.verifyThat("#exceptionFeedback", TextMatchers.hasText(""));
   }
 
-  @AfterAll
-  static void cleanUp() {
-    File file = new File(System.getProperty("user.home") + "/test");
-    file.delete();
+  @AfterEach
+  void cleanUp() throws JsonProcessingException, BadPackageException, ServerException, URISyntaxException {
+    service.deleteUser();
   }
 }
