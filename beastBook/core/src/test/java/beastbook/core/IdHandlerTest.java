@@ -17,7 +17,7 @@ public class IdHandlerTest {
     private Workout workout;
     private History history;
     private Exercise exercise;
-    private IdHandler id = new IdHandler();
+    private IdHandler idHandler = new IdHandler();
 
     @BeforeEach
     void setup(){
@@ -30,19 +30,19 @@ public class IdHandlerTest {
 
     @Test
     void testValidateId(){
-      id.giveId(workout);
+      idHandler.giveId(workout);
       assertDoesNotThrow(() -> validateId(workout.getId(), Workout.class));
       assertThrows(IllegalIdException.class, () -> {
         workout.setId("rubbish");
       });
 
-      id.giveId(exercise);
+      idHandler.giveId(exercise);
       assertDoesNotThrow(() -> validateId(exercise.getId(), Exercise.class));
       assertThrows(IllegalIdException.class, () -> {
         exercise.setId("rubbish");
       });
 
-      id.giveId(history);
+      idHandler.giveId(history);
       assertDoesNotThrow(() -> validateId(history.getId(), History.class));
       assertThrows(IllegalIdException.class, () -> {
         history.setId("rubbish");
@@ -51,23 +51,23 @@ public class IdHandlerTest {
 
     @Test
     void testGiveAndRemoveId() throws IdNotFoundException{
-      id.giveId(workout);
+      idHandler.giveId(workout);
       assertNotEquals(null, workout.getId());
-      assertEquals(true, id.getMap(Workout.class).containsKey(workout.getId()));
-      id.removeId(workout.getId(), Workout.class);
-      assertEquals(false, id.getMap(Workout.class).containsKey(workout.getId()));
+      assertEquals(true, idHandler.getMap(Workout.class).containsKey(workout.getId()));
+      idHandler.removeId(workout.getId(), Workout.class);
+      assertEquals(false, idHandler.getMap(Workout.class).containsKey(workout.getId()));
      
-      id.giveId(history);
+      idHandler.giveId(history);
       assertNotEquals(null, history.getId());
-      assertEquals(true, id.getMap(History.class).containsKey(history.getId()));
-      id.removeId(history.getId(), History.class);
-      assertEquals(false, id.getMap(History.class).containsKey(history.getId()));
+      assertEquals(true, idHandler.getMap(History.class).containsKey(history.getId()));
+      idHandler.removeId(history.getId(), History.class);
+      assertEquals(false, idHandler.getMap(History.class).containsKey(history.getId()));
 
-      id.giveId(exercise);
+      idHandler.giveId(exercise);
       assertNotEquals(null, exercise.getId());
-      assertEquals(true, id.getMap(Exercise.class).containsKey(exercise.getId()));
-      id.removeId(exercise.getId(), Exercise.class);
-      assertEquals(false, id.getMap(Exercise.class).containsKey(exercise.getId()));
+      assertEquals(true, idHandler.getMap(Exercise.class).containsKey(exercise.getId()));
+      idHandler.removeId(exercise.getId(), Exercise.class);
+      assertEquals(false, idHandler.getMap(Exercise.class).containsKey(exercise.getId()));
     }
 
     @Test

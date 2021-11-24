@@ -4,8 +4,6 @@ import beastbook.core.*;
 import beastbook.json.BeastBookPersistence;
 import java.io.IOException;
 import java.util.LinkedHashMap;
-import java.util.Map;
-
 import static beastbook.core.Validation.validateId;
 
 /**
@@ -60,17 +58,18 @@ public class ServerService {
   }
 
   /**
+   * Help method for adding saving given object to file for User given in constructor.
+   * This also handles giving of ids to object to save.
    *
-   *
-   * @param obj
-   * @return
-   * @throws Exceptions.ServerException
+   * @param obj to add.
+   * @return id that IdHandler gave to object.
+   * @throws Exceptions.ServerException if error further down in the server occurs.
    */
   private String addIdObject(IdClasses obj) throws Exceptions.ServerException {
     try {
-      IdHandler ids = persistence.getIds();
-      obj = ids.giveId(obj);
-      persistence.saveIds(ids);
+      IdHandler idHandler = persistence.getIdHandler();
+      obj = idHandler.giveId(obj);
+      persistence.saveIdHandler(idHandler);
       persistence.saveIdObject(obj);
       return obj.getId();
     } catch (IOException | Exceptions.IdHandlerNotFoundException
@@ -81,13 +80,15 @@ public class ServerService {
   }
 
   /**
+   * Adds Exercise object to User directory.
    *
-   * @param exercise
-   * @param workoutId
-   * @throws Exceptions.WorkoutNotFoundException
-   * @throws Exceptions.ServerException
-   * @throws Exceptions.ExerciseAlreadyExistsException
-   * @throws Exceptions.IllegalIdException
+   * @param exercise object to add.
+   * @param workoutId of Workout to add Exercise to.
+   * @throws Exceptions.WorkoutNotFoundException if no workout with workoutId was found.
+   * @throws Exceptions.ServerException if error further down in the server occurs.
+   * @throws Exceptions.ExerciseAlreadyExistsException if Exercise with name already exists in Workout,
+   * or if Exercise object already has an id.
+   * @throws Exceptions.IllegalIdException if Id given for workout is not legal.
    */
   public void addExercise(Exercise exercise, String workoutId) throws Exceptions.WorkoutNotFoundException,
       Exceptions.ServerException,
@@ -99,12 +100,12 @@ public class ServerService {
       if (exercise.getId() != null) {
         throw new Exceptions.ExerciseAlreadyExistsException(exercise.getName());
       }
-      IdHandler ids = persistence.getIds();
-      Rules.exerciseRules(exercise, workout, ids);
-      exercise = (Exercise) ids.giveId(exercise);
+      IdHandler idHandler = persistence.getIdHandler();
+      Rules.exerciseRules(exercise, workout, idHandler);
+      exercise = (Exercise) idHandler.giveId(exercise);
       workout.addExercise(exercise.getId());
       exercise.setWorkoutId(workoutId);
-      persistence.saveIds(ids);
+      persistence.saveIdHandler(idHandler);
       persistence.saveIdObject(workout);
       persistence.saveIdObject(exercise);
     } catch (IOException | Exceptions.IllegalIdException
@@ -116,16 +117,18 @@ public class ServerService {
   }
 
   /**
+   * Adds Workout object to User directory.
    *
-   * @param workout
+   * @param workout object to add.
    * @return
-   * @throws Exceptions.ServerException
-   * @throws Exceptions.WorkoutAlreadyExistsException
+   * @throws Exceptions.ServerException if error further down in the server occurs.
+   * @throws Exceptions.WorkoutAlreadyExistsException if Exercise with name already exists in User,
+   * or if Workout object already has an id.
    */
   public String addWorkout(Workout workout) throws Exceptions.ServerException,
       Exceptions.WorkoutAlreadyExistsException {
     try {
-      Rules.workoutRules(workout, persistence.getIds());
+      Rules.workoutRules(workout, persistence.getIdHandler());
     } catch (Exceptions.IdHandlerNotFoundException | IOException e) {
       throw new Exceptions.ServerException();
     }
@@ -136,15 +139,17 @@ public class ServerService {
   }
 
   /**
+   * Adds History object to User directory.
    *
-   * @param history
-   * @throws Exceptions.ServerException
-   * @throws Exceptions.HistoryAlreadyExistsException
+   * @param history object to add.
+   * @throws Exceptions.ServerException if error further down in the server occurs.
+   * @throws Exceptions.HistoryAlreadyExistsException if History with name and date already exists in User,
+   * or if History object already has an id.
    */
   public void addHistory(History history) throws Exceptions.ServerException,
       Exceptions.HistoryAlreadyExistsException {
     try {
-      Rules.historyRules(history, persistence.getIds());
+      Rules.historyRules(history, persistence.getIdHandler());
     } catch (IOException | Exceptions.IdHandlerNotFoundException e) {
       e.printStackTrace();
       throw new Exceptions.ServerException();
@@ -156,11 +161,13 @@ public class ServerService {
   }
 
   /**
+   * Saves updated workout object over existing workout object with same id in server.
+   * Should only be name that should be changed.
    *
-   * @param workout
-   * @throws Exceptions.ServerException
-   * @throws Exceptions.IllegalIdException
-   * @throws Exceptions.WorkoutNotFoundException
+   * @param workout object to update.
+   * @throws Exceptions.ServerException if error further down in the server occurs.
+   * @throws Exceptions.IllegalIdException if id of Workout is illegal.
+   * @throws Exceptions.WorkoutNotFoundException if no Workout with Workout object's id exists in server directory.
    */
   public void updateWorkout(Workout workout) throws Exceptions.ServerException,
       Exceptions.IllegalIdException,
@@ -178,11 +185,12 @@ public class ServerService {
   }
 
   /**
+   * Saves updated Exercise object over existing Exercise object with same id in server.
    *
-   * @param exercise
-   * @throws Exceptions.ServerException
-   * @throws Exceptions.IllegalIdException
-   * @throws Exceptions.ExerciseNotFoundException
+   * @param exercise object to update
+   * @throws Exceptions.ServerException if error further down in the server occurs.
+   * @throws Exceptions.IllegalIdException if id of Exercise is illegal.
+   * @throws Exceptions.ExerciseNotFoundException if no Exercise with Exercise object's id exists in server directory.
    */
   public void updateExercise(Exercise exercise) throws Exceptions.ServerException,
       Exceptions.IllegalIdException,
@@ -202,8 +210,9 @@ public class ServerService {
   }
 
   /**
+   * Deletes user directory for User object given in constructor.
    *
-   * @throws Exceptions.ServerException
+   * @throws Exceptions.ServerException if error further down in the server occurs.
    */
   public void deleteUser() throws Exceptions.ServerException {
     try {
@@ -214,16 +223,18 @@ public class ServerService {
   }
 
   /**
+   * Help method for deleting id-object in user directory.
    *
-   * @param id
-   * @param cls
-   * @throws Exceptions.ServerException
+   * @param id of object to delete.
+   * @param cls Class type of object to delete
+   * @throws Exceptions.ServerException if error further down in the server occurs.
+   * @throws Exceptions.IdNotFoundException if idHandler does not have id given in register.
    */
   private void deleteIdObject(String id, Class<?> cls) throws Exceptions.ServerException, Exceptions.IdNotFoundException {
     try {
-      IdHandler ids = persistence.getIds();
-      ids.removeId(id, cls);
-      persistence.saveIds(ids);
+      IdHandler idHandler = persistence.getIdHandler();
+      idHandler.removeId(id, cls);
+      persistence.saveIdHandler(idHandler);
       persistence.deleteIdObject(id, cls);
     } catch (IOException | Exceptions.IdHandlerNotFoundException e) {
       e.printStackTrace();
@@ -232,10 +243,11 @@ public class ServerService {
   }
 
   /**
+   * Deletes Exercise object with given id from server.
    *
-   * @param id
-   * @throws Exceptions.ServerException
-   * @throws Exceptions.IllegalIdException
+   * @param id of Exercise object to delete.
+   * @throws Exceptions.ServerException if error further down in the server occurs.
+   * @throws Exceptions.IllegalIdException if id given is invalid as Exercise id.
    */
   public void deleteExercise(String id) throws Exceptions.ServerException, Exceptions.IllegalIdException {
     try {
@@ -256,10 +268,11 @@ public class ServerService {
   }
 
   /**
+   * Deletes Workout object with given id from server.
    *
-   * @param id
-   * @throws Exceptions.ServerException
-   * @throws Exceptions.IllegalIdException
+   * @param id of Workout to delete,
+   * @throws Exceptions.ServerException if error further down in the server occurs.
+   * @throws Exceptions.IllegalIdException if id given is invalid as Workout id.
    */
   public void deleteWorkout(String id) throws Exceptions.ServerException, Exceptions.IllegalIdException {
     validateId(id, Workout.class);
@@ -278,10 +291,11 @@ public class ServerService {
   }
 
   /**
+   * Deletes History object with given id from server.
    *
-   * @param id
-   * @throws Exceptions.ServerException
-   * @throws Exceptions.IllegalIdException
+   * @param id of History to delete,
+   * @throws Exceptions.ServerException if error further down in the server occurs.
+   * @throws Exceptions.IllegalIdException if id given is invalid as History id.
    */
   public void deleteHistory(String id) throws Exceptions.ServerException,
       Exceptions.IllegalIdException {
@@ -294,12 +308,13 @@ public class ServerService {
   }
 
   /**
+   * Getter for getting workout object with given id from server.
    *
-   * @param workoutId
-   * @return
-   * @throws Exceptions.WorkoutNotFoundException
-   * @throws Exceptions.ServerException
-   * @throws Exceptions.IllegalIdException
+   * @param workoutId id of Workout to get.
+   * @return Workout object.
+   * @throws Exceptions.WorkoutNotFoundException if no Workout with given id exist in user directory.
+   * @throws Exceptions.ServerException if error further down in the server occurs.
+   * @throws Exceptions.IllegalIdException if id given is invalid as Workout id.
    */
   public Workout getWorkout(String workoutId) throws Exceptions.WorkoutNotFoundException,
       Exceptions.ServerException,
@@ -314,12 +329,13 @@ public class ServerService {
   }
 
   /**
+   * Getter for getting Exercise object with given id from server.
    *
-   * @param exerciseId
-   * @return
-   * @throws Exceptions.ServerException
-   * @throws Exceptions.ExerciseNotFoundException
-   * @throws Exceptions.IllegalIdException
+   * @param exerciseId id of Exercise to get.
+   * @return Exercise object.
+   * @throws Exceptions.ServerException if error further down in the server occurs.
+   * @throws Exceptions.ExerciseNotFoundException if no Exercise with given id exist in user directory.
+   * @throws Exceptions.IllegalIdException if id given is invalid as Exercise id.
    */
   public Exercise getExercise(String exerciseId) throws Exceptions.ServerException,
       Exceptions.ExerciseNotFoundException,
@@ -334,12 +350,13 @@ public class ServerService {
   }
 
   /**
+   * Getter for getting History object with given id from server.
    *
-   * @param historyId
-   * @return
-   * @throws Exceptions.HistoryNotFoundException
-   * @throws Exceptions.ServerException
-   * @throws Exceptions.IllegalIdException
+   * @param historyId id of History to get.
+   * @return History object.
+   * @throws Exceptions.HistoryNotFoundException if no History with given id exist in user directory.
+   * @throws Exceptions.ServerException if error further down in the server occurs.
+   * @throws Exceptions.IllegalIdException if id given is invalid as History id.
    */
   public History getHistory(String historyId) throws Exceptions.HistoryNotFoundException,
       Exceptions.ServerException,
@@ -354,15 +371,16 @@ public class ServerService {
   }
 
   /**
+   * Getter for getting Hashmap from IdHandler for given class.
    *
-   * @param cls
-   * @return
-   * @throws Exceptions.ServerException
+   * @param cls Class to get map for.
+   * @return Hashmap of (id : name) mapping for given Class.
+   * @throws Exceptions.ServerException if error further down in the server occurs.
    */
   public LinkedHashMap<String, String> getMapping(Class cls) throws Exceptions.ServerException {
     try {
-      IdHandler ids = persistence.getIds();
-      return ids.getMap(cls);
+      IdHandler idHandler = persistence.getIdHandler();
+      return idHandler.getMap(cls);
     } catch (Exceptions.IdHandlerNotFoundException | IOException e) {
       e.printStackTrace();
       throw new Exceptions.ServerException();

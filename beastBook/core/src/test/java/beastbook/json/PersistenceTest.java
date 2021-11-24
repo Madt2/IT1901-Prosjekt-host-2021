@@ -146,23 +146,23 @@ public class PersistenceTest {
   @Test
   void testSaveAndGetIds() throws Exceptions.IdHandlerNotFoundException, IOException, Exceptions.UserAlreadyExistException {
     beastBookPersistence.createUser();
-    final IdHandler ids = new IdHandler();
+    final IdHandler idHandler = new IdHandler();
     Workout workout = new Workout("testWorkout");
     Exercise exercise = new Exercise("testExercise", 1 ,1, 1, 1, 1);
     History history = new History("testHistory", List.of(exercise));
-    ids.giveId(exercise);
-    ids.giveId(workout);
-    ids.giveId(history);
-    beastBookPersistence.saveIds(ids);
-    IdHandler idsLoad = beastBookPersistence.getIds();
-    for (String s : ids.getMap(Exercise.class).keySet()) {
-      ids.getMap(Exercise.class).get(s).equals(idsLoad.getMap(Exercise.class).get(s));
+    idHandler.giveId(exercise);
+    idHandler.giveId(workout);
+    idHandler.giveId(history);
+    beastBookPersistence.saveIdHandler(idHandler);
+    IdHandler idHandlerLoad = beastBookPersistence.getIdHandler();
+    for (String s : idHandler.getMap(Exercise.class).keySet()) {
+      idHandler.getMap(Exercise.class).get(s).equals(idHandlerLoad.getMap(Exercise.class).get(s));
     }
-    for (String s : ids.getMap(Workout.class).keySet()) {
-      ids.getMap(Workout.class).get(s).equals(idsLoad.getMap(Workout.class).get(s));
+    for (String s : idHandler.getMap(Workout.class).keySet()) {
+      idHandler.getMap(Workout.class).get(s).equals(idHandlerLoad.getMap(Workout.class).get(s));
     }
-    for (String s : ids.getMap(History.class).keySet()) {
-      ids.getMap(History.class).get(s).equals(idsLoad.getMap(History.class).get(s));
+    for (String s : idHandler.getMap(History.class).keySet()) {
+      idHandler.getMap(History.class).get(s).equals(idHandlerLoad.getMap(History.class).get(s));
     }
   }
 

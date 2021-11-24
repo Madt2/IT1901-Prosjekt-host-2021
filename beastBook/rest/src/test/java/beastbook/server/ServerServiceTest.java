@@ -1,6 +1,7 @@
 package beastbook.server;
 
 import beastbook.core.*;
+import beastbook.server.ServerService;
 import com.fasterxml.jackson.databind.annotation.NoClass;
 import org.junit.jupiter.api.*;
 import java.util.List;
@@ -88,77 +89,81 @@ public class ServerServiceTest {
   }
 
   @Test
-  void testAddObjects() throws Exceptions.WorkoutNotFoundException, Exceptions.ServerException,
-      Exceptions.ExerciseAlreadyExistsException, Exceptions.WorkoutAlreadyExistsException,
-      Exceptions.HistoryAlreadyExistsException, Exceptions.ExerciseNotFoundException,
-      Exceptions.HistoryNotFoundException, Exceptions.IllegalIdException, Exceptions.IdNotFoundException {
-    //add objects:
+  void testAddExercise() throws Exceptions.WorkoutAlreadyExistsException, Exceptions.ServerException, Exceptions.WorkoutNotFoundException, Exceptions.IllegalIdException, Exceptions.ExerciseAlreadyExistsException, Exceptions.ExerciseNotFoundException {
     assertThrows(Exceptions.IllegalIdException.class, () -> serverService.addExercise(mockExercise, notValidWorkoutId));
     assertThrows(Exceptions.WorkoutNotFoundException.class, () -> serverService.addExercise(mockExercise, ("AB")));
     final String returnedWorkoutId = serverService.addWorkout(mockWorkout);
     serverService.addExercise(mockExercise, returnedWorkoutId);
-    serverService.addHistory(mockHistory);
 
-    //add object with same name:
-    assertThrows(Exceptions.WorkoutAlreadyExistsException.class, () -> serverService.addWorkout(mockWorkout));
     assertThrows(Exceptions.ExerciseAlreadyExistsException.class, () -> serverService.addExercise(mockExercise, returnedWorkoutId));
-    assertThrows(Exceptions.HistoryAlreadyExistsException.class, () -> serverService.addHistory(mockHistory));
 
-    //get id for added objects:
     Map<String, String> exerciseMap = serverService.getMapping(Exercise.class);
-    Map<String, String> workoutMap = serverService.getMapping(Workout.class);
-    Map<String, String> historyMap = serverService.getMapping(History.class);
     String exerciseId = exerciseMap.keySet().stream().toList().get(0);
-    String workoutId = workoutMap.keySet().stream().toList().get(0);
-    String historyId = historyMap.keySet().stream().toList().get(0);
     Exercise returnedExercise = serverService.getExercise(exerciseId);
-    Workout returnedWorkout = serverService.getWorkout(workoutId);
-    History returnedHistory = serverService.getHistory(historyId);
-
     assertEqualWithoutIdExercise(mockExercise, returnedExercise);
-    assertEqualWithoutIdWorkout(mockWorkout, returnedWorkout);
-    assertEqualWithoutIdHistory(mockHistory, returnedHistory);
 
-    //add with id:
     assertThrows(Exceptions.ExerciseAlreadyExistsException.class, () -> serverService.addExercise(returnedExercise, returnedWorkoutId));
+  }
+
+  @Test
+  void testAddWorkout() throws Exceptions.WorkoutAlreadyExistsException, Exceptions.ServerException, Exceptions.WorkoutNotFoundException, Exceptions.IllegalIdException {
+    serverService.addWorkout(mockWorkout);
+    assertThrows(Exceptions.WorkoutAlreadyExistsException.class, () -> serverService.addWorkout(mockWorkout));
+    Map<String, String> workoutMap = serverService.getMapping(Workout.class);
+    String workoutId = workoutMap.keySet().stream().toList().get(0);
+    Workout returnedWorkout = serverService.getWorkout(workoutId);
+    assertEqualWithoutIdWorkout(mockWorkout, returnedWorkout);
     assertThrows(Exceptions.WorkoutAlreadyExistsException.class, () -> serverService.addWorkout(returnedWorkout));
+  }
+
+  @Test
+  void testAddHistory() throws Exceptions.ServerException, Exceptions.IllegalIdException, Exceptions.HistoryNotFoundException, Exceptions.HistoryAlreadyExistsException {
+    serverService.addHistory(mockHistory);
+    assertThrows(Exceptions.HistoryAlreadyExistsException.class, () -> serverService.addHistory(mockHistory));
+    Map<String, String> historyMap = serverService.getMapping(History.class);
+    String historyId = historyMap.keySet().stream().toList().get(0);
+    History returnedHistory = serverService.getHistory(historyId);
+    assertEqualWithoutIdHistory(mockHistory, returnedHistory);
     assertThrows(Exceptions.HistoryAlreadyExistsException.class, () -> serverService.addHistory(returnedHistory));
   }
 
   @Test
-  void testUpdateObjects() throws Exceptions.ServerException, Exceptions.IllegalIdException,
-      Exceptions.WorkoutNotFoundException, Exceptions.ExerciseNotFoundException,
-      Exceptions.WorkoutAlreadyExistsException, Exceptions.ExerciseAlreadyExistsException {
-
-    assertThrows(Exceptions.IllegalIdException.class, () -> serverService.updateExercise(mockExercise));
+  void testUpdateWorkout() throws Exceptions.WorkoutNotFoundException, Exceptions.ServerException, Exceptions.IllegalIdException, Exceptions.WorkoutAlreadyExistsException {
     assertThrows(Exceptions.IllegalIdException.class, () -> serverService.updateWorkout(mockWorkout));
 
-    final String returnedWorkoutId = serverService.addWorkout(mockWorkout);
-    serverService.addExercise(mockExercise, returnedWorkoutId);
-
-    Exercise falseExercise = new Exercise("Bench press", 20, 30, 40, 50, 60);
+    serverService.addWorkout(mockWorkout);
     Workout falseWorkout = new Workout("test");
-    falseExercise.setId("dd");
     falseWorkout.setId("GG");
-    assertThrows(Exceptions.IllegalIdException.class, () -> serverService.updateExercise(new Exercise("Bench press", 20, 30, 40, 50, 60)));
+
     assertThrows(Exceptions.IllegalIdException.class, () -> serverService.updateWorkout(new Workout("test")));
-    assertThrows(Exceptions.ExerciseNotFoundException.class, () -> serverService.updateExercise(falseExercise));
     assertThrows(Exceptions.WorkoutNotFoundException.class, () -> serverService.updateWorkout(falseWorkout));
 
-    Map<String, String> exerciseMap = serverService.getMapping(Exercise.class);
     Map<String, String> workoutMap = serverService.getMapping(Workout.class);
-
-    String exerciseId = exerciseMap.keySet().stream().toList().get(0);
     String workoutId = workoutMap.keySet().stream().toList().get(0);
-    Exercise returnedExercise = serverService.getExercise(exerciseId);
     Workout returnedWorkout = serverService.getWorkout(workoutId);
-
     Workout updatedWorkout = returnedWorkout;
     updatedWorkout.setName("newName");
     serverService.updateWorkout(updatedWorkout);
     Workout loadedWorkout = serverService.getWorkout(updatedWorkout.getId());
     assertEqualWithoutIdWorkout(loadedWorkout, updatedWorkout);
     assertTrue(loadedWorkout.getId().equals(updatedWorkout.getId()));
+  }
+
+  @Test
+  void testUpdateExercise() throws Exceptions.ServerException, Exceptions.IllegalIdException, Exceptions.ExerciseNotFoundException, Exceptions.WorkoutNotFoundException, Exceptions.ExerciseAlreadyExistsException, Exceptions.WorkoutAlreadyExistsException {
+    assertThrows(Exceptions.IllegalIdException.class, () -> serverService.updateExercise(mockExercise));
+
+    final String returnedWorkoutId = serverService.addWorkout(mockWorkout);
+    serverService.addExercise(mockExercise, returnedWorkoutId);
+    Exercise falseExercise = new Exercise("Bench press", 20, 30, 40, 50, 60);
+    falseExercise.setId("dd");
+
+    assertThrows(Exceptions.IllegalIdException.class, () -> serverService.updateExercise(new Exercise("Bench press", 20, 30, 40, 50, 60)));
+    assertThrows(Exceptions.ExerciseNotFoundException.class, () -> serverService.updateExercise(falseExercise));
+
+    Map<String, String> exerciseMap = serverService.getMapping(Exercise.class);
+    String exerciseId = exerciseMap.keySet().stream().toList().get(0);
+    Exercise returnedExercise = serverService.getExercise(exerciseId);
 
     Exercise updatedExercise = returnedExercise;
     updatedExercise.setName("newName");
@@ -175,42 +180,46 @@ public class ServerServiceTest {
   }
 
   @Test
-  void testDeleteObjects() throws Exceptions.ServerException, Exceptions.IllegalIdException,
-      Exceptions.WorkoutNotFoundException,
-      Exceptions.ExerciseAlreadyExistsException, Exceptions.WorkoutAlreadyExistsException, Exceptions.ExerciseNotFoundException, Exceptions.HistoryNotFoundException, Exceptions.HistoryAlreadyExistsException {
-
+  void testDeleteExercise() throws Exceptions.WorkoutNotFoundException, Exceptions.ServerException, Exceptions.IllegalIdException, Exceptions.ExerciseAlreadyExistsException, Exceptions.WorkoutAlreadyExistsException, Exceptions.ExerciseNotFoundException {
     assertThrows(Exceptions.IllegalIdException.class, () -> serverService.deleteExercise("not valid"));
-    assertThrows(Exceptions.IllegalIdException.class, () -> serverService.deleteWorkout("not valid"));
-    assertThrows(Exceptions.IllegalIdException.class, () -> serverService.deleteHistory("not valid"));
 
     final String returnedWorkoutId = serverService.addWorkout(mockWorkout);
     serverService.addExercise(mockExercise, returnedWorkoutId);
-    serverService.addHistory(mockHistory);
-
     Map<String, String> exerciseMap = serverService.getMapping(Exercise.class);
-    Map<String, String> workoutMap = serverService.getMapping(Workout.class);
-    Map<String, String> historyMap = serverService.getMapping(History.class);
-
     String exerciseId = exerciseMap.keySet().stream().toList().get(0);
-    String workoutId = workoutMap.keySet().stream().toList().get(0);
-    String historyId = historyMap.keySet().stream().toList().get(0);
     Exercise returnedExercise = serverService.getExercise(exerciseId);
-    Workout returnedWorkout = serverService.getWorkout(workoutId);
-    History returnedHistory = serverService.getHistory(historyId);
-
-    serverService.deleteHistory(returnedHistory.getId());
-    assertTrue(serverService.getMapping(History.class).size() == 0);
-    serverService.deleteHistory(returnedHistory.getId());
 
     serverService.deleteExercise(returnedExercise.getId());
     assertTrue(serverService.getMapping(Exercise.class).size() == 0);
     serverService.deleteExercise(returnedExercise.getId());
+  }
+
+  @Test
+  void testDeleteWorkout() throws Exceptions.WorkoutNotFoundException, Exceptions.ServerException, Exceptions.IllegalIdException, Exceptions.ExerciseAlreadyExistsException, Exceptions.WorkoutAlreadyExistsException {
+    assertThrows(Exceptions.IllegalIdException.class, () -> serverService.deleteWorkout("not valid"));
+    serverService.addWorkout(mockWorkout);
+    Map<String, String> workoutMap = serverService.getMapping(Workout.class);
+    String workoutId = workoutMap.keySet().stream().toList().get(0);
+    Workout returnedWorkout = serverService.getWorkout(workoutId);
 
     serverService.addExercise(new Exercise("Bench press", 20, 30, 40, 50, 60), returnedWorkout.getId());
     serverService.deleteWorkout(returnedWorkout.getId());
     assertTrue(serverService.getMapping(Exercise.class).size() == 0);
     assertTrue(serverService.getMapping(Workout.class).size() == 0);
     serverService.deleteWorkout(returnedWorkout.getId());
+  }
+
+  @Test
+  void testDeleteHistory() throws Exceptions.ServerException, Exceptions.HistoryAlreadyExistsException, Exceptions.IllegalIdException, Exceptions.HistoryNotFoundException {
+    assertThrows(Exceptions.IllegalIdException.class, () -> serverService.deleteHistory("not valid"));
+    serverService.addHistory(mockHistory);
+    Map<String, String> historyMap = serverService.getMapping(History.class);
+    String historyId = historyMap.keySet().stream().toList().get(0);
+    History returnedHistory = serverService.getHistory(historyId);
+
+    serverService.deleteHistory(returnedHistory.getId());
+    assertTrue(serverService.getMapping(History.class).size() == 0);
+    serverService.deleteHistory(returnedHistory.getId());
   }
 
   @AfterAll
