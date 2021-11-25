@@ -315,6 +315,20 @@ public class ClientService {
     }
   }
 
+  /**
+   * Sends a request to update an existing Workout which is registered on the User.
+   *
+   * @param workout the Workout to be updated.
+   * @param user the user to update the Workout from.
+   * @throws Exceptions.BadPackageException if there is something wrong with
+   *     serialization or deserialization.
+   * @throws Exceptions.ServerException if something wrong happens on the server
+   * @throws URISyntaxException if a string could not be parsed as a URI reference.
+   * @throws JsonProcessingException if a problem occur when processing(parsing, generating)
+   *     JSON file that are noe I/O problems.
+   * @throws Exceptions.WorkoutNotFoundException if the Workout is not stored in the server.
+   * @throws Exceptions.IllegalIdException if id given is not valid for selected class.
+   */
   public void updateWorkout(Workout workout, User user) throws URISyntaxException,
       Exceptions.BadPackageException,
       Exceptions.ServerException,
@@ -400,6 +414,19 @@ public class ClientService {
     }
   }
 
+  /**
+   * Sends a request to delete a History with given id on a given User.
+   *
+   * @param historyId the id to the History to be deleted.
+   * @param user the User to delete the History from.
+   * @throws Exceptions.BadPackageException if there is something wrong with
+   *     serialization or deserialization.
+   * @throws Exceptions.ServerException if something wrong happens on the server
+   * @throws URISyntaxException if a string could not be parsed as a URI reference.
+   * @throws JsonProcessingException if a problem occur when processing(parsing, generating)
+   *     JSON file that are noe I/O problems.
+   * @throws Exceptions.IllegalIdException if id given is not valid for selected class.
+   */
   public void deleteHistory(String historyId, User user) throws URISyntaxException,
       Exceptions.BadPackageException,
       Exceptions.ServerException,
@@ -517,6 +544,21 @@ public class ClientService {
     }
   }
 
+  /**
+   * Sends a request to the server for a History object specified with id.
+   *
+   * @param historyId the id of the History object to be fetched.
+   * @param user the User to get the History from.
+   * @return History the history object.
+   * @throws Exceptions.BadPackageException if there is something wrong with
+   *     serialization or deserialization.
+   * @throws Exceptions.ServerException if something wrong happens on the server.
+   * @throws Exceptions.HistoryNotFoundException if no history with the given id is stored in the server.
+   * @throws URISyntaxException if a string could not be parsed as a URI reference.
+   * @throws JsonProcessingException if a problem occur when processing(parsing, generating)
+   *     JSON file that are noe I/O problems.
+   * @throws Exceptions.IllegalIdException if id given is not valid for selected class.
+   */
   public History queryHistory(String historyId, User user) throws Exceptions.BadPackageException,
       Exceptions.ServerException,
       Exceptions.HistoryNotFoundException,

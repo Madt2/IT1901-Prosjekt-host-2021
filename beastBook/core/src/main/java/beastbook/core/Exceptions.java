@@ -138,7 +138,7 @@ public class Exceptions {
 
   /**
    * Exception thrown if there is something wrong with serialization or deserialization on server,
-   * or deserialization on client side..
+   * or deserialization on client side.
    */
   public static class BadPackageException extends Exception {
     public BadPackageException() {
