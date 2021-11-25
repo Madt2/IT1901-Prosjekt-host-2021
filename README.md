@@ -5,15 +5,15 @@
 
 For in-depth description of documentation see `beastBook/README.md`
 
-The core components are stored under `[beastBook/core/src/main/java/beastbook/core](https://gitlab.stud.idi.ntnu.no/it1901/groups-2021/gr2132/gr2132/-/tree/master/beastBook/core/src/main/java/beastbook/core)`
+The core components are stored under [beastBook/core/src/main/java/beastbook/core](https://gitlab.stud.idi.ntnu.no/it1901/groups-2021/gr2132/gr2132/-/tree/master/beastBook/core/src/main/java/beastbook/core)
 
-The json components are stored under `[beastBook/core/src/main/java/beastbook/json](https://gitlab.stud.idi.ntnu.no/it1901/groups-2021/gr2132/gr2132/-/tree/master/beastBook/core/src/main/java/beastbook/json)`
+The json components are stored under [beastBook/core/src/main/java/beastbook/json](https://gitlab.stud.idi.ntnu.no/it1901/groups-2021/gr2132/gr2132/-/tree/master/beastBook/core/src/main/java/beastbook/json)
 
-The UI components including fxml files are found under `[beastBook/fxui/src/main/](https://gitlab.stud.idi.ntnu.no/it1901/groups-2021/gr2132/gr2132/-/tree/master/beastBook/fxui/src/main/)`
+The UI components including fxml files are found under [beastBook/fxui/src/main/](https://gitlab.stud.idi.ntnu.no/it1901/groups-2021/gr2132/gr2132/-/tree/master/beastBook/fxui/src/main/)
 
-The rest components are stored under `[beastBook/rest/src/main/java/beastbook/rest](https://gitlab.stud.idi.ntnu.no/it1901/groups-2021/gr2132/gr2132/-/tree/master/beastBook/rest/src/main/java/beastbook)`
+The rest components are stored under [beastBook/rest/src/main/java/beastbook/rest](https://gitlab.stud.idi.ntnu.no/it1901/groups-2021/gr2132/gr2132/-/tree/master/beastBook/rest/src/main/java/beastbook)
 
-Documentation for the different releases are found in the `docs` folder
+Documentation for the different releases are found in the [docs](https://gitlab.stud.idi.ntnu.no/it1901/groups-2021/gr2132/gr2132/-/tree/master/docs) folder
 
 ## Developer installation
 To install the project, type `git clone https://gitlab.stud.idi.ntnu.no/it1901/groups-2021/gr2132/gr2132.git`
