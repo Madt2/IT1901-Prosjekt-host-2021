@@ -86,7 +86,7 @@ public class BeastBookPersistence {
    * @return object deserialized.
    * @throws IOException if read fails.
    */
-  private Object readObjectFromFile(File file, Class cls) throws IOException {
+  private Object readObjectFromFile(File file, Class<?> cls) throws IOException {
     Reader reader = new FileReader(file, StandardCharsets.UTF_8);
     try {
       Object obj = mapper.readValue(reader, cls);
@@ -135,9 +135,8 @@ public class BeastBookPersistence {
         } else {
           //for all files or folders run deleteFiles recursive
           for (String s : file.list()) {
-            if (new File(file.getPath() + "/" + s) != null) {
-              deleteFile(new File(file.getPath() + "/" + s));
-            }
+            new File(file.getPath() + "/" + s);
+            deleteFile(new File(file.getPath() + "/" + s));
           }
           //alfter it has deleted all sub files/folder it deletes itself.
           if (file.delete()) {
@@ -172,6 +171,12 @@ public class BeastBookPersistence {
     return file;
   }
 
+  /**
+   * Creates a User folder and all necessary subfolders.
+   *
+   * @throws IOException if file creation fails
+   * @throws Exceptions.UserAlreadyExistException if the User already exists
+   */
   public void createUser() throws IOException, Exceptions.UserAlreadyExistException {
     if (userExists()) {
       throw new Exceptions.UserAlreadyExistException(user.getUsername());
@@ -258,10 +263,10 @@ public class BeastBookPersistence {
    * @throws IOException if an IO error happens during file deletion.
    * @throws Exceptions.ServerException if it fails to delete file.
    */
-  public void deleteIdObject(String objectId, Class cls) throws NullPointerException,
+  public void deleteIdObject(String objectId, Class<?> cls) throws NullPointerException,
       IOException,
       Exceptions.ServerException {
-    String filepath = "";
+    String filepath;
     if (objectId == null) {
       throw new NullPointerException(cls + " must have ID (dont set manually, use getID from serverService!)");
     }
@@ -307,7 +312,7 @@ public class BeastBookPersistence {
    * @throws IOException If IO error happens during loading of user object.
    * @throws Exceptions.UserNotFoundException if user directory for given user does not exist.
    * @throws Exceptions.PasswordIncorrectException if password for given user does not match
-   * password of stored user.
+   *     password of stored user.
    */
   public void validateUser() throws IOException,
       Exceptions.UserNotFoundException,
@@ -359,8 +364,8 @@ public class BeastBookPersistence {
   /**
    * Getter for History with given id for User given in constructor.
    *
-   * @param historyId
-   * @return
+   * @param historyId belonging to History to get.
+   * @return the History object that was fetched
    * @throws IOException if IO error happens during reading of History object.
    * @throws Exceptions.HistoryNotFoundException if History with given id does not exist in user directory.
    */

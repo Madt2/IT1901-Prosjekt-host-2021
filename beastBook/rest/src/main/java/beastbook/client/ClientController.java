@@ -127,7 +127,8 @@ public class ClientController {
    * @throws Exceptions.ServerException if an unknown error occurs in the REST server.
    * @throws URISyntaxException if an error occurs while parsing URI in ClientService.
    * @throws Exceptions.WorkoutAlreadyExistsException if the Workout already exists in the REST server
-   * @throws Exceptions.WorkoutNotFoundException if an error occurs in saving the workout and then tries to add exercises
+   * @throws Exceptions.WorkoutNotFoundException if an error occurs in saving the workout
+   *     and then tries to add exercises
    * @throws Exceptions.ExerciseAlreadyExistsException if one of the Exercise-objects already exists in the REST server
    * @throws JsonProcessingException if an error occurs while parsing a Json string.
    */
@@ -213,7 +214,7 @@ public class ClientController {
   }
 
   /**
-   * Sends a request to remove the Exercise object with the corresponding ID in the REST server
+   * Sends a request to remove the Exercise object with the corresponding ID in the REST server.
    *
    * @param exerciseId for the Exercise object in the REST server
    * @throws Exceptions.BadPackageException if an error occurs in parsing json in the REST server.
@@ -234,7 +235,7 @@ public class ClientController {
   }
 
   /**
-   * Sends a request to remove the Workout object with the corresponding ID in the REST server
+   * Sends a request to remove the Workout object with the corresponding ID in the REST server.
    *
    * @param workoutId for the Workout object in the REST server
    * @throws Exceptions.BadPackageException if an error occurs in parsing json in the REST server.
@@ -255,7 +256,7 @@ public class ClientController {
   }
 
   /**
-   * Sends a request to remove the History object with the corresponding ID in the REST server
+   * Sends a request to remove the History object with the corresponding ID in the REST server.
    *
    * @param historyId for the History object in the REST server
    * @throws Exceptions.BadPackageException if an error occurs in parsing json in the REST server.

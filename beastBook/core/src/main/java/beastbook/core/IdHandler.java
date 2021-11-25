@@ -2,6 +2,7 @@ package beastbook.core;
 
 import static beastbook.core.Properties.*;
 import static beastbook.core.Validation.validateId;
+
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -19,7 +20,7 @@ public class IdHandler {
   private LinkedHashMap<String, String> workoutMap = new LinkedHashMap<>();
   private LinkedHashMap<String, String> historyMap = new LinkedHashMap<>();
 
-  public LinkedHashMap<String, String> getMap(Class cls) throws IllegalArgumentException {
+  public LinkedHashMap<String, String> getMap(Class<?> cls) throws IllegalArgumentException {
     return new LinkedHashMap<>(Collections.synchronizedMap(getEditableMap(cls)));
   }
 
@@ -84,7 +85,7 @@ public class IdHandler {
    * @param cls Class for hashmap to add id to.
    * @throws Exceptions.IdAlreadyInUseException if idHandler already has id stored.
    */
-  public void addId(String id, String displayData, Class cls) throws Exceptions.IdAlreadyInUseException {
+  public void addId(String id, String displayData, Class<?> cls) throws Exceptions.IdAlreadyInUseException {
     if (hasId(id, cls)) {
       throw new Exceptions.IdAlreadyInUseException(cls, id);
     }
@@ -98,7 +99,7 @@ public class IdHandler {
    * @param cls Class for hashmap to remove id from.
    * @throws Exceptions.IdNotFoundException if idHandler does not have id stored.
    */
-  public void removeId(String id, Class cls) throws Exceptions.IdNotFoundException {
+  public void removeId(String id, Class<?> cls) throws Exceptions.IdNotFoundException {
     if (!hasId(id, cls)) {
       throw new Exceptions.IdNotFoundException(cls, id);
     }
@@ -109,10 +110,10 @@ public class IdHandler {
    * Id generator for given class. Use legal characters and legal length
    * to generate a valid id for given Class.
    *
-   * @param cls
-   * @return
-   * @throws IllegalStateException
-   * @throws StackOverflowError
+   * @param cls the class of the object that needs an Id
+   * @return the generated Id
+   * @throws IllegalStateException if there are no more available Ids that can be created.
+   * @throws StackOverflowError if generator loops more than 1000 times.
    */
   private String generateIdWhileLoop(Class<?> cls) throws IllegalStateException, StackOverflowError {
     setLegals(cls);
@@ -128,7 +129,7 @@ public class IdHandler {
       id = "";
       for (int i = 0; i < legalLength; i++) {
         int randInt = ThreadLocalRandom.current().nextInt(legalChars.length());
-        id += legalChars.charAt(randInt);
+        id = id.concat(String.valueOf(legalChars.charAt(randInt)));
       }
       try {
         validateId(id, cls);
@@ -155,7 +156,7 @@ public class IdHandler {
    * @return object with given id.
    */
   public IdClasses giveId(IdClasses obj) {
-    String id = null;
+    String id;
     id = generateIdWhileLoop(obj.getClass());
     try {
       obj.setId(id);

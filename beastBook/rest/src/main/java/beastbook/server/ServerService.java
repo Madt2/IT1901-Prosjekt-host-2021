@@ -1,10 +1,11 @@
 package beastbook.server;
 
+import static beastbook.core.Validation.validateId;
+
 import beastbook.core.*;
 import beastbook.json.BeastBookPersistence;
 import java.io.IOException;
 import java.util.LinkedHashMap;
-import static beastbook.core.Validation.validateId;
 
 /**
  * Service class for server. Contains core methods to execute rest server's requests.
@@ -87,7 +88,7 @@ public class ServerService {
    * @throws Exceptions.WorkoutNotFoundException if no workout with workoutId was found.
    * @throws Exceptions.ServerException if error further down in the server occurs.
    * @throws Exceptions.ExerciseAlreadyExistsException if Exercise with name already exists in Workout,
-   * or if Exercise object already has an id.
+   *     or if Exercise object already has an id.
    * @throws Exceptions.IllegalIdException if Id given for workout is not legal.
    */
   public void addExercise(Exercise exercise, String workoutId) throws Exceptions.WorkoutNotFoundException,
@@ -120,10 +121,10 @@ public class ServerService {
    * Adds Workout object to User directory.
    *
    * @param workout object to add.
-   * @return
+   * @return workoutId for the Workout object that was added
    * @throws Exceptions.ServerException if error further down in the server occurs.
    * @throws Exceptions.WorkoutAlreadyExistsException if Exercise with name already exists in User,
-   * or if Workout object already has an id.
+   *     or if Workout object already has an id.
    */
   public String addWorkout(Workout workout) throws Exceptions.ServerException,
       Exceptions.WorkoutAlreadyExistsException {
@@ -144,7 +145,7 @@ public class ServerService {
    * @param history object to add.
    * @throws Exceptions.ServerException if error further down in the server occurs.
    * @throws Exceptions.HistoryAlreadyExistsException if History with name and date already exists in User,
-   * or if History object already has an id.
+   *     or if History object already has an id.
    */
   public void addHistory(History history) throws Exceptions.ServerException,
       Exceptions.HistoryAlreadyExistsException {
@@ -230,7 +231,8 @@ public class ServerService {
    * @throws Exceptions.ServerException if error further down in the server occurs.
    * @throws Exceptions.IdNotFoundException if idHandler does not have id given in register.
    */
-  private void deleteIdObject(String id, Class<?> cls) throws Exceptions.ServerException, Exceptions.IdNotFoundException {
+  private void deleteIdObject(String id, Class<?> cls) throws Exceptions.ServerException,
+      Exceptions.IdNotFoundException {
     try {
       IdHandler idHandler = persistence.getIdHandler();
       idHandler.removeId(id, cls);
@@ -261,7 +263,8 @@ public class ServerService {
     } catch (Exceptions.IdNotFoundException | Exceptions.ExerciseNotFoundException e) {
       System.err.println("WARNING: Tried to delete an Exercise that does not exist for user " + user.getUsername());
     } catch (Exceptions.WorkoutNotFoundException e) {
-      System.err.println("WARNING: Tried to delete an Exercise for workout that does not exist for user " + user.getUsername());
+      System.err.println("WARNING: Tried to delete an Exercise for workout that does not exist for user "
+          + user.getUsername());
     } catch (IOException e) {
       throw new Exceptions.ServerException();
     }
@@ -282,7 +285,7 @@ public class ServerService {
         deleteExercise(s);
       }
       deleteIdObject(id, Workout.class);
-    } catch (Exceptions.WorkoutNotFoundException| Exceptions.IdNotFoundException e) {
+    } catch (Exceptions.WorkoutNotFoundException | Exceptions.IdNotFoundException e) {
       System.err.println("WARNING: Tried to delete a Workout that does not exist for user " + user.getUsername());
     } catch (IOException e) {
       e.printStackTrace();

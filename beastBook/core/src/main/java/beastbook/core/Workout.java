@@ -30,7 +30,7 @@ public class Workout implements IdClasses {
   public Workout() {}
 
   /**
-   * Sets name of Workout
+   * Sets name of Workout.
    *
    * @param name to set.
    */
@@ -68,7 +68,8 @@ public class Workout implements IdClasses {
   * @throws Exceptions.IllegalIdException if Id is not valid exerciseId.
   * @throws Exceptions.ExerciseAlreadyExistsException when workout already have reference to Exercise.
   */
-  public void addExercise(String exerciseId) throws Exceptions.ExerciseAlreadyExistsException, Exceptions.IllegalIdException {
+  public void addExercise(String exerciseId) throws Exceptions.ExerciseAlreadyExistsException,
+      Exceptions.IllegalIdException {
     validateId(exerciseId, Exercise.class);
     if (exerciseIds.contains(exerciseId)) {
       throw new Exceptions.ExerciseAlreadyExistsException(name);

@@ -96,7 +96,7 @@
                 <configuration>
                     <!-- syntax: module-name/full-app-class-name -->
                     <mainClass>beastbook.fxui/beastbook.fxui.App</mainClass>
-                    <!-- rest of options are for jlink, does not work due to use of spring -->
+                    <!-- rest of options are for jlink, does not work due to use of spring and its automatic modules. Tried use of jdeps and moditec plugin to solve the issue. Did not work. -->
 <!--                    <compress>2</compress>
                     <noHeaderFiles>true</noHeaderFiles>
                     <stripDebug>true</stripDebug>

@@ -42,7 +42,7 @@ public class History implements IdClasses {
   }
 
   /**
-   * Sets id for History
+   * Sets id for History.
    *
    * @param id to set.
    * @throws Exceptions.IllegalIdException if id is invalid as historyId.

@@ -32,9 +32,10 @@ public class Rules {
    *
    * @param workout to be validated.
    * @param idHandler used to get information about existing workout names.
-   * @throws Exceptions.WorkoutAlreadyExistsException if Workout with same name exists in given workout.
+   * @throws Exceptions.WorkoutAlreadyExistsException if Workout with same name exists in server.
    */
-  public static void workoutRules(Workout workout, IdHandler idHandler) throws Exceptions.WorkoutAlreadyExistsException {
+  public static void workoutRules(Workout workout, IdHandler idHandler) throws
+      Exceptions.WorkoutAlreadyExistsException {
     Map<String, String> map = idHandler.getMap(Workout.class);
     if (map.containsValue(workout.getName())) {
       throw new Exceptions.WorkoutAlreadyExistsException(workout.getName());
@@ -46,9 +47,10 @@ public class Rules {
    *
    * @param history to be valiteded.
    * @param idHandler used to get information about existing history names and dates.
-   * @throws Exceptions.HistoryAlreadyExistsException
+   * @throws Exceptions.HistoryAlreadyExistsException if History with same name and date exists in server.
    */
-  public static void historyRules(History history, IdHandler idHandler) throws Exceptions.HistoryAlreadyExistsException {
+  public static void historyRules(History history, IdHandler idHandler) throws
+      Exceptions.HistoryAlreadyExistsException {
     Map<String, String> map = idHandler.getMap(History.class);
     if (map.containsValue(history.getName() + ";" + history.getDate())) {
       throw new Exceptions.HistoryAlreadyExistsException(history.getName());

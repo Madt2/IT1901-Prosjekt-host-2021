@@ -10,6 +10,9 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import java.io.IOException;
 
+/**
+ * Custom JSON-Serializer for IdHandler objects, converts IdHandler objects to JSON-file.
+ */
 public class IdHandlerDeserializer extends JsonDeserializer<IdHandler> {
   /**
    * Deserializes User data from json file.
@@ -64,8 +67,8 @@ public class IdHandlerDeserializer extends JsonDeserializer<IdHandler> {
             try {
               idHandler.addId(strings[0], strings[1], Workout.class);
             } catch (Exceptions.IdAlreadyInUseException e) {
-               throw new IOException("IdHandler not found when loading file, "
-                   + "something is wrong with writing object to file");
+              throw new IOException("IdHandler not found when loading file, "
+                  + "something is wrong with writing object to file");
             }
           }
         }

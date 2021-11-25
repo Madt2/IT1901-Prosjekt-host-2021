@@ -19,7 +19,7 @@ public class Properties {
   public static final String LEGAL_CHARS_WORKOUT_ID = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
   /**
-   * Mock values for testing purposes:
+   * Mock values for testing purposes.
    */
   public static final String notValidHistoryId = "notValid";
   public static final String notValidExerciseId = "notValid";

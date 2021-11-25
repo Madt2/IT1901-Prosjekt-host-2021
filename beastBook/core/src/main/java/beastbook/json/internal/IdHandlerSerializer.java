@@ -7,11 +7,12 @@ import beastbook.core.Workout;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-
 import java.io.IOException;
 
+/**
+ * Custom JSON-Serializer for IdHandler, converts IdHandler object to JSON-file.
+ */
 public class IdHandlerSerializer extends JsonSerializer<IdHandler> {
-  //Todo update javadocs:
   /**
    * Serializes IdHandler from input argument. Serializes IdHandler-object to json format.
    * Format for IdHandler in json: { username: "...", password: "...", workouts: "[...,...]" }.

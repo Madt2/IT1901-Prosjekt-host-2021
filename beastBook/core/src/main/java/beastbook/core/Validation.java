@@ -156,7 +156,7 @@ public class Validation {
    *
    * @param id to validate.
    * @param cls Class to validate for.
-   * @throws Exceptions.IllegalIdException
+   * @throws Exceptions.IllegalIdException if validation fails
    */
   public static void validateId(String id, Class<?> cls) throws Exceptions.IllegalIdException {
     if (id == null) {
