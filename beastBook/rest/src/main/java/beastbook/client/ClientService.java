@@ -22,16 +22,35 @@ public class ClientService {
   private ObjectMapper mapper = new ObjectMapper();
   private RestTemplate restTemplate = new RestTemplate();
 
+  /**
+   * Constructor for ClientService.
+   */
   ClientService() {
     mapper.registerModule(new BeastBookModule());
   }
 
+  /**
+   * Serializes object to json string.
+   *
+   * @param object to serialize.
+   * @return serialized object.
+   * @throws JsonProcessingException if a problem occur when processing(parsing, generating)
+   *     JSON file that are noe I/O problems.
+   */
   private String objectToJson(Object object) throws JsonProcessingException {
     String jsonString = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
-    System.out.println("Dette er det klienten sender til serveren: " + jsonString);
     return jsonString;
   }
 
+  /**
+   * Deserialize json strong to object.
+   *
+   * @param jsonString to deserialize.
+   * @param cls Class type to deserialize to.
+   * @return deserialized object.
+   * @throws Exceptions.BadPackageException if there is something wrong with
+   *     deserialization.
+   */
   private Object jsonToObject(String jsonString, Class<?> cls) throws Exceptions.BadPackageException {
     try {
       return mapper.readValue(jsonString, cls);
@@ -52,18 +71,41 @@ public class ClientService {
     mapper.registerModule(new BeastBookModule());
   }
 
+  /**
+   * Checks if given errorMessage is equal to Exceptions.ServerException simple name, if true throw
+   *     Exceptions.ServerException.
+   *
+   * @param errorMessage received from server containing simple name of exception.
+   * @throws Exceptions.ServerException if errorMessage is equal to Exceptions.ServerException simple name.
+   */
   private void serverExceptionHandler(String errorMessage) throws Exceptions.ServerException {
     if (errorMessage.equals(Exceptions.ServerException.class.getSimpleName())) {
       throw new Exceptions.ServerException();
     }
   }
 
+  /**
+   * Checks if given errorMessage is equal to Exceptions.BadPackageException simple name, if true throw
+   *     Exceptions.BadPackageException.
+   *
+   * @param errorMessage received from server containing simple name of exception.
+   * @throws Exceptions.BadPackageException if errorMessage is equal to
+   *     Exceptions.BadPackageException simple name.
+   */
   private void badPackageExceptionHandler(String errorMessage) throws Exceptions.BadPackageException {
     if (errorMessage.equals(Exceptions.BadPackageException.class.getSimpleName())) {
       throw new Exceptions.BadPackageException();
     }
   }
 
+  /**
+   * Checks if given errorMessage is equal to Exceptions.PasswordIncorrectException simple name, if true throw
+   *     Exceptions.PasswordIncorrectException.
+   *
+   * @param errorMessage received from server containing simple name of exception.
+   * @throws Exceptions.PasswordIncorrectException if errorMessage is equal to
+   *     Exceptions.PasswordIncorrectException simple name.
+   */
   private void passwordIncorrectExceptionHandler(String errorMessage)
       throws Exceptions.PasswordIncorrectException {
     if (errorMessage.equals(Exceptions.PasswordIncorrectException.class.getSimpleName())) {
@@ -71,6 +113,15 @@ public class ClientService {
     }
   }
 
+  /**
+   * Checks if given errorMessage is equal to Exceptions.UserNotFoundException simple name, if true throw
+   *     Exceptions.UserNotFoundException.
+   *
+   * @param errorMessage received from server containing simple name of exception.
+   * @param user object that caused exception at server.
+   * @throws Exceptions.UserNotFoundException if errorMessage is equal to
+   *     Exceptions.UserNotFoundException simple name.
+   */
   private void userNotFoundExceptionHandler(String errorMessage, User user)
       throws Exceptions.UserNotFoundException {
     if (errorMessage.equals(Exceptions.UserNotFoundException.class.getSimpleName())) {
@@ -78,6 +129,15 @@ public class ClientService {
     }
   }
 
+  /**
+   * Checks if given errorMessage is equal to Exceptions.ExerciseNotFoundException simple name, if true throw
+   *     Exceptions.ExerciseNotFoundException.
+   *
+   * @param errorMessage received from server containing simple name of exception.
+   * @param exerciseId that caused exception at server.
+   * @throws Exceptions.ExerciseNotFoundException if errorMessage is equal to
+   *     Exceptions.ExerciseNotFoundException simple name.
+   */
   private void exerciseNotFoundExceptionHandler(String errorMessage, String exerciseId)
       throws Exceptions.ExerciseNotFoundException {
     if (errorMessage.equals(Exceptions.ExerciseNotFoundException.class.getSimpleName())) {
@@ -85,6 +145,15 @@ public class ClientService {
     }
   }
 
+  /**
+   * Checks if given errorMessage is equal to Exceptions.WorkoutNotFoundException simple name, if true throw
+   *     Exceptions.WorkoutNotFoundException.
+   *
+   * @param errorMessage received from server containing simple name of exception.
+   * @param workoutId that caused exception at server.
+   * @throws Exceptions.WorkoutNotFoundException if errorMessage is equal to
+   *     Exceptions.WorkoutNotFoundException simple name.
+   */
   private void workoutNotFoundExceptionHandler(String errorMessage, String workoutId)
       throws Exceptions.WorkoutNotFoundException {
     if (errorMessage.equals(Exceptions.WorkoutNotFoundException.class.getSimpleName())) {
@@ -92,6 +161,15 @@ public class ClientService {
     }
   }
 
+  /**
+   * Checks if given errorMessage is equal to Exceptions.HistoryNotFoundException simple name, if true throw
+   *     Exceptions.HistoryNotFoundException.
+   *
+   * @param errorMessage received from server containing simple name of exception.
+   * @param historyId that caused exception at server.
+   * @throws Exceptions.HistoryNotFoundException if errorMessage is equal to
+   *     Exceptions.HistoryNotFoundException simple name.
+   */
   private void historyNotFoundExceptionHandler(String errorMessage, String historyId)
       throws Exceptions.HistoryNotFoundException {
     if (errorMessage.equals(Exceptions.HistoryNotFoundException.class.getSimpleName())) {
@@ -99,6 +177,15 @@ public class ClientService {
     }
   }
 
+  /**
+   * Checks if given errorMessage is equal to Exceptions.UserAlreadyExistException simple name, if true throw
+   *     Exceptions.UserAlreadyExistException.
+   *
+   * @param errorMessage received from server containing simple name of exception.
+   * @param user object that caused exception at server.
+   * @throws Exceptions.UserAlreadyExistException if errorMessage is equal to
+   *     Exceptions.UserAlreadyExistException simple name.
+   */
   private void userAlreadyExistsExceptionHandler(String errorMessage, User user)
       throws Exceptions.UserAlreadyExistException {
     if (errorMessage.equals(Exceptions.UserAlreadyExistException.class.getSimpleName())) {
@@ -106,6 +193,15 @@ public class ClientService {
     }
   }
 
+  /**
+   * Checks if given errorMessage is equal to Exceptions.ExerciseAlreadyExistsException simple name, if true throw
+   *     Exceptions.ExerciseAlreadyExistsException.
+   *
+   * @param errorMessage received from server containing simple name of exception.
+   * @param exercise object that caused exception at server.
+   * @throws Exceptions.ExerciseAlreadyExistsException if errorMessage is equal to
+   *     Exceptions.ExerciseAlreadyExistsException simple name.
+   */
   private void exerciseAlreadyExistsExceptionHandler(String errorMessage, Exercise exercise)
       throws Exceptions.ExerciseAlreadyExistsException {
     if (errorMessage.equals(Exceptions.ExerciseAlreadyExistsException.class.getSimpleName())) {
@@ -113,6 +209,15 @@ public class ClientService {
     }
   }
 
+  /**
+   * Checks if given errorMessage is equal to Exceptions.WorkoutAlreadyExistsException simple name, if true throw
+   *     Exceptions.WorkoutAlreadyExistsException.
+   *
+   * @param errorMessage received from server containing simple name of exception.
+   * @param workout object that caused exception at server.
+   * @throws Exceptions.WorkoutAlreadyExistsException if errorMessage is equal to
+   *     Exceptions.WorkoutAlreadyExistsException simple name.
+   */
   private void workoutAlreadyExistsExceptionHandler(String errorMessage, Workout workout)
       throws Exceptions.WorkoutAlreadyExistsException {
     if (errorMessage.equals(Exceptions.WorkoutAlreadyExistsException.class.getSimpleName())) {
@@ -120,6 +225,15 @@ public class ClientService {
     }
   }
 
+  /**
+   * Checks if given errorMessage is equal to Exceptions.HistoryAlreadyExistsException simple name, if true throw
+   *     Exceptions.HistoryAlreadyExistsException.
+   *
+   * @param errorMessage received from server containing simple name of exception.
+   * @param history object that caused exception at server.
+   * @throws Exceptions.HistoryAlreadyExistsException if errorMessage is equal to
+   *     Exceptions.ServerException simple name.
+   */
   private void historyAlreadyExistsExceptionHandler(String errorMessage, History history)
       throws Exceptions.HistoryAlreadyExistsException {
     if (errorMessage.equals(Exceptions.HistoryAlreadyExistsException.class.getSimpleName())) {
@@ -127,6 +241,15 @@ public class ClientService {
     }
   }
 
+  /**
+   * Checks if given errorMessage is equal to Exceptions.IllegalIdException simple name, if true throw
+   *     Exceptions.IllegalIdException.
+   *
+   * @param errorMessage received from server containing simple name of exception.
+   * @param id that caused exception at server.
+   * @param cls Class type of object that caused exception at server.
+   * @throws Exceptions.IllegalIdException if errorMessage is equal to Exceptions.ServerException simple name.
+   */
   private void illegalIdExceptionHandler(String errorMessage, String id, Class<?> cls)
       throws Exceptions.IllegalIdException {
     if (errorMessage.equals(Exceptions.IllegalIdException.class.getSimpleName())) {
@@ -134,6 +257,13 @@ public class ClientService {
     }
   }
 
+  /**
+   * Help method for sending POST request to server.
+   *
+   * @param uri object to set http address for package.
+   * @return server's responseEntity containing status indication accepted, or status indicated not accepted and
+   *     exception simple name as string.
+   */
   private ResponseEntity<String> sendPackage(URI uri) {
     HttpHeaders headers = new HttpHeaders();
     headers.setContentType(MediaType.APPLICATION_JSON);
@@ -142,11 +272,30 @@ public class ClientService {
     return response;
   }
 
+  /**
+   * Help method for sending GET request to server.
+   *
+   * @param uri object to set http address for package.
+   * @return server's responseEntity containing information requested by client and status indication accepted,
+   *     or status indicated not accepted and exception simple name as string.
+   */
   private ResponseEntity<String> getPackage(URI uri) {
     RestTemplate restTemplate = new RestTemplate();
     return restTemplate.getForEntity(uri, String.class);
   }
 
+  /**
+   * Request create user on server with given User object.
+   *
+   * @param user object to register.
+   * @throws URISyntaxException if a string could not be parsed as a URI reference.
+   * @throws Exceptions.BadPackageException if there is something wrong with
+   *     serialization or deserialization.
+   * @throws Exceptions.ServerException if something wrong happens on the server
+   * @throws Exceptions.UserAlreadyExistException if there is a user with same username in server.
+   * @throws JsonProcessingException if a problem occur when processing(parsing, generating)
+   *     JSON file that are noe I/O problems.
+   */
   public void createUser(User user) throws URISyntaxException,
       Exceptions.BadPackageException,
       Exceptions.ServerException,
@@ -165,6 +314,19 @@ public class ClientService {
     }
   }
 
+  /**
+   * Request login on server with given User object.
+   *
+   * @param user object to log in.
+   * @throws URISyntaxException if a string could not be parsed as a URI reference.
+   * @throws Exceptions.BadPackageException if there is something wrong with
+   *     serialization or deserialization.
+   * @throws Exceptions.ServerException if something wrong happens on the server.
+   * @throws Exceptions.PasswordIncorrectException if User object's password does not match password to user in server.
+   * @throws Exceptions.UserNotFoundException if user with User object's username does not exists in server.
+   * @throws JsonProcessingException if a problem occur when processing(parsing, generating)
+   *     JSON file that are noe I/O problems.
+   */
   public void login(User user) throws URISyntaxException,
       Exceptions.BadPackageException,
       Exceptions.ServerException,
@@ -185,6 +347,21 @@ public class ClientService {
     }
   }
 
+  /**
+   * Sends a request to add an Exercise to the User.
+   *
+   * @param user the user to add the Exercise to.
+   * @param workoutId the workout id of the Exercise to be added.
+   * @param exercise the Exercise to be added.
+   * @throws Exceptions.BadPackageException if there is something wrong with
+   *     serialization or deserialization.
+   * @throws Exceptions.ServerException if something wrong happens on the server
+   * @throws URISyntaxException if a string could not be parsed as a URI reference.
+   * @throws JsonProcessingException if a problem occur when processing(parsing, generating)
+   *     JSON file that are noe I/O problems.
+   * @throws Exceptions.ExerciseAlreadyExistsException if the Exercise requested is already added.
+   * @throws Exceptions.WorkoutNotFoundException if the Workout does not exist on the server.
+   */
   public void addExercise(User user, String workoutId, Exercise exercise) throws URISyntaxException,
       Exceptions.BadPackageException,
       Exceptions.ServerException,
