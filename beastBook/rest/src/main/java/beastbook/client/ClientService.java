@@ -244,6 +244,19 @@ public class ClientService {
     }
   }
 
+  /**
+   * Sends a request to add a History to the User.
+   *
+   * @param history the History to be added.
+   * @param user the user to add the History to.
+   * @throws Exceptions.BadPackageException if there is something wrong with
+   *     serialization or deserialization.
+   * @throws Exceptions.ServerException if something wrong happens on the server
+   * @throws URISyntaxException if a string could not be parsed as a URI reference.
+   * @throws JsonProcessingException if a problem occur when processing(parsing, generating)
+   *     JSON file that are noe I/O problems.
+   * @throws Exceptions.HistoryAlreadyExistsException if the History requested is already added.
+   */
   public void addHistory(History history, User user) throws URISyntaxException,
       Exceptions.BadPackageException,
       Exceptions.ServerException,
@@ -356,6 +369,19 @@ public class ClientService {
     }
   }
 
+  /**
+   * Sends a request to delete a Workout with given id on given user.
+   *
+   * @param workoutId the id to the Workout to be deleted.
+   * @param user the user to delete the Workout from.
+   * @throws Exceptions.BadPackageException if there is something wrong with
+   *     serialization or deserialization.
+   * @throws Exceptions.ServerException if something wrong happens on the server
+   * @throws URISyntaxException if a string could not be parsed as a URI reference.
+   * @throws JsonProcessingException if a problem occur when processing(parsing, generating)
+   *     JSON file that are noe I/O problems.
+   * @throws Exceptions.IllegalIdException if id given is not valid for selected class.
+   */
   public void deleteWorkout(String workoutId, User user) throws URISyntaxException,
       Exceptions.BadPackageException,
       Exceptions.ServerException,
@@ -392,6 +418,17 @@ public class ClientService {
     }
   }
 
+  /**
+   * Sends a request to delete a User.
+   *
+   * @param user the User to be deleted.
+   * @throws Exceptions.BadPackageException if there is something wrong with
+   *     serialization or deserialization.
+   * @throws Exceptions.ServerException if something wrong happens on the server
+   * @throws URISyntaxException if a string could not be parsed as a URI reference.
+   * @throws JsonProcessingException if a problem occur when processing(parsing, generating)
+   *     JSON file that are noe I/O problems.
+   */
   public void deleteUser(User user) throws URISyntaxException,
       Exceptions.BadPackageException,
       Exceptions.ServerException,
@@ -408,6 +445,21 @@ public class ClientService {
     }
   }
 
+  /**
+   * Sends a request to the server for a Workout object specified with id.
+   *
+   * @param workoutId the id of the Workout object to be fetched.
+   * @param user the User to get the Workout from.
+   * @return Workout the Workout object.
+   * @throws Exceptions.BadPackageException if there is something wrong with
+   *     serialization or deserialization.
+   * @throws Exceptions.ServerException if something wrong happens on the server.
+   * @throws Exceptions.WorkoutNotFoundException if no workout with the given id is stored in the server.
+   * @throws URISyntaxException if a string could not be parsed as a URI reference.
+   * @throws JsonProcessingException if a problem occur when processing(parsing, generating)
+   *     JSON file that are noe I/O problems.
+   * @throws Exceptions.IllegalIdException if id given is not valid for selected class.
+   */
   public Workout queryWorkout(String workoutId, User user) throws Exceptions.BadPackageException,
       Exceptions.ServerException,
       Exceptions.WorkoutNotFoundException,
@@ -429,6 +481,21 @@ public class ClientService {
     }
   }
 
+  /**
+   * Sends a request to the server for an Exercise object specified with id.
+   *
+   * @param exerciseId the id of the Exercise object to be fetched.
+   * @param user the User to get the Exercise from.
+   * @return Exercise the Exercise object.
+   * @throws Exceptions.BadPackageException if there is something wrong with
+   *     serialization or deserialization.
+   * @throws Exceptions.ServerException if something wrong happens on the server.
+   * @throws Exceptions.ExerciseNotFoundException if no exercise with the given id is stored in the server.
+   * @throws URISyntaxException if a string could not be parsed as a URI reference.
+   * @throws JsonProcessingException if a problem occur when processing(parsing, generating)
+   *     JSON file that are noe I/O problems.
+   * @throws Exceptions.IllegalIdException if id given is not valid for selected class.
+   */
   public Exercise queryExercise(String exerciseId, User user) throws Exceptions.BadPackageException,
       Exceptions.ServerException,
       Exceptions.ExerciseNotFoundException,
@@ -500,6 +567,18 @@ public class ClientService {
     }
   }
 
+  /**
+   * Sends a request to the server for the map of workoutIds.
+   *
+   * @param user to get the map from.
+   * @return a Map object with the workoutIds
+   * @throws Exceptions.BadPackageException if there is something wrong with
+   *     serialization or deserialization.
+   * @throws Exceptions.ServerException if something wrong happens on the server.
+   * @throws URISyntaxException if a string could not be parsed as a URI reference.
+   * @throws JsonProcessingException if a problem occur when processing(parsing, generating)
+   *     JSON file that are noe I/O problems.
+   */
   public Map<String, String> queryWorkoutMap(User user) throws Exceptions.BadPackageException,
       Exceptions.ServerException,
       URISyntaxException,
@@ -517,6 +596,18 @@ public class ClientService {
     }
   }
 
+  /**
+   * Sends a request to the server for the map of historyIds.
+   *
+   * @param user to get the map from.
+   * @return a Map object with the historyIds
+   * @throws Exceptions.BadPackageException if there is something wrong with
+   *     serialization or deserialization.
+   * @throws Exceptions.ServerException if something wrong happens on the server.
+   * @throws URISyntaxException if a string could not be parsed as a URI reference.
+   * @throws JsonProcessingException if a problem occur when processing(parsing, generating)
+   *     JSON file that are noe I/O problems.
+   */
   public Map<String, String> queryHistoryMap(User user) throws Exceptions.BadPackageException,
       Exceptions.ServerException,
       URISyntaxException,

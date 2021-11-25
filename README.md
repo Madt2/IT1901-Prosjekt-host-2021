@@ -18,7 +18,7 @@ Documentation for the different releases are found in the `docs` folder
 ## Developer installation
 To install the project, type `git clone https://gitlab.stud.idi.ntnu.no/it1901/groups-2021/gr2132/gr2132.git`
 
-# Useful commands for the project
+## How to test and run the project
 We use maven to build and run this project:
 (Due to use of server, project must be installed without tests first, see instructions underneath:)
 
@@ -43,4 +43,13 @@ We use maven to build and run this project:
 
 7. To check for code coverage, spotbugs, checkstyle and tests, type `mvn verify`
 
-You can now see that files will be added to your computer, because both the server and the app is running.
+
+## Developer Comments:
+- JLink and JPackage was not implemented in this application due to issues with spring's automatic modules.
+We tried to resolve the issue using jdeps to analyze and a plugin called Moditect as an alternative to JLink. 
+This did not work and the shippable product was scrapped for this release.
+The configuration is still viewable in fxui's pom.xml but is commented out for now.
+- Server controller test is unnecessary.
+We test ServerControllers functionality through testing ClientController. Method call chain from ClientController to
+ServerService is just handling transferring objects and exceptions via http GET and POST. Therefore testing 
+ClientController will cover functionality desired to test in ServerController.
