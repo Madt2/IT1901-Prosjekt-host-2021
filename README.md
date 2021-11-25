@@ -1,7 +1,7 @@
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.stud.ntnu.no/#https://gitlab.stud.idi.ntnu.no/it1901/groups-2021/gr2132/gr2132)
 
 # BeastBook :muscle:
-## Description of the BeastBook
+## Description of the BeastBook :books:
 
 For in-depth description of documentation see [beastBook/README.md](https://gitlab.stud.idi.ntnu.no/it1901/groups-2021/gr2132/gr2132/-/tree/master/beastBook)
 
@@ -15,10 +15,10 @@ The rest components are stored under [beastBook/rest/src/main/java/beastbook/res
 
 Documentation for the different releases are found in the [docs](https://gitlab.stud.idi.ntnu.no/it1901/groups-2021/gr2132/gr2132/-/tree/master/docs) folder
 
-## Developer installation
+## Developer installation :computer:
 To install the project, type `git clone https://gitlab.stud.idi.ntnu.no/it1901/groups-2021/gr2132/gr2132.git`
 
-## How to test and run the project
+## How to test and run the project ▶️
 We use maven to build and run this project:
 (Due to use of server, project must be installed without tests first, see instructions underneath:)
 
@@ -38,13 +38,16 @@ We use maven to build and run this project:
 5. To **run the app**, type `mvn javafx:run -f fxui/pom.xml`
 
 
-7. To **test the project**, type `mvn test`
+6. To **test the project**, type `mvn test`
 
 
 7. To check for code coverage, spotbugs, checkstyle and tests, type `mvn verify`
 
+## REST :cloud:
 
-## Developer Comments
+We use a server-to-client restAPI model in our project. The server handles all data storage and error checking, and client sends POST and GET requests to server to get or store resources.
+
+## Developer Comments ✍️
 - JLink and JPackage was not implemented in this application due to issues with spring's automatic modules.
 We tried to resolve the issue using jdeps to analyze and a plugin called Moditect as an alternative to JLink. 
 This did not work and the shippable product was scrapped for this release.
@@ -53,7 +56,3 @@ The configuration is still viewable in fxui's pom.xml but is commented out for n
 We test ServerControllers functionality through testing ClientController. Method call chain from ClientController to
 ServerService is just handling transferring objects and exceptions via http GET and POST. Therefore testing 
 ClientController will cover functionality desired to test in ServerController.
-
-## Rest
-
-We use a server-to-client restAPI model in our project. The server handles all data storage and error checking, and client sends POST and GET requests to server to get or store resources.
