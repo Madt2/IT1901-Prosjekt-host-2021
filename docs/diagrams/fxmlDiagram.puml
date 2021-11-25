@@ -1,0 +1,11 @@
+@startuml FXML Diagram
+/' Not Classes, but fxml files  '/
+
+Login -- Homescreen
+Homescreen -- Create
+Homescreen -- WorkoutOverview
+Homescreen -- HistoryOverview
+
+WorkoutOverview -- Workout
+HistoryOverview -- History
+@enduml

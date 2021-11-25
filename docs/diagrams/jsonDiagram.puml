@@ -1,0 +1,59 @@
+@startuml Json Diagram
+class BeastBookPersistence {
+  -void writeObjectToFile(Object, File)
+  -Object readObjectFromFile(File, Class)
+  -void deleteFile(File)
+  +void saveIdObject(IdClasses)
+  -void deleteIdObject(String, Class)
+}
+
+class ExerciseDeserializer {
+  +History deserialize(JsonParser, DeserializationContext)
+  ~History deserialize(JsonNode)
+  +String getExercise
+}
+
+class ExerciseSerializer {
+  +void serialize(Exercise, JsonGenerator, SerializerProvider)
+}
+
+class UserDeserializer {
+}
+
+class UserSerializer {
+}
+
+class WorkoutDeserializer {
+}
+
+class WorkoutSerializer {
+}
+
+class HistoryDeserializer {
+}
+
+class HistorySerializer {
+}
+
+class IdHandlerDeserializer {
+}
+
+class IdHandlerSerializer {
+}
+
+class BeastBookModule {
+
+}
+
+BeastBookModule --> ExerciseDeserializer
+BeastBookModule --> ExerciseSerializer
+BeastBookModule --> UserDeserializer
+BeastBookModule --> UserSerializer
+BeastBookModule --> WorkoutDeserializer
+BeastBookModule --> WorkoutSerializer
+BeastBookModule --> HistoryDeserializer
+BeastBookModule --> HistorySerializer
+BeastBookModule --> IdHandlerDeserializer
+BeastBookModule --> IdHandlerSerializer
+
+@enduml

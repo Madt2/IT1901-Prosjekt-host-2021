@@ -1,0 +1,66 @@
+@startuml Fxui Diagram
+class HistoryController extends AbstractController{
+  -TableView<Exercise> historyTable
+  +void setTable(History)
+}
+
+class HistoryOverviewController extends AbstractController{
+  -TableView<HistoryData> historyOverview
+  -void loadTable()
+  ~void loadHistory(ActionEvent)
+  ~void deleteHistory()
+}
+
+class CreateWorkoutController extends AbstractController{
+  -TableView<Exercise> workoutTable
+  +void updateTable()
+  ~void addExercise()
+  ~void loadWorkout(ActionEvent)
+  ~void createWorkout()
+  ~void deleteExercise()
+}
+
+abstract class AbstractController {
+  - String: username
+  - String: password
+  # ClientController: service 
+
+  ~void loadHome(ActionEvent)
+  ~void loadLogin(ActionEvent)
+  ~void loadCreate(ActionEvent)
+  ~void loadOverview(ActionEvent)
+  ~void loadHistoryOverview(ActionEvent)
+}
+
+class WorkoutController extends AbstractController{
+  -TableView<Exercise> workoutTable
+  +void updateTable()
+  ~void saveHistory()
+  -void editTable()
+}
+
+class WorkoutOverviewController extends AbstractController{
+  -TableView<Workout> workoutOverview
+  -void loadTable()
+  ~void loadWorkout(ActionEvent)
+  ~void deleteWorkout()
+}
+
+class LoginController extends AbstractController{
+  ~void registerUser()
+  ~void loginUser()
+}
+
+class HomeScreenController extends AbstractController{
+  ~void deleteUser()
+}
+
+class App {
+  +void start(Stage)
+}
+/'
+fxui -- AbstractController
+fxui -- App
+'/
+
+@enduml
