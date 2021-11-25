@@ -1,7 +1,7 @@
 [![Gitpod Ready-to-Code](https://img.shields.io/badge/Gitpod-Ready--to--Code-blue?logo=gitpod)](https://gitpod.stud.ntnu.no/#https://gitlab.stud.idi.ntnu.no/it1901/groups-2021/gr2132/gr2132)
 
 # BeastBook :muscle:
-## Description of the BeastBook:
+## Description of the BeastBook
 
 For in-depth description of documentation see [beastBook/README.md](https://gitlab.stud.idi.ntnu.no/it1901/groups-2021/gr2132/gr2132/-/tree/master/beastBook)
 
@@ -44,7 +44,7 @@ We use maven to build and run this project:
 7. To check for code coverage, spotbugs, checkstyle and tests, type `mvn verify`
 
 
-## Developer Comments:
+## Developer Comments
 - JLink and JPackage was not implemented in this application due to issues with spring's automatic modules.
 We tried to resolve the issue using jdeps to analyze and a plugin called Moditect as an alternative to JLink. 
 This did not work and the shippable product was scrapped for this release.
@@ -53,3 +53,7 @@ The configuration is still viewable in fxui's pom.xml but is commented out for n
 We test ServerControllers functionality through testing ClientController. Method call chain from ClientController to
 ServerService is just handling transferring objects and exceptions via http GET and POST. Therefore testing 
 ClientController will cover functionality desired to test in ServerController.
+
+## Rest
+
+We use a server-to-client restAPI model in our project. The server handles all data storage and error checking, and client sends POST and GET requests to server to get or store resources.
