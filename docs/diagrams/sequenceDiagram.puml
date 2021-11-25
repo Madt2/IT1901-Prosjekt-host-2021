@@ -1,0 +1,50 @@
+@startuml sequenceDiagram
+
+group Register new user
+User -> FxuiController: Type "username" and "password".\nClick "register"
+FxuiController -> RegisterController: registerUser(username, password)
+FxuiController-> ClientController: creates ClientController with User object as parameter.
+RegisterController -> ClientService: createUser()
+ClientService -> ServerController: POST [createUser(User object)]
+ServerController -> ServerService: createUser()
+ServerService -> BeastBookPersistence: createUser()
+ServerController -> ClientService: HttpStatus: Created
+FxuiController -> User: ***log user in***.
+end
+
+group Failed Login
+User -> FxuiController: Type "username" and "wrong password".\nClick "login"
+FxuiController -> ClientController: login()
+ClientController -> ClientService: login()
+ClientService -> ServerController: POST [login(User object)]
+ServerController -> ServerService: login()
+ServerService -> BeastBookPersistence: validateUser()
+BeastBookPersistence -> ServerService: Throw PasswordIncorrectException
+ServerService -> ServerController: Throw PasswordIncorrectException
+ServerController -> ClientService: returns exception type and HttpStatus: not acceptable
+ClientService -> ClientController: Throw PasswordIncorrectException
+ClientController -> FxuiController: Throw PasswordIncorrectException
+FxuiController -> User: Password incorrect!
+end
+
+group Create workout
+User -> FxuiController: type workout title
+User -> FxuiController: enter exercise input. click add exercise
+User -> FxuiController: enter exercise input. click add exercise
+User -> FxuiController: enter exercise input. click add exercise
+FxuiController-> ClientController: creates ClientController with User object as parameter.
+FxuiController-> ClientController: createWorkout(Workout object, List exercise objects)
+ClientController -> ClientService: createWorkout(Workout object).
+ClientService -> ServerController: POST\n[createWorkout(User object, Workout object)]
+ServerController -> ServerService: createWorkout(Workout object)
+ServerService -> BeastBookPersistence: saveIdObject(Workout object)
+ServerService -> ClientController: returns workoutId and HttpStatus created
+ClientController -> ClientService: createExercise(Exercise object, workoutId)\nfor all exercises in list.
+ClientService -> ServerController: POST\n[createWorkout(User object, Exercise object, workoutId)]
+ServerController -> ServerService: createExercise(Exercise object, workoutId)
+ServerService -> BeastBookPersistence: saveIdObject(Exercise object)
+ServerService -> ClientController: returns HttpStatus created
+FxuiController -> User: Workout created.
+end
+
+@enduml
