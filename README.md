@@ -3,7 +3,7 @@
 # BeastBook :muscle:
 ## Description of the BeastBook:
 
-For in-depth description of documentation see `beastBook/README.md`
+For in-depth description of documentation see [beastBook/README.md](https://gitlab.stud.idi.ntnu.no/it1901/groups-2021/gr2132/gr2132/-/tree/master/beastBook)
 
 The core components are stored under [beastBook/core/src/main/java/beastbook/core](https://gitlab.stud.idi.ntnu.no/it1901/groups-2021/gr2132/gr2132/-/tree/master/beastBook/core/src/main/java/beastbook/core)
 
