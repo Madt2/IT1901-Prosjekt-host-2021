@@ -1,16 +1,12 @@
 package beastbook.json.internal;
 
-import beastbook.core.History;
 import beastbook.core.User;
-import beastbook.core.Workout;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.TreeNode;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.node.TextNode;
 import java.io.IOException;
 
 /**
@@ -18,17 +14,14 @@ import java.io.IOException;
  */
 public class UserDeserializer extends JsonDeserializer<User> {
 
-  private WorkoutDeserializer workoutDeserializer = new WorkoutDeserializer();
-  private HistoryDeserializer historyDeserializer = new HistoryDeserializer();
-  
   /**
   * Deserializes User data from json file.
-  * Format for User in json: { username: "...", password: "...", workouts: "[...,...]" }.
+  * Format for User in json: { username: "...", password: "..." }.
   *
   * @param parser defines how JSON-file should be parsed
   * @param deserializationContext defines context for deserialization
   * @return deserialized User.
-  * @throws IOException for low-level read issues or decoding problems for JsonParser
+  * @throws IOException for low-level read issues or decoding problems for JsonParser.
   */
   @Override
   public User deserialize(
@@ -43,39 +36,15 @@ public class UserDeserializer extends JsonDeserializer<User> {
   * Converts info from jsonNode to User.
   *
   * @param jsonNode jsonNode to convert.
-  * @return Deserialized user.
+  * @return Deserialized user, or null deserialization fails.
   */
-  User deserialize(JsonNode jsonNode) {
+  User deserialize(JsonNode jsonNode) throws IOException {
     if (jsonNode instanceof ObjectNode objectNode) {
-      User user = new User();
       JsonNode usernameNode = objectNode.get("username");
-      if (usernameNode instanceof TextNode) {
-        user.setUserName(usernameNode.asText());
-      }
       JsonNode passwordNode = objectNode.get("password");
-      if (passwordNode instanceof TextNode) {
-        user.setPassword(passwordNode.asText());
-      }
-      JsonNode workoutsNode = objectNode.get("workouts");
-      if (workoutsNode instanceof ArrayNode) {
-        for (JsonNode node : workoutsNode) {
-          Workout workout = workoutDeserializer.deserialize(node);
-          if (workout != null) {
-            user.addWorkout(workout);
-          }
-        }
-      }
-      JsonNode historyNode = objectNode.get("history");
-      if (historyNode instanceof ArrayNode) {
-        for (JsonNode node : historyNode) {
-          History history = historyDeserializer.deserialize(node);
-          if (history != null) {
-            user.addHistory(history);
-          }
-        }
-      }
+      User user = new User(usernameNode.asText(), passwordNode.asText());
       return user;
     }
-    return null;
+    throw new IOException("Something went wrong with loading User!");
   }
 }

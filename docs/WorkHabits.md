@@ -12,7 +12,7 @@
 
 When starting on a new release, the first thing we do is to create issues and think about what we want to implement. Additionally, we add some issues while working, because we did not have them from the start. 
 
-We mostly code in pairs as it is easier to avoid mistakes and it gives us the benefit of having two points of view as we design the implementation. It is slightly less effective to code in pairs than to code individually, but we found that distributing work evenly and efficiently is difficult and errors are much more common when working individually than in pairs.
+We mostly code in pairs as it is easier to avoid mistakes, and it gives us the benefit of having two points of view as we design the implementation. It is slightly less effective to code in pairs than to code individually, but we found that distributing work evenly and efficiently is difficult and errors are much more common when working individually than in pairs.
 
 We use both physical and digital meetings, according to what is most efficient. When facing bigger obstacles, physical meetings are more useful. Digital meetings are more useful when solving easier problems. Digital meetings are also usually useful for work that takes quite a lot of time, because they are not as mentally draining as physical meetings.
 

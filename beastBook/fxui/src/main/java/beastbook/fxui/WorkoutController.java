@@ -1,15 +1,14 @@
 package beastbook.fxui;
 
-import beastbook.core.Exercise;
-import beastbook.core.History;
-import beastbook.core.User;
+import beastbook.core.*;
 import java.io.IOException;
-import javafx.event.ActionEvent;
+import java.net.URISyntaxException;
+import java.util.ArrayList;
+import java.util.List;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.text.Text;
@@ -27,9 +26,6 @@ public class WorkoutController extends AbstractController {
   private Text title;
 
   @FXML
-  private TextField dateInput;
-
-  @FXML
   private Text exceptionFeedback;
 
   @FXML
@@ -45,7 +41,8 @@ public class WorkoutController extends AbstractController {
         "-fx-text-box-border: #B22222;"
         + "-fx-focus-color: #B22222";
   public static final String CORRECT_INPUT_BORDER_COLOR = "";
-  private String workoutName;
+  private String workoutId;
+  private List<Exercise> exercises = new ArrayList<>();
 
   /**
    * Initializes the Workout screen with the correct User from File,
@@ -55,13 +52,23 @@ public class WorkoutController extends AbstractController {
    */
   @FXML
   public void initialize() throws IOException {
-    user = user.loadUser(user.getUserName());
-    updateTable();
-    title.setText(workoutName);
+    try {
+      Workout workout = service.getWorkout(workoutId);
+      for (String id : workout.getExerciseIds()) {
+        Exercise e = service.getExercise(id);
+        exercises.add(e);
+      }
+      updateTable();
+      title.setText(workout.getName());
+    } catch (Exceptions.WorkoutNotFoundException | URISyntaxException
+        | Exceptions.IllegalIdException | Exceptions.ServerException
+        | Exceptions.BadPackageException | Exceptions.ExerciseNotFoundException e) {
+      exceptionFeedback.setText(e.getMessage());
+    }
   }
 
   /**
-  * Sets the workout table columns and adds them to the table view.
+  * Sets the workout table columns and adds them to the table view. 
   */
   public void updateTable() {
     workoutTable.getColumns().clear();
@@ -69,7 +76,7 @@ public class WorkoutController extends AbstractController {
     
     exerciseNameColumn = new TableColumn<>("Exercise name:");
     exerciseNameColumn.setCellValueFactory(
-      new PropertyValueFactory<>("exerciseName")
+      new PropertyValueFactory<>("name")
     );
     
     repGoalColumn = new TableColumn<>("Rep goal:");
@@ -103,26 +110,24 @@ public class WorkoutController extends AbstractController {
     workoutTable.getColumns().add(setsColumn);
     workoutTable.getColumns().add(repsPerSetColumn);
     workoutTable.getColumns().add(restTimeColumn);
-
     editTable();
-    setColumnsSize();
+    setColumnProperties();
   }
-
+  
   /**
-  * Makes the cells in workout table editable.
-  * If a cell is edited, the new value will overwrite
-  * the old value in both the GUI and the user database.
-  * If the value is in wrong format, an exception will be thrown
-  * and a red text will appear in the GUI with feedback.
-  * Sets the exercises from the workout to the table view.
-  */
+   * Makes the column with string format editable and saves the updated data to the user/GUI.
+   * Also prints a message to the GUI if an input is in wrong format.
+   *
+   * @param column the column which have data in string format
+   * @param errorMessage the message which the user will receive if input is wrong
+   */
   private void tableWithString(TableColumn<Exercise, String> column, String errorMessage) {
     column.setCellFactory(TextFieldTableCell.forTableColumn());
     column.setOnEditCommit(event -> {
       try {
         Exercise exercise = event.getRowValue();
-        exercise.setExerciseName(event.getNewValue());
-        user.saveUser();
+        exercise.setName(event.getNewValue());
+        service.updateExercise(exercise);
         emptyExceptionFeedback();
         saveButton.setDisable(false);
       } catch (IllegalArgumentException i) {
@@ -135,6 +140,13 @@ public class WorkoutController extends AbstractController {
     });
   }
 
+  /**
+   * Makes the column with integer format editable and saves the updated data to the user/GUI.
+   * Also prints a message to the GUI if an input is in wrong format.
+   *
+   * @param column the column which have data in string format
+   * @param errorMessage the message which the user will receive if input is wrong
+   */
   private void tableWithInteger(TableColumn<Exercise, Integer> column, String errorMessage) {
     column.setCellFactory(TextFieldTableCell.forTableColumn(
             new CustomIntegerStringConverter())
@@ -154,7 +166,7 @@ public class WorkoutController extends AbstractController {
         if (column.equals(restTimeColumn)) {
           exercise.setRestTime(event.getNewValue());
         }
-        user.saveUser();
+        service.updateExercise(exercise);
         emptyExceptionFeedback();
         saveButton.setDisable(false);
       } catch (IllegalArgumentException i) {
@@ -167,6 +179,13 @@ public class WorkoutController extends AbstractController {
     });
   }
 
+  /**
+   * Makes the column with double format editable and saves the updated data to the user/GUI.
+   * Also prints a message to the GUI if an input is in wrong format.
+   *
+   * @param column the column which have data in string format
+   * @param errorMessage the message which the user will receive if input is wrong
+   */
   private void tableWithDouble(TableColumn<Exercise, Double> column, String errorMessage) {
     column.setCellFactory(TextFieldTableCell.forTableColumn(
             new CustomDoubleStringConverter())
@@ -175,7 +194,7 @@ public class WorkoutController extends AbstractController {
       try {
         Exercise exercise = event.getRowValue();
         exercise.setWeight(event.getNewValue());
-        user.saveUser();
+        service.updateExercise(exercise);
         emptyExceptionFeedback();
         saveButton.setDisable(false);
       } catch (IllegalArgumentException i) {
@@ -188,25 +207,30 @@ public class WorkoutController extends AbstractController {
     });
   }
 
+  /**
+   * Saves the workout to the history overview.
+   * If the user already have saved the workout to history the same day,
+   * the history will be overwritten with current data from the table view.
+   */
   @FXML
   void saveHistory() throws IOException {
-    boolean overwritten = false;
-    for (History h : user.getHistories()) {
-      if (h.getName().equals(workoutName) && h.getDate().equals(user.getDate())) {
-        user.removeHistory(h.getSavedWorkout().getName(), h.getDate());
-        user.addHistory(user.getWorkout(workoutName));
-        exceptionFeedback.setText("History overwritten!");
-        overwritten = !overwritten;
-      }
-    }
-    if (!overwritten) {
-      user.addHistory(user.getWorkout(workoutName));
+    try {
+      Workout workout = service.getWorkout(workoutId);
+      History history = new History(workout.getName(), exercises);
+      service.addHistory(history);
+      saveButton.setDisable(true);
       exceptionFeedback.setText("Workout was successfully added to history!");
+    } catch (Exceptions.WorkoutNotFoundException | Exceptions.IllegalIdException
+        | URISyntaxException | Exceptions.ServerException
+        | Exceptions.BadPackageException | Exceptions.HistoryAlreadyExistsException e) {
+      exceptionFeedback.setText(e.getMessage());
     }
-    saveButton.setDisable(true);
-    user.saveUser();
   }
 
+  /**
+   * Loads the workout data from the user in to the tableview.
+   * Also sets up the methods to listen after edited cells.
+   */
   private void editTable() {
     tableWithString(exerciseNameColumn, "Wrong input, please try again. Value was not changed!");
     tableWithInteger(repGoalColumn, "Rep Goal must be a number. Value was not changed!");
@@ -214,36 +238,46 @@ public class WorkoutController extends AbstractController {
     tableWithInteger(setsColumn, "Sets must be a number. Value was not changed!");
     tableWithInteger(repsPerSetColumn, "Reps per set must be a number. Value was not changed!");
     tableWithInteger(restTimeColumn, "Rest time must be a number. Value was not changed!");
-    workoutTable.getItems().setAll(user.getWorkout(workoutName).getExercises());
+
+    workoutTable.getItems().setAll(exercises);
   }
-    
+  
   TableView<Exercise> getWorkoutTable() {
     return workoutTable;
-  }
-
-  Exercise getTable(int row) {
-    return workoutTable.getItems().get(row);
   }
 
   private void emptyExceptionFeedback() {
     this.exceptionFeedback.setText("");
   }
 
-  private void setColumnsSize() {
-    exerciseNameColumn.setPrefWidth(100);        
-    repGoalColumn.setPrefWidth(75);
-    weightColumn.setPrefWidth(75);
-    setsColumn.setPrefWidth(75);
-    repsPerSetColumn.setPrefWidth(80);
-    restTimeColumn.setPrefWidth(106);
+  void setWorkoutId(String id) {
+    this.workoutId = id;
   }
 
-  void setUser(User user) {
-    this.user = user;
-  }
+  /**
+  * Sets different properties to the columns.
+  * Width, not reorderable and not resizable functionality is set.
+  */
+  private void setColumnProperties() {
+    exerciseNameColumn.setPrefWidth(198);        
+    repGoalColumn.setPrefWidth(65);
+    weightColumn.setPrefWidth(65);
+    setsColumn.setPrefWidth(65);
+    repsPerSetColumn.setPrefWidth(76);
+    restTimeColumn.setPrefWidth(94);
+  
+    exerciseNameColumn.setReorderable(false);
+    repGoalColumn.setReorderable(false);
+    weightColumn.setReorderable(false);
+    setsColumn.setReorderable(false);
+    repsPerSetColumn.setReorderable(false);
+    restTimeColumn.setReorderable(false);
 
-  void setWorkoutName(String workoutName) {
-    this.workoutName = workoutName;
+    repGoalColumn.setResizable(false);
+    weightColumn.setResizable(false);
+    setsColumn.setResizable(false);
+    repsPerSetColumn.setReorderable(false);
+    restTimeColumn.setResizable(false);
   }
 
   // SOURCE for the following two static classes: 
@@ -279,7 +313,7 @@ public class WorkoutController extends AbstractController {
   /**
   * Extended version of DoubleStringConverter. Used to catch NumberFormatException, as 
   * the DoubleStringConverter do not handle the NumberFormatException by default.
-  * Returns null which is caught by editTable()
+  * Returns null which is caught by updateTable()
   */
   public static class CustomDoubleStringConverter extends DoubleStringConverter {
     private final DoubleStringConverter converter = new DoubleStringConverter();

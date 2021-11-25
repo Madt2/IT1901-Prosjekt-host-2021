@@ -1,0 +1,81 @@
+@startuml Core Diagram
+
+interface IdClasses {
+  String: getName()
+  String: getId()
+  void: setId(String)
+}
+
+class Exercise implements IdClasses{
+  -String id
+  -String name
+  -int repGoal
+  -double weight
+  -int sets
+  -int repsPerSet
+  -int restTime
+}
+
+class Exceptions {
+
+}
+
+class User {
+  -final String username
+  -final String password
+}
+
+class Workout implements IdClasses{
+  -String id
+  -String name
+  -List<String> exerciseIds
+}
+
+class History implements IdClasses{
+  -String id
+  -String name
+  -String date
+  -List<Exercise> savedExercises
+}
+
+class IdHandler {
+  -Map<String, String> exerciseMap
+  -Map<String, String> workoutMap
+  -Map<String, String> historyMap
+  +void setLegals(Class)
+  +void addId(String, String, Class)
+  +void removeId(String, Class)
+  +IdClasses giveId(IdClasses)
+
+}
+
+class Properties {
+
+}
+
+class Validation {
+
+}
+
+Exercise --> Validation
+History --> Validation
+User --> Validation
+Workout --> Validation
+
+Validation --> Properties
+IdHandler --> Properties
+
+IdHandler --> Exceptions
+Exercise --> Exceptions
+History --> Exceptions
+Workout --> Exceptions
+Validation --> Exceptions
+
+/' Should we have this???
+IdHandler --> Exercise
+IdHandler --> History
+IdHandler --> Workout
+IdHandler --> User
+'/
+
+@enduml

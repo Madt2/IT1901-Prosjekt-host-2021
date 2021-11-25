@@ -1,5 +1,6 @@
 package beastbook.json.internal;
 
+import beastbook.core.Exercise;
 import beastbook.core.History;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -12,7 +13,7 @@ import java.io.IOException;
 public class HistorySerializer extends JsonSerializer<History> {
   /**
    * Serializes History from input-arguments. Serializes History object to json format.
-   * Format for History in json: { date: "...", savedWorkout: "[...,...]"}.
+   * Format for History in json: { id: "...", name "...", date: "...", savedExercises: "[...,...]"}.
    *
    * @param history History object to serialize.
    * @param jsonGenerator class that writes JSON-file.
@@ -28,11 +29,21 @@ public class HistorySerializer extends JsonSerializer<History> {
       SerializerProvider serializerProvider)
       throws IOException {
     jsonGenerator.writeStartObject();
+    if (history.getId() != null) {
+      jsonGenerator.writeStringField("id", history.getId());
+    }
+    if (history.getName() != null) {
+      jsonGenerator.writeStringField("name", history.getName());
+    }
     if (history.getDate() != null) {
       jsonGenerator.writeStringField("date", history.getDate());
     }
-    if (history.getSavedWorkout() != null) {
-      jsonGenerator.writeObjectField("savedWorkout", history.getSavedWorkout());
+    if (history.getSavedExercises() != null) {
+      jsonGenerator.writeArrayFieldStart("savedExercises");
+      for (Exercise e : history.getSavedExercises()) {
+        jsonGenerator.writeObject(e);
+      }
+      jsonGenerator.writeEndArray();
     }
     jsonGenerator.writeEndObject();
   }

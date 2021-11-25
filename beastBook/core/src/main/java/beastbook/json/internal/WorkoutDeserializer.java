@@ -1,6 +1,6 @@
 package beastbook.json.internal;
 
-import beastbook.core.Exercise;
+import beastbook.core.Exceptions;
 import beastbook.core.Workout;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.TreeNode;
@@ -16,17 +16,15 @@ import java.io.IOException;
  * Custom JSON-Deserializer for Workout, converts JSON-file to Workout object.
  */
 public class WorkoutDeserializer extends JsonDeserializer<Workout> {
-
-  private ExerciseDeserializer deserializer = new ExerciseDeserializer();
   
   /**
   * Deserializes Workout data from json file.
-  * Format for Workout in json: { name: "...", exercises: "[...,...]"}.
+  * Format for Workout in json: { id: "...", name: "...", exerciseIds: "[...,...]"}.
   *
   * @param parser defines how JSON-file should be parsed
   * @param deserializationContext defines context for deserialization
   * @return deserialized Workout.
-  * @throws IOException for low-level read issues or decoding problems for JsonParser
+  * @throws IOException for low-level read issues or decoding problems for JsonParser.
   */
   @Override
   public Workout deserialize(
@@ -41,21 +39,35 @@ public class WorkoutDeserializer extends JsonDeserializer<Workout> {
   * Converts info from jsonNode to Workout.
   *
   * @param jsonNode jsonNode to convert.
-  * @return Deserialized workout.
+  * @return Deserialized workout or null deserialization fails.
   */
-  Workout deserialize(JsonNode jsonNode) {
+  Workout deserialize(JsonNode jsonNode) throws IOException {
     if (jsonNode instanceof ObjectNode objectNode) {
       Workout workout = new Workout();
       JsonNode nameNode = objectNode.get("name");
       if (nameNode instanceof TextNode) {
         workout.setName(nameNode.asText());
       }
-      JsonNode exercisesNode = objectNode.get("exercises");
-      if (exercisesNode instanceof ArrayNode) {
-        for (JsonNode elementNode : exercisesNode) {
-          Exercise exercise = deserializer.deserialize(elementNode);
-          if (exercise != null) {
-            workout.addExercise(exercise);
+      JsonNode idNode = objectNode.get("id");
+      if (idNode instanceof TextNode) {
+        try {
+          workout.setId(idNode.asText());
+        } catch (Exceptions.IllegalIdException e) {
+          throw new IOException("IdHandler not found when loading file, "
+              + "something is wrong with writing object to file");
+        }
+      }
+      JsonNode exerciseIdsNode = objectNode.get("exerciseIds");
+      if (exerciseIdsNode instanceof ArrayNode) {
+        for (JsonNode elementNode : exerciseIdsNode) {
+          String id = elementNode.asText();
+          if (id != null) {
+            try {
+              workout.addExercise(id);
+            } catch (Exceptions.IllegalIdException | Exceptions.ExerciseAlreadyExistsException e) {
+              throw new IOException("IdHandler not found when loading file, "
+                  + "something is wrong with writing object to file");
+            }
           }
         }
       }
