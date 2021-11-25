@@ -96,6 +96,14 @@
                 <configuration>
                     <!-- syntax: module-name/full-app-class-name -->
                     <mainClass>beastbook.fxui/beastbook.fxui.App</mainClass>
+                    <!-- rest of options are for jlink, does not work due to use of spring -->
+<!--                    <compress>2</compress>
+                    <noHeaderFiles>true</noHeaderFiles>
+                    <stripDebug>true</stripDebug>
+                    <noManPages>true</noManPages>
+                    <launcher>beastbookfx</launcher>
+                    <jlinkImageName>beastbookfx</jlinkImageName>
+                    <jlinkZipName>beastbookfx</jlinkZipName>-->
                 </configuration>
             </plugin>
             <!-- Configure jacoco code coverage -->
@@ -118,6 +126,33 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
             </plugin>
+
+            <!-- Does not work without jlink being usable, left here for possible future release -->
+<!--            <plugin>
+                <groupId>org.panteleyev</groupId>
+                <artifactId>jpackage-maven-plugin</artifactId>
+                <version>1.4.0</version>
+                <configuration>
+                    <name>BeastBook</name>
+                    <appVersion>1.0.0</appVersion>
+                    <vendor>IT1901</vendor>
+                    <destination>target/dist</destination>
+                    <module>beastbook.fxui/beastbook.fxui.App</module>
+                    <runtimeImage>target/beastbookfx</runtimeImage>
+                    <javaOptions>
+                        <option>-Dfile.encoding=UTF-8</option>
+                    </javaOptions>
+                    &lt;!&ndash; linux options &ndash;&gt;
+                    <linuxShortcut>true</linuxShortcut>
+                    <linuxMenuGroup>BeastBookFX</linuxMenuGroup>
+
+                    &lt;!&ndash; windows options &ndash;&gt;
+                    <winDirChooser>true</winDirChooser>
+                    <winShortcut>true</winShortcut>
+                    <winMenu>true</winMenu>
+                    <winMenuGroup>BeastBookFX</winMenuGroup>
+                </configuration>
+            </plugin>-->
         </plugins>
     </build>
 </project>
