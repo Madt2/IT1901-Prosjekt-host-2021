@@ -52,6 +52,7 @@ We use a server-to-client restAPI model in our project. The server handles all d
 We tried to resolve the issue using jdeps to analyze and a plugin called Moditect as an alternative to JLink. 
 This did not work and the shippable product was scrapped for this release.
 The configuration is still viewable in fxui's pom.xml but is commented out for now.
+
 - Server controller test is unnecessary.
 We test ServerControllers functionality through testing ClientController. Method call chain from ClientController to
 ServerService is just handling transferring objects and exceptions via http GET and POST. Therefore testing 
