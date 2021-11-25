@@ -12,11 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 /**
- * Controller class for server. Uses methods to send requests to ServerService.
+ * Class for receiving http requests from client. It uses ServerService class to execute request.
  */
+
 @RestController
 public class ServerController {
-
 
   private ServerService serverService;
   ObjectMapper mapper;
@@ -64,28 +64,55 @@ public class ServerController {
     }
   }
 
+  /**
+   * Help method for sending not found responseEntity. This is used for sending not found exceptions to client.
+   *
+   * @param e Exception object.
+   * @return ResponseEntity with httpStatus not found and exception type in response body.
+   */
   private ResponseEntity<String> sendNotFound(Exception e) {
     return new ResponseEntity<>(e.getClass().getSimpleName(), HttpStatus.NOT_FOUND);
   }
 
+  /**
+   * Help method for sending bad request responseEntity. This is used for sending bad request exceptions to client.
+   *
+   * @param e Exception object.
+   * @return ResponseEntity with httpStatus bad request and exception type in response body.
+   */
   private ResponseEntity<String> sendBadRequest(Exception e) {
     return new ResponseEntity<>(e.getClass().getSimpleName(), HttpStatus.BAD_REQUEST);
   }
 
+  /**
+   * Help method for sending expectation failed responseEntity.
+   * This is used for sending expectation failed exceptions to client.
+   *
+   * @param e Exception object.
+   * @return ResponseEntity with httpStatus expectation failed and exception type in response body.
+   */
   private ResponseEntity<String> sendExpectationFailed(Exception e) {
     return new ResponseEntity<>(e.getClass().getSimpleName(), HttpStatus.EXPECTATION_FAILED);
   }
 
+  /**
+   * Help method for sending not acceptable responseEntity. This is used for sending not acceptable exceptions to
+   * client.
+   *
+   * @param e Exception object.
+   * @return ResponseEntity with httpStatus not acceptable and exception type in response body.
+   */
   private ResponseEntity<String> sendNotAcceptable(Exception e) {
     return new ResponseEntity<>(e.getClass().getSimpleName(), HttpStatus.NOT_ACCEPTABLE);
   }
 
   /**
-   * Creates a user and
-   * sends a request to ServerService
+   * Creates a User using ServerService's method call at request from client using sent User object.
+   * If exception occurs it will send a response package with appropriate exception.
    *
-   * @param userString to be used to create a user
-   * @return
+   * @param userString encoded serialized User object in string format sent via http.
+   * @return responseEntity with http status created if operation is successful,
+   * otherwise a responseEntity with appropriate exception.
    */
   @PostMapping("createUser/{userString}")
   public ResponseEntity<String> createUser(@PathVariable String userString) {
@@ -104,6 +131,15 @@ public class ServerController {
     }
   }
 
+  /**
+   * User login using ServerService's method call at request from client using sent User object.
+   * If exception occurs it will send a response package with appropriate exception.
+   * Method decodes encoded pathVariables using UTF_8, and deserializes object.
+   *
+   * @param userString encoded serialized User object in string format sent via http.
+   * @return responseEntity with http status ok if operation is successful,
+   * otherwise a responseEntity with appropriate exception.
+   */
   @PostMapping("login/{userString}")
   public ResponseEntity<String> login(@PathVariable String userString) {
     userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
@@ -123,6 +159,16 @@ public class ServerController {
     }
   }
 
+  /**
+   * Add given Workout using ServerService's method call at request from client using sent User object.
+   * If exception occurs it will send a response package with appropriate exception.
+   * Method decodes encoded pathVariables using UTF_8, and deserializes object.
+   *
+   * @param workoutString encoded serialized Workout object in string format string sent via http.
+   * @param userString encoded serialized User object in string format sent via http.
+   * @return responseEntity with http status created if operation is successful,
+   * otherwise a responseEntity with appropriate exception.
+   */
   @PostMapping("addWorkout/{userString}/{workoutString}")
   public ResponseEntity<String> addWorkout(@PathVariable String workoutString, @PathVariable String userString) {
     userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
@@ -142,6 +188,17 @@ public class ServerController {
     }
   }
 
+  /**
+   * Add given Exercise to Workout with given workoutId using ServerService's method call at request from client using
+   * sent User object. If exception occurs it will send a response package with appropriate exception.
+   * Method decodes encoded pathVariables using UTF_8, and deserializes object.
+   *
+   * @param userString encoded serialized User object in string format string sent via http.
+   * @param workoutId id of Workout to add exercise to
+   * @param exerciseString encoded serialized Exercise object in string format sent via http.
+   * @return responseEntity with http status created if operation is successful,
+   * otherwise a responseEntity with appropriate exception.
+   */
   @PostMapping("addExercise/{userString}/{workoutId}/{exerciseString}")
   public ResponseEntity<String> addExercise(
       @PathVariable String userString, @PathVariable String workoutId, @PathVariable String exerciseString) {
@@ -164,6 +221,16 @@ public class ServerController {
     }
   }
 
+  /**
+   * Add given History using ServerService's method call at request from client using sent User object.
+   * If exception occurs it will send a response package with appropriate exception.
+   * Method decodes encoded pathVariables using UTF_8, and deserializes object.
+   *
+   * @param userString encoded serialized User object in string format string sent via http.
+   * @param historyString encoded serialized History object in string format sent via http.
+   * @return responseEntity with http status created if operation is successful,
+   * otherwise a responseEntity with appropriate exception.
+   */
   @PostMapping("addHistory/{userString}/{historyString}")
   public ResponseEntity<String> addHistory(@PathVariable String userString, @PathVariable String historyString) {
     userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
@@ -183,6 +250,16 @@ public class ServerController {
     }
   }
 
+  /**
+   * Updates given Workout using ServerService's method call at request from client using sent User object.
+   * If exception occurs it will send a response package with appropriate exception.
+   * Method decodes encoded pathVariables using UTF_8, and deserializes object.
+   *
+   * @param workoutString encoded serialized Workout object in string format string sent via http.
+   * @param userString encoded serialized User object in string format string sent via http.
+   * @return responseEntity with http status ok if operation is successful,
+   * otherwise a responseEntity with appropriate exception.
+   */
   @PostMapping("updateWorkout/{userString}/{workoutString}")
   public ResponseEntity<String> updateWorkout(@PathVariable String workoutString, @PathVariable String userString) {
     userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
@@ -204,6 +281,16 @@ public class ServerController {
     }
   }
 
+  /**
+   * Updates given Exercise using ServerService's method call at request from client using sent User object.
+   * If exception occurs it will send a response package with appropriate exception.
+   * Method decodes encoded pathVariables using UTF_8, and deserializes object.
+   *
+   * @param userString encoded serialized User object in string format string sent via http.
+   * @param exerciseString encoded serialized Exercise object in string format string sent via http.
+   * @return responseEntity with http status ok if operation is successful,
+   * otherwise a responseEntity with appropriate exception.
+   */
   @PostMapping("updateExercise/{userString}/{exerciseString}")
   public ResponseEntity<String> updateExercise(@PathVariable String userString, @PathVariable String exerciseString) {
     userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
@@ -225,6 +312,15 @@ public class ServerController {
     }
   }
 
+  /**
+   * Deletes a User using ServerService's method call at request from client using sent User object.
+   * If exception occurs it will send a response package with appropriate exception.
+   * Method decodes encoded pathVariables using UTF_8, and deserializes object.
+   *
+   * @param userString encoded serialized User object in string format string sent via http.
+   * @return responseEntity with http status ok if operation is successful,
+   * otherwise a responseEntity with appropriate exception.
+   */
   @PostMapping("deleteUser/{userString}")
   public ResponseEntity<String> deleteUser(@PathVariable String userString) {
     userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
@@ -240,6 +336,16 @@ public class ServerController {
     }
   }
 
+  /**
+   * Deletes Workout with given id using ServerService's method call at request from client using sent User object.
+   * If exception occurs it will send a response package with appropriate exception.
+   * Method decodes encoded pathVariables using UTF_8, and deserializes object.
+   *
+   * @param workoutId id of Workout to delete.
+   * @param userString encoded serialized User object in string format string sent via http.
+   * @return responseEntity with http status ok if operation is successful,
+   * otherwise a responseEntity with appropriate exception.
+   */
   @PostMapping("deleteWorkout/{userString}/{workoutId}")
   public ResponseEntity<String> deleteWorkout(@PathVariable String workoutId, @PathVariable String userString) {
     userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
@@ -257,6 +363,16 @@ public class ServerController {
     }
   }
 
+  /**
+   * Deletes Exercise with given id using ServerService's method call at request from client using sent User object.
+   * If exception occurs it will send a response package with appropriate exception.
+   * Method decodes encoded pathVariables using UTF_8, and deserializes object.
+   *
+   * @param userString encoded serialized User object in string format string sent via http.
+   * @param exerciseId id of Exercise to delete.
+   * @return responseEntity with http status ok if operation is successful,
+   * otherwise a responseEntity with appropriate exception.
+   */
   @PostMapping("deleteExercise/{userString}/{exerciseId}")
   public ResponseEntity<String> deleteExercise(@PathVariable String userString, @PathVariable String exerciseId) {
     userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
@@ -274,6 +390,16 @@ public class ServerController {
     }
   }
 
+  /**
+   * Deletes History with given id using ServerService's method call at request from client using sent User object.
+   * If exception occurs it will send a response package with appropriate exception.
+   * Method decodes encoded pathVariables using UTF_8, and deserializes object.
+   *
+   * @param userString encoded serialized User object in string format string sent via http.
+   * @param historyId id of History to delete.
+   * @return responseEntity with http status ok if operation is successful,
+   * otherwise a responseEntity with appropriate exception.
+   */
   @PostMapping("deleteHistory/{userString}/{historyId}")
   public ResponseEntity<String> deleteHistory(@PathVariable String userString, @PathVariable String historyId) {
     userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
@@ -291,6 +417,16 @@ public class ServerController {
     }
   }
 
+  /**
+   * Sends Workout with given id to client using ServerService's method call at request from client using sent User
+   * object. If exception occurs it will send a response package with appropriate exception.
+   * Method decodes encoded pathVariables using UTF_8, and deserializes object.
+   *
+   * @param userString encoded serialized User object in string format string sent via http.
+   * @param workoutId id of Workout to send.
+   * @return responseEntity with http status ok if operation is successful,
+   * otherwise a responseEntity with appropriate exception.
+   */
   @GetMapping("getWorkout/{userString}/{workoutId}")
   public ResponseEntity<String> sendWorkout(@PathVariable String userString, @PathVariable String workoutId) {
     userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
@@ -311,6 +447,16 @@ public class ServerController {
     }
   }
 
+  /**
+   * Sends Exercise with given id to client using ServerService's method call at request from client using sent User
+   * object. If exception occurs it will send a response package with appropriate exception.
+   * Method decodes encoded pathVariables using UTF_8, and deserializes object.
+   *
+   * @param userString encoded serialized User object in string format string sent via http.
+   * @param exerciseId id of Exercise to send.
+   * @return responseEntity with http status ok if operation is successful,
+   * otherwise a responseEntity with appropriate exception.
+   */
   @GetMapping("getExercise/{userString}/{exerciseId}")
   public ResponseEntity<String> sendExercise(@PathVariable String userString, @PathVariable String exerciseId) {
     userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
@@ -331,6 +477,16 @@ public class ServerController {
     }
   }
 
+  /**
+   * Sends History with given id to client using ServerService's method call at request from client using sent User
+   * object. If exception occurs it will send a response package with appropriate exception.
+   * Method decodes encoded pathVariables using UTF_8, and deserializes object.
+   *
+   * @param userString encoded serialized User object in string format string sent via http.
+   * @param historyId id of History to send.
+   * @return responseEntity with http status ok if operation is successful,
+   * otherwise a responseEntity with appropriate exception.
+   */
   @GetMapping("getHistory/{userString}/{historyId}")
   public ResponseEntity<String> sendHistory(@PathVariable String userString, @PathVariable String historyId) {
     userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
@@ -351,6 +507,15 @@ public class ServerController {
     }
   }
 
+  /**
+   * Sends hashmap with (exerciseId : name) to client using ServerService's method call at request from client using
+   * sent User object. If exception occurs it will send a response package with appropriate exception.
+   * Method decodes encoded pathVariables using UTF_8, and deserializes object.
+   *
+   * @param userString encoded serialized User object in string format string sent via http.
+   * @return responseEntity with http status ok if operation is successful,
+   * otherwise a responseEntity with appropriate exception.
+   */
   @GetMapping("getExerciseMap/{userString}")
   public ResponseEntity<String> sendExerciseMap(@PathVariable String userString) {
     userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
@@ -367,6 +532,15 @@ public class ServerController {
     }
   }
 
+  /**
+   * Sends hashmap with (workoutId : name) to client using ServerService's method call at request from client using
+   * sent User object. If exception occurs it will send a response package with appropriate exception.
+   * Method decodes encoded pathVariables using UTF_8, and deserializes object.
+   *
+   * @param userString encoded serialized User object in string format string sent via http.
+   * @return responseEntity with http status ok if operation is successful,
+   * otherwise a responseEntity with appropriate exception.
+   */
   @GetMapping("getWorkoutMap/{userString}")
   public ResponseEntity<String> sendWorkoutMap(@PathVariable String userString) {
     userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
@@ -383,6 +557,15 @@ public class ServerController {
     }
   }
 
+  /**
+   * Sends hashmap with (historyId : name;date) to client using ServerService's method call at request from client
+   * using sent User object. If exception occurs it will send a response package with appropriate exception.
+   * Method decodes encoded pathVariables using UTF_8, and deserializes object.
+   *
+   * @param userString encoded serialized User object in string format string sent via http.
+   * @return responseEntity with http status ok if operation is successful,
+   * otherwise a responseEntity with appropriate exception.
+   */
   @GetMapping("getHistoryMap/{userString}")
   public ResponseEntity<String> sendHistoryMap(@PathVariable String userString) {
     userString = URLDecoder.decode(userString, StandardCharsets.UTF_8);
