@@ -68,7 +68,8 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
                 <argLine>
-                     --add-opens beastbook.rest/beastbook.server=ALL-UNNAMED
+                    @{jaCoCoArgLine} --add-opens beastbook.rest/beastbook.server=ALL-UNNAMED --add-opens beastbook.rest/beastbook.client=ALL-UNNAMED
+                    --add-opens beastbook.rest/beastbook.server=ALL-UNNAMED
                     --add-opens beastbook.rest/beastbook.client=ALL-UNNAMED
                 </argLine>
             </configuration>

@@ -42,40 +42,6 @@ public class ClientController {
     historyMap = clientService.queryHistoryMap(user);
   }
 
-  public static void main(String[] args) throws Exceptions.BadPackageException, Exceptions.UserAlreadyExistException, Exceptions.ServerException, URISyntaxException, JsonProcessingException, Exceptions.UserNotFoundException, Exceptions.PasswordIncorrectException, Exceptions.WorkoutAlreadyExistsException, Exceptions.WorkoutNotFoundException, Exceptions.IllegalIdException, Exceptions.ExerciseAlreadyExistsException, Exceptions.ExerciseNotFoundException, Exceptions.HistoryAlreadyExistsException, Exceptions.HistoryNotFoundException {
-    User user = new User("Temp", "Temp");
-    RegisterController reg = new RegisterController();
-    reg.registerUser(user.getUsername(), user.getPassword());
-    ClientController clientController = new ClientController(user.getUsername(), user.getPassword());
-    Workout workout = new Workout("workout");
-    clientController.addWorkout(workout , List.of());
-    Map<String,String> wmap = clientController.getWorkoutMap();
-    String wkey = "";
-    for (String keys : wmap.keySet()) {
-      wkey = keys;
-    }
-    clientController.getWorkout(wkey);
-    Exercise exercise = new Exercise("ovelse", 1,1, 1, 1, 1);
-    clientController.addExercise(exercise, wkey);
-    String ekey = "";
-    Map<String,String> emap = clientController.getExerciseMap();
-    for (String keys : emap.keySet()) {
-      ekey = keys;
-    }
-    System.out.println(ekey);
-    exercise = clientController.getExercise(ekey);
-    exercise.setRepsPerSet(10);
-    clientController.updateExercise(exercise);
-    System.out.println(clientController.getExercise(ekey));
-    clientController.addHistory(new History("workout", List.of()));
-    String hkey = "";
-    Map<String,String> hmap = clientController.getHistoryMap();
-    for (String keys : hmap.keySet()) {
-      hkey = keys;
-    }
-    clientController.getHistory(hkey);
-  }
-
   public void setIpAddress(String ipAddress) {
     clientService.setIpAddress(ipAddress);
   }
@@ -157,7 +123,6 @@ public class ClientController {
    *
    * @param workout the Workout to be added.
    * @param exercises the exercises that belong to that workout.
-   * @return true if the workout is saved successfully to the server, false if something fails.
    * @throws Exceptions.BadPackageException if an error occurs in parsing json in the REST server.
    * @throws Exceptions.ServerException if an unknown error occurs in the REST server.
    * @throws URISyntaxException if an error occurs while parsing URI in ClientService.
@@ -292,7 +257,7 @@ public class ClientController {
   /**
    * Sends a request to remove the History object with the corresponding ID in the REST server
    *
-   * @param historyId
+   * @param historyId for the History object in the REST server
    * @throws Exceptions.BadPackageException if an error occurs in parsing json in the REST server.
    * @throws Exceptions.ServerException if an unknown error occurs in the REST server.
    * @throws URISyntaxException if an error occurs while parsing URI in ClientService.
